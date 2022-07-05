@@ -1,0 +1,95 @@
+{
+	"items": [
+		{
+			"type": "item",
+			"label": "Run in node",
+			"mimetypes": [
+				"application/javascript"
+			],
+			"command_line": [
+				"gnome-terminal",
+				"-t",
+				"Running Node %b",
+				"--profile",
+				"No Close",
+				"-e",
+				"node %b"
+			],
+			"cwd": "%d",
+			"max_items": 1
+		},
+		{
+			"type": "menu",
+			"label": "Folder Actions",
+			"items": [
+				{
+					"type": "item",
+					"label": "Clone GIT Repo Here",
+					"mimetypes": [
+						"inode/directory"
+					],
+					"command_line": [
+						"zenity-git-clone.sh",
+						"%d/%b"
+					],
+					"use_shell": true,
+					"max_items": 1
+				},
+				{
+					"type": "item",
+					"label": "Execute Command Here",
+					"mimetypes": [
+						"inode/directory"
+					],
+					"command_line": [
+						"zenity-exec-in-dir.sh",
+						"%d/%b"
+					],
+					"use_shell": true,
+					"max_items": 1
+				},
+				{
+					"type": "item",
+					"label": "Start HTTP Server here",
+					"mimetypes": [
+						"inode/directory"
+					],
+					"command_line": [
+						"gnome-terminal",
+						"-t",
+						"HTTP Server on %d/%b",
+						"-e",
+						"http-server",
+						"-p",
+						"8000"
+					],
+					"cwd": "%d/%b",
+					"max_items": 1
+				}
+			]
+		},		{
+		"type": "menu",
+		"label": "Copy Details",
+		"items": [
+			{
+				"type": "item",
+				"label": "Copy Name",
+				"use_shell": true,
+				"command_line": [
+					"arg1-to-clipboard.sh",
+					"%b"
+				]
+			},
+			{
+				"type": "item",
+				"label": "Copy Path",
+				"use_shell": true,
+				"command_line": [
+					"arg1-to-clipboard.sh",
+					"%d/%b"
+				]
+			}
+		]
+		}
+	]
+}
