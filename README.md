@@ -39,5 +39,6 @@ Arch `sudo pacman -S python-nautilus python-gobject`
 3. Restart the Nautilus (`nautilus -q`) if still seeing the options after uninstall.
 
 # Acknowledments
-The main acknowledgement is of [Christoforos Aslanov](https://github.com/chr314) whose [Nautilus Copy Path](https://github.com/chr314/nautilus-copy-path) provided the 
-inspiration and template for my own extension, and whose project structure and installation procedure and doc I mercilessly ripped off :)
+The main acknowledgement is of [Christoforos Aslanov](https://github.com/chr314) whose [Nautilus Copy Path](https://github.com/chr314/nautilus-copy-path) 
+extension provided the inspiration and template for my own extension, and whose project structure, installation procedure and doc I mercilessly 
+ripped off :)
