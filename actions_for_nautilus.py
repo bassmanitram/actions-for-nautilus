@@ -234,4 +234,60 @@ class Actions4Nautilus(Nautilus.MenuProvider, GObject.GObject):
             return_token = return_token.replace(pattern,file_detail[self.place_holders[pattern]])
         return return_token
 
+###
+### Pattern replacement functions
+###
+    def __expand_percent_b(self, token, files):
+        return files[0]["name"]
 
+    def __expand_percent_B(self, token, files):
+        return files[0]["name"]
+
+    def __expand_percent_c(self, token, files):
+        return len(files)
+
+    def __expand_percent_d(self, token, files):
+        return files[0]["folder"]
+
+    def __expand_percent_D(self, token, files):
+        return files[0]["name"]
+
+    def __expand_percent_f(self, token, files):
+        return files[0]["name"]
+
+    def __expand_percent_F(self, token, files):
+        return files[0]["name"]
+
+    def __expand_percent_h(self, token, files):
+        return files[0]["name"]
+
+    def __expand_percent_m(self, token, files):
+        return files[0]["name"]
+
+    def __expand_percent_M(self, token, files):
+        return files[0]["name"]
+
+    def __expand_percent_n(self, token, files):
+        return files[0]["name"]
+
+    def __expand_percent_p(self, token, files):
+        return files[0]["name"]
+
+    def __expand_percent_s(self, token, files):
+        return files[0]["name"]
+
+    def __expand_percent_u(self, token, files):
+        return files[0]["name"]
+
+    def __expand_percent_w(self, token, files):
+        return files[0]["name"]
+
+    def __expand_percent_W(self, token, files):
+        return files[0]["name"]
+
+    def __expand_percent_x(self, token, files):
+        return files[0]["name"]
+
+    def __expand_percent_X(self, token, files):
+        return files[0]["name"]
+    
