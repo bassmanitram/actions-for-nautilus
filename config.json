@@ -50,7 +50,7 @@
 				},
 				{
 					"type": "item",
-					"label": "Start HTTP Server here",
+					"label": "Start HTTP Server Here",
 					"mimetypes": [
 						"inode/directory"
 					],
