@@ -7,6 +7,9 @@ from gi import require_version
 require_version('Gtk', '3.0')
 require_version('Nautilus', '3.0')
 
+###
+### The MenuProvider implementation
+###
 class Actions4Nautilus(Nautilus.MenuProvider, GObject.GObject):
 
     def __init__(self):
@@ -26,110 +29,39 @@ class Actions4Nautilus(Nautilus.MenuProvider, GObject.GObject):
                 self.config.update(json.load(json_file))
             except:
                 pass
+        #
+        # Optimize and normalize some aspects of the config
+        #
+        if "items" in self.config and type(self.config["items"]) == list:
+            self.config["items"] = list(filter(None, map(lambda item: self.__check_item(str(item[0]), item[1]), enumerate(self.config["items"]))))
+            
+        else:
+            self.config["items"] = []
 
+        print(self.config)
+
+#
+# Menu provider interface implementation
+#
     def get_file_items(self, window, files):
-        return self._create_menu_items(files, "File")
+        return self.__create_menu_items(files, "File")
 
     def get_background_items(self, window, file):
-        return self._create_menu_items([file], "Background")
+        return self.__create_menu_items([file], "Background")
 
-    def _create_menu_items(self, files, group):
-        menu_items = []
-        my_files = {
-            "mimetypes": [],
-            "names": [],
-            "folders": [],
-            "uris": [],
-            "by_file": [],
-            "file_count": len(files)
-        }
-        for file in files:
-            this_file = {
-                "mimetype": file.get_mime_type(),
-                "name": os.path.basename(file.get_location().get_path()),
-                "folder": os.path.dirname(file.get_location().get_path()),
-                "uri": file.get_uri()
-            }
-            my_files["names"].append(this_file["name"])
-            my_files["mimetypes"].append(this_file["mimetype"])
-            my_files["folders"].append(this_file["folder"])
-            my_files["uris"].append(this_file["uri"])
-            my_files["by_file"].append(this_file)
-
-        if "items" in self.config:
-            config_items = self.config["items"]
-            for idx, config_item in enumerate(config_items):
-                menu_item = self._create_menu_item(str(idx), config_item, my_files, group)
-                if menu_item is not None:
-                    menu_items.append(menu_item)
-
-        return sorted(menu_items,key=lambda element: element.props.label)
-        
-    def _create_menu_item(self, idString, config_item, files, group):
-        if config_item["type"] == "menu":
-            return self._create_menu_menu_item(idString, config_item, files, group)
-        elif config_item["type"] == "item":
-            return self._create_item_menu_item(idString, config_item, files, group)
-        else:
-            return None
-                 
-    def _create_menu_menu_item(self, idString, config_item, files, group):
-        sub_items = []
-        if "items" in config_item:
-            for idx, sub_item in enumerate(config_item["items"]):
-                menu_item = self._create_menu_item(idString + "_" + str(idx), sub_item, files, group)
-                if menu_item is not None:
-                    sub_items.append(menu_item)
-            
-            if len(sub_items) > 0:
-                menu = Nautilus.Menu()
-                menu_item = Nautilus.MenuItem(
-                    name="Actions4Nautilus::Menu" + idString + group,
-                    label=config_item["label"],
-                )
-                menu_item.set_submenu(menu)
-                for menu_sub_item in sorted(sub_items,key=lambda element: element.props.label):
-                    menu.append_item(menu_sub_item)
-                return menu_item
-            else:
-                return None
-        else:
-            return None
-
-    def _create_item_menu_item(self, idString, config_item, files, group):
-        if ("max_items" in config_item and 
-            isinstance(config_item["max_items"], int) and 
-            config_item["max_items"] < files["file_count"]):
-                return None
-
-        if self._applicable_to_mime(config_item, files):
-            menu_item = Nautilus.MenuItem(
-                name="NautilusCopyPath::Item" + idString + group,
-                label=config_item["label"],
-            )
-            menu_item.connect("activate", self._run_command, config_item, files)
-            return menu_item
-        else:
-            return None
-
-    def _applicable_to_mime(self, config_item, files):
-        if "mimetypes" in config_item:
-            intersection = [value for value in config_item["mimetypes"] if value in files["mimetypes"]]
-            if len(intersection) == 0:
-                return False
-        return True
-
-
-    def _run_command(self, menu, config_item, files):
-        cwd = self._expand_token(config_item["cwd"], files["by_file"][0]) if "cwd" in config_item else None
+#
+# Command execution
+#
+    def run_command(self, menu, config_item, files):
+        cwd = self.__expand_token(config_item["cwd"], files[0]) if "cwd" in config_item else None
         use_shell = bool(config_item["use_shell"]) if "use_shell" in config_item else False
 
         final_command_line = []
         for token in config_item["command_line"]:
             mod_token = token.replace("%%", "PERCENTPERCENT")
-            if self._token_needs_expanding(token):
-                for idx in range(files["file_count"]):
-                    final_command_line.append(self._expand_token(mod_token, files["by_file"][idx]).replace("PERCENTPERCENT", "%"))
+            if self.__token_needs_expanding(token):
+                for idx in range(len(files)):
+                    final_command_line.append(self.__expand_token(mod_token, files[idx]).replace("PERCENTPERCENT", "%"))
             else: 
                 final_command_line.append(mod_token.replace("PERCENTPERCENT", "%"))
 
@@ -137,19 +69,169 @@ class Actions4Nautilus(Nautilus.MenuProvider, GObject.GObject):
             final_command_line = " ".join(f'"{w}"' for w in map(lambda x: x.replace('"','\\"'), final_command_line))
 
         print(cwd)
-        print(' '.join(final_command_line))
+        print(final_command_line)
+        print(config_item)
         print(files)
-        subprocess.Popen(final_command_line, cwd=cwd, shell=use_shell) #creationflags=subprocess.DETACHED_PROCESS)
+        subprocess.Popen(final_command_line, cwd=cwd, shell=use_shell)
 
-    def _token_needs_expanding(self, token):
-        for pattern in self.place_holders.keys():
-            if token.find(pattern) != -1:
-                return True
-        return False
+##########################################################################################################################
+##########################################################################################################################
+##########################################################################################################################
+###
+### P R I V A T E   M E T H O D S
+###
+##########################################################################################################################
+##########################################################################################################################
+##########################################################################################################################
 
-    def _expand_token(self, token, file_detail):
+###
+### Config optimization
+###
+
+    #
+    # Triage the config item based on type
+    #
+    def __check_item(self, idString, config_item):
+        if "type" in config_item:
+            if config_item["type"] == "menu":
+                return self.__check_menu_item(idString, config_item)
+            elif config_item["type"] == "item":
+                return self.__check_item_item(idString, config_item)
+
+        print("Ignoring config item: no type property", config_item)
+
+    #
+    # Normalize a menu item
+    #
+    def __check_menu_item(self, idString, config_item):
+        config_item["label"] = config_item["label"].strip() if "label" in config_item else ""
+        if (len(config_item["label"]) > 0 and
+            "items" in config_item and 
+            type(config_item["items"]) == list):
+            config_item["items"] = list(filter(None, map(lambda item: self.__check_item(idString + "_" + str(item[0]), item[1]), enumerate(config_item["items"]))))
+            config_item["idString"] = idString
+            if len(config_item["items"]) > 0:
+                return config_item
+
+            print("Ignoring config item menu: no valid sub items", config_item)
+            return None
+
+        print("Ignoring config item menu: missing properties", config_item)
+
+    #
+    # Normalize a leaf item
+    #
+    def __check_item_item(self, idString, config_item):
+        config_item["label"] = config_item["label"].strip() if "label" in config_item else ""
+        if (len(config_item["label"]) > 0 and
+            "command_line" in config_item and
+            type(config_item["command_line"]) == list and
+            len(config_item["command_line"]) > 0):
+            if "mimetypes" in config_item and type(config_item["mimetypes"]) == list:
+                config_item["all_mimetypes"] = ( "*/*" in config_item["mimetypes"] or "*" in config_item["mimetypes"])
+                if not config_item["all_mimetypes"]:
+                    config_item["mimetypes"] = list(filter(None, map(self.__gen_mimetype, config_item["mimetypes"])))
+                    config_item["all_mimetypes"] = len(config_item["mimetypes"]) < 1
+            else:
+                config_item["all_mimetypes"] = True
+            config_item["idString"] = idString
+            return config_item
+
+        print("Ignoring config item item: missing properties", config_item)
+
+    #
+    # Generates an object that facilitates fast mimetype checks
+    #
+    def __gen_mimetype(self, mimetype):
+        if type(mimetype) == str and len(mimetype := mimetype.lower().strip()) > 3 and mimetype.find("/") > 0:
+            return {"comparator": "startswith", "mimetype": mimetype[:len(mimetype)-1]} if mimetype.endswith("/*") else {"comparator":"__eq__", "mimetype":mimetype}
+
+        print("Ignoring mimetype: invalid format", mimetype)
+
+###
+### Menu generation
+###
+    #
+    # Consolidate background and selection calls to create menus
+    #
+    def __create_menu_items(self, files, group):
+        my_files = list(map(lambda file: {
+                "mimetype": file.get_mime_type(),
+                "name": os.path.basename(file.get_location().get_path()),
+                "folder": os.path.dirname(file.get_location().get_path()),
+                "uri": file.get_uri()
+            }, files))
+
+        return sorted(list(filter(None, map(lambda item: self.__create_menu_item(item, my_files, group), self.config["items"]))), key=lambda element: element.props.label)
+        
+    #
+    # Triage the menu item creation config item based on type
+    #
+    def __create_menu_item(self, config_item, files, group):
+        if config_item["type"] == "menu":
+            return self.__create_menu_menu_item(config_item, files, group)
+        else:
+            return self.__create_item_menu_item(config_item, files, group)
+    
+    #
+    # Generate an item that has a submenu attached, with its own items
+    # recursively added
+    #
+    def __create_menu_menu_item(self, config_item, files, group):
+        sub_items = list(filter(None, map(lambda item: self.__create_menu_item(item, files, group), config_item["items"])))
+
+        if len(sub_items) > 0:
+            menu = Nautilus.Menu()
+            menu_item = Nautilus.MenuItem(
+                name="Actions4Nautilus::Menu" + config_item["idString"] + group,
+                label=config_item["label"],
+            )
+            menu_item.set_submenu(menu)
+            for menu_sub_item in sorted(sub_items,key=lambda element: element.props.label):
+                menu.append_item(menu_sub_item)
+            return menu_item
+
+    #
+    # Generate a leaf item that is connected to the activate signal
+    #
+    def __create_item_menu_item(self, config_item, files, group):
+        if ("max_items" in config_item and 
+            isinstance(config_item["max_items"], int) and 
+            config_item["max_items"] < len(files)):
+                return None
+
+        if config_item["all_mimetypes"] or self.__applicable_to_mime(config_item, files):
+            menu_item = Nautilus.MenuItem(
+                name="NautilusCopyPath::Item" + config_item["idString"] + group,
+                label=config_item["label"],
+            )
+            menu_item.connect("activate", self.run_command, config_item, files)
+            return menu_item
+
+###
+### Utilities
+###
+
+    #
+    # Compares each file mimetype to the config item mimetypes
+    # Returns True if a match is found for every one, otherwise False
+    #
+    def __applicable_to_mime(self, config_item, files):
+        return all(map(lambda file: any(getattr(file["mimetype"],cmimetype["comparator"])(cmimetype["mimetype"]) for cmimetype in config_item["mimetypes"]), files))
+
+    #
+    # Examines a token for %-prefixed place holders
+    #
+    def __token_needs_expanding(self, token):
+        return any(token.find(pattern) != -1 for pattern in self.place_holders.keys())
+
+    #
+    # Replaces %-prefixed place holders with appropriate values
+    #
+    def __expand_token(self, token, file_detail):
         return_token = token
         for pattern in self.place_holders.keys():
             return_token = return_token.replace(pattern,file_detail[self.place_holders[pattern]])
         return return_token
+
 
