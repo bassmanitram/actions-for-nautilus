@@ -1,6 +1,5 @@
-import os
-import subprocess
-import json
+import os, subprocess, json, re, shlex
+from urllib.parse import urlparse
 from gi.repository import Nautilus, GObject, Gtk, Gdk
 from gi import require_version
 
@@ -18,17 +17,37 @@ class Actions4Nautilus(Nautilus.MenuProvider, GObject.GObject):
         }
 
         self.place_holders = {
-            "%b": "name", 
-            "%d": "folder", 
-            "%m": "mimetype", 
-            "%u": "uri", 
+            "b": self.__expand_percent_b, 
+            "B": self.__expand_percent_B, 
+            "c": self.__expand_percent_c, 
+            "d": self.__expand_percent_d, 
+            "D": self.__expand_percent_D, 
+            "f": self.__expand_percent_f, 
+            "F": self.__expand_percent_F, 
+            "h": self.__expand_percent_h, 
+            "m": self.__expand_percent_m, 
+            "M": self.__expand_percent_M, 
+            "n": self.__expand_percent_n, 
+            "o": self.__expand_percent_o, 
+            "O": self.__expand_percent_O, 
+            "p": self.__expand_percent_p, 
+            "s": self.__expand_percent_s, 
+            "u": self.__expand_percent_u, 
+            "U": self.__expand_percent_U, 
+            "w": self.__expand_percent_w, 
+            "W": self.__expand_percent_W,
+            "x": self.__expand_percent_x, 
+            "X": self.__expand_percent_X,
+            "%": self.__expand_percent_percent
         }
 
-        with open(os.path.join(os.path.dirname(__file__), "config.json")) as json_file:
+        config_path = os.path.join(os.path.dirname(__file__), "config.json")
+        with open(config_path) as json_file:
             try:
                 self.config.update(json.load(json_file))
             except:
-                pass
+                print("Config file " + config_path + " not found")
+
         #
         # Optimize and normalize some aspects of the config
         #
@@ -53,20 +72,16 @@ class Actions4Nautilus(Nautilus.MenuProvider, GObject.GObject):
 # Command execution
 #
     def run_command(self, menu, config_item, files):
-        cwd = self.__expand_token(config_item["cwd"], files[0]) if "cwd" in config_item else None
+        cwd = self.__resolve_place_holders(config_item["cwd"], 0, [files[0]], False) if "cwd" in config_item else None
         use_shell = bool(config_item["use_shell"]) if "use_shell" in config_item else False
 
-        final_command_line = []
-        for token in config_item["command_line"]:
-            mod_token = token.replace("%%", "PERCENTPERCENT")
-            if self.__token_needs_expanding(token):
-                for idx in range(len(files)):
-                    final_command_line.append(self.__expand_token(mod_token, files[idx]).replace("PERCENTPERCENT", "%"))
-            else: 
-                final_command_line.append(mod_token.replace("PERCENTPERCENT", "%"))
+        final_command_line = self.__resolve_place_holders(config_item["command_line"], 0, files, True)
 
-        if use_shell:
-            final_command_line = " ".join(f'"{w}"' for w in map(lambda x: x.replace('"','\\"'), final_command_line))
+        if not use_shell:
+            #
+            # Split into args and lose any shell escapes
+            #
+            final_command_line = list(map(lambda arg: arg.replace("\\\\","!§ESCBACKSLASH§µ").replace("\\", "").replace("!§ESCBACKSLASH§µ","\\"),shlex.split(final_command_line)))
 
         print(cwd)
         print(final_command_line)
@@ -104,7 +119,7 @@ class Actions4Nautilus(Nautilus.MenuProvider, GObject.GObject):
     # Normalize a menu item
     #
     def __check_menu_item(self, idString, config_item):
-        config_item["label"] = config_item["label"].strip() if "label" in config_item else ""
+        config_item["label"] = config_item["label"].strip() if "label" in config_item and type(config_item["label"]) == str else ""
         if (len(config_item["label"]) > 0 and
             "items" in config_item and 
             type(config_item["items"]) == list):
@@ -122,10 +137,9 @@ class Actions4Nautilus(Nautilus.MenuProvider, GObject.GObject):
     # Normalize a leaf item
     #
     def __check_item_item(self, idString, config_item):
-        config_item["label"] = config_item["label"].strip() if "label" in config_item else ""
+        config_item["label"] = config_item["label"].strip() if "label" in config_item and type(config_item["label"]) == str else ""
+        config_item["command_line"] = config_item["command_line"].strip() if "command_line" in config_item and type(config_item["command_line"]) == str else ""
         if (len(config_item["label"]) > 0 and
-            "command_line" in config_item and
-            type(config_item["command_line"]) == list and
             len(config_item["command_line"]) > 0):
             if "mimetypes" in config_item and type(config_item["mimetypes"]) == list:
                 config_item["all_mimetypes"] = ( "*/*" in config_item["mimetypes"] or "*" in config_item["mimetypes"])
@@ -157,9 +171,10 @@ class Actions4Nautilus(Nautilus.MenuProvider, GObject.GObject):
     def __create_menu_items(self, files, group):
         my_files = list(map(lambda file: {
                 "mimetype": file.get_mime_type(),
-                "name": os.path.basename(file.get_location().get_path()),
+                "basename": os.path.basename(file.get_location().get_path()),
+                "filename": file.get_location().get_path(),
                 "folder": os.path.dirname(file.get_location().get_path()),
-                "uri": file.get_uri()
+                "uri": urlparse(file.get_uri())
             }, files))
 
         return sorted(list(filter(None, map(lambda item: self.__create_menu_item(item, my_files, group), self.config["items"]))), key=lambda element: element.props.label)
@@ -235,59 +250,92 @@ class Actions4Nautilus(Nautilus.MenuProvider, GObject.GObject):
         return return_token
 
 ###
-### Pattern replacement functions
+### Place holder replacement functions
 ###
-    def __expand_percent_b(self, token, files):
-        return files[0]["name"]
+    def __resolve_place_holders(self, string, file_index, files, escape):
+        next_index = 0
+        place_holder_list = "".join(self.place_holders.keys())
+        while True:
+            match = re.search( "%["+place_holder_list+"]", string[next_index:])
+            if match is None:
+                break
+            span = match.span()
+            start_index = next_index+span[0]
+            end_index = next_index+span[1]
+            replacement = self.place_holders[match.group()[1:]](file_index, files, escape)
+            string = string[:start_index] + replacement + string[end_index:]
+            next_index = (start_index + len(replacement))
+        return string
 
-    def __expand_percent_B(self, token, files):
-        return files[0]["name"]
+    def __expand_percent_percent(self, index, files, escape):
+        return "%"
 
-    def __expand_percent_c(self, token, files):
-        return len(files)
+    def __expand_percent_b(self, index, files, escape):
+        return files[index]["basename"].replace(" ","\\ ")  if escape else files[index]["basename"]
 
-    def __expand_percent_d(self, token, files):
-        return files[0]["folder"]
+    def __expand_percent_B(self, index, files, escape):
+        return " ".join(map(lambda file: file["basename"].replace(" ","\\ ") if escape else file["basename"], files))
 
-    def __expand_percent_D(self, token, files):
-        return files[0]["name"]
+    def __expand_percent_c(self, index, files, escape):
+        return str(len(files))
 
-    def __expand_percent_f(self, token, files):
-        return files[0]["name"]
+    def __expand_percent_d(self, index, files, escape):
+        return files[index]["folder"].replace(" ","\\ ") if escape else files[index]["folder"]
 
-    def __expand_percent_F(self, token, files):
-        return files[0]["name"]
+    def __expand_percent_D(self, index, files, escape):
+        return " ".join(map(lambda file: file["folder"].replace(" ","\\ ") if escape else file["folder"], files))
 
-    def __expand_percent_h(self, token, files):
-        return files[0]["name"]
+    def __expand_percent_f(self, index, files, escape):
+        return files[0]["filename"].replace(" ","\\ ") if escape else files[0]["filename"]
 
-    def __expand_percent_m(self, token, files):
-        return files[0]["name"]
+    def __expand_percent_F(self, index, files, escape):
+        return " ".join(map(lambda file: file["filename"].replace(" ","\\ ") if escape else file["filename"], files))
 
-    def __expand_percent_M(self, token, files):
-        return files[0]["name"]
+    def __expand_percent_h(self, index, files, escape):
+        h = files[index]["uri"].hostname
+        return "" if h is None else h.replace(" ","\\ ") if escape else h
 
-    def __expand_percent_n(self, token, files):
-        return files[0]["name"]
+    def __expand_percent_m(self, index, files, escape):
+        return files[index]["mimetype"].replace(" ","\\ ") if escape else files[index]["mimetype"]
 
-    def __expand_percent_p(self, token, files):
-        return files[0]["name"]
+    def __expand_percent_M(self, index, files, escape):
+        return " ".join(map(lambda file: file["mimetype"].replace(" ","\\ ") if escape else file["mimetype"], files))
 
-    def __expand_percent_s(self, token, files):
-        return files[0]["name"]
+    def __expand_percent_n(self, index, files, escape):
+        n = files[index]["uri"].username
+        return "" if n is None else n.replace(" ","\\ ") if escape else n
 
-    def __expand_percent_u(self, token, files):
-        return files[0]["name"]
+    def __expand_percent_o(self, index, files, escape):
+        return ""
 
-    def __expand_percent_w(self, token, files):
-        return files[0]["name"]
+    def __expand_percent_O(self, index, files, escape):
+        return ""
 
-    def __expand_percent_W(self, token, files):
-        return files[0]["name"]
+    def __expand_percent_p(self, index, files, escape):
+        p = files[index]["uri"].port
+        return "" if p is None else p
 
-    def __expand_percent_x(self, token, files):
-        return files[0]["name"]
+    def __expand_percent_s(self, index, files, escape):
+        return files[index]["uri"].scheme
 
-    def __expand_percent_X(self, token, files):
-        return files[0]["name"]
-    
+    def __expand_percent_u(self, index, files, escape):
+        return files[index]["uri"].geturl().replace(" ","\\ ") if escape else files[index]["uri"].geturl()
+
+    def __expand_percent_U(self, index, files, escape):
+        return " ".join(map(lambda file: file["uri"].geturl().replace(" ","\\ ") if escape else file["uri"].geturl(), files))
+
+    def __expand_percent_w(self, index, files, escape):
+        return self.__name_extension(files[index]["basename"])["name"].replace(" ","\\ ") if escape else self.__name_extension(files[index]["basename"])["name"]
+ 
+    def __expand_percent_W(self, index, files, escape):
+        return " ".join(map(lambda file: self.__name_extension(file["basename"])["name"].replace(" ","\\ ") if escape else self.__name_extension(file["basename"])["name"], files))
+
+    def __expand_percent_x(self, index, files, escape):
+        return self.__name_extension(files[index]["basename"])["extension"].replace(" ","\\ ") if escape else self.__name_extension(files[index]["basename"])["extension"]
+
+    def __expand_percent_X(self, index, files, escape):
+        return " ".join(map(lambda file: self.__name_extension(file["basename"])["extension"].replace(" ","\\ ") if escape else self.__name_extension(file["basename"])["extension"], files))
+
+    def __name_extension(self, basename):
+        w = basename.rpartition(".")
+        return {"name": w[0], "extension": w[2]} if w[1] == "." else {"name": w[2], "extension": ""}

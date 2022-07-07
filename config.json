@@ -6,15 +6,7 @@
 			"mimetypes": [
 				"application/javascript"
 			],
-			"command_line": [
-				"gnome-terminal",
-				"-t",
-				"Running Node %b",
-				"--profile",
-				"No Close",
-				"-e",
-				"node %b"
-			],
+			"command_line": "gnome-terminal -t \"Running Node %b\" --profile \"No Close\" -- node %b",
 			"cwd": "%d",
 			"max_items": 1
 		},
@@ -28,10 +20,7 @@
 					"mimetypes": [
 						"inode/directory"
 					],
-					"command_line": [
-						"zenity-git-clone.sh",
-						"%d/%b"
-					],
+					"command_line": "zenity-git-clone.sh %f",
 					"use_shell": true,
 					"max_items": 1
 				},
@@ -41,10 +30,7 @@
 					"mimetypes": [
 						"inode/directory"
 					],
-					"command_line": [
-						"zenity-exec-in-dir.sh",
-						"%d/%b"
-					],
+					"command_line": "zenity-exec-in-dir.sh %f",
 					"use_shell": true,
 					"max_items": 1
 				},
@@ -54,16 +40,8 @@
 					"mimetypes": [
 						"inode/directory"
 					],
-					"command_line": [
-						"gnome-terminal",
-						"-t",
-						"HTTP Server on %d/%b",
-						"-e",
-						"http-server",
-						"-p",
-						"8000"
-					],
-					"cwd": "%d/%b",
+					"command_line": "gnome-terminal -t \"HTTP Server on %f\" -- http-server -p 8000",
+					"cwd": "%f",
 					"max_items": 1
 				}
 			]
@@ -75,19 +53,24 @@
 				"type": "item",
 				"label": "Copy Name",
 				"use_shell": true,
-				"command_line": [
-					"arg1-to-clipboard.sh",
-					"%b"
-				]
+				"command_line": "arg1-to-clipboard.sh %B"
 			},
 			{
 				"type": "item",
 				"label": "Copy Path",
 				"use_shell": true,
-				"command_line": [
-					"arg1-to-clipboard.sh",
-					"%d/%b"
-				]
+				"command_line": "arg1-to-clipboard.sh %F"
+			},
+			{
+				"type": "item",
+				"label": "Copy URI",
+				"use_shell": true,
+				"command_line": "arg1-to-clipboard.sh %U"
+			},
+			{
+				"type": "item",
+				"label": "Test all place holders",
+				"command_line": "printf '%%s\n' '#b' %b '#B' %B '#c' %c '#d' %d '#D' %D '#f' %f '#F' %F '#h' %h '#m' %m '#M' %M '#n' %n '#o' %o '#O' %O '#p' %p '#s' %s '#u' %u '#U' %U '#w' %w '#W' %W '#x' %x '#X' %X"
 			}
 		]
 		}
