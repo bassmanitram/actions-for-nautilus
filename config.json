@@ -11,6 +11,11 @@
 			"max_items": 1
 		},
 		{
+			"type": "item",
+			"label": "Test all place holders",
+			"command_line": "printf '%%s\n' '#b' %b '#B' %B '#c' %c '#d' %d '#D' %D '#f' %f '#F' %F '#h' %h '#m' %m '#M' %M '#n' %n '#o' %o '#O' %O '#p' %p '#s' %s '#u' %u '#U' %U '#w' %w '#W' %W '#x' %x '#X' %X"
+		},
+		{
 			"type": "menu",
 			"label": "Folder Actions",
 			"items": [
@@ -66,11 +71,6 @@
 				"label": "Copy URI",
 				"use_shell": true,
 				"command_line": "arg1-to-clipboard.sh %U"
-			},
-			{
-				"type": "item",
-				"label": "Test all place holders",
-				"command_line": "printf '%%s\n' '#b' %b '#B' %B '#c' %c '#d' %d '#D' %D '#f' %f '#F' %F '#h' %h '#m' %m '#M' %M '#n' %n '#o' %o '#O' %O '#p' %p '#s' %s '#u' %u '#U' %U '#w' %w '#W' %W '#x' %x '#X' %X"
 			}
 		]
 		}
