@@ -3,26 +3,39 @@
 #
 import os, json
 
-_config = {
-    "items": {}
-}
-
+###
+### Exported functions
+###
 def get():
     return _config
 
 def initialize():
     config_path = os.path.join(os.path.dirname(__file__), "config.json")
-    with open(config_path) as json_file:
-        try:
+    try:
+        with open(config_path) as json_file:
             _config.update(json.load(json_file))
             config_items = _config.get("items", [])
             if type(config_items) == list:
                 _config["items"] = list(filter(None, map(lambda item: _check_item(str(item[0]), item[1]), enumerate(config_items))))    
             else:
                 _config["items"] = []
-        except:
-            print("Config file " + config_path + " not found")
+                
+    except Exception as e:
+        print("Config file " + config_path + " load failed", e)
+    
     print(_config)
+
+###
+### Private functions and values
+###
+
+#
+# The config dict
+#
+_config = {
+    "items": {}
+}
+
 
 #
 # Triage the config item based on type
