@@ -3,6 +3,12 @@
 ###
 import re
 
+###
+### Exported functions and values
+###
+PLURAL = 0
+SINGULAR = 1
+
 def resolve(string, file_index, files, escape):
     next_index = 0
     _place_holder_list = "".join(_cmdline_place_holders.keys())
@@ -13,13 +19,28 @@ def resolve(string, file_index, files, escape):
         span = match.span()
         start_index = next_index+span[0]
         end_index = next_index+span[1]
-        replacement = _cmdline_place_holders[match.group()[1:]](file_index, files, escape)
+        replacement = _cmdline_place_holders[match.group()[1:]]["f"](file_index, files, escape)
         string = string[:start_index] + replacement + string[end_index:]
         next_index = (start_index + len(replacement))
     return string
 
+def get_behavior(string):
+    behavior = -1
+    next_index = 0
+    while behavior == -1 and next_index < len(string):
+        match = re.search( "%["+_place_holder_keys+"]", string[next_index:])
+        if match is None:
+            break
+        behavior = _cmdline_place_holders[match.group()[1:]]["behavior"]
+        next_index += match.span()[1]
+    return behavior if behavior > -1 else PLURAL
+
 def get():
     return _place_holder_keys
+
+###
+### Private functions and values
+###
 
 def _expand_percent_percent(index, files, escape):
     return "%"
@@ -95,28 +116,28 @@ def _file_name_extension(basename):
     return {"name": w[0], "extension": w[2]} if w[1] == "." else {"name": w[2], "extension": ""}
 
 _cmdline_place_holders = {
-    "b": _expand_percent_b, 
-    "B": _expand_percent_B, 
-    "c": _expand_percent_c, 
-    "d": _expand_percent_d, 
-    "D": _expand_percent_D, 
-    "f": _expand_percent_f, 
-    "F": _expand_percent_F, 
-    "h": _expand_percent_h, 
-    "m": _expand_percent_m, 
-    "M": _expand_percent_M,
-    "n": _expand_percent_n, 
-    "o": _expand_percent_o, 
-    "O": _expand_percent_O, 
-    "p": _expand_percent_p, 
-    "s": _expand_percent_s, 
-    "u": _expand_percent_u, 
-    "U": _expand_percent_U, 
-    "w": _expand_percent_w, 
-    "W": _expand_percent_W,
-    "x": _expand_percent_x, 
-    "X": _expand_percent_X,
-    "%": _expand_percent_percent
+    "b": { "f": _expand_percent_b, "behavior": SINGULAR},
+    "B": { "f": _expand_percent_B, "behavior": PLURAL},
+    "c": { "f": _expand_percent_c, "behavior": -1},
+    "d": { "f": _expand_percent_d, "behavior": SINGULAR},
+    "D": { "f": _expand_percent_D, "behavior": PLURAL},
+    "f": { "f": _expand_percent_f, "behavior": SINGULAR},
+    "F": { "f": _expand_percent_F, "behavior": PLURAL},
+    "h": { "f": _expand_percent_h, "behavior": -1},
+    "m": { "f": _expand_percent_m, "behavior": SINGULAR},
+    "M": { "f": _expand_percent_M, "behavior": PLURAL},
+    "n": { "f": _expand_percent_n, "behavior": -1},
+    "o": { "f": _expand_percent_o, "behavior": SINGULAR},
+    "O": { "f": _expand_percent_O, "behavior": PLURAL},
+    "p": { "f": _expand_percent_p, "behavior": -1},
+    "s": { "f": _expand_percent_s, "behavior": -1},
+    "u": { "f": _expand_percent_u, "behavior": SINGULAR},
+    "U": { "f": _expand_percent_U, "behavior": PLURAL},
+    "w": { "f": _expand_percent_w, "behavior": SINGULAR},
+    "W": { "f": _expand_percent_W, "behavior": PLURAL},
+    "x": { "f": _expand_percent_x, "behavior": SINGULAR},
+    "X": { "f": _expand_percent_X, "behavior": PLURAL},
+    "%": { "f": _expand_percent_percent,"behavior": -1}
 }
 
 _place_holder_keys = "".join(_cmdline_place_holders.keys())

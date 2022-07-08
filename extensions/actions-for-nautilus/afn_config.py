@@ -2,6 +2,7 @@
 # Config management
 #
 import os, json
+import afn_place_holders
 
 ###
 ### Exported functions
@@ -19,7 +20,7 @@ def initialize():
                 _config["items"] = list(filter(None, map(lambda item: _check_item(str(item[0]), item[1]), enumerate(config_items))))    
             else:
                 _config["items"] = []
-                
+
     except Exception as e:
         print("Config file " + config_path + " load failed", e)
     
@@ -83,6 +84,8 @@ def _check_item_item(idString, config_item):
         else:
             config_item["all_mimetypes"] = True
         config_item["idString"] = idString
+        config_item["cmd_behavior"] = afn_place_holders.get_behavior(config_item["command_line"])
+
         return config_item
 
     print("Ignoring config item item: missing properties", config_item)
