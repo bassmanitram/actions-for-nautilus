@@ -3,7 +3,7 @@
 #
 import os
 from urllib.parse import urlparse
-from gi.repository import Nautilus
+from gi.repository import Nautilus, Gio
 
 #
 # Consolidate background and selection calls to create menus
@@ -11,6 +11,7 @@ from gi.repository import Nautilus
 def create_menu_items(config, files, group, act_function):
 	my_files = list(map(lambda file: {
 			"mimetype": file.get_mime_type(),
+			"filetype": file.get_file_type(),
 			"basename": os.path.basename(file.get_location().get_path()),
 			"filename": file.get_location().get_path(),
 			"folder": os.path.dirname(file.get_location().get_path()),
@@ -55,7 +56,8 @@ def _create_item_menu_item(config_item, files, group, act_function):
 		config_item["max_items"] < len(files)):
 			return None
 
-	if config_item["all_mimetypes"] or _applicable_to_mime(config_item, files):
+	if ((config_item["all_mimetypes"] or _applicable_to_mimetype(config_item, files)) and
+	    (config_item["all_filetypes"] or _applicable_to_filetype(config_item, files))):
 		menu_item = Nautilus.MenuItem(
 			name="NautilusCopyPath::Item" + config_item["idString"] + group,
 			label=config_item["label"],
@@ -67,5 +69,12 @@ def _create_item_menu_item(config_item, files, group, act_function):
 # Compares each file mimetype to the config item mimetypes
 # Returns True if a match is found for every one, otherwise False
 #
-def _applicable_to_mime(config_item, files):
-	return all(map(lambda file: any(getattr(file["mimetype"],mimetype["comparator"])(mimetype["mimetype"]) for mimetype in config_item["mimetypes"]), files))
+def _applicable_to_mimetype(config_item, files):
+	return all(map(lambda file: any(getattr(file["mimetype"],mimetype["comparator"])(mimetype["mimetype"]) == mimetype["comparison"] for mimetype in config_item["mimetypes"]), files))
+
+#
+# Compares each file type to the config item filetypes
+# Returns True if a match is found for every one, otherwise False
+#
+def _applicable_to_filetype(config_item, files):
+	return all(map(lambda file: any((file["filetype"] == filetype["filetype"]) == filetype["comparison"] for filetype in config_item["filetypes"]), files))
