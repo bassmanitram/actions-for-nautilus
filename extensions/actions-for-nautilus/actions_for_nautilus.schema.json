@@ -2,22 +2,64 @@
 	"$schema": "http://json-schema.org/draft-06/schema#",
 	"$ref": "#/definitions/ActionsForNautilus",
 	"definitions": {
+		"MimeType": {
+			"type": "string",
+			"pattern": "^([A-Za-z0-9-]+\\/(([A-Za-z0-9-]+)|\\*))|(\\*)|(\\*\\/\\*)$",
+			"title": "Mimetype"
+		},
+		"NotMimeType": {
+			"type": "string",
+			"pattern": "^![A-Za-z0-9-]+\\/(([A-Za-z0-9-]+)|\\*)$",
+			"title": "Not Mimetype"
+		},
+		"FileType": {
+			"type": "string",
+			"enum": [
+				"unknown",
+				"file",
+				"directory",
+				"symbolic-link",
+				"special",
+				"shortcut",
+				"mountable",
+				"standard"
+			],
+			"title": "FileType"
+		},
+		"NotFileType": {
+			"type": "string",
+			"enum": [
+				"!unknown",
+				"!file",
+				"!directory",
+				"!symbolic-link",
+				"!special",
+				"!shortcut",
+				"!mountable",
+				"!standard"
+			],
+			"title": "Not FileType"
+		},
+		"ItemList": {
+			"type": "array",
+			"items": {
+				"anyOf": [
+					{
+						"$ref": "#/definitions/Item"
+					},
+					{
+						"$ref": "#/definitions/Menu"
+					}
+				]
+			},
+			"title": "List of commands and/or submenus"
+		},
 		"ActionsForNautilus": {
 			"type": "object",
 			"additionalProperties": false,
 			"properties": {
 				"items": {
-					"type": "array",
-					"items": {
-						"anyOf": [
-							{
-								"$ref": "#/definitions/Item"
-							},
-							{
-								"$ref": "#/definitions/Menu"
-							}
-						]
-					}
+					"$ref": "#/definitions/ItemList"
 				},
 				"debug": {
 					"type": "boolean"
@@ -41,17 +83,7 @@
 					"title": "Menu name"
 				},
 				"items": {
-					"type": "array",
-					"items": {
-						"anyOf": [
-							{
-								"$ref": "#/definitions/Item"
-							},
-							{
-								"$ref": "#/definitions/Menu"
-							}
-						]
-					}
+					"$ref": "#/definitions/ItemList"
 				}
 			},
 			"required": [
@@ -95,32 +127,27 @@
 				"mimetypes": {
 					"type": "array",
 					"items": {
-						"type": "string",
-						"pattern": "^(!?[A-Za-z0-9-]+\\/(([A-Za-z0-9-]+)|\\*))|(\\*)|(\\*\\/\\*)$"
+						"anyOf": [
+							{
+								"$ref": "#/definitions/MimeType"
+							},
+							{
+								"$ref": "#/definitions/NotMimeType"
+							}
+						]
 					},
 					"title": "Mimetype rules"
 				},
 				"filetypes": {
 					"type": "array",
 					"items": {
-						"type": "string",
-						"enum": [
-							"unknown",
-							"file",
-							"directory",
-							"symbolic-link",
-							"special",
-							"shortcut",
-							"mountable",
-							"standard",
-							"!unknown",
-							"!file",
-							"!directory",
-							"!symbolic-link",
-							"!special",
-							"!shortcut",
-							"!mountable",
-							"!standard"
+						"anyOf": [
+							{
+								"$ref": "#/definitions/FileType"
+							},
+							{
+								"$ref": "#/definitions/NotFileType"
+							}
 						]
 					},
 					"title": "Filetype rules"
