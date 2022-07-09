@@ -110,8 +110,8 @@ objects:
 
 ```
 {
-	"items": [
-	  {
+  "items": [
+    {
       ...
     },
     ...
@@ -126,13 +126,13 @@ context menu.
 
 ```
     {
-      "type": "item"
-      "label": "My Item"
+      "type": "item",
+      "label": "My Item",
       ...
     },
     {
-      "type": "menu"
-      "label": "My Sub Menu"
+      "type": "menu",
+      "label": "My Sub Menu",
       ...
     },
     ...
@@ -143,6 +143,18 @@ Items with a `type` property of `menu` define "sub menu" items that, when
 clicked on, expose a nested menu of further items, themselves being action 
 items or further nested menus.
 
+```
+    ...
+    {
+      "type": "menu",
+      "label": "My Sub Menu",
+      "items": [
+        ...
+      ]
+    },
+    ...
+```
+
 Menu items are expected to contain one addition property:
 
 * `items` - REQUIRED - an array of elements each of which follows the same
@@ -151,6 +163,25 @@ Menu items are expected to contain one addition property:
 
 ## Item items
 Items with a `type` property of `item` define "action" items that, when clicked on, execute a command.
+
+```
+    ...
+    {
+      "type": "item",
+      "label": "My Item",
+      command_line: "my-script.sh %F %c",
+      cwd: "%d",
+      use_shell: true,
+      max_items: 1,
+      "mimetypes": [
+        ...
+      ],
+      "filetypes": [
+        ...
+      ]
+    },
+    ...
+```
 
 These are expected to have the following additional properties:
 
