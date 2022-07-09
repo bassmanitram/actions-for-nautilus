@@ -10,7 +10,7 @@
 		"NotMimeType": {
 			"type": "string",
 			"pattern": "^![A-Za-z0-9-]+\\/(([A-Za-z0-9-]+)|\\*)$",
-			"title": "Not Mimetype"
+			"title": "Not mimetype"
 		},
 		"FileType": {
 			"type": "string",
@@ -24,7 +24,7 @@
 				"mountable",
 				"standard"
 			],
-			"title": "FileType"
+			"title": "File type"
 		},
 		"NotFileType": {
 			"type": "string",
@@ -38,7 +38,7 @@
 				"!mountable",
 				"!standard"
 			],
-			"title": "Not FileType"
+			"title": "Not file type"
 		},
 		"ItemList": {
 			"type": "array",
@@ -52,7 +52,7 @@
 					}
 				]
 			},
-			"title": "List of commands and/or submenus"
+			"title": "List of command and/or menu items"
 		},
 		"ActionsForNautilus": {
 			"type": "object",
@@ -68,7 +68,7 @@
 			"required": [
 				"items"
 			],
-			"title": "Root"
+			"title": "Actions for Nautilus cOnfiguration"
 		},
 		"Menu": {
 			"type": "object",
@@ -80,7 +80,7 @@
 				"label": {
 					"type": "string",
 					"minLength": 1,
-					"title": "Menu name"
+					"title": "Label for the menu item"
 				},
 				"items": {
 					"$ref": "#/definitions/ItemList"
@@ -103,7 +103,7 @@
 				"label": {
 					"type": "string",
 					"minLength": 1,
-					"title": "Command item name"
+					"title": "Label for the command item"
 				},
 				"command_line": {
 					"type": "string",
@@ -122,7 +122,7 @@
 				"max_items": {
 					"type": "integer",
 					"minimum": 1,
-					"title": "Maximum number of selected items"
+					"title": "Maximum number of selected files"
 				},
 				"mimetypes": {
 					"type": "array",
