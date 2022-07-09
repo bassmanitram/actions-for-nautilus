@@ -1,0 +1,137 @@
+{
+	"$schema": "http://json-schema.org/draft-06/schema#",
+	"$ref": "#/definitions/ActionsForNautilus",
+	"definitions": {
+		"ActionsForNautilus": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"items": {
+					"type": "array",
+					"items": {
+						"anyOf": [
+							{
+								"$ref": "#/definitions/Item"
+							},
+							{
+								"$ref": "#/definitions/Menu"
+							}
+						]
+					}
+				},
+				"debug": {
+					"type": "boolean"
+				}
+			},
+			"required": [
+				"items"
+			],
+			"title": "Root"
+		},
+		"Menu": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"type": {
+					"const": "menu"
+				},
+				"label": {
+					"type": "string",
+					"minLength": 1,
+					"title": "Menu name"
+				},
+				"items": {
+					"type": "array",
+					"items": {
+						"anyOf": [
+							{
+								"$ref": "#/definitions/Item"
+							},
+							{
+								"$ref": "#/definitions/Menu"
+							}
+						]
+					}
+				}
+			},
+			"required": [
+				"label",
+				"type",
+				"items"
+			],
+			"title": "Menu item"
+		},
+		"Item": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"type": {
+					"const": "item"
+				},
+				"label": {
+					"type": "string",
+					"minLength": 1,
+					"title": "Command item name"
+				},
+				"command_line": {
+					"type": "string",
+					"minLength": 1,
+					"title": "Command line to execute"
+				},
+				"cwd": {
+					"type": "string",
+					"minLength": 1,
+					"title": "Current working directory when executing the command"
+				},
+				"use_shell": {
+					"type": "boolean",
+					"title": "Use the system shell to run the command"
+				},
+				"max_items": {
+					"type": "integer",
+					"minimum": 1,
+					"title": "Maximum number of selected items"
+				},
+				"mimetypes": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^(!?[A-Za-z0-9-]+\\/(([A-Za-z0-9-]+)|\\*))|(\\*)|(\\*\\/\\*)$"
+					},
+					"title": "Mimetype rules"
+				},
+				"filetypes": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"enum": [
+							"unknown",
+							"file",
+							"directory",
+							"symbolic-link",
+							"special",
+							"shortcut",
+							"mountable",
+							"standard",
+							"!unknown",
+							"!file",
+							"!directory",
+							"!symbolic-link",
+							"!special",
+							"!shortcut",
+							"!mountable",
+							"!standard"
+						]
+					},
+					"title": "Filetype rules"
+				}
+			},
+			"required": [
+				"label",
+				"type",
+				"command_line"
+			],
+			"title": "Command item"
+		}
+	}
+}
