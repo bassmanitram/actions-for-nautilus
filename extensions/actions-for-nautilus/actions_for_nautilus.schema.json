@@ -68,7 +68,7 @@
 			"required": [
 				"items"
 			],
-			"title": "Actions for Nautilus cOnfiguration"
+			"title": "Actions For Nautilus configuration"
 		},
 		"Menu": {
 			"type": "object",
