@@ -272,28 +272,28 @@ the same semantics:
 
 | Placeholder | Description                                                                                                | Repetition |
 |-------------|------------------------------------------------------------------------------------------------------------|------------|
-| %b          | the basename of the first selected item (e.g. `my-file.txt`)                                               | SINGULAR   |
-| %B          | space-separated list of the `%b` values of all selected items                                              | PLURAL     |
-| %c          | the number of items in the selection                                                                       | ANY        |
-| %d          | the full path to the directory holding the first selected item (e.g. `/home/me/my-first-dir/my-second-dir` | SINGULAR   |
-| %D          | space-separated list of the `%d` values of all selected items                                              | PLURAL     |
-| %f          | the full path of the first selected item (e.g. `/home/me/my-first-dir/my-second-dir/my-file.txt`           | SINGULAR   |
-| %F          | space-separated list of the `%f` values of all selected items                                              | PLURAL     |
-| %h          | the host name from the URI of the first selected item                                                      | ANY        |
-| %m          | the mimetype of the first selected item (e.g. `text/plain`)                                                | SINGULAR   |
-| %M          | space-separated list of the `%m` values of all selected items                                              | PLURAL     |
-| %n          | the username from the URI of the first selected item                                                       | ANY        |
-| %o          | no-op operator which forces a SINGULAR form of execution - see below for more details                      | SINGULAR   |
-| %O          | no-op operator which forces a PLURAL form of execution - see below for more details                        | PLURAL     |
-| %p          | the port from the URI of the first selected item                                                           | ANY        |
-| %s          | the URI scheme from the URI of the first selected item (e.g. `file`)                                       | ANY        |
-| %u          | the URI of the first selected item (e.g. `file:///home/me/my-first-dir/my-second-dir/my-file.txt`)         | SINGULAR   |
-| %U          | space-separated list of the `%u` values of all selected items                                              | PLURAL     |
-| %w          | the basename of the first selected item without it's extension (e.g. `my-file`)                            | SINGULAR   |
-| %W          | space-separated list of the `%w` values of all selected items                                              | PLURAL     |
-| %x          | the extension of the first selected item without it's extension (e.g. `txt`)                               | SINGULAR   |
-| %X          | space-separated list of the `%x` values of all selected items                                              | PLURAL     |
-| %%          | the `%` character                                                                                          | ANY        |
+| `%b`        | the basename of the first selected item (e.g. `my-file.txt`)                                               | SINGULAR   |
+| `%B`        | space-separated list of the `%b` values of all selected items                                              | PLURAL     |
+| `%c`        | the number of items in the selection                                                                       | ANY        |
+| `%d`        | the full path to the directory holding the first selected item (e.g. `/home/me/my-first-dir/my-second-dir` | SINGULAR   |
+| `%D`        | space-separated list of the `%d` values of all selected items                                              | PLURAL     |
+| `%f`        | the full path of the first selected item (e.g. `/home/me/my-first-dir/my-second-dir/my-file.txt`           | SINGULAR   |
+| `%F`        | space-separated list of the `%f` values of all selected items                                              | PLURAL     |
+| `%h`        | the host name from the URI of the first selected item                                                      | ANY        |
+| `%m`        | the mimetype of the first selected item (e.g. `text/plain`)                                                | SINGULAR   |
+| `%M`        | space-separated list of the `%m` values of all selected items                                              | PLURAL     |
+| `%n`        | the username from the URI of the first selected item                                                       | ANY        |
+| `%o`        | no-op operator which forces a SINGULAR form of execution - see below for more details                      | SINGULAR   |
+| `%O`        | no-op operator which forces a PLURAL form of execution - see below for more details                        | PLURAL     |
+| `%p`        | the port from the URI of the first selected item                                                           | ANY        |
+| `%s`        | the URI scheme from the URI of the first selected item (e.g. `file`)                                       | ANY        |
+| `%u`        | the URI of the first selected item (e.g. `file:///home/me/my-first-dir/my-second-dir/my-file.txt`)         | SINGULAR   |
+| `%U`        | space-separated list of the `%u` values of all selected items                                              | PLURAL     |
+| `%w`        | the basename of the first selected item without it's extension (e.g. `my-file`)                            | SINGULAR   |
+| `%W`        | space-separated list of the `%w` values of all selected items                                              | PLURAL     |
+| `%x`        | the extension of the first selected item without it's extension (e.g. `txt`)                               | SINGULAR   |
+| `%X`        | space-separated list of the `%x` values of all selected items                                              | PLURAL     |
+| `%%`        | the `%` character                                                                                          | ANY        |
 
 Any embedded spaces found in the individual values are 'escaped' to ensure that
 the shell or system recognizes each value as an independent and complete 
