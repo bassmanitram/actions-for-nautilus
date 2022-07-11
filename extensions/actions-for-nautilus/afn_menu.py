@@ -18,63 +18,62 @@ def create_menu_items(config, files, group, act_function):
 			"uri": urlparse(file.get_uri())
 		}, files))
 
-	return sorted(list(filter(None, map(lambda item: _create_menu_item(item, my_files, group, act_function), config["items"]))), key=lambda element: element.props.label)
+	return sorted(list(filter(None, map(lambda action: _create_menu_item(action, my_files, group, act_function), config["actions"]))), key=lambda element: element.props.label)
 	
 #
-# Triage the menu item creation config item based on type
+# Triage the menu item creation based on type
 #
-def _create_menu_item(config_item, files, group, act_function):
-	if config_item["type"] == "menu":
-		return _create_menu_menu_item(config_item, files, group, act_function)
+def _create_menu_item(action, files, group, act_function):
+	if action["type"] == "menu":
+		return _create_submenu_menu_item(action, files, group, act_function)
 	else:
-		return _create_item_menu_item(config_item, files, group, act_function)
+		return _create_command_menu_item(action, files, group, act_function)
 
 #
-# Generate an item that has a submenu attached, with its own items
-# recursively added
+# Generate an item that has a submenu attached, with its own actions recursively added
 #
-def _create_menu_menu_item(config_item, files, group, act_function):
-	sub_items = list(filter(None, map(lambda item: _create_menu_item(item, files, group, act_function), config_item["items"])))
+def _create_submenu_menu_item(action, files, group, act_function):
+	actions = list(filter(None, map(lambda action: _create_menu_item(action, files, group, act_function), action["actions"])))
 
-	if len(sub_items) > 0:
+	if len(actions) > 0:
 		menu = Nautilus.Menu()
 		menu_item = Nautilus.MenuItem(
-			name="Actions4Nautilus::Menu" + config_item["idString"] + group,
-			label=config_item["label"],
+			name="Actions4Nautilus::Menu" + action["idString"] + group,
+			label=action["label"],
 		)
 		menu_item.set_submenu(menu)
-		for menu_sub_item in sorted(sub_items,key=lambda element: element.props.label):
+		for menu_sub_item in sorted(actions,key=lambda element: element.props.label):
 			menu.append_item(menu_sub_item)
 		return menu_item
 
 #
-# Generate a leaf item that is connected to the activate signal
+# Generate a command item that is connected to the activate signal
 #
-def _create_item_menu_item(config_item, files, group, act_function):
-	if ("max_items" in config_item and 
-		isinstance(config_item["max_items"], int) and 
-		config_item["max_items"] < len(files)):
+def _create_command_menu_item(action, files, group, activate_function):
+	if ("max_items" in action and 
+		isinstance(action["max_items"], int) and 
+		action["max_items"] < len(files)):
 			return None
 
-	if ((config_item["all_mimetypes"] or _applicable_to_mimetype(config_item, files)) and
-	    (config_item["all_filetypes"] or _applicable_to_filetype(config_item, files))):
+	if ((action["all_mimetypes"] or _applicable_to_mimetype(action, files)) and
+	    (action["all_filetypes"] or _applicable_to_filetype(action, files))):
 		menu_item = Nautilus.MenuItem(
-			name="NautilusCopyPath::Item" + config_item["idString"] + group,
-			label=config_item["label"],
+			name="NautilusCopyPath::Item" + action["idString"] + group,
+			label=action["label"],
 		)
-		menu_item.connect("activate", act_function, config_item, files)
+		menu_item.connect("activate", activate_function, action, files)
 		return menu_item
 
 #
-# Compares each file mimetype to the config item mimetypes
+# Compares each file mimetype to the action mimetypes
 # Returns True if a match is found for every one, otherwise False
 #
-def _applicable_to_mimetype(config_item, files):
-	return all(map(lambda file: any(getattr(file["mimetype"],mimetype["comparator"])(mimetype["mimetype"]) == mimetype["comparison"] for mimetype in config_item["mimetypes"]), files))
+def _applicable_to_mimetype(action, files):
+	return all(map(lambda file: any(getattr(file["mimetype"],mimetype["comparator"])(mimetype["mimetype"]) == mimetype["comparison"] for mimetype in action["mimetypes"]), files))
 
 #
-# Compares each file type to the config item filetypes
+# Compares each file type to the action filetypes
 # Returns True if a match is found for every one, otherwise False
 #
-def _applicable_to_filetype(config_item, files):
-	return all(map(lambda file: any((file["filetype"] == filetype["filetype"]) == filetype["comparison"] for filetype in config_item["filetypes"]), files))
+def _applicable_to_filetype(action, files):
+	return all(map(lambda file: any((file["filetype"] == filetype["filetype"]) == filetype["comparison"] for filetype in action["filetypes"]), files))

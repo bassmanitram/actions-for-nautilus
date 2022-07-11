@@ -7,10 +7,10 @@ including:
 * structuring context menu items for Nautilus File Manager selections including
   nested sub menus
 * filtering the displayed items based on:
-   * number of items in the selection, 
-   * mimetypes of the selected items (matching and non-matching conditions
+   * number of files in the selection, 
+   * mimetypes of the selected files (matching and non-matching conditions
      supported, as well as mimetype globs)
-   * basic filetypes of the selected items - e.g. 'file', 'directory',
+   * basic filetypes of the selected files - e.g. 'file', 'directory',
      'symbolic-link' ... - (matching and non-matching conditions supported)
 * execution of an arbitrary command/script when a menu item is activated, with
   the same "PLURAL" and "SINGULAR" semantics as the 
@@ -112,12 +112,12 @@ with online JSON Schema-based JSON editors such as
 
 ## Top level structure
 The top level structure in the configuration file must be a JSON object which is 
-expected to contain a property named `items` whose value is, itself, an array of 
+expected to contain a property named `actions` whose value is, itself, an array of 
 objects:
 
 ```
 {
-  "items": [
+  "actions": [
     {
       ...
     },
@@ -126,15 +126,15 @@ objects:
 }
 ```
 
-Each element of the array is then an object which, primarily, must have a 
-property named `type` whose value is either `item` or `menu`, and a property 
+Each element of the array is then an object (and *action*) which, primarily, must have a 
+property named `type` whose value is either `command` or `menu`, and a property 
 named `label` whose value is the text that you wish to see in the Nautilus 
 context menu.
 
 ```
     {
-      "type": "item",
-      "label": "My Item",
+      "type": "command",
+      "label": "My Command",
       ...
     },
     {
@@ -145,37 +145,37 @@ context menu.
     ...
 
 ```
-## Menu items
-Items with a `type` property of `menu` define "sub menu" items that, when 
-clicked on, expose a nested menu of further items, themselves being action 
-items or further nested menus.
+## Menu actions
+Actions with a `type` property of `menu` define "sub menu" actions that, when 
+clicked on, expose a nested menu of further actions, themselves being command 
+actions or further nested menus.
 
 ```
     ...
     {
       "type": "menu",
       "label": "My Sub Menu",
-      "items": [
+      "actions": [
         ...
       ]
     },
     ...
 ```
 
-Menu items are expected to contain one addition property:
+Menu actions are expected to contain one addition property:
 
-* `items` - REQUIRED - an array of elements each of which follows the same
-  pattern as the elements contained by the configuration's root `items` 
+* `actions` - REQUIRED - an array of elements each of which follows the same
+  pattern as the elements contained by the configuration's root `actions` 
   property
 
-## Item items
-Items with a `type` property of `item` define "action" items that, when clicked on, execute a command.
+## Command actions
+Actions with a `type` property of `command` define actions that, when clicked on, execute a command.
 
 ```
     ...
     {
-      "type": "item",
-      "label": "My Item",
+      "type": "command",
+      "label": "My Command",
       command_line: "my-script.sh %F %c",
       cwd: "%d",
       use_shell: true,
@@ -193,7 +193,7 @@ Items with a `type` property of `item` define "action" items that, when clicked 
 These are expected to have the following additional properties:
 
 * `command_line` - REQUIRED - the system command the should be executed when 
-  the item is clicked on, expressed as a string. 
+  the menu item is clicked on, expressed as a string. 
   
   The command may contain place holder expressions that are expanded to hold 
   details of the selected files that are passed as arguments to the command.
@@ -218,31 +218,31 @@ These are expected to have the following additional properties:
   *Default* - `false`
 
 * `max_items` - OPTIONAL - the maximum number of items in the selection for 
-  which this item will be displayed.
+  which this action will be displayed.
 
   For example, if the command is expected to, say, start an HTTP server in a 
-  selected directory, it doesn't make sense for the item to be displayed when 
+  selected directory, it doesn't make sense for the action to be displayed when 
   more than one directory is in the selection. Therefore, in this case, you 
   would set the value of this property would be set to `1`, which would prevent 
-  the item from appearing in the context menu when more than one directory is
+  the action from appearing in the context menu when more than one directory is
   in the selection.
 
   *Default* - unlimited
 
 * `mimetypes` - OPTIONAL - the mimetypes of the selected files for which this
-  item is to be displayed (or for which the item is not to be displayed).
+  action is to be displayed (or for which the action is not to be displayed).
 
   The value should be a JSON list of strings in the following format:
 
-  * `*/*` or `*` - meaning that the item can be displayed for all mimetypes
-  * `type/subtype` - to display the item for files of a specific mimetype
-  * `type/*` - to display the item for files whose mimetypes are any subtype of
+  * `*/*` or `*` - meaning that the action can be displayed for all mimetypes
+  * `type/subtype` - to display the action for files of a specific mimetype
+  * `type/*` - to display the action for files whose mimetypes are any subtype of
     a specific type
-  * `!type/subtype` - to _not_ display the item for files of a specific mimetype
-  * `!type/*` - to _not_ display the item for files whose mimetypes are any 
+  * `!type/subtype` - to _not_ display the action for files of a specific mimetype
+  * `!type/*` - to _not_ display the action for files whose mimetypes are any 
     subtype of a specific type
 
-  All files in the selection must match an items's mimetype rules for that item
+  All files in the selection must match an actions's mimetype rules for that action
   to be displayed. Mixing "not" rules with ... well, "not not" rules, can be
   confusing.
 
@@ -252,7 +252,7 @@ These are expected to have the following additional properties:
   *Default* - all mimetypes 
 
 * `filetypes` - OPTIONAL - the general filetypes of the selected files for which
-  this item is to be displayed (or for which the item is not to be displayed)
+  this action is to be displayed (or for which the action is not to be displayed)
 
   The value should be a JSON list of strings each one of which should have one 
   of the following values:
@@ -316,7 +316,7 @@ in the selection, or once for each item in the selection.
 This extension implements the same feature with the same semantics.
 
 The decision as to which mode is desired is based upon the first placeholder 
-found in the `command_line` property value for the activated menu item:
+found in the `command_line` property value for the activated action:
 
 * If the placeholder has a `Repetition` property of `SINGULAR`, the command is
   executed once for each item in the selection.

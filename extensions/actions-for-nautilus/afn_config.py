@@ -27,16 +27,16 @@ def initialize():
     try:
         with open(config_path) as json_file:
             _config.update(json.load(json_file))
-            config_items = _config.get("items", [])
+            actions = _config.get("actions", [])
 
     except Exception as e:
         print("Config file " + config_path + " load failed", e)
-        _config["items"] = []
+        _config["actions"] = []
     
-    if type(config_items) == list:
-        _config["items"] = list(filter(None, map(lambda item: _check_item(str(item[0]), item[1]), enumerate(config_items))))    
+    if type(actions) == list:
+        _config["actions"] = list(filter(None, map(lambda action: _check_action(str(action[0]), action[1]), enumerate(actions))))    
     else:
-        _config["items"] = []
+        _config["actions"] = []
 
     print(json.dumps(_config))
 
@@ -48,68 +48,68 @@ def initialize():
 # The config dict
 #
 _config = {
-    "items": {}
+    "actions": {}
 }
 
 #
-# Triage the config item based on type
+# Triage the action based on type
 #
-def _check_item(idString, config_item):
-    config_type = config_item.get("type")
+def _check_action(idString, action):
+    config_type = action.get("type")
     if config_type == "menu":
-        return _check_menu_item(idString, config_item)
-    elif config_type == "item":
-        return _check_item_item(idString, config_item)
+        return _check_menu_action(idString, action)
+    elif config_type == "command":
+        return _check_command_action(idString, action)
 
-    print("Ignoring config item: missing/invalid type property", config_item)
+    print("Ignoring action: missing/invalid type property", action)
 
 #
-# Normalize a menu item
+# Normalize a menu action
 #
-def _check_menu_item(idString, config_item):
-    config_item["label"] = config_item["label"].strip() if "label" in config_item and type(config_item["label"]) == str else ""
-    if (len(config_item["label"]) > 0 and
-        "items" in config_item and 
-        type(config_item["items"]) == list):
-        config_item["items"] = list(filter(None, map(lambda item: _check_item(idString + "_" + str(item[0]), item[1]), enumerate(config_item["items"]))))
-        config_item["idString"] = idString
-        if len(config_item["items"]) > 0:
-            return config_item
+def _check_menu_action(idString, action):
+    action["label"] = action["label"].strip() if "label" in action and type(action["label"]) == str else ""
+    if (len(action["label"]) > 0 and
+        "actions" in action and 
+        type(action["actions"]) == list):
+        action["actions"] = list(filter(None, map(lambda sub_action: _check_action(idString + "_" + str(sub_action[0]), sub_action[1]), enumerate(action["actions"]))))
+        action["idString"] = idString
+        if len(action["actions"]) > 0:
+            return action
 
-        print("Ignoring config item menu: no valid sub items", config_item)
+        print("Ignoring action menu: no valid sub actions", action)
         return None
 
-    print("Ignoring config item menu: missing properties", config_item)
+    print("Ignoring menu action: missing properties", action)
 
 #
-# Normalize a leaf item
+# Normalize a command action
 #
-def _check_item_item(idString, config_item):
-    config_item["label"] = config_item["label"].strip() if "label" in config_item and type(config_item["label"]) == str else ""
-    config_item["command_line"] = config_item["command_line"].strip() if "command_line" in config_item and type(config_item["command_line"]) == str else ""
-    if (len(config_item["label"]) > 0 and
-        len(config_item["command_line"]) > 0):
+def _check_command_action(idString, action):
+    action["label"] = action["label"].strip() if "label" in action and type(action["label"]) == str else ""
+    action["command_line"] = action["command_line"].strip() if "command_line" in action and type(action["command_line"]) == str else ""
+    if (len(action["label"]) > 0 and
+        len(action["command_line"]) > 0):
 
-        if "mimetypes" in config_item and type(config_item["mimetypes"]) == list:
-            config_item["all_mimetypes"] = ( "*/*" in config_item["mimetypes"] or "*" in config_item["mimetypes"])
-            if not config_item["all_mimetypes"]:
-                config_item["mimetypes"] = _remove_duplicates_by_key(list(filter(None, map(_gen_mimetype, config_item["mimetypes"]))),"mimetype")
-                config_item["all_mimetypes"] = len(config_item["mimetypes"]) < 1
+        if "mimetypes" in action and type(action["mimetypes"]) == list:
+            action["all_mimetypes"] = ( "*/*" in action["mimetypes"] or "*" in action["mimetypes"])
+            if not action["all_mimetypes"]:
+                action["mimetypes"] = _remove_duplicates_by_key(list(filter(None, map(_gen_mimetype, action["mimetypes"]))),"mimetype")
+                action["all_mimetypes"] = len(action["mimetypes"]) < 1
         else:
-            config_item["all_mimetypes"] = True
+            action["all_mimetypes"] = True
 
-        if "filetypes" in config_item and type(config_item["filetypes"]) == list:
-            config_item["filetypes"] = _remove_duplicates_by_key(_flatten_list(list(filter(None, map(_gen_filetype, config_item["filetypes"])))),"filetype")
-            config_item["all_filetypes"] = len(config_item["filetypes"]) < 1
+        if "filetypes" in action and type(action["filetypes"]) == list:
+            action["filetypes"] = _remove_duplicates_by_key(_flatten_list(list(filter(None, map(_gen_filetype, action["filetypes"])))),"filetype")
+            action["all_filetypes"] = len(action["filetypes"]) < 1
         else:
-            config_item["all_filetypes"] = True
+            action["all_filetypes"] = True
 
-        config_item["idString"] = idString
-        config_item["cmd_behavior"] = afn_place_holders.get_behavior(config_item["command_line"])
+        action["idString"] = idString
+        action["cmd_behavior"] = afn_place_holders.get_behavior(action["command_line"])
 
-        return config_item
+        return action
 
-    print("Ignoring config item item: missing properties", config_item)
+    print("Ignoring command action: missing properties", action)
 
 #
 # Generates an object that facilitates fast mimetype checks
@@ -140,11 +140,11 @@ def _flatten_list(lst):
 
 def _remove_duplicates_by_key(lst,key):
     memo = set()
-    return list(filter(None,map(lambda item: None if item[key] in memo else _add_to_set(memo, item, key), lst)))
+    return list(filter(None,map(lambda element: None if element[key] in memo else _add_to_set(memo, element, key), lst)))
  
-def _add_to_set(set, item, key):
-    set.add(item[key])
-    return item
+def _add_to_set(set, element, key):
+    set.add(element[key])
+    return element
 
 ###
 ### Initialize on load

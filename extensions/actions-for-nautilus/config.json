@@ -1,7 +1,7 @@
 {
-	"items": [
+	"actions": [
 		{
-			"type": "item",
+			"type": "command",
 			"label": "Run in node",
 			"mimetypes": [
 				"application/javascript"
@@ -11,12 +11,12 @@
 			"max_items": 1
 		},
 		{
-			"type": "item",
+			"type": "command",
 			"label": "Test all place holders",
 			"command_line": "%O printf '%%s\n' '#b' %b '#B' %B '#c' %c '#d' %d '#D' %D '#f' %f '#F' %F '#h' %h '#m' %m '#M' %M '#n' %n '#o' %o '#O' %O '#p' %p '#s' %s '#u' %u '#U' %U '#w' %w '#W' %W '#x' %x '#X' %X"
 		},
 		{
-			"type": "item",
+			"type": "command",
 			"label": "Open in Gedit",
 			"filetypes": [
 				"!directory",
@@ -27,9 +27,9 @@
 		{
 			"type": "menu",
 			"label": "Folder Actions",
-			"items": [
+			"actions": [
 				{
-					"type": "item",
+					"type": "command",
 					"label": "Clone GIT Repo Here",
 					"mimetypes": [
 						"inode/directory"
@@ -39,7 +39,7 @@
 					"max_items": 1
 				},
 				{
-					"type": "item",
+					"type": "command",
 					"label": "Execute Command Here",
 					"mimetypes": [
 						"inode/directory"
@@ -49,7 +49,7 @@
 					"max_items": 1
 				},
 				{
-					"type": "item",
+					"type": "command",
 					"label": "Start HTTP Server Here",
 					"mimetypes": [
 						"inode/directory"
@@ -59,29 +59,30 @@
 					"max_items": 1
 				}
 			]
-		},		{
-		"type": "menu",
-		"label": "Copy Details",
-		"items": [
-			{
-				"type": "item",
-				"label": "Copy Name",
-				"use_shell": true,
-				"command_line": "arg1-to-clipboard.sh %B"
-			},
-			{
-				"type": "item",
-				"label": "Copy Path",
-				"use_shell": true,
-				"command_line": "arg1-to-clipboard.sh %F"
-			},
-			{
-				"type": "item",
-				"label": "Copy URI",
-				"use_shell": true,
-				"command_line": "arg1-to-clipboard.sh %U"
-			}
-		]
+		},
+		{
+			"type": "menu",
+			"label": "Copy Details",
+			"actions": [
+				{
+					"type": "command",
+					"label": "Copy Name",
+					"use_shell": true,
+					"command_line": "arg1-to-clipboard.sh %B"
+				},
+				{
+					"type": "command",
+					"label": "Copy Path",
+					"use_shell": true,
+					"command_line": "arg1-to-clipboard.sh %F"
+				},
+				{
+					"type": "command",
+					"label": "Copy URI",
+					"use_shell": true,
+					"command_line": "arg1-to-clipboard.sh %U"
+				}
+			]
 		}
 	]
 }
