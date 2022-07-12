@@ -104,7 +104,7 @@ As yet there is no UI for creating this configurations, however the semantics
 are pretty simple if you know JSON.
 
 Additionally, the extension is delivered with a strict valid 
-[JSON Schema](./extensions/actions-for-nautilus/actions_for_nautilus.schema.json) 
+[JSON Schema](./extensions/actions-for-nautilus/actions-for-nautilus.schema.json) 
 that describes exactly how the configuration file needs to be built. Eventually
 this will form the basis of a generated UI, and, indeed, can already be used 
 with online JSON Schema-based JSON editors such as 

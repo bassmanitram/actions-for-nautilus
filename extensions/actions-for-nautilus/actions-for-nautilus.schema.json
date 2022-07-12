@@ -1,0 +1,219 @@
+{
+	"$schema": "http://json-schema.org/draft-06/schema#",
+	"$ref": "#/definitions/ActionsForNautilus",
+	"definitions": {
+		"MimeType": {
+			"type": "string",
+			"pattern": "^(!?[A-Za-z0-9-]+\\/(([A-Za-z0-9-]+)|\\*))|(\\*)|(\\*\\/\\*)$",
+			"title": "MimeType"
+		},
+		"FileType": {
+			"type": "string",
+			"enum": [
+				"unknown",
+				"file",
+				"directory",
+				"symbolic-link",
+				"special",
+				"shortcut",
+				"mountable",
+				"standard",
+				"!unknown",
+				"!file",
+				"!directory",
+				"!symbolic-link",
+				"!special",
+				"!shortcut",
+				"!mountable",
+				"!standard"
+			],
+			"title": "File type",
+			"options": {
+				"infoText": "A standard Nautilus file type that, when matched, allows the associated command action to appear in its assigned menu. If the file type is prefixed with '!' character then the selected items must NOT be of this type."
+			}
+		},
+		"Action": {
+			"type": "object",
+			"format": "categories",
+			"headerTemplate": "{{ self.type }}: {{ self.label }}",
+			"oneOf": [
+				{
+					"title": "Command",
+					"$ref": "#/definitions/Command"
+				},
+				{
+					"title": "Menu",
+					"$ref": "#/definitions/Menu"
+				}
+			],
+			"title":"Action",
+			"options": {
+				"infoText": "An entry that will appear in the Nautilus context menu. Such an entry can be a Command or a nested Menu."
+			}
+		},
+		"ActionsForNautilus": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"actions": {
+					"type": "array",
+					"format": "tabs",
+					"items": {
+						"$ref": "#/definitions/Action"
+					},
+					"title": "Top Level Actions",
+					"options": {
+						"infoText": "The list of command configurations and/or submenus that will be added to the Nautilus context menu."
+					}
+				},
+				"debug": {
+					"title": "Enable debugging output",
+					"type": "boolean",
+					"format": "checkbox",
+					"options": {
+						"infoText": "When set to true, extra debugging information is sent to the Nautilus stdout/stderr destinations."
+					}
+				}
+			},
+			"required": [
+				"actions"
+			],
+			"options": {
+				"disable_properties": true
+			},
+			"title": "Actions For Nautilus configuration"
+		},
+		"Menu": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"type": {
+					"type": "string",
+					"const": "menu",
+					"default": "menu",
+					"title": "Menu",
+					"options": {
+						"hidden": true
+					}
+				},
+				"label": {
+					"type": "string",
+					"minLength": 1,
+					"title": "Label for the menu",
+					"options": {
+						"infoText":  "The label that will appear in the context menu for this sub menu."
+					}
+				},
+				"actions": {
+					"type": "array",
+					"format": "tabs",
+					"items": {
+						"$ref": "#/definitions/Action"
+					},
+					"title": "Submenu Actions",
+					"options": {
+						"infoText": "The list of command and/or menu actions that will be displayed when this menu action is clicked on."
+					}
+				}
+			},
+			"required": [
+				"label",
+				"type",
+				"actions"
+			],
+			"title": "Submenu",
+			"options": {
+				"infoText": "An entry in the Nautilus context menu or sub menu that, when clicked on, results in a sub menu being displayed."
+			}
+		},
+		"Command": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"type": {
+					"type": "string",
+					"const": "command",
+					"default": "command",
+					"title": "Command",
+					"options": {
+						"hidden": true
+					}
+				},
+				"label": {
+					"type": "string",
+					"minLength": 1,
+					"title": "Label for the command",
+					"options": {
+						"infoText": "The label that will appear in the context menu for this command."
+					}
+				},
+				"command_line": {
+					"type": "string",
+					"minLength": 1,
+					"title": "Command line to execute",
+					"options": {
+						"infoText":  "The command line to execute when the action is clicked on. Placeholders are allowed and affect the semantics of the execution."
+					}
+				},
+				"cwd": {
+					"type": "string",
+					"minLength": 1,
+					"title": "Current working directory",
+					"options": {
+						"infoText": "The Current working directory to set when executing the command. Placeholders are allowed."
+					}
+				},
+				"use_shell": {
+					"type": "boolean",
+					"format": "checkbox",
+					"title": "Use the system shell to run the command",
+					"options": {
+						"infoText": "Instead of directly executing the command, execute it using the default shell command."
+					}
+				},
+				"max_items": {
+					"type": "integer",
+					"minimum": 1,
+					"title": "Maximum number of selected files",
+					"options": {
+						"infoText": "The maximum number of files in the selection for which this action will be displayed."
+					}
+				},
+				"mimetypes": {
+					"type": "array",
+					"uniqueItems": true,
+					"format": "table",
+					"items": {
+						"$ref": "#/definitions/MimeType"
+					},
+					"title": "Mimetype rules",
+					"options": {
+						"infoText": "A list of standard mimetype specifications that, when matched, allow the associated command action to appear in its assigned menu. If a mimetype is prefixed with '!' character then the selected items must NOT match that type."
+					}
+		
+				},
+				"filetypes": {
+					"type": "array",
+					"uniqueItems": true,
+					"format": "table",
+					"items": {
+						"$ref": "#/definitions/FileType"
+					},
+					"title": "Filetype rules",
+					"options": {
+						"infoText": "A list of file types for which the action will be displayed, or not be displayed in the event of a '!' prefix."
+					}
+				}
+			},
+			"required": [
+				"label",
+				"type",
+				"command_line"
+			],
+			"title": "Command",
+			"options": {
+				"infoText": "An entry in the Nautilus context menu or sub menu that, when clicked on, results in a command being executed."
+			}
+		}
+	}
+}
