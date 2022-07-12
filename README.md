@@ -93,17 +93,54 @@ Finally, the `Folder Actions/Start HTTP Server Here` action uses the NodeJS
 * after installing NodeJS, install that module either from your package manager
   or by running the command `sudo npm install -g http-server`
 
-# Configuration
+# Configuration UI
+When you install this extension, a Configurator application is installed into 
+your local desktop Applications collection.
+
+To start the application:
+* Open your Applications selector (menu, panel, ...)
+* Find **Actions For Nautilus Configurator**
+* Click on it
+
+The application will open in your default Web Browser. It will present the
+current configuration.
+
+The UI _should_ be pretty self-explanatory - you can add, delete, move and
+modify Menus and Commands at will. Each configuration property is described
+with a help message. 
+
+In order to save configuration changes, click on the **Save Config** button.
+
+To see the changes in the Nautilus/Files context menus, you must quite Nautilus
+and restart it. You can quit Nautilus/Files by clicking on the **Restart Nautilus**
+button. Then, to see your changes, simply open Nautilus again.
+
+The existing configuration file is backed up before being overridden by a saved
+configuration. You can reinstate an older configuration by opening Nautilus/Files,
+navigating to the folder...
+
+```
+${HOME}/.local/share/nautilus-python/extensions/actions-for-nautilus
+```
+
+and replacing your current `config.json` file with any of the backed up
+copies.
+
+Simply close the web page to quit the configurator.
+
+*NOTE* the configurator web application NEVER communicates outside of your own
+system, with the exception of downloading a few UI toolkit resources used in
+presenting the application as a web page. No data is shared AT ALL. Your
+privacy is guaranteed.
+
+# Configuration reference
 The configuration is specified in a JSON text file named `config.json` locate in
 
 ```
 ${HOME}/.local/share/nautilus-python/extensions/actions-for-nautilus
 ```
 
-As yet there is no UI for creating this configurations, however the semantics
-are pretty simple if you know JSON.
-
-Additionally, the extension is delivered with a strict valid 
+The extension is delivered with a strict valid 
 [JSON Schema](./extensions/actions-for-nautilus/actions-for-nautilus.schema.json) 
 that describes exactly how the configuration file needs to be built. Eventually
 this will form the basis of a generated UI, and, indeed, can already be used 

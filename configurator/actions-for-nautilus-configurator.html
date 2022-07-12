@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<title>Actions For Nautilus Configurator</title>
+
+
+	<script src="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/jsoneditor.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.0/dist/js/bootstrap.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/jsoneditor.min.js"></script>
+
+	<link rel="stylesheet"
+		href="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/css/jsoneditor.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.0/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/spectre.css@latest/dist/spectre-icons.min.css">
+
+</head>
+
+<body>
+	<div class='container'>
+		<div class='col-md-12'>
+			<div id='editor_holder'></div>
+		</div>
+	</div>
+
+	<script>
+		var a4n_config;
+		var a4n_schema;
+		var jeconfig;
+		function onUnload(event) {
+			$.ajax({
+  				url: '/terminate',
+  				type: 'post',
+				data: ""
+			});
+		}
+		addEventListener("unload",onUnload);
+		fetch("/config")
+			.then(response => {
+				return response.json()
+			})
+			.then(config => {
+				console.log(config);
+				a4n_config = config;
+				return fetch("/schema");
+			})
+			.then(response => {
+				return response.json()
+			})
+			.then(schema => {
+
+				// Initialize the editor
+				jeconfig = {
+					"ajax": true,
+					"theme": "bootstrap3",
+					"iconlib": "spectre",
+					"object_layout": "normal",
+					"template": "default",
+					"show_errors": "interaction",
+					"required_by_default": 0,
+					"no_additional_properties": 1,
+					"display_required_only": 0,
+					"remove_empty_properties": 0,
+					"keep_oneof_values": 0,
+					"ajaxCredentials": 0,
+					"show_opt_in": 0,
+					"disable_edit_json": 1,
+					"disable_collapse": 1,
+					"disable_properties": 0,
+					"disable_array_add": 0,
+					"disable_array_reorder": 0,
+					"disable_array_delete": 0,
+					"enable_array_copy": 0,
+					"array_controls_top": 1,
+					"disable_array_delete_all_rows": 0,
+					"disable_array_delete_last_row": 1,
+					"prompt_before_delete": 1,
+					"lib_aceeditor": 0,
+					"lib_autocomplete": 0,
+					"lib_sceditor": 0,
+					"lib_simplemde": 0,
+					"lib_select2": 0,
+					"lib_selectize": 0,
+					"lib_choices": 0,
+					"lib_flatpickr": 0,
+					"lib_signaturepad": 0,
+					"lib_mathjs": 0,
+					"lib_cleavejs": 0,
+					"lib_jodit": 0,
+					"lib_jquery": 0,
+					"lib_dompurify": 0,
+					"remove_button_labels": 0,
+					"schema": schema,
+					"startval": a4n_config
+
+				}
+				var jseditor = new window.JSONEditor(document.querySelector("#editor_holder"), jeconfig);
+
+				jseditor.on('ready', function () {
+					root_editor = jseditor.getEditor("root");
+					console.log(root_editor)
+					var save_button = jseditor.root.getButton('Save config', 'save', 'Save Config');
+					var restart_button = jseditor.root.getButton('Restart Nautilus', 'save', 'Restart Nautilus');
+					var button_holder = jseditor.root.theme.getHeaderButtonHolder();
+					button_holder.appendChild(save_button);
+					button_holder.appendChild(restart_button);
+					jseditor.root.header.parentNode.insertBefore(button_holder, jseditor.root.header.nextSibling);
+					save_button.addEventListener('click', function (e) {
+						e.preventDefault();
+						$.ajax({
+  							url: '/config',
+  							type: 'post',
+							data: JSON.stringify(jseditor.getValue()),
+							headers: {
+								"Content-Type": "application/json"
+							},
+							error: function(xh, msg, e) {
+								console.error(msg, e)
+							},
+  							success: function(response) {
+								console.log(response)
+  							}
+						});
+					}, false);
+
+					restart_button.addEventListener('click', function (e) {
+						e.preventDefault();
+						$.ajax({
+  							url: '/restart',
+  							type: 'post',
+							data: "",
+							error: function(xh, msg, e) {
+								console.error(msg, e)
+							},
+  							success: function(response) {
+								console.log(response)
+  							}
+						});
+					}, false);
+				});
+
+			});
+	</script>
+</body>
+
+</html>
