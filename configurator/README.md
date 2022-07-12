@@ -69,3 +69,11 @@ This all works like a dream - for me. So I'm sticking with it.
 
 If someone wants to take a shot at designing a "real" desktop configurator, go ahead -
 If you do, though, *please* make it a generic JSON Schema-based JSON editor :) 
+
+# TODO:
+* proper HOME-releative paths in the desktop file
+* serve the favicon
+* display the debug flag for the top level config object
+* change the makefil to NOT overwrite existing config files!
+* better error communication in the UI
+* Disable the save button when there are no changes to save
