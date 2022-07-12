@@ -20,7 +20,7 @@ A tree, if you like.
 And that configuration has a detailed canonical JSON Schema describing it.
 
 So, I COULD have built a GTK-based UI from scratch and become highly
-frustrated that with all little details necessary to make configuring
+frustrated with all little details necessary to make configuring
 this tiny extension pleasant for you.
 
 Basically a glorified JSON file editor!
