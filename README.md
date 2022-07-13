@@ -90,12 +90,6 @@ _all_ the actions to fully work
 * `xclip`  - a command line tool for managing the X clipboards 
 * `zenity` - a Gnome UI toolkit for shell scripts
 
-Finally, the `Folder Actions/Start HTTP Server Here` action uses the NodeJS
-`http-server` NPM module: 
-
-* after installing NodeJS, install that module either from your package manager
-  or by running the command `sudo npm install -g http-server`
-
 # Configuration UI
 When you install this extension, a Configurator application is installed into 
 your local desktop Applications collection.
