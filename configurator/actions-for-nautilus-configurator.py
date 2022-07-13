@@ -1,19 +1,30 @@
 #!/usr/bin/python
 import http.server
 import json
-import sys, os, shutil, datetime
+import sys
+import os
+import shutil
+import datetime
 
 PORT = 8000
 HOME = os.environ.get('HOME')
 
 config_html = "./actions-for-nautilus-configurator.html"
-config_file = HOME + "/.local/share/nautilus-python/extensions/actions-for-nautilus/config.json"
-config_schema = HOME + "/.local/share/nautilus-python/extensions/actions-for-nautilus/actions-for-nautilus.schema.json"
+config_file = HOME + \
+    "/.local/share/nautilus-python/extensions/actions-for-nautilus/config.json"
+config_schema = HOME + \
+    "/.local/share/nautilus-python/extensions/actions-for-nautilus/actions-for-nautilus.schema.json"
+favicon = "./sub-menu.png"
 
-config_html_exists  = os.path.exists(config_html)
-config_file_exists  = os.path.exists(config_file)
+config_html_exists = os.path.exists(config_html)
+config_file_exists = os.path.exists(config_file)
 config_schema_exists = os.path.exists(config_schema)
+favicon_exists = favicon
 
+textual_mimes = [
+    "text/html",
+    "application/json"
+]
 docs = {
     "/": {
         "path": config_html,
@@ -38,8 +49,15 @@ docs = {
         "exists": config_schema_exists,
         "mimetype": "application/json",
         "default": None
+    },
+    "/favicon.ico": {
+        "path": favicon,
+        "exists": favicon_exists,
+        "mimetype": "image/png",
+        "default": None
     }
 }
+
 
 def get_file_content(doc_path):
     doc_data = docs.get(doc_path)
@@ -48,18 +66,21 @@ def get_file_content(doc_path):
             "error": 404,
             "message": "Not Found"
         }
+    textual_data = doc_data["mimetype"] in textual_mimes
+    mimetype = doc_data["mimetype"] + "; charset=utf-8" if textual_data else doc_data["mimetype"]
 
     if not doc_data["exists"]:
         return {
-            "mimetype": doc_data["mimetype"] + "; charset=utf-8",
-            "data": doc_data["default"].encode('utf8')
+            "mimetype": mimetype,
+            "data": doc_data["default"].encode('utf8') if textual_data else doc_data["default"]
         }
-       
+
     try:
-        with open(doc_data["path"]) as f:
+        with open(doc_data["path"], "r" if textual_data else "rb") as f:
+
             return {
-                "mimetype": doc_data["mimetype"] + "; charset=utf-8",
-                "data": f.read().encode('utf8')
+                "mimetype": mimetype,
+                "data": f.read().encode('utf8') if textual_data else f.read(-1)
             }
     except:
         return {
@@ -67,10 +88,13 @@ def get_file_content(doc_path):
             "message": "Internal Error"
         }
 
+
 def backup_file(file_path):
-    modified_time = os.path.getmtime(file_path) 
-    time_stamp =  datetime.datetime.fromtimestamp(modified_time).strftime("%b-%d-%y-%H:%M:%S")
-    shutil.copyfile(file_path,file_path+"_"+time_stamp)
+    modified_time = os.path.getmtime(file_path)
+    time_stamp = datetime.datetime.fromtimestamp(
+        modified_time).strftime("%b-%d-%y-%H:%M:%S")
+    shutil.copyfile(file_path, file_path+"_"+time_stamp)
+
 
 def restart_nautilus(self):
     try:
@@ -82,11 +106,13 @@ def restart_nautilus(self):
     self.end_headers()
     return
 
+
 def terminate_server(self):
     self.send_error(204, "terminated")
     self.end_headers()
     self.server.shutdown()
     return
+
 
 def save_config(self):
     content_type = self.headers.get_content_type()
@@ -124,10 +150,12 @@ def save_config(self):
     self.end_headers()
     return
 
+
 def forbidden(self):
     self.send_error(403)
     self.end_headers()
     return
+
 
 actions = {
     "/restart": restart_nautilus,
@@ -135,11 +163,13 @@ actions = {
     "/config": save_config
 }
 
+
 class ActionsForNautilusRequestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         file_details = get_file_content(self.path)
         if "error" in file_details:
-            self.send_error(file_details["error"], file_details.get("message", "Unknown Error"))
+            self.send_error(file_details["error"], file_details.get(
+                "message", "Unknown Error"))
             self.end_headers()
         else:
             self.send_response(200, "OK")
@@ -150,9 +180,10 @@ class ActionsForNautilusRequestHandler(http.server.BaseHTTPRequestHandler):
     def do_POST(self):
         return actions.get(self.path, forbidden)(self)
 
+
 handler = ActionsForNautilusRequestHandler
 
-PORT=int(sys.argv[1])
+PORT = int(sys.argv[1])
 with http.server.ThreadingHTTPServer(("", PORT), handler) as httpd:
     print("localhost:" + str(httpd.server_address[1]))
     try:
