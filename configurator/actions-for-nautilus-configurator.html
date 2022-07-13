@@ -35,11 +35,11 @@
 		 * stop that server :)
 		 */
 		function onUnload(event) {
-			//			$.ajax({
-			//  				url: '/terminate',
-			//  				type: 'post',
-			//				data: ""
-			//			});
+			$.ajax({
+				url: '/terminate',
+				type: 'post',
+				data: ""
+			});
 		}
 		addEventListener("unload", onUnload);
 
@@ -252,7 +252,8 @@
 					"lib_dompurify": 0,
 					"remove_button_labels": 0,
 					"schema": schema,
-					"startval": a4n_config
+					"startval": a4n_config,
+					"use_default_values": true
 
 				}
 				saved_value = JSON.stringify(a4n_config);
