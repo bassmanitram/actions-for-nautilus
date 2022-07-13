@@ -119,10 +119,12 @@
 				var editor = new window.JSONEditor(document.querySelector("#editor_holder"), jeconfig);
 				editor.on('ready', function () {
 					console.log(editor)
-					undo_button = editor.root.getButton('Undo', 'undo', 'Undo');
-					redo_button = editor.root.getButton('Redo', 'redo', 'Redo');
-					save_button = editor.root.getButton('Save config', 'save', 'Save Config');
-					restart_button = editor.root.getButton('Restart Nautilus', 'restart', 'Restart Nautilus');
+					undo_button = editor.root.getButton('Undo', 'arrow-left', 'Undo');
+					undo_button.lastChild.style = "display: none;";
+					redo_button = editor.root.getButton('Redo', 'arrow-right', 'Redo');
+					redo_button.lastChild.style = "display: none;";
+					save_button = editor.root.getButton('Save', 'save', 'Save');
+					restart_button = editor.root.getButton('Restart Nautilus', 'refresh', 'Restart Nautilus');
 					var button_holder = editor.root.theme.getHeaderButtonHolder();
 					button_holder.appendChild(undo_button);
 					button_holder.appendChild(redo_button);
