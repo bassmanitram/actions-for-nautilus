@@ -18,7 +18,7 @@ including:
 * support for all the command line placeholders implemented by the 
   `filemanager/nautilus-actions` project, with the same semantics
 
-[A configuration application](#configuration_ui) by the name "Actions For Nautilus 
+[A configuration application](#configuration-ui) by the name "Actions For Nautilus 
 Configurator" is installed into your desktop applications collection.
 
 The included sample `config.json` file shows how to set up a config. When you
