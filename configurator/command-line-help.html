@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<style type="text/css">
+	.wrapper {
+		width: 960px;
+		margin: 0 auto;
+	}
+
+
+	body {
+		font-family: sans-serif;
+		margin: 20px;
+	}
+
+	code {
+		font-family: monospace;
+	}
+
+	table {
+		border-collapse: collapse;
+		margin: 25px 0;
+		min-width: 400px;
+		box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+	}
+
+	table thead tr {
+		background-color: silver;
+		color: #ffffff;
+		text-align: left;
+	}
+
+	table th,
+	table td {
+		padding: 12px 15px;
+	}
+
+	table tbody tr {
+		border-bottom: 1px solid #dddddd;
+	}
+
+	table tbody tr:nth-of-type(even) {
+		background-color: #f3f3f3;
+	}
+
+	table tbody tr:last-of-type {
+		border-bottom: 2px solid #009879;
+	}
+</style>
+
+<body>
+	<div class="wrapper">
+		<h1 id="place-holders">Place holders</h1>
+		<p>All the command line and <code>cwd</code> placeholders implemented by the
+			<code>filemanager/nautilus-actions</code> project are implemented by this extension, with
+			the same semantics:
+		</p>
+		<table>
+			<thead>
+				<tr>
+					<th>Placeholder</th>
+					<th>Description</th>
+					<th>Repetition</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><code>%b</code></td>
+					<td>the basename of the first selected item (e.g. <code>my-file.txt</code>)</td>
+					<td>SINGULAR</td>
+				</tr>
+				<tr>
+					<td><code>%B</code></td>
+					<td>space-separated list of the <code>%b</code> values of all selected items</td>
+					<td>PLURAL</td>
+				</tr>
+				<tr>
+					<td><code>%c</code></td>
+					<td>the number of items in the selection</td>
+					<td>ANY</td>
+				</tr>
+				<tr>
+					<td><code>%d</code></td>
+					<td>the full path to the directory holding the first selected item (e.g.
+						<code>/home/me/my-first-dir/my-second-dir</code>
+					</td>
+					<td>SINGULAR</td>
+				</tr>
+				<tr>
+					<td><code>%D</code></td>
+					<td>space-separated list of the <code>%d</code> values of all selected items</td>
+					<td>PLURAL</td>
+				</tr>
+				<tr>
+					<td><code>%f</code></td>
+					<td>the full path of the first selected item (e.g.
+						<code>/home/me/my-first-dir/my-second-dir/my-file.txt</code>
+					</td>
+					<td>SINGULAR</td>
+				</tr>
+				<tr>
+					<td><code>%F</code></td>
+					<td>space-separated list of the <code>%f</code> values of all selected items</td>
+					<td>PLURAL</td>
+				</tr>
+				<tr>
+					<td><code>%h</code></td>
+					<td>the host name from the URI of the first selected item</td>
+					<td>ANY</td>
+				</tr>
+				<tr>
+					<td><code>%m</code></td>
+					<td>the mimetype of the first selected item (e.g. <code>text/plain</code>)</td>
+					<td>SINGULAR</td>
+				</tr>
+				<tr>
+					<td><code>%M</code></td>
+					<td>space-separated list of the <code>%m</code> values of all selected items</td>
+					<td>PLURAL</td>
+				</tr>
+				<tr>
+					<td><code>%n</code></td>
+					<td>the username from the URI of the first selected item</td>
+					<td>ANY</td>
+				</tr>
+				<tr>
+					<td><code>%o</code></td>
+					<td>no-op operator which forces a SINGULAR form of execution - see below for more details</td>
+					<td>SINGULAR</td>
+				</tr>
+				<tr>
+					<td><code>%O</code></td>
+					<td>no-op operator which forces a PLURAL form of execution - see below for more details</td>
+					<td>PLURAL</td>
+				</tr>
+				<tr>
+					<td><code>%p</code></td>
+					<td>the port from the URI of the first selected item</td>
+					<td>ANY</td>
+				</tr>
+				<tr>
+					<td><code>%s</code></td>
+					<td>the URI scheme from the URI of the first selected item (e.g. <code>file</code>)</td>
+					<td>ANY</td>
+				</tr>
+				<tr>
+					<td><code>%u</code></td>
+					<td>the URI of the first selected item (e.g.
+						<code>file:///home/me/my-first-dir/my-second-dir/my-file.txt</code>)
+					</td>
+					<td>SINGULAR</td>
+				</tr>
+				<tr>
+					<td><code>%U</code></td>
+					<td>space-separated list of the <code>%u</code> values of all selected items</td>
+					<td>PLURAL</td>
+				</tr>
+				<tr>
+					<td><code>%w</code></td>
+					<td>the basename of the first selected item without it&#39;s extension (e.g. <code>my-file</code>)
+					</td>
+					<td>SINGULAR</td>
+				</tr>
+				<tr>
+					<td><code>%W</code></td>
+					<td>space-separated list of the <code>%w</code> values of all selected items</td>
+					<td>PLURAL</td>
+				</tr>
+				<tr>
+					<td><code>%x</code></td>
+					<td>the extension of the first selected item without it&#39;s extension (e.g. <code>txt</code>)</td>
+					<td>SINGULAR</td>
+				</tr>
+				<tr>
+					<td><code>%X</code></td>
+					<td>space-separated list of the <code>%x</code> values of all selected items</td>
+					<td>PLURAL</td>
+				</tr>
+				<tr>
+					<td><code>%%</code></td>
+					<td>the <code>%</code> character</td>
+					<td>ANY</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>Any embedded spaces found in the individual values are &#39;escaped&#39; to ensure that
+			the shell or system recognizes each value as an independent and complete
+			argument to the command.</p>
+		<p>The meaning of the <code>Repetition</code> value is explained in the next section.</p>
+		<h1 id="execution-behavior">Execution behavior</h1>
+		<p>The <code>filemanager/nautilus-actions</code> project implemented a feature whereby a
+			configured command could be executed once only, regardless of the number items
+			in the selection, or once for each item in the selection.</p>
+		<p>This extension implements the same feature with the same semantics.</p>
+		<p>The decision as to which mode is desired is based upon the first placeholder
+			found in the <code>command_line</code> property value for the activated action:</p>
+		<ul>
+			<li>If the placeholder has a <code>Repetition</code> property of <code>SINGULAR</code>, the command is
+				executed once for each item in the selection.</li>
+			<li>If the placeholder has a <code>Repetition</code> property of <code>PLURAL</code>, the command is
+				executed once only.</li>
+			<li>If the placeholder has a <code>Repetition</code> property of <code>ANY</code>, then the <em>next</em>
+				placeholder is examined.</li>
+			<li>If no placeholder with a <code>SINGULAR</code> or <code>PLURAL</code> repetition value is found in
+				the command, then the command is executed only once.</li>
+		</ul>
+		<p>Additionally, if the command is to be executed once for each item in the
+			selection then any placeholder with a <code>Repetition</code> value of <code>SINGULAR</code> is
+			resolved to the corresponding value for the selected item for which the command
+			is being executed.</p>
+		<p>Placeholders with <code>Repetition</code> values that are not <code>SINGULAR</code> are resolved to
+			their full values for each execution of the command.</p>
+		<h2 id="an-example">An example</h2>
+		<p>This example is taken directly from the <code>filemanager/nautilus-actions</code> project
+			documentation:</p>
+		<blockquote>
+			<p>Say the current folder is <code>/data</code>, and the current selection contains the
+				three files <code>pierre</code>, <code>paul</code> and <code>jacques</code>.</p>
+			<p>If we have requested <code>echo %b</code>, then the following commands will be
+				successively run:</p>
+			<pre><code><span class="hljs-built_in">echo</span> pierre
+<span class="hljs-built_in">echo</span> paul
+<span class="hljs-built_in">echo</span> jacques
+</code></pre>
+			<p>This is because <code>%b</code> marks a SINGULAR parameter. The command is then run once
+				for each of the selected items.</p>
+			<p>Contrarily, if we have requested <code>echo %B</code>, then the following command will
+				be run:</p>
+			<pre><code><span class="hljs-built_in">echo</span> pierre paul jacques
+</code></pre>
+			<p>This is because <code>%B</code> marks a PLURAL parameter. The command is then run only
+				once, with the list of selected items as arguments.</p>
+			<p>If we have requested <code>echo %b %B</code>, then the following commands will be
+				successively run:</p>
+			<pre><code><span class="hljs-built_in">echo</span> pierre pierre paul jacques
+<span class="hljs-built_in">echo</span> paul pierre paul jacques
+<span class="hljs-built_in">echo</span> jacques pierre paul jacques
+</code></pre>
+			<p>This is because the first relevant parameter is <code>%b</code>, and so the command
+				is run once for each selected item, replacing at each occurrence the <code>%b</code>
+				parameter with the corresponding item. The second parameter is computed and
+				added as arguments to the executed command.</p>
+			<p>And if we have requested <code>echo %B %b</code>, then the following command will be
+				run:</p>
+			<pre><code><span class="hljs-built_in">echo</span> pierre paul jacques pierre
+</code></pre>
+			<p>This is because the first relevant parameter here is <code>%B</code>. The command is
+				then run only once, replacing <code>%B</code> with the space-separated list of
+				basenames. As the command is only run once, the <code>%b</code> is substituted only once
+				with the (first) basename.</p>
+		</blockquote>
+	</div>
+</body>
+
+</html>

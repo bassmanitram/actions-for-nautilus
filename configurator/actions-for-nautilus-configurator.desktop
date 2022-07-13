@@ -1,0 +1,9 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Name=Actions For Nautilus Configurator
+Exec=$HOME/.local/share/actions-for-nautilus-configurator/start-configurator.sh
+Terminal=false
+Version=1.0
+Type=Application
+Icon=$HOME/.local/share/actions-for-nautilus-configurator/sub-menu.png
+

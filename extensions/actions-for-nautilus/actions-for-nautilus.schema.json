@@ -153,7 +153,14 @@
 					"title": "Command line to execute",
 					"options": {
 						"infoText":  "The command line to execute when the action is clicked on. Placeholders are allowed and affect the semantics of the execution."
-					}
+					},
+					"links": [
+						{
+						  "rel": "Placeholder help",
+						  "href": "/command-line-help.html",
+						  "mediaType": "text/html"
+						}
+					  ]
 				},
 				"cwd": {
 					"type": "string",

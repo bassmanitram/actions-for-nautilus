@@ -18,35 +18,38 @@ including:
 * support for all the command line placeholders implemented by the 
   `filemanager/nautilus-actions` project, with the same semantics
 
+[A configuration application](#configuration_ui) by the name "Actions For Nautilus 
+Configurator" is installed into your desktop applications collection.
+
 The included sample `config.json` file shows how to set up a config. When you
-change it you will need to restart Nautilus - `nautilus -q` from a command line
-or prompt.
+change it with the configurator, you will need to restart Nautilus by clicking
+on the button that is so-marked.
 
 # Installation
 ## Install Dependencies
 
-Fedora `sudo dnf install nautilus-python python3-gobject`
+Firstly, of course, the extension relies upon GNOME and GNOME Files (aka
+Nautilus) being installed.
 
-Ubuntu `sudo apt install python3-nautilus python3-gi`
+Then it extension relies on `python 3+`, `nautilus-python`, and certain
+process management tools (which are likely already installed but
+just in case :)).
 
-Arch `sudo pacman -S python-nautilus python-gobject`
+* Fedora `sudo dnf install nautilus-python python3-gobject procps-ng`
+* Ubuntu `sudo apt install python3-nautilus python3-gi procps`
+* Arch `sudo pacman -S python-nautilus python-gobject procps-ng`
 
 ## Download & Install the Extension
 
 1. `git clone https://github.com/bassmanitram/actions-for-nautilus.git`
-
 2. `cd actions-for-nautilus`
-
 3. `make install`
-
 4. Restart the Nautilus (`nautilus -q`) if not seeing the options.
 
 ## Uninstallation
 
-1. `cd path/to/actions-for-nautilus`
-   
+1. `cd path/to/actions-for-nautilus`   
 2. `make uninstall`
-   
 3. Restart the Nautilus (`nautilus -q`) if still seeing the options after
    uninstall.
 
@@ -93,22 +96,56 @@ Finally, the `Folder Actions/Start HTTP Server Here` action uses the NodeJS
 * after installing NodeJS, install that module either from your package manager
   or by running the command `sudo npm install -g http-server`
 
-# Configuration
+# Configuration UI
+When you install this extension, a Configurator application is installed into 
+your local desktop Applications collection.
+
+To start the application:
+* Open your Applications collection navigator (menu, panel, ...)
+* Find **Actions For Nautilus Configurator**
+* Click on it
+
+The application will open in your default Web Browser. It will present the
+current configuration.
+
+The UI _should_ be pretty self-explanatory - you can add, delete, move and
+modify Menus and Commands at will. Each configuration property is described
+with a help message. 
+
+In order to save configuration changes, click on the **Save Config** button.
+
+To see the changes in the Nautilus/Files context menus, you must quit Nautilus
+and restart it. You can quit Nautilus/Files by clicking on the **Restart Nautilus**
+button. Then, to see your changes, simply open Nautilus again.
+
+The existing configuration file is backed up before being overridden by a saved
+configuration. You can reinstate an older configuration by opening Nautilus/Files,
+navigating to the folder...
+
+```
+${HOME}/.local/share/nautilus-python/extensions/actions-for-nautilus
+```
+
+and replacing your current `config.json` file with any of the backed up
+copies.
+
+Simply close the web page to quit the configurator.
+
+*NOTE* the configurator web application NEVER communicates outside of your own
+system, with the exception of downloading a few UI toolkit resources used in
+presenting the application as a web page. No data is shared AT ALL. Your
+privacy is guaranteed.
+
+# Configuration reference
 The configuration is specified in a JSON text file named `config.json` locate in
 
 ```
 ${HOME}/.local/share/nautilus-python/extensions/actions-for-nautilus
 ```
 
-As yet there is no UI for creating this configurations, however the semantics
-are pretty simple if you know JSON.
-
-Additionally, the extension is delivered with a strict valid 
+The extension is delivered with a strict valid 
 [JSON Schema](./extensions/actions-for-nautilus/actions-for-nautilus.schema.json) 
-that describes exactly how the configuration file needs to be built. Eventually
-this will form the basis of a generated UI, and, indeed, can already be used 
-with online JSON Schema-based JSON editors such as 
-[JSON Editor](https://json-editor.github.io/json-editor/).
+that describes exactly how the configuration file needs to be built.
 
 ## Top level structure
 The top level structure in the configuration file must be a JSON object which is 
