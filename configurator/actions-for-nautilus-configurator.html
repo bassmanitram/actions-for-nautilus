@@ -6,7 +6,6 @@
 	<title>Actions For Nautilus Configurator</title>
 
 
-	<script src="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/jsoneditor.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.0/dist/js/bootstrap.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/jsoneditor.min.js"></script>
@@ -28,14 +27,22 @@
 	<script>
 		var a4n_config;
 		var a4n_schema;
-		var jeconfig;
+		var editorConfig;
+
+		/*
+		 * Because this is a local UI tightly related to
+		 * backend server that it is using, unload should
+		 * stop that server :)
+		 */
 		function onUnload(event) {
-//			$.ajax({
-//  				url: '/terminate',
-//  				type: 'post',
-//				data: ""
-//			});
+			//			$.ajax({
+			//  				url: '/terminate',
+			//  				type: 'post',
+			//				data: ""
+			//			});
 		}
+		addEventListener("unload", onUnload);
+
 		var previous_values = [];
 		var saved_value;
 		var current_value_index = 0;
@@ -43,6 +50,7 @@
 		var redo_button;
 		var save_button;
 		var restart_button;
+		var editor;
 
 		function setUndoRedoButtonStates() {
 			undo_button.disabled = (current_value_index == 0);
@@ -54,13 +62,147 @@
 			setUndoRedoButtonStates();
 		}
 
-		addEventListener("unload",onUnload);
+		function undo(e) {
+			if (current_value_index > 0) {
+				current_value_index--;
+				setEditorValueFromPreviousValues(editor);
+			}
+		}
+
+		function redo(e) {
+			if (current_value_index < (previous_values.length - 1)) {
+				current_value_index++;
+				setEditorValueFromPreviousValues(editor);
+			}
+		}
+
+		function restartNautilus(e) {
+			e.preventDefault();
+			$.ajax({
+				url: '/restart',
+				type: 'post',
+				data: "",
+				error: function (xh, msg, e) {
+					console.error(msg, e)
+				},
+				success: function (response) {
+					console.log(response)
+				}
+			});
+		}
+
+		function saveConfig(e) {
+			e.preventDefault();
+			editor.disable();
+			save_button.disabled = true;
+			var errors = editor.validate();
+			if (errors.length > 0) {
+				alert("There are validation errors in the data");
+				return;
+			}
+			var data = JSON.stringify(editor.getValue());
+			$.ajax({
+				url: '/config',
+				type: 'post',
+				data: data,
+				headers: {
+					"Content-Type": "application/json"
+				},
+				error: function (xh, msg, e) {
+					console.error(msg, e);
+					save_button.disabled = false;
+					editor.enable();
+					alert("An error ocurred when trying to save the configuration");
+				},
+				success: function (response) {
+					saved_value = data;
+					editor.enable();
+				}
+			});
+		}
+
+		function configChanged(e) {
+			new_value = JSON.stringify(editor.getValue());
+			if (previous_values[current_value_index] != new_value) {
+				//console.log("Editor really changed!")
+				/*
+				 * The editor changed outside of undo-redo
+				 * Everything after the current index is lost
+				 * then this change is pushed.
+				 */
+				previous_values = previous_values.slice(0, current_value_index + 1);
+				current_value_index = previous_values.push(new_value) - 1;
+				setUndoRedoButtonStates();
+			} else {
+				//console.log("Editor didn't really change!")
+			}
+			if (editor.validation_results.length > 0) {
+				console.log(editor.validation_results);
+				save_button.disabled = true
+			} else {
+				save_button.disabled = (new_value == saved_value)
+			}
+		}
+
+		function finalizeEditorConfig(e) {
+			console.log(editor)
+
+			/*
+			 * Create an undo button - icon only
+			 */
+			undo_button = editor.root.getButton('Undo', 'arrow-left', 'Undo');
+			undo_button.lastChild.style = "display: none;";
+			undo_button.addEventListener('click', undo);
+
+			/*
+			 * Create a redo button - icon only
+			 */
+			redo_button = editor.root.getButton('Redo', 'arrow-right', 'Redo');
+			redo_button.lastChild.style = "display: none;";
+			redo_button.addEventListener('click', redo);
+
+			/*
+			 * Set undo/redo button state (disabled at this point)
+			 */
+			setUndoRedoButtonStates();
+
+			/*
+			 * Create a save config button and disable it
+			 */
+			save_button = editor.root.getButton('Save', 'save', 'Save');
+			save_button.addEventListener('click', saveConfig, false);
+			save_button.disabled = true
+
+			/*
+			 * Create a 'restart Nautilus' config button
+			 */
+			restart_button = editor.root.getButton('Restart Nautilus', 'refresh', 'Restart Nautilus');
+			restart_button.addEventListener('click', restartNautilus, false);
+
+			/*
+			 * Add the buttons to the top of the page
+			 */
+			var button_holder = editor.root.theme.getHeaderButtonHolder();
+			button_holder.appendChild(undo_button);
+			button_holder.appendChild(redo_button);
+			button_holder.appendChild(save_button);
+			button_holder.appendChild(restart_button);
+			editor.root.header.parentNode.insertBefore(button_holder, editor.root.header.nextSibling);
+
+			/*
+			 * Wire up the change watcher
+			 */
+			editor.on('change', configChanged);
+		}
+
+		/*
+		 * Kick off page initialization
+		 */
 		fetch("/config")
 			.then(response => {
 				return response.json()
 			})
 			.then(config => {
-				console.log(config);
 				a4n_config = config;
 				return fetch("/schema");
 			})
@@ -68,9 +210,8 @@
 				return response.json()
 			})
 			.then(schema => {
-
 				// Initialize the editor
-				jeconfig = {
+				editorConfig = {
 					"ajax": true,
 					"theme": "bootstrap3",
 					"iconlib": "spectre",
@@ -116,106 +257,12 @@
 				}
 				saved_value = JSON.stringify(a4n_config);
 				previous_values[0] = saved_value;
-				var editor = new window.JSONEditor(document.querySelector("#editor_holder"), jeconfig);
-				editor.on('ready', function () {
-					console.log(editor)
-					undo_button = editor.root.getButton('Undo', 'arrow-left', 'Undo');
-					undo_button.lastChild.style = "display: none;";
-					redo_button = editor.root.getButton('Redo', 'arrow-right', 'Redo');
-					redo_button.lastChild.style = "display: none;";
-					save_button = editor.root.getButton('Save', 'save', 'Save');
-					restart_button = editor.root.getButton('Restart Nautilus', 'refresh', 'Restart Nautilus');
-					var button_holder = editor.root.theme.getHeaderButtonHolder();
-					button_holder.appendChild(undo_button);
-					button_holder.appendChild(redo_button);
-					button_holder.appendChild(save_button);
-					button_holder.appendChild(restart_button);
-					editor.root.header.parentNode.insertBefore(button_holder, editor.root.header.nextSibling);
-					save_button.addEventListener('click', function (e) {
-						e.preventDefault();
-						editor.disable();
-						save_button.disabled = true;
-						var errors  = editor.validate();
-						if (errors.length > 0) {
-							alert("There are validation errors in the data");
-							return;
-						}
-						var data = JSON.stringify(editor.getValue());
-						$.ajax({
-  							url: '/config',
-  							type: 'post',
-							data: data,
-							headers: {
-								"Content-Type": "application/json"
-							},
-							error: function(xh, msg, e) {
-								console.error(msg, e);
-								save_button.disabled = false;
-								editor.enable();
-								alert("An error ocurred when trying to save the configuration");
-							},
-  							success: function(response) {
-								saved_value = data;
-								editor.enable();
-  							}
-						});
-					}, false);
-					setUndoRedoButtonStates();
-					save_button.disabled = true
-
-					restart_button.addEventListener('click', function (e) {
-						e.preventDefault();
-						$.ajax({
-  							url: '/restart',
-  							type: 'post',
-							data: "",
-							error: function(xh, msg, e) {
-								console.error(msg, e)
-							},
-  							success: function(response) {
-								console.log(response)
-  							}
-						});
-					}, false);
-
-					undo_button.addEventListener('click', function (e) {
-						if (current_value_index > 0) {
-							current_value_index--;
-							setEditorValueFromPreviousValues(editor);
-						}
-					});
-
-					redo_button.addEventListener('click', function (e) {
-						if (current_value_index < (previous_values.length - 1)) {
-							current_value_index++;
-							setEditorValueFromPreviousValues(editor);
-						}
-					});
-				});
-
-				editor.on('change',() => {
-					new_value = JSON.stringify(editor.getValue());
-					if (previous_values[current_value_index] != new_value) {
-						//console.log("Editor really changed!")
-						/*
-						 * The editor changed outside of undo-redo
-						 * Everything after the current index is lost
-						 * then this changed pushed.
-						 */
-						 previous_values = previous_values.slice(0,current_value_index+1);
-						 current_value_index = previous_values.push(new_value) - 1;
-						 setUndoRedoButtonStates();
-					} else {
-						//console.log("Editor didn't really change!")
-					}
-					if (editor.validation_results.length > 0) {
-						console.log(editor.validation_results);
-						save_button.disabled = true
-					} else {
-						save_button.disabled = (new_value == saved_value)
-					}
-				});
-
+				editor = new window.JSONEditor(document.querySelector("#editor_holder"), editorConfig);
+				editor.on('ready', finalizeEditorConfig);
+			})
+			.catch(e => {
+				console.log("Page initialization failed", e);
+				alert("Failed to initialize the editor page");
 			});
 	</script>
 </body>
