@@ -10,16 +10,12 @@ PORT = 8000
 HOME = os.environ.get('HOME')
 
 config_html = "./actions-for-nautilus-configurator.html"
+cmdline_help = "./command-line-help.html"
 config_file = HOME + \
     "/.local/share/nautilus-python/extensions/actions-for-nautilus/config.json"
 config_schema = HOME + \
     "/.local/share/nautilus-python/extensions/actions-for-nautilus/actions-for-nautilus.schema.json"
 favicon = "./sub-menu.png"
-
-config_html_exists = os.path.exists(config_html)
-config_file_exists = os.path.exists(config_file)
-config_schema_exists = os.path.exists(config_schema)
-favicon_exists = favicon
 
 textual_mimes = [
     "text/html",
@@ -28,31 +24,31 @@ textual_mimes = [
 docs = {
     "/": {
         "path": config_html,
-        "exists": config_html_exists,
         "mimetype": "text/html",
         "default": None
     },
     "/actions-for-nautilus-configurator.html": {
         "path": config_html,
-        "exists": config_html_exists,
         "mimetype": "text/html",
         "default": None
     },
     "/config": {
         "path": config_file,
-        "exists": config_file_exists,
         "mimetype": "application/json",
         "default": "{\"actions\":[],\"debug\":false}"
     },
     "/schema": {
         "path": config_schema,
-        "exists": config_schema_exists,
         "mimetype": "application/json",
+        "default": None
+    },
+    "/command-line-help.html": {
+        "path": cmdline_help,
+        "mimetype": "text/html",
         "default": None
     },
     "/favicon.ico": {
         "path": favicon,
-        "exists": favicon_exists,
         "mimetype": "image/png",
         "default": None
     }
@@ -61,7 +57,8 @@ docs = {
 
 def get_file_content(doc_path):
     doc_data = docs.get(doc_path)
-    if doc_data is None or ((not doc_data["exists"]) and doc_data["default"] is None):
+    exists = False if doc_data is None else os.path.exists(doc_data["path"])
+    if doc_data is None or ((not exists) and doc_data["default"] is None):
         return {
             "error": 404,
             "message": "Not Found"
@@ -69,7 +66,7 @@ def get_file_content(doc_path):
     textual_data = doc_data["mimetype"] in textual_mimes
     mimetype = doc_data["mimetype"] + "; charset=utf-8" if textual_data else doc_data["mimetype"]
 
-    if not doc_data["exists"]:
+    if (not exists):
         return {
             "mimetype": mimetype,
             "data": doc_data["default"].encode('utf8') if textual_data else doc_data["default"]
@@ -134,7 +131,6 @@ def save_config(self):
                     with open(config_file, 'w') as f:
                         state_message = "Updating config file"
                         f.write(json.dumps(message))
-                    docs["/config"]["exists"] = True
                     self.send_error(204)
                 except:
                     print("Uh oh - something went wrong", state_message)
