@@ -30,12 +30,30 @@
 		var a4n_schema;
 		var jeconfig;
 		function onUnload(event) {
-			$.ajax({
-  				url: '/terminate',
-  				type: 'post',
-				data: ""
-			});
+//			$.ajax({
+//  				url: '/terminate',
+//  				type: 'post',
+//				data: ""
+//			});
 		}
+		var previous_values = [];
+		var saved_value;
+		var current_value_index = 0;
+		var undo_button;
+		var redo_button;
+		var save_button;
+		var restart_button;
+
+		function setUndoRedoButtonStates() {
+			undo_button.disabled = (current_value_index == 0);
+			redo_button.disabled = (current_value_index == (previous_values.length - 1));
+		}
+
+		function setEditorValueFromPreviousValues(editor) {
+			editor.setValue(JSON.parse(previous_values[current_value_index]));
+			setUndoRedoButtonStates();
+		}
+
 		addEventListener("unload",onUnload);
 		fetch("/config")
 			.then(response => {
@@ -96,34 +114,52 @@
 					"startval": a4n_config
 
 				}
-				var jseditor = new window.JSONEditor(document.querySelector("#editor_holder"), jeconfig);
-
-				jseditor.on('ready', function () {
-					root_editor = jseditor.getEditor("root");
-					console.log(root_editor)
-					var save_button = jseditor.root.getButton('Save config', 'save', 'Save Config');
-					var restart_button = jseditor.root.getButton('Restart Nautilus', 'save', 'Restart Nautilus');
-					var button_holder = jseditor.root.theme.getHeaderButtonHolder();
+				saved_value = JSON.stringify(a4n_config);
+				previous_values[0] = saved_value;
+				var editor = new window.JSONEditor(document.querySelector("#editor_holder"), jeconfig);
+				editor.on('ready', function () {
+					console.log(editor)
+					undo_button = editor.root.getButton('Undo', 'undo', 'Undo');
+					redo_button = editor.root.getButton('Redo', 'redo', 'Redo');
+					save_button = editor.root.getButton('Save config', 'save', 'Save Config');
+					restart_button = editor.root.getButton('Restart Nautilus', 'restart', 'Restart Nautilus');
+					var button_holder = editor.root.theme.getHeaderButtonHolder();
+					button_holder.appendChild(undo_button);
+					button_holder.appendChild(redo_button);
 					button_holder.appendChild(save_button);
 					button_holder.appendChild(restart_button);
-					jseditor.root.header.parentNode.insertBefore(button_holder, jseditor.root.header.nextSibling);
+					editor.root.header.parentNode.insertBefore(button_holder, editor.root.header.nextSibling);
 					save_button.addEventListener('click', function (e) {
 						e.preventDefault();
+						editor.disable();
+						save_button.disabled = true;
+						var errors  = editor.validate();
+						if (errors.length > 0) {
+							alert("There are validation errors in the data");
+							return;
+						}
+						var data = JSON.stringify(editor.getValue());
 						$.ajax({
   							url: '/config',
   							type: 'post',
-							data: JSON.stringify(jseditor.getValue()),
+							data: data,
 							headers: {
 								"Content-Type": "application/json"
 							},
 							error: function(xh, msg, e) {
-								console.error(msg, e)
+								console.error(msg, e);
+								save_button.disabled = false;
+								editor.enable();
+								alert("An error ocurred when trying to save the configuration");
 							},
   							success: function(response) {
-								console.log(response)
+								saved_value = data;
+								editor.enable();
   							}
 						});
 					}, false);
+					setUndoRedoButtonStates();
+					save_button.disabled = true
 
 					restart_button.addEventListener('click', function (e) {
 						e.preventDefault();
@@ -139,6 +175,43 @@
   							}
 						});
 					}, false);
+
+					undo_button.addEventListener('click', function (e) {
+						if (current_value_index > 0) {
+							current_value_index--;
+							setEditorValueFromPreviousValues(editor);
+						}
+					});
+
+					redo_button.addEventListener('click', function (e) {
+						if (current_value_index < (previous_values.length - 1)) {
+							current_value_index++;
+							setEditorValueFromPreviousValues(editor);
+						}
+					});
+				});
+
+				editor.on('change',() => {
+					new_value = JSON.stringify(editor.getValue());
+					if (previous_values[current_value_index] != new_value) {
+						//console.log("Editor really changed!")
+						/*
+						 * The editor changed outside of undo-redo
+						 * Everything after the current index is lost
+						 * then this changed pushed.
+						 */
+						 previous_values = previous_values.slice(0,current_value_index+1);
+						 current_value_index = previous_values.push(new_value) - 1;
+						 setUndoRedoButtonStates();
+					} else {
+						//console.log("Editor didn't really change!")
+					}
+					if (editor.validation_results.length > 0) {
+						console.log(editor.validation_results);
+						save_button.disabled = true
+					} else {
+						save_button.disabled = (new_value == saved_value)
+					}
 				});
 
 			});
