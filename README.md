@@ -43,24 +43,31 @@ just in case :)).
 
 1. `git clone https://github.com/bassmanitram/actions-for-nautilus.git`
 2. `cd actions-for-nautilus`
-3. `make install`
+3. `make install` to install for only your use, or `sudo make install_global`
+   to install for all users.
 4. Restart the Nautilus (`nautilus -q`) if not seeing the options.
+5. You _may_ have to restart the Gnome shell in order to see the configuration
+   application 
 
 ## Uninstallation
 
 1. `cd path/to/actions-for-nautilus`   
-2. `make uninstall`
+2. `make uninstall` if you installed for only your use, or `sudo make install_global`
+   if you installed for all users.
 3. Restart the Nautilus (`nautilus -q`) if still seeing the options after
    uninstall.
+4. You _may_ have to restart the Gnome shell in order to stop seeing the configuration
+   application 
 
 # Sample Scripts
-The delivered sample `config.json` (found in 
+The delivered [sample configuration file](./configurator/sample-config.json) (copied to 
 
 ```
-${HOME}/.local/share/nautilus-python/extensions/actions-for-nautilus/config.json
+${HOME}/.local/share/actions-for-nautilus/config.json
 ```
 
-after installation) is, obviously, highly tailored to my own set-up and to
+when you first start the configuration UI, if no such file exists) is, obviously, highly 
+tailored to my own set-up and to
 testing and feature demonstration. But in order to make things work upon
 installation, I deliver the scripts that are referenced by that configuration 
 in the folder [sample-scripts](./sample-scripts). 
@@ -131,14 +138,14 @@ presenting the application as a web page. No data is shared AT ALL. Your
 privacy is guaranteed.
 
 # Configuration reference
-The configuration is specified in a JSON text file named `config.json` locate in
+The configuration is specified in a JSON text file named `config.json` located in
 
 ```
-${HOME}/.local/share/nautilus-python/extensions/actions-for-nautilus
+${HOME}/.local/share/actions-for-nautilus
 ```
 
 The extension is delivered with a strict valid 
-[JSON Schema](./extensions/actions-for-nautilus/actions-for-nautilus.schema.json) 
+[JSON Schema](./configurator/actions-for-nautilus.schema.json) 
 that describes exactly how the configuration file needs to be built.
 
 ## Top level structure

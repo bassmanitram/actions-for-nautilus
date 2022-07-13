@@ -12,9 +12,8 @@ HOME = os.environ.get('HOME')
 config_html = "./actions-for-nautilus-configurator.html"
 cmdline_help = "./command-line-help.html"
 config_file = HOME + \
-    "/.local/share/nautilus-python/extensions/actions-for-nautilus/config.json"
-config_schema = HOME + \
-    "/.local/share/nautilus-python/extensions/actions-for-nautilus/actions-for-nautilus.schema.json"
+    "/.local/share/actions-for-nautilus/config.json"
+config_schema = "./actions-for-nautilus.schema.json"
 favicon = "./sub-menu.png"
 
 textual_mimes = [

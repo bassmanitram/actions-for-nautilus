@@ -1,10 +1,16 @@
 #!/bin/sh
-_MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+_MY_DIR="$( cd "$( dirname $( readlink -f "${BASH_SOURCE[0]}" ))" && pwd )"
 
 #env | sort >> /tmp/a4n-start.log
 
 cd $_MY_DIR
-#echo $PWD >> /tmp/a4n-start.log
+
+#
+# Create inital config if necessary
+#
+mkdir -p $HOME/.local/share/actions-for-nautilus
+
+[ -f $HOME/.local/share/actions-for-nautilus/config.json ] || cp ./sample-config.json $HOME/.local/share/actions-for-nautilus/config.json
 
 #
 # Start the configuration server, the xdg-open the home page

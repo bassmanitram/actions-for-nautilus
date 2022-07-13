@@ -5,6 +5,8 @@ import os, json
 import afn_place_holders
 from gi.repository import Gio
 
+HOME = os.environ.get('HOME')
+
 _filetypes = {
     "unknown":       [Gio.FileType(0)],
     "file":          [Gio.FileType(1)],
@@ -23,11 +25,14 @@ def get():
     return _config
 
 def initialize():
-    config_path = os.path.join(os.path.dirname(__file__), "config.json")
+    config_path = HOME + "/.local/share/actions-for-nautilus/config.json"
+    actions=[]
+
     try:
-        with open(config_path) as json_file:
-            _config.update(json.load(json_file))
-            actions = _config.get("actions", [])
+        if os.path.exists(config_path):
+            with open(config_path) as json_file:
+                _config.update(json.load(json_file))
+                actions = _config.get("actions", [])
 
     except Exception as e:
         print("Config file " + config_path + " load failed", e)
