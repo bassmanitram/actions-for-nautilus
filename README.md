@@ -18,35 +18,38 @@ including:
 * support for all the command line placeholders implemented by the 
   `filemanager/nautilus-actions` project, with the same semantics
 
+[A configuration application](#configuration_ui) by the name "Actions For Nautilus 
+Configurator" is installed into your desktop applications collection.
+
 The included sample `config.json` file shows how to set up a config. When you
-change it you will need to restart Nautilus - `nautilus -q` from a command line
-or prompt.
+change it with the configurator, you will need to restart Nautilus by clicking
+on the button that is so-marked.
 
 # Installation
 ## Install Dependencies
 
-Fedora `sudo dnf install nautilus-python python3-gobject`
+Firstly, of course, the extension relies upon GNOME and GNOME Files (aka
+Nautilus) being installed.
 
-Ubuntu `sudo apt install python3-nautilus python3-gi`
+Then it extension relies on `python 3+`, `nautilus-python`, and certain
+process management tools (which are likely already installed but
+just in case :)).
 
-Arch `sudo pacman -S python-nautilus python-gobject`
+* Fedora `sudo dnf install nautilus-python python3-gobject procps-ng`
+* Ubuntu `sudo apt install python3-nautilus python3-gi procps`
+* Arch `sudo pacman -S python-nautilus python-gobject procps-ng`
 
 ## Download & Install the Extension
 
 1. `git clone https://github.com/bassmanitram/actions-for-nautilus.git`
-
 2. `cd actions-for-nautilus`
-
 3. `make install`
-
 4. Restart the Nautilus (`nautilus -q`) if not seeing the options.
 
 ## Uninstallation
 
-1. `cd path/to/actions-for-nautilus`
-   
+1. `cd path/to/actions-for-nautilus`   
 2. `make uninstall`
-   
 3. Restart the Nautilus (`nautilus -q`) if still seeing the options after
    uninstall.
 
@@ -98,7 +101,7 @@ When you install this extension, a Configurator application is installed into
 your local desktop Applications collection.
 
 To start the application:
-* Open your Applications selector (menu, panel, ...)
+* Open your Applications collection navigator (menu, panel, ...)
 * Find **Actions For Nautilus Configurator**
 * Click on it
 
@@ -111,7 +114,7 @@ with a help message.
 
 In order to save configuration changes, click on the **Save Config** button.
 
-To see the changes in the Nautilus/Files context menus, you must quite Nautilus
+To see the changes in the Nautilus/Files context menus, you must quit Nautilus
 and restart it. You can quit Nautilus/Files by clicking on the **Restart Nautilus**
 button. Then, to see your changes, simply open Nautilus again.
 

@@ -52,28 +52,31 @@ The configurator, then, consists of the following components:
   [JSON Editor](https://github.com/json-editor/json-editor)
   to generate a (what I think is) beautiful UI based upon the config schema, with
   various customizations to make it easy to use.
+
+  All Actions For Nautilus data is fetched from the _local_ http server, _NOT_
+  from a public server (your privacy is protected).
+
+  Tools used for rendering the configurator are all fetched from the 
+  [JSDELIVR CDN](https://cdn.jsdelivr.net).
+
+  No other site is accessed by the page
+
+  When you *closes* the configurator page, it automatically stops the local server.
+
 * [A TINY backend HTTP server](./actions-for-nautilus-configurator.py), that serves 
   the page, any existing config, and the schema, and can save the updated the config 
   and restart Nautilus on demand from the UI.
   
-  It also *closes* the server when you close the page
+  It is terminated when you close the configurator web page.
 
 * [A shell script that kills](./start-configurator.sh) any existing copy of the server, 
   starts the server, then uses `xdg-open` to open the page in your system default 
-  browser
-* [A Desktop file](./sub-menu.png) that gets installed into your local Applications 
-  repository, which launches the afore-mentioned startup script when you open that 
-  application.
+  browser.
+* [A Desktop file](./actions-for-nautilus-configurator.desktop) that gets installed into 
+  your local Applications repository, and launches the afore-mentioned startup script 
+  when you "open" that application.
 
 This all works like a dream - for me. So I'm sticking with it.
 
 If someone wants to take a shot at designing a "real" desktop configurator, go ahead -
 If you do, though, *please* make it a generic JSON Schema-based JSON editor :) 
-
-# TODO:
-* proper HOME-releative paths in the desktop file
-* serve the favicon
-* display the debug flag for the top level config object
-* change the makefil to NOT overwrite existing config files!
-* better error communication in the UI
-* Disable the save button when there are no changes to save
