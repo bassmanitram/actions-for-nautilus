@@ -25,10 +25,6 @@
 	</div>
 
 	<script>
-		var a4n_config;
-		var a4n_schema;
-		var editorConfig;
-
 		/*
 		 * Because this is a local UI tightly related to
 		 * backend server that it is using, unload should
@@ -42,6 +38,16 @@
 			});
 		}
 		addEventListener("unload", onUnload);
+
+		var editorConfig = {
+			"array_controls_top": true,
+			"disable_array_delete_last_row": true,
+			"disable_collapse": true,
+			"disable_edit_json": true,
+			"iconlib": "spectre",
+			"no_additional_properties": true,
+			"theme": "bootstrap3"
+		}
 
 		var previous_values = [];
 		var saved_value;
@@ -203,61 +209,16 @@
 				return response.json()
 			})
 			.then(config => {
-				a4n_config = config;
+				editorConfig.startval = config;
+				saved_value = JSON.stringify(config);
+				previous_values[0] = saved_value;
 				return fetch("/schema");
 			})
 			.then(response => {
 				return response.json()
 			})
 			.then(schema => {
-				// Initialize the editor
-				editorConfig = {
-					"ajax": true,
-					"theme": "bootstrap3",
-					"iconlib": "spectre",
-					"object_layout": "normal",
-					"template": "default",
-					"show_errors": "interaction",
-					"required_by_default": 0,
-					"no_additional_properties": 1,
-					"display_required_only": 0,
-					"remove_empty_properties": 0,
-					"keep_oneof_values": 0,
-					"ajaxCredentials": 0,
-					"show_opt_in": 0,
-					"disable_edit_json": 1,
-					"disable_collapse": 1,
-					"disable_properties": 0,
-					"disable_array_add": 0,
-					"disable_array_reorder": 0,
-					"disable_array_delete": 0,
-					"enable_array_copy": 0,
-					"array_controls_top": 1,
-					"disable_array_delete_all_rows": 0,
-					"disable_array_delete_last_row": 1,
-					"prompt_before_delete": 1,
-					"lib_aceeditor": 0,
-					"lib_autocomplete": 0,
-					"lib_sceditor": 0,
-					"lib_simplemde": 0,
-					"lib_select2": 0,
-					"lib_selectize": 0,
-					"lib_choices": 0,
-					"lib_flatpickr": 0,
-					"lib_signaturepad": 0,
-					"lib_mathjs": 0,
-					"lib_cleavejs": 0,
-					"lib_jodit": 0,
-					"lib_jquery": 0,
-					"lib_dompurify": 0,
-					"remove_button_labels": 0,
-					"schema": schema,
-					"startval": a4n_config,
-					"use_default_values": true
-
-				}
-				saved_value = JSON.stringify(a4n_config);
-				previous_values[0] = saved_value;
+				editorConfig.schema = schema;
 				editor = new window.JSONEditor(document.querySelector("#editor_holder"), editorConfig);
 				editor.on('ready', finalizeEditorConfig);
 			})

@@ -10,10 +10,12 @@
 	body {
 		font-family: sans-serif;
 		margin: 20px;
+		font-size: 110%
 	}
 
 	code {
 		font-family: monospace;
+		font-size: 120%
 	}
 
 	table {
@@ -31,7 +33,7 @@
 
 	table th,
 	table td {
-		padding: 12px 15px;
+		padding: 6px 15px;
 	}
 
 	table tbody tr {
@@ -45,11 +47,18 @@
 	table tbody tr:last-of-type {
 		border-bottom: 2px solid #009879;
 	}
+
+	blockquote {
+		background: #f9f9f9;
+		border-left: 3px solid #ccc;
+		margin: 1.5em 10px;
+		padding: 0.1em 10px;
+	}
 </style>
 
 <body>
 	<div class="wrapper">
-		<h1 id="place-holders">Place holders</h1>
+		<h1 id="place-holders">Place Holders</h1>
 		<p>All the command line and <code>cwd</code> placeholders implemented by the
 			<code>filemanager/nautilus-actions</code> project are implemented by this extension, with
 			the same semantics:
@@ -186,7 +195,7 @@
 			the shell or system recognizes each value as an independent and complete
 			argument to the command.</p>
 		<p>The meaning of the <code>Repetition</code> value is explained in the next section.</p>
-		<h1 id="execution-behavior">Execution behavior</h1>
+		<h1 id="execution-behavior">Execution Behavior</h1>
 		<p>The <code>filemanager/nautilus-actions</code> project implemented a feature whereby a
 			configured command could be executed once only, regardless of the number items
 			in the selection, or once for each item in the selection.</p>
@@ -209,7 +218,7 @@
 			is being executed.</p>
 		<p>Placeholders with <code>Repetition</code> values that are not <code>SINGULAR</code> are resolved to
 			their full values for each execution of the command.</p>
-		<h2 id="an-example">An example</h2>
+		<h2 id="an-example">An Example</h2>
 		<p>This example is taken directly from the <code>filemanager/nautilus-actions</code> project
 			documentation:</p>
 		<blockquote>
@@ -217,10 +226,11 @@
 				three files <code>pierre</code>, <code>paul</code> and <code>jacques</code>.</p>
 			<p>If we have requested <code>echo %b</code>, then the following commands will be
 				successively run:</p>
-			<pre><code><span class="hljs-built_in">echo</span> pierre
+			<pre><code>
+<span class="hljs-built_in">echo</span> pierre
 <span class="hljs-built_in">echo</span> paul
 <span class="hljs-built_in">echo</span> jacques
-</code></pre>
+			</code></pre>
 			<p>This is because <code>%b</code> marks a SINGULAR parameter. The command is then run once
 				for each of the selected items.</p>
 			<p>Contrarily, if we have requested <code>echo %B</code>, then the following command will
@@ -231,18 +241,20 @@
 				once, with the list of selected items as arguments.</p>
 			<p>If we have requested <code>echo %b %B</code>, then the following commands will be
 				successively run:</p>
-			<pre><code><span class="hljs-built_in">echo</span> pierre pierre paul jacques
+			<pre><code>
+<span class="hljs-built_in">echo</span> pierre pierre paul jacques
 <span class="hljs-built_in">echo</span> paul pierre paul jacques
 <span class="hljs-built_in">echo</span> jacques pierre paul jacques
-</code></pre>
+			</code></pre>
 			<p>This is because the first relevant parameter is <code>%b</code>, and so the command
 				is run once for each selected item, replacing at each occurrence the <code>%b</code>
 				parameter with the corresponding item. The second parameter is computed and
 				added as arguments to the executed command.</p>
 			<p>And if we have requested <code>echo %B %b</code>, then the following command will be
 				run:</p>
-			<pre><code><span class="hljs-built_in">echo</span> pierre paul jacques pierre
-</code></pre>
+			<pre><code>
+<span class="hljs-built_in">echo</span> pierre paul jacques pierre
+			</code></pre>
 			<p>This is because the first relevant parameter here is <code>%B</code>. The command is
 				then run only once, replacing <code>%B</code> with the space-separated list of
 				basenames. As the command is only run once, the <code>%b</code> is substituted only once
