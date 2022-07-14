@@ -19,12 +19,18 @@
 			font-size: 16px;
 			line-height: 1.1;
 		}
+
 		.glyphicon {
 			top: unset;
 			bottom: 2px;
 			line-height: 1.1;
 			margin-left: 5px;
 		}
+
+		button.undoredo span {
+			display: none;
+		}
+
 		/*
 		 * This is incomplete at the moment
 		 *
@@ -59,14 +65,12 @@
 			display: inline-block !important;
 			margin-left: 7px;
 		}
-	</style>	
+	</style>
 </head>
 
 <body>
 	<div class='container'>
-		<div class='col-md-12'>
-			<div id='editor_holder'></div>
-		</div>
+		<div id='editor_holder'></div>
 	</div>
 
 	<script>
@@ -75,7 +79,7 @@
 		 * backend server that it is using, unload should
 		 * stop that server :)
 		 */
-		function onUnload(event) {
+		 function onUnload(event) {
 			$.ajax({
 				url: '/terminate',
 				type: 'post',
@@ -83,6 +87,30 @@
 			});
 		}
 		addEventListener("unload", onUnload);
+
+		/*
+		 * How to fiddle with the DOM!
+		 *
+		 * Without this, the help link appears in a weird place. 
+		 * 
+		 * This puts it next to the label for the associated input
+		 */
+		defaultStringPostBuild = JSONEditor.defaults.editors.string.prototype.postBuild;
+		JSONEditor.defaults.editors.string.prototype.postBuild = function(value) {
+			var returnValue = defaultStringPostBuild.bind(this)(value);
+			if (this.path.endsWith(".command_line")) {
+				var labels = this.container.getElementsByTagName("label");
+				var helps = this.container.getElementsByClassName("placeholder-help");
+				if (labels.length > 0 && helps.length > 0) {
+					helpDiv = helps[0].parentNode;
+					labels[0].append(helps[0]);
+					helpDiv.remove();
+				} else {
+					console.log("FAILED move the command line help link", labels, helps, labels.length, helps.length);
+				}
+			}
+  			return returnValue;
+		};
 
 		var editorConfig = {
 			"array_controls_top": true,
@@ -104,6 +132,7 @@
 		var editor;
 
 		function setUndoRedoButtonStates() {
+			console.log(current_value_index)
 			undo_button.disabled = (current_value_index == 0);
 			redo_button.disabled = (current_value_index == (previous_values.length - 1));
 		}
@@ -198,18 +227,21 @@
 		function finalizeEditorConfig(e) {
 			console.log(editor)
 
+			saved_value = JSON.stringify(editor.getValue());
+			previous_values[0] = saved_value;
+
 			/*
 			 * Create an undo button - icon only
 			 */
 			undo_button = editor.root.getButton('Undo', 'arrow-left', 'Undo');
-			undo_button.lastChild.style = "display: none;";
+			undo_button.classList.add("undoredo");
 			undo_button.addEventListener('click', undo);
 
 			/*
 			 * Create a redo button - icon only
 			 */
 			redo_button = editor.root.getButton('Redo', 'arrow-right', 'Redo');
-			redo_button.lastChild.style = "display: none;";
+			redo_button.classList.add("undoredo");
 			redo_button.addEventListener('click', redo);
 
 			/*
@@ -255,8 +287,6 @@
 			})
 			.then(config => {
 				editorConfig.startval = config;
-				saved_value = JSON.stringify(config);
-				previous_values[0] = saved_value;
 				return fetch("/schema");
 			})
 			.then(response => {
