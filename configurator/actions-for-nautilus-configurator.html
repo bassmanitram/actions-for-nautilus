@@ -31,36 +31,10 @@
 			display: none;
 		}
 
-		/*
-		 * This is incomplete at the moment
-		 *
-		 * The schema references this class, but we need the final rendering to change in this way:
-		 *
-		 * - This applies to an "a" element - but it's held in a div...
-		    <div> for the command line property
-		        <div class="form-group">
-			        <label...>
-				        <span>...</span>
-				    </label>
-				</div>
-				<div>
-                    <a class="placeholder-help"> ... </a>
-				</div>
-		    </div>
-		 *
-		 * - We need to move it like this ... for ALL "root.actions.n.command_line" editors
-		 *
-		    <div> for the command line property
-		        <div class="form-group">
-			        <label...>
-				        <span>...</span>
-                        <a class="placeholder-help"> ... </a>
-				    </label>
-				</div>
-		    </div>
-		 *
-		 * "root.actions.n.command_line.container" is the container div that we see here
-		 */
+		.json-editor-btn-edit_properties {
+			margin-left: -10px !important;
+		}
+
 		.placeholder-help {
 			display: inline-block !important;
 			margin-left: 7px;
@@ -94,6 +68,35 @@
 		 * Without this, the help link appears in a weird place. 
 		 * 
 		 * This puts it next to the label for the associated input
+		/*
+		 * This is incomplete at the moment
+		 *
+		 * The schema references this class, but we need the final rendering to change in this way:
+		 *
+		 * - This applies to an "a" element - but it's held in a div...
+		    <div> for the command line property
+		        <div class="form-group">
+			        <label...>
+				        <span>...</span>
+				    </label>
+				</div>
+				<div>
+                    <a class="placeholder-help"> ... </a>
+				</div>
+		    </div>
+		 *
+		 * - We need to move it like this ... for ALL "root.actions.n.command_line" editors
+		 *
+		    <div> for the command line property
+		        <div class="form-group">
+			        <label...>
+				        <span>...</span>
+                        <a class="placeholder-help"> ... </a>
+				    </label>
+				</div>
+		    </div>
+		 *
+		 * "root.actions.n.command_line.container" is the container div that we see here
 		 */
 		defaultStringPostBuild = JSONEditor.defaults.editors.string.prototype.postBuild;
 		JSONEditor.defaults.editors.string.prototype.postBuild = function(value) {
