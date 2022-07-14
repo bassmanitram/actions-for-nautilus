@@ -158,7 +158,8 @@
 						{
 						  "rel": "Placeholder help",
 						  "href": "/command-line-help.html",
-						  "mediaType": "text/html"
+						  "mediaType": "text/html",
+						  "class": "placeholder-help"
 						}
 					  ]
 				},
