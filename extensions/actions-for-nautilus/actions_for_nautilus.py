@@ -10,7 +10,7 @@ require_version('Nautilus', '3.0')
 ###
 ### The MenuProvider implementation
 ###
-class Actions4Nautilus(Nautilus.MenuProvider, GObject.GObject):
+class ActionsForNautilus(Nautilus.MenuProvider, GObject.GObject):
 
     def __init__(self):
         self.config = afn_config.get()
