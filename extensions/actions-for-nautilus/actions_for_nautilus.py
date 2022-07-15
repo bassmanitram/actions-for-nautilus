@@ -13,16 +13,16 @@ require_version('Nautilus', '3.0')
 class ActionsForNautilus(Nautilus.MenuProvider, GObject.GObject):
 
     def __init__(self):
-        self.config = afn_config.get()
+        self.config = afn_config.ActionsForNautilusConfig()
 
 #
 # Menu provider interface implementation
 #
     def get_file_items(self, window, files):
-        return afn_menu.create_menu_items(self.config, files, "File", _run_command)
+        return afn_menu.create_menu_items(self.config.get_config(), files, "File", _run_command)
 
     def get_background_items(self, window, file):
-        return afn_menu.create_menu_items(self.config, [file], "Background", _run_command)
+        return afn_menu.create_menu_items(self.config.get_config(), [file], "Background", _run_command)
 
 #
 # Command execution

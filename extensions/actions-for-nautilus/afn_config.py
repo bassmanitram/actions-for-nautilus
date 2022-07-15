@@ -1,11 +1,21 @@
 #
 # Config management
 #
-import os, json
+import os, json, threading, time
 import afn_place_holders
-from gi.repository import Gio
+from gi.repository import Gio, GLib
 
 HOME = os.environ.get('HOME')
+_config_path = HOME + "/.local/share/actions-for-nautilus/config.json"
+
+_default_config = {
+    "actions": []
+}
+
+#
+# The config dict
+#
+_config = _default_config
 
 _filetypes = {
     "unknown":       [Gio.FileType(0)],
@@ -18,44 +28,84 @@ _filetypes = {
     "standard":      [Gio.FileType(1), Gio.FileType(2), Gio.FileType(3)]
 }
 
-###
-### Exported functions
-###
-def get():
-    return _config
+class ActionsForNautilusConfig():
 
-def initialize():
-    config_path = HOME + "/.local/share/actions-for-nautilus/config.json"
-    actions=[]
+    def __init__(self):
+        self.reset_config()
+        self.update_config()
+        GLib.timeout_add_seconds(30, _check_config_change, self)
+#        threading.Thread(target=_watch_config_change, args=(self,), daemon=True).start()
+        print("Initialized")
 
-    try:
-        if os.path.exists(config_path):
-            with open(config_path) as json_file:
-                _config.update(json.load(json_file))
-                actions = _config.get("actions", [])
+    def get_config(self):
+        return self.__config
 
-    except Exception as e:
-        print("Config file " + config_path + " load failed", e)
-        _config["actions"] = []
+    def get_mtime(self):
+        return self.__mtime
+
+    def update_config(self):
+        my_config = {
+            "actions": []
+        }
+
+        try:
+            if os.path.exists(_config_path):
+                self.__mtime = os.path.getmtime(_config_path)
+                with open(_config_path) as json_file:
+                    my_config.update(json.load(json_file))
+                    actions = my_config.get("actions", [])
+                    if type(actions) == list:
+                        my_config["actions"] = list(filter(None, map(lambda action: _check_action(str(action[0]), action[1]), enumerate(actions))))    
+                    else:
+                        my_config["actions"] = []
+                    self.__config = my_config
+            else:
+                print("Config file " + _config_path + " does not exist")
+        except Exception as e:
+            print("Config file " + _config_path + " load failed", e)
     
-    if type(actions) == list:
-        _config["actions"] = list(filter(None, map(lambda action: _check_action(str(action[0]), action[1]), enumerate(actions))))    
-    else:
-        _config["actions"] = []
+        print(json.dumps(self.__config))
 
-    print(json.dumps(_config))
+
+    def reset_config(self):
+        self.__config = {
+            "actions": []
+        }
+        self.__mtime = None
 
 ###
 ### Private functions and values
 ###
+def _check_config_change(config_object):
+    last_mtime = config_object.get_mtime()
+    this_mtime = os.path.getmtime(_config_path) if os.path.exists(_config_path) else None
+    if last_mtime is not None and (last_mtime is None or last_mtime != this_mtime):
+        print("WATCHER THREAD: updating config")
+        config_object.update_config()
+    elif this_mtime is None and last_mtime is not None:
+        print("WATCHER THREAD: resetting config")
+        config_object.reset_config()
+#    else:
+#        print("WATCHER THREAD: config not changed")
+    return True
 
 #
-# The config dict
+# Wraps the config checker in a poll loop intended for Thread execution
 #
-_config = {
-    "actions": {}
-}
+# NOT USED - GLib timers work better
+#
+def _watch_config_change(config_object):
+    print("WATCHER THREAD: starting watch loop")
+    while True:
+        sleep_time = int(time.time())
+        _check_config_change(config_object)
+        print("WATCHER THREAD: sleeping at", sleep_time)
+        time.sleep(30)
+        print("WATCHER THREAD: slept time", int(time.time()) - sleep_time)
 
+#
+# Update the config from the config file
+#
 #
 # Triage the action based on type
 #
@@ -150,8 +200,3 @@ def _remove_duplicates_by_key(lst,key):
 def _add_to_set(set, element, key):
     set.add(element[key])
     return element
-
-###
-### Initialize on load
-###
-initialize()

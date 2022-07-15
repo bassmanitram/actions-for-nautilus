@@ -19,11 +19,9 @@ including:
   `filemanager/nautilus-actions` project, with the same semantics
 
 [A configuration application](#configuration-ui) by the name "Actions For Nautilus 
-Configurator" is installed into your desktop applications collection.
-
-The included sample `config.json` file shows how to set up a config. When you
-change it with the configurator, you will need to restart Nautilus by clicking
-on the button that is so-marked.
+Configurator" is installed into your desktop applications collection. When you
+first use the configurator, if no existing configuration file exists, the delivered
+[sample configuration](./configurator/sample-config.json) will be installed.
 
 # Installation
 ## Install Dependencies
@@ -115,9 +113,8 @@ with a help message.
 
 In order to save configuration changes, click on the **Save Config** button.
 
-To see the changes in the Nautilus/Files context menus, you must quit Nautilus
-and restart it. You can quit Nautilus/Files by clicking on the **Restart Nautilus**
-button. Then, to see your changes, simply open Nautilus again.
+Your changes should be visible in Nautilus after about 30 seconds (the timeout
+for the config file change watcher code).
 
 The existing configuration file is backed up before being overridden by a saved
 configuration. You can reinstate an older configuration by opening Nautilus/Files,
@@ -128,7 +125,8 @@ ${HOME}/.local/share/nautilus-python/extensions/actions-for-nautilus
 ```
 
 and replacing your current `config.json` file with any of the backed up
-copies.
+copies. Again, changes will take effect after a maximum of about 30
+seconds.
 
 Simply close the web page to quit the configurator.
 
