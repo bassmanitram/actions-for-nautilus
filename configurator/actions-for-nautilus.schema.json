@@ -69,9 +69,9 @@
 				"debug": {
 					"title": "Enable debugging output",
 					"type": "boolean",
-					"format": "checkbox",
 					"options": {
-						"infoText": "When set to true, extra debugging information is sent to the Nautilus stdout/stderr destinations."
+						"infoText": "When set to true, extra debugging information is sent to the Nautilus stdout/stderr destinations.",
+						"class": "col-md-2"
 					}
 				}
 			},

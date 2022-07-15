@@ -14,6 +14,7 @@
 		href="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/css/jsoneditor.min.css">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.0/dist/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/spectre.css@latest/dist/spectre-icons.min.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
 	<style>
 		body {
 			font-size: 16px;
@@ -40,14 +41,16 @@
 			margin-left: 7px;
 		}
 
-/*		.container {
-			width: 90%;
-		}*/
+		.container {
+			position: absolute;
+			left: 0;
+			right: 0;
+		}
 	</style>
 </head>
 
 <body>
-	<div class='container col-md-12'>
+	<div class='container col-md-10'>
 		<div id='editor_holder'></div>
 	</div>
 
@@ -124,7 +127,7 @@
 			"disable_array_delete_last_row": true,
 			"disable_collapse": true,
 			"disable_edit_json": true,
-			"iconlib": "spectre",
+			"iconlib": "fontawesome5",
 			"no_additional_properties": true,
 			"theme": "bootstrap3",
 			"keep_oneof_values": false,
@@ -245,14 +248,14 @@
 			/*
 			 * Create an undo button - icon only
 			 */
-			undo_button = editor.root.getButton('Undo', 'arrow-left', 'Undo');
+			undo_button = editor.root.getButton('Undo', 'undo', 'Undo');
 			undo_button.classList.add("undoredo");
 			undo_button.addEventListener('click', undo);
 
 			/*
 			 * Create a redo button - icon only
 			 */
-			redo_button = editor.root.getButton('Redo', 'arrow-right', 'Redo');
+			redo_button = editor.root.getButton('Redo', 'redo', 'Redo');
 			redo_button.classList.add("undoredo");
 			redo_button.addEventListener('click', redo);
 
