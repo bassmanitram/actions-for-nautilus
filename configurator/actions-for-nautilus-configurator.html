@@ -84,6 +84,41 @@
 		}
 
 		/*
+		 * Nav labels have too greater distance between lines
+		 */
+		.nav-link {
+			line-height: 1.3;
+		}
+
+		/*
+		 * A icons to the action selectors
+		 */
+		 .action-command i:before {
+			font-weight: 900;
+		}
+
+		.action-menu i:before {
+			font-weight: 900;
+		}
+
+		.action-menu i, .action-command i {
+			font-size: 1rem;
+		}
+
+		.action-menu a, .action-command a {
+			display: inline;
+			padding: 0;
+		}
+
+		.action-command a:before {
+			content: "\00a0\00a0";
+		}
+
+		.action-menu a:before {
+			content: "\00a0";
+		}
+
+		/*
 		 * The container in general needs to be centered
 		 * with some space at the top
 		 */
@@ -151,6 +186,40 @@
   			return returnValue;
 		};
 
+		/*
+		 * How to fiddle with the DOM part 2
+		 *
+		 * We want the tab selectors to us an icon - but, for that, they need another class
+		 */
+		const iconNames = {
+			"command": "fa-chevron-right",
+			"menu": "fa-bars"
+		}
+		defaultArrayRefreshValue = JSONEditor.defaults.editors.multiple.prototype.refreshHeaderText;
+		JSONEditor.defaults.editors.multiple.prototype.refreshHeaderText = function(value) {
+			var returnValue = defaultArrayRefreshValue.bind(this)(value);
+			if (/\.actions\.[0-9]+$/.test(this.path) && this.tab) {
+				var element = this.tab;
+				var type =  this.value.type;
+				var existingActionClass = this.a4nActionClass;
+				if (type != existingActionClass) {
+					if (existingActionClass) {
+				  		element.classList.remove("action-" + existingActionClass);
+						element.firstChild.classList.remove(iconNames[existingActionClass])
+				  	} else {
+						var ite = document.createElement('i');
+						ite.classList.add("fas")
+						element.insertBefore(ite, element.firstChild);
+					}
+					element.classList.add("action-" + type);
+					element.firstChild.classList.add(iconNames[type]);
+				}
+				this.a4nActionClass = type;
+			}
+			return returnValue;
+		}
+
+
 		var editorConfig = {
 			/*
 			 * Editor options
@@ -186,7 +255,6 @@
 		var editor;
 
 		function setUndoRedoButtonStates() {
-			console.log(current_value_index)
 			undo_button.disabled = (current_value_index == 0);
 			redo_button.disabled = (current_value_index == (previous_values.length - 1));
 		}
