@@ -7,42 +7,89 @@
 
 
 	<script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.0/dist/js/bootstrap.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/jsoneditor.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@latest/dist/js/bootstrap.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/jsoneditor.js"></script>
 
 	<link rel="stylesheet"
 		href="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/css/jsoneditor.min.css">
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.0/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@latest/dist/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/spectre.css@latest/dist/spectre-icons.min.css">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
 	<style>
 		body {
-			font-size: 16px;
-			line-height: 1.1;
+			font-size: 18px !important;
 		}
 
-		.glyphicon {
-			top: unset;
-			bottom: 2px;
-			line-height: 1.1;
-			margin-left: 5px;
+		/*
+		 * Spread Basic tab property groups out a bit more
+		 */
+		 .row > div > .form-group {
+			margin-top: 1.5rem;
 		}
-
-		button.undoredo span {
-			display: none;
+		
+		/*
+		 * ... except the label (the first visible one)
+		 */
+		 .row > div[data-schemapath$=".label"] > .form-group {
+			margin-top: 0;
 		}
-
-		.json-editor-btn-edit_properties {
-			margin-left: -10px !important;
+		
+		/*
+		 * Mimetype and Filetype row buttons are not central
+		 */
+		 div[data-schemapath$=".mimetypes"] table tr td:nth-of-type(2), div[data-schemapath$=".filetypes"] table tr td:nth-of-type(2) {
+			padding-top: 0.47rem !important;
 		}
-
+		
+		/*
+		 * Remove margin from the placeholder help link and make its
+		 * div display inline (see javascript below for how we swap around
+		 * the div and give it a class).
+		 */
 		.placeholder-help {
-			display: inline-block !important;
-			margin-left: 7px;
+			padding-left: 1rem !important;
+			margin-bottom: 0px !important;
 		}
 
-		.container {
+		.placeholder-help-div {
+			display: inline;
+		}
+
+		/*
+		 * The info buttons need some space
+		 */
+		 .jsoneditor-twbs4-text-button {
+			padding-left: 1rem !important;
+		}
+
+		/*
+		 * Command/Menu selector box has "Command" truncated
+		 */
+		 div[data-schemapath*=".actions."] .je-switcher {
+			width: 5.3rem !important;
+		}
+
+		/*
+		 * Button groups next to labels need more space after the label
+		 */
+		 button.json-editor-btn-collapse ~ label {
+			padding-right: 1rem !important;
+		}
+
+		/*
+		 * Card titles were to squashed
+		 */
+		 .card-title, .tab-pane {
+			margin-bottom:1rem;
+		}
+
+		/*
+		 * The container in general needs to be centered
+		 * with some space at the top
+		 */
+		 .container {
 			position: absolute;
+			margin-top: 1rem;
 			left: 0;
 			right: 0;
 		}
@@ -72,36 +119,10 @@
 		/*
 		 * How to fiddle with the DOM!
 		 *
-		 * Without this, the help link appears in a weird place. 
+		 * Without this, the help link appears under the cmd box. With it it appears to
+		 * the right of the general info tooltip hoverspot. 
 		 * 
 		 * This puts it next to the label for the associated input
-		/*
-		 * This is incomplete at the moment
-		 *
-		 * The schema references this class, but we need the final rendering to change in this way:
-		 *
-		 * - This applies to an "a" element - but it's held in a div...
-		    <div> for the command line property
-		        <div class="form-group">
-			        <label...>
-				        <span>...</span>
-				    </label>
-				</div>
-				<div>
-                    <a class="placeholder-help"> ... </a>
-				</div>
-		    </div>
-		 *
-		 * - We need to move it like this ... for ALL "root.actions.n.command_line" editors
-		 *
-		    <div> for the command line property
-		        <div class="form-group">
-			        <label...>
-				        <span>...</span>
-                        <a class="placeholder-help"> ... </a>
-				    </label>
-				</div>
-		    </div>
 		 *
 		 * "root.actions.n.command_line.container" is the container div that we see here
 		 */
@@ -109,32 +130,50 @@
 		JSONEditor.defaults.editors.string.prototype.postBuild = function(value) {
 			var returnValue = defaultStringPostBuild.bind(this)(value);
 			if (this.path.endsWith(".command_line")) {
-				var labels = this.container.getElementsByTagName("label");
+				var formGroups = this.container.getElementsByClassName("form-group");
 				var helps = this.container.getElementsByClassName("placeholder-help");
-				if (labels.length > 0 && helps.length > 0) {
+				if (formGroups.length > 0 && helps.length > 0) {
+					/*
+					 * Get the placeholder help link container and give it a class
+					 */
 					helpDiv = helps[0].parentNode;
-					labels[0].append(helps[0]);
-					helpDiv.remove();
+					helpDiv.classList.add("placeholder-help-div")
+
+					/*
+					 * Insert it before the last element (the input element)
+					 */
+					formGroups[0].insertBefore(helpDiv, formGroups[0].lastElementChild)
+
 				} else {
-					console.log("FAILED move the command line help link", labels, helps, labels.length, helps.length);
+					console.log("FAILED move the command line help link", formGroups, helps, formGroups.length, helps.length);
 				}
 			}
   			return returnValue;
 		};
 
 		var editorConfig = {
+			/*
+			 * Editor options
+			 */
 			"array_controls_top": true,
 			"disable_array_delete_last_row": true,
 			"disable_collapse": true,
 			"disable_edit_json": true,
 			"iconlib": "fontawesome5",
 			"no_additional_properties": true,
-			"theme": "bootstrap3",
+			"theme": "bootstrap4",
 			"keep_oneof_values": false,
 			"display_required_only": false,
 			"use_default_values": true,
 			"disable_properties": true,
-			"show_opt_in": true
+			"show_opt_in": true,
+			/*
+			 * Bootstrap4 theme options
+			 */
+			"tooltip": "browser",
+			"object_indent": false,
+			"table_zebrastyle": true,
+			"table_border": false
 		}
 
 		var previous_values = [];
