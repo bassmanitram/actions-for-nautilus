@@ -8,7 +8,7 @@
 
 	<script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@latest/dist/js/bootstrap.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/jsoneditor.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/nonmin/jsoneditor.js"></script>
 
 	<link rel="stylesheet"
 		href="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/css/jsoneditor.min.css">
@@ -92,7 +92,8 @@
 			padding-bottom: 0.4rem;
 			text-indent: -0.7rem;
 			margin-left: 1.4rem;
-			line-height: 1.3
+			line-height: 1.3;
+			transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out;
 		}
 
 
@@ -116,7 +117,7 @@
 
 		.action-menu a, .action-command a {
 			display: inline;
-			padding: 0;
+			padding: 0.5rem 0;
 		}
 
 		/*
@@ -152,6 +153,7 @@
 		}
 		addEventListener("unload", onUnload);
 
+		console.log(JSONEditor.defaults);
 		/*
 		 * How to fiddle with the DOM!
 		 *
@@ -196,30 +198,66 @@
 			"command": "fa-chevron-right",
 			"menu": "fa-bars"
 		}
-		defaultArrayRefreshValue = JSONEditor.defaults.editors.multiple.prototype.refreshHeaderText;
+		defaultMultiRefreshValue = JSONEditor.defaults.editors.multiple.prototype.refreshHeaderText;
 		JSONEditor.defaults.editors.multiple.prototype.refreshHeaderText = function(value) {
-			var returnValue = defaultArrayRefreshValue.bind(this)(value);
-			if (/\.actions\.[0-9]+$/.test(this.path) && this.tab) {
-				var element = this.tab;
-				var type =  this.value.type;
-				var existingActionClass = this.a4nActionClass;
-				if (type != existingActionClass) {
-					if (existingActionClass) {
-				  		element.classList.remove("action-" + existingActionClass);
-						element.firstChild.classList.remove(iconNames[existingActionClass])
-				  	} else {
-						var ite = document.createElement('i');
-						ite.classList.add("fas")
-						element.insertBefore(ite, element.firstChild);
-					}
-					element.classList.add("action-" + type);
-					element.firstChild.classList.add(iconNames[type]);
-				}
-				this.a4nActionClass = type;
+			var returnValue = defaultMultiRefreshValue.bind(this)(value);
+			 if (/\.actions\.[0-9]+$/.test(this.path) && this.tab) {
+			 	var element = this.tab;
+			 	var type =  this.value.type;
+			 	var existingActionClass = this.a4nActionClass;
+			 	if (type != existingActionClass) {
+			 		if (existingActionClass) {
+			 	  		element.classList.remove("action-" + existingActionClass);
+			 			element.firstChild.classList.remove(iconNames[existingActionClass])
+			 	  	} else {
+			 			var ite = document.createElement('i');
+			 			ite.classList.add("fas")
+			 			element.insertBefore(ite, element.firstChild);
+			 		}
+			 		element.classList.add("action-" + type);
+			 		element.firstChild.classList.add(iconNames[type]);
+			 	}
+			 	this.a4nActionClass = type;
 			}
 			return returnValue;
 		}
 
+		/*
+		 * Now it gets tricky - the theme "markTabActive" and markTabInactive functions
+		 * assume that first child element in the link is the anchor ... but it's not
+		 * any more - it's the <i>
+		 * 
+		 * So we have to "correct" those two functions - theses are copies that are
+		 * so-corrected
+		 */
+		JSONEditor.defaults.themes.bootstrap4.prototype.markTabActive = function (row) {
+			if (row.tab.classList.contains("action-command") || row.tab.classList.contains("action-menu")) {
+				row.tab.firstChild.nextSibling.classList.add('active');
+			} else {
+				row.tab.firstChild.classList.add('active');
+			}
+			
+			if (typeof row.rowPane !== 'undefined') {
+  				row.rowPane.classList.add('active');
+			} else {
+  				row.container.classList.add('active');
+			}
+		}
+
+		JSONEditor.defaults.themes.bootstrap4.prototype.markTabInactive = function (row) {
+			if (row.tab.classList.contains("action-command") 
+			|| row.tab.classList.contains("action-menu")) {
+				row.tab.firstChild.nextSibling.classList.remove('active');
+			} else {
+				row.tab.firstChild.classList.remove('active');
+			}
+			
+			if (typeof row.rowPane !== 'undefined') {
+  				row.rowPane.classList.remove('active');
+			} else {
+  				row.container.classList.remove('active');
+			}
+		}
 
 		var editorConfig = {
 			/*
