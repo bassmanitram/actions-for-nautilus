@@ -106,7 +106,8 @@ To start the application:
 * Click on it
 
 The application will open in your default Web Browser. It will present the
-current configuration.
+current configuration (creating one from the [delivered sample](./configurator/sample-config.json) 
+if no configuration yet exists for the user).
 
 The UI _should_ be pretty self-explanatory - you can add, delete, move and
 modify Menus and Commands at will. Each configuration property is described
