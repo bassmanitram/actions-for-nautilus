@@ -23,24 +23,25 @@
 		/*
 		 * Spread Basic tab property groups out a bit more
 		 */
-		 .row > div > .form-group {
+		.row>div>.form-group {
 			margin-top: 1.5rem;
 		}
-		
+
 		/*
 		 * ... except the label (the first visible one)
 		 */
-		 .row > div[data-schemapath$=".label"] > .form-group {
+		.row>div[data-schemapath$=".label"]>.form-group {
 			margin-top: 0;
 		}
-		
+
 		/*
 		 * Mimetype and Filetype row buttons are not central
 		 */
-		 div[data-schemapath$=".mimetypes"] table tr td:nth-of-type(2), div[data-schemapath$=".filetypes"] table tr td:nth-of-type(2) {
+		div[data-schemapath$=".mimetypes"] table tr td:nth-of-type(2),
+		div[data-schemapath$=".filetypes"] table tr td:nth-of-type(2) {
 			padding-top: 0.47rem !important;
 		}
-		
+
 		/*
 		 * Remove margin from the placeholder help link and make its
 		 * div display inline (see javascript below for how we swap around
@@ -58,49 +59,57 @@
 		/*
 		 * The info buttons need some space
 		 */
-		 .jsoneditor-twbs4-text-button {
+		.jsoneditor-twbs4-text-button {
 			padding-left: 1rem !important;
 		}
 
 		/*
 		 * Command/Menu selector box has "Command" truncated
 		 */
-		 div[data-schemapath*=".actions."] .je-switcher {
+		div[data-schemapath*=".actions."] .je-switcher {
 			width: 5.3rem !important;
 		}
 
 		/*
 		 * Button groups next to labels need more space after the label
 		 */
-		 button.json-editor-btn-collapse ~ label {
+		button.json-editor-btn-collapse~label {
 			padding-right: 1rem !important;
 		}
 
 		/*
 		 * Card titles were to squashed
 		 */
-		 .card-title, .tab-pane {
-			margin-bottom:1rem;
+		.card-title,
+		.tab-pane {
+			margin-bottom: 1rem;
 		}
 
 		/*
 		 * Nav labels have too greater distance between lines
 		 * Line breaks that look good with the icons
 		 */
-		.action-command, .action-menu {
+		.action-command,
+		.action-menu {
 			padding-top: 0.1rem;
 			padding-bottom: 0.4rem;
 			text-indent: -0.7rem;
-			margin-left: 1.4rem;
-			line-height: 1.3;
-			transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out;
+			padding-left: 1.7rem;
+			border: 0;
+			background: 0.0;
+			border-radius: 0.25rem;
 		}
 
+		.action-command.active,
+		.action-menu.active {
+			color: #fff;
+			background-color: #0d6efd;
+		}
 
 		/*
 		 * A icons to the action selectors
 		 */
-		 .action-command i::before {
+		.action-command i::before {
 			content: "$\f054";
 			font-weight: 900;
 			padding-right: 0.25rem;
@@ -111,20 +120,22 @@
 			padding-right: 0.5rem;
 		}
 
-		.action-menu i, .action-command i {
+		.action-menu i,
+		.action-command i {
 			font-size: 1rem;
 		}
 
-		.action-menu a, .action-command a {
+		.action-menu a,
+		.action-command a {
 			display: inline;
-			padding: 0.5rem 0;
+			padding: 0;
 		}
 
 		/*
 		 * The container in general needs to be centered
 		 * with some space at the top
 		 */
-		 .container {
+		.container {
 			position: absolute;
 			margin-top: 1rem;
 			left: 0;
@@ -144,7 +155,7 @@
 		 * backend server that it is using, unload should
 		 * stop that server :)
 		 */
-		 function onUnload(event) {
+		function onUnload(event) {
 			$.ajax({
 				url: '/terminate',
 				type: 'post',
@@ -154,8 +165,111 @@
 		addEventListener("unload", onUnload);
 
 		console.log(JSONEditor.defaults);
+
+		/*********************
+		 * *******************
+		 * *******************
+		 * 
+		 * To get some of the behaviour we want we have to extend the default
+		 * Bootstrap4 theme class
+		 * 
+		 * *******************
+		 * *******************
+		 *********************/
+		const iconNames = {
+			"command": "fa-chevron-right",
+			"menu": "fa-bars"
+		}
+		class a4nbootstrap4Theme extends JSONEditor.defaults.themes.bootstrap4 {
+			constructor(jsoneditor) {
+				super(jsoneditor)
+			}
+
+			/*
+			 * We want to insert an icon before the tab selector label text 
+			 * and have activation/deactivation classes associated with the 
+			 * view
+			 */
+			getTab (text, id) {
+				var element = super.getTab(text, id);
+				var myEditor = this.jsoneditor.getEditor(id);
+				if (/\.actions\.[0-9]+$/.test(id)) {
+					var actionType = myEditor.value.type;
+//					console.log(actionType, myEditor);
+					var ite = document.createElement('i');
+					ite.classList.add("fas")
+					element.insertBefore(ite, element.firstChild);
+					element.classList.add("action-" + actionType);
+					element.firstChild.classList.add(iconNames[actionType]);
+					myEditor.a4nActionType = actionType;
+				}
+				return element;
+			}
+
+			/*
+			 * The theme "markTabActive" and markTabInactive functions assume that first
+			 * child element in the link is the anchor ... but it's not any more - it's the <i>
+			 * 
+			 * So we have to "correct" those two functions - these are copies that are
+			 * so-corrected
+			 */
+			markTabActive (row) {
+				if (row.tab.classList.contains("action-command") || row.tab.classList.contains("action-menu")) {
+					row.tab.firstChild.nextSibling.classList.add('active');
+					row.tab.classList.add('active');
+				} else {
+					row.tab.firstChild.classList.add('active');
+				}
+
+				if (typeof row.rowPane !== 'undefined') {
+					row.rowPane.classList.add('active');
+				} else {
+					row.container.classList.add('active');
+				}
+			}
+
+			markTabInactive (row) {
+				if (row.tab.classList.contains("action-command")
+					|| row.tab.classList.contains("action-menu")) {
+					row.tab.firstChild.nextSibling.classList.remove('active');
+					row.tab.classList.remove('active');
+				} else {
+					row.tab.firstChild.classList.remove('active');
+				}
+
+				if (typeof row.rowPane !== 'undefined') {
+					row.rowPane.classList.remove('active');
+				} else {
+					row.container.classList.remove('active');
+				}
+			}
+		}
+
 		/*
-		 * How to fiddle with the DOM!
+		 * Install the modified Bootstrap4 theme into the JSON editor so that it is
+		 * instantable.
+		 */
+		JSONEditor.defaults.themes.a4nbootstrap4 = a4nbootstrap4Theme;
+
+		/*********************
+		 * *******************
+		 * *******************
+		 * 
+		 * How to fiddle with the editor DOM!
+		 *
+		 * Without this, the help link appears under the cmd box. With it it appears to
+		 * the right of the general info tooltip hoverspot. 
+		 * 
+		 * This puts it next to the label for the associated input
+		 *
+		 * "root.actions.n.command_line.container" is the container div that we see here
+		 * 
+		 * *******************
+		 * *******************
+		 *********************/
+
+		/*
+		 * Part 1
 		 *
 		 * Without this, the help link appears under the cmd box. With it it appears to
 		 * the right of the general info tooltip hoverspot. 
@@ -165,7 +279,7 @@
 		 * "root.actions.n.command_line.container" is the container div that we see here
 		 */
 		defaultStringPostBuild = JSONEditor.defaults.editors.string.prototype.postBuild;
-		JSONEditor.defaults.editors.string.prototype.postBuild = function(value) {
+		JSONEditor.defaults.editors.string.prototype.postBuild = function (value) {
 			var returnValue = defaultStringPostBuild.bind(this)(value);
 			if (this.path.endsWith(".command_line")) {
 				var formGroups = this.container.getElementsByClassName("form-group");
@@ -186,79 +300,45 @@
 					console.log("FAILED move the command line help link", formGroups, helps, formGroups.length, helps.length);
 				}
 			}
-  			return returnValue;
+			return returnValue;
 		};
 
 		/*
-		 * How to fiddle with the DOM part 2
+		 * Part 2
 		 *
-		 * We want the tab selectors to us an icon - but, for that, they need another class
+		 * The tab selectors have icons and classes we can use - now we have to
+		 * switch them as necessary
 		 */
-		const iconNames = {
-			"command": "fa-chevron-right",
-			"menu": "fa-bars"
-		}
-		defaultMultiRefreshValue = JSONEditor.defaults.editors.multiple.prototype.refreshHeaderText;
-		JSONEditor.defaults.editors.multiple.prototype.refreshHeaderText = function(value) {
-			var returnValue = defaultMultiRefreshValue.bind(this)(value);
-			 if (/\.actions\.[0-9]+$/.test(this.path) && this.tab) {
-			 	var element = this.tab;
-			 	var type =  this.value.type;
-			 	var existingActionClass = this.a4nActionClass;
-			 	if (type != existingActionClass) {
-			 		if (existingActionClass) {
-			 	  		element.classList.remove("action-" + existingActionClass);
-			 			element.firstChild.classList.remove(iconNames[existingActionClass])
-			 	  	} else {
-			 			var ite = document.createElement('i');
-			 			ite.classList.add("fas")
-			 			element.insertBefore(ite, element.firstChild);
-			 		}
-			 		element.classList.add("action-" + type);
-			 		element.firstChild.classList.add(iconNames[type]);
-			 	}
-			 	this.a4nActionClass = type;
+		defaultMultiRefreshHeaderText = JSONEditor.defaults.editors.multiple.prototype.refreshHeaderText;
+		JSONEditor.defaults.editors.multiple.prototype.refreshHeaderText = function (value) {
+			var returnValue = defaultMultiRefreshHeaderText.bind(this)(value);
+			if (/\.actions\.[0-9]+$/.test(this.path) && this.tab) {
+				var element = this.tab;
+				var actionType = this.value.type;
+				var existingActionType = this.a4nActionType;
+				//				console.log(actionType, existingActionType);
+				if (actionType != existingActionType) {
+					if (existingActionType) {
+						element.classList.remove("action-" + existingActionType);
+						element.firstChild.classList.remove(iconNames[existingActionType])
+					}
+					element.classList.add("action-" + actionType);
+					element.firstChild.classList.add(iconNames[actionType]);
+				}
+				this.a4nActionType = actionType;
 			}
 			return returnValue;
 		}
 
-		/*
-		 * Now it gets tricky - the theme "markTabActive" and markTabInactive functions
-		 * assume that first child element in the link is the anchor ... but it's not
-		 * any more - it's the <i>
+		/*********************
+		 * *******************
+		 * *******************
 		 * 
-		 * So we have to "correct" those two functions - theses are copies that are
-		 * so-corrected
-		 */
-		JSONEditor.defaults.themes.bootstrap4.prototype.markTabActive = function (row) {
-			if (row.tab.classList.contains("action-command") || row.tab.classList.contains("action-menu")) {
-				row.tab.firstChild.nextSibling.classList.add('active');
-			} else {
-				row.tab.firstChild.classList.add('active');
-			}
-			
-			if (typeof row.rowPane !== 'undefined') {
-  				row.rowPane.classList.add('active');
-			} else {
-  				row.container.classList.add('active');
-			}
-		}
-
-		JSONEditor.defaults.themes.bootstrap4.prototype.markTabInactive = function (row) {
-			if (row.tab.classList.contains("action-command") 
-			|| row.tab.classList.contains("action-menu")) {
-				row.tab.firstChild.nextSibling.classList.remove('active');
-			} else {
-				row.tab.firstChild.classList.remove('active');
-			}
-			
-			if (typeof row.rowPane !== 'undefined') {
-  				row.rowPane.classList.remove('active');
-			} else {
-  				row.container.classList.remove('active');
-			}
-		}
-
+		 * Now we are ready to configure and run
+		 * 
+		 * *******************
+		 * *******************
+		 * *******************/
 		var editorConfig = {
 			/*
 			 * Editor options
@@ -269,7 +349,7 @@
 			"disable_edit_json": true,
 			"iconlib": "fontawesome5",
 			"no_additional_properties": true,
-			"theme": "bootstrap4",
+			"theme": "a4nbootstrap4",
 			"keep_oneof_values": false,
 			"display_required_only": false,
 			"use_default_values": true,
@@ -316,21 +396,6 @@
 				setEditorValueFromPreviousValues(editor);
 			}
 		}
-
-//		function restartNautilus(e) {
-//			e.preventDefault();
-//			$.ajax({
-//				url: '/restart',
-//				type: 'post',
-//				data: "",
-//				error: function (xh, msg, e) {
-//					console.error(msg, e)
-//				},
-//				success: function (response) {
-//					console.log(response)
-//				}
-//			});
-//		}
 
 		function saveConfig(e) {
 			e.preventDefault();
