@@ -207,6 +207,11 @@ Menu actions are expected to contain one addition property:
   pattern as the elements contained by the configuration's root `actions` 
   property
 
+When the Nautilus/Files context menu is activated for a selection, Actions For Nautilus asseses 
+all the commands configured within a menu to establish if the commands are relevant for the current 
+selection. If no commands are so-relevant, then the menu does not appear in the Nautilus/Files 
+context menu.
+
 ## Command actions
 Actions with a `type` property of `command` define actions that, when clicked on, execute a command.
 
