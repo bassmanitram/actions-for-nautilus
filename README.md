@@ -43,19 +43,20 @@ just in case :)).
 2. `cd actions-for-nautilus`
 3. `make install` to install for only your use, or `sudo make install_global`
    to install for all users.
-4. Restart the Nautilus (`nautilus -q`) if not seeing the options.
 5. You _may_ have to restart the Gnome shell in order to see the configuration
-   application 
+   application in your desktop applications list
 
 ## Uninstallation
 
 1. `cd path/to/actions-for-nautilus`   
 2. `make uninstall` if you installed for only your use, or `sudo make install_global`
    if you installed for all users.
-3. Restart the Nautilus (`nautilus -q`) if still seeing the options after
-   uninstall.
-4. You _may_ have to restart the Gnome shell in order to stop seeing the configuration
-   application 
+3. You _may_ have to restart the Gnome shell in order to see the configuration
+   application in your desktop applications list
+
+On installation, you won't see anything, because you need to have a working configuration
+for anything to change. This can be installed siimply by starting the [configuration
+UI](#configuration-ui).
 
 # Sample Scripts
 The delivered [sample configuration file](./configurator/sample-config.json) (copied to 
