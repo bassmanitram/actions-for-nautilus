@@ -54,9 +54,10 @@ just in case :)).
 3. You _may_ have to restart the Gnome shell in order to see the configuration
    application in your desktop applications list
 
-On installation, you won't see anything, because you need to have a working configuration
-for anything to change. This can be installed siimply by starting the [configuration
-UI](#configuration-ui).
+On first installation, you won't see anything different in the Nautilus context 
+menus, because you need to have a working configuration for anything to change. 
+The sample configuration will be installed for the user simply by starting the 
+[configuration UI](#configuration-ui).
 
 # Sample Scripts
 The delivered [sample configuration file](./configurator/sample-config.json) (copied to 
