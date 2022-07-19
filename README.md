@@ -59,7 +59,7 @@ menus, because you need to have a working configuration for anything to change.
 The sample configuration will be installed for the user simply by starting the 
 [configuration UI](#configuration-ui).
 
-# Sample Scripts
+## Sample Scripts
 The delivered [sample configuration file](./configurator/sample-config.json) (copied to 
 
 ```
