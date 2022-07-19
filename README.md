@@ -1,4 +1,4 @@
-# actions-for-nautilus
+# Actions For Nautilus
 A "replacement" for the now defunct `filemanager/nautilus-actions` project.
 
 The extension supports many of the most commonly used features of that project,
