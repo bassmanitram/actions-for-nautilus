@@ -470,9 +470,10 @@ I was tempted to take over the maintenance of that project, but was put off by
 its complex C implementation (I'm a perfectly competent C programmer, mind!).
 
 I was convinced that a much less complex implementation of most of the main
-functionality (outside of a configuration UI) was possible using Python and 
-the glue to Nautilus found in the `nautilus-python` framework, and by using a 
-far more semantically relevant configuration format such as JSON.
+functionality was possible using Python and the glue to Nautilus found in the 
+`nautilus-python` framework, and by using a far more semantically relevant 
+configuration format such as JSON and adapting an existing JSON editor UI rather
+than building a configuration UI from scratch.
 
 I think I have proved my point :)
 
