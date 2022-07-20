@@ -72,11 +72,30 @@
 		}
 
 		/*
-		 * Mimetype and Filetype row buttons are not central
+		 * Mimetype and Filetype row buttons are not central aligned,
+		 * And we really don't need the 'TH' or the repeat of the 
+		 * title in the array tab
 		 */
-		div[data-schemapath$=".mimetypes"] table tr td:nth-of-type(2),
-		div[data-schemapath$=".filetypes"] table tr td:nth-of-type(2) {
+		div[data-schemapath$=".mimetypes"] table tr td,
+		div[data-schemapath$=".filetypes"] table tr td {
 			vertical-align: middle;
+		}
+
+		div[data-schemapath$=".mimetypes"] table tr th,
+		div[data-schemapath$=".filetypes"] table tr th {
+			display: none;
+		}
+
+		div[data-schemapath$=".mimetypes"]>h3>label,
+		div[data-schemapath$=".filetypes"]>h3>label {
+			visibility: collapse;
+			font-size: 0;
+		}
+
+		div[data-schemapath$=".mimetypes"]>h3>label>input,
+		div[data-schemapath$=".filetypes"]>h3>label>input {
+			visibility: visible;
+			margin: 0 !important;
 		}
 
 		/*

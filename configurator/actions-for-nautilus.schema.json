@@ -215,7 +215,7 @@
 					"items": {
 						"$ref": "#/definitions/FileType"
 					},
-					"title": "Filetypes",
+					"title": "File types",
 					"options": {
 						"infoText": "A list of file types for which the action will be displayed, or not be displayed in the event of a '!' prefix.",
 						"grid_columns": 2
