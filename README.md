@@ -39,12 +39,24 @@ just in case :)).
 
 ## Download & Install the Extension
 
+At the moment, no distribution-specific packaging is provided for the extension,
+although I do intend to build those out soon - for now, then, you will need to
+follow these steps to install the extension.
+
 1. `git clone https://github.com/bassmanitram/actions-for-nautilus.git`
 2. `cd actions-for-nautilus`
 3. `make install` to install for only your use, or `sudo make install_global`
    to install for all users.
 5. You _may_ have to restart the Gnome shell in order to see the configuration
    application in your desktop applications list
+   
+If you don't have the `make` command in your system, sumply install the `make`
+pacjake in the same way you installed the [other dependencies](#install-dependencies).
+
+On _first_ installation, you won't see anything different in the Nautilus context 
+menus, because you need to have a working configuration for anything to change. 
+The sample configuration will be installed for the user simply by starting the 
+[configuration UI](#configuration-ui).
 
 ## Uninstallation
 
@@ -54,10 +66,6 @@ just in case :)).
 3. You _may_ have to restart the Gnome shell in order to see the configuration
    application in your desktop applications list
 
-On first installation, you won't see anything different in the Nautilus context 
-menus, because you need to have a working configuration for anything to change. 
-The sample configuration will be installed for the user simply by starting the 
-[configuration UI](#configuration-ui).
 
 ## Sample Scripts
 The delivered [sample configuration file](./configurator/sample-config.json) (copied to 
@@ -98,7 +106,7 @@ _all_ the actions to fully work
 * `zenity` - a Gnome UI toolkit for shell scripts
 
 # Configuration UI
-When you install this extension, a Configurator application is installed into 
+When you install this extension, a configuration application is installed into 
 your local desktop Applications collection.
 
 To start the application:
@@ -114,8 +122,7 @@ The UI _should_ be pretty self-explanatory - you can add, delete, move and
 modify Menus and Commands at will. Each configuration property is described
 with a help message. 
 
-In order to save configuration changes, click on the **Save Config** button.
-
+In order to save configuration changes, click on the **Save Config** button. 
 Your changes should be visible in Nautilus after about 30 seconds (the timeout
 for the config file change watcher code).
 
