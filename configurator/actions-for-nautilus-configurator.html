@@ -16,8 +16,44 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/spectre.css@latest/dist/spectre-icons.min.css">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
 	<style>
+		/*
+		 * A readable bas font!
+		 */
 		body {
 			font-size: 18px !important;
+		}
+
+		/*
+		 * The container in general needs to be centered
+		 * with some space at the top
+		 */
+		 .container {
+			position: absolute;
+			margin-top: 2rem;
+			left: 0;
+			right: 0;
+		}
+		/*
+		 * The title needs to be centered with a bigger font
+		 */
+		h3.level-1 {
+			display: block !important;
+			font-size: 2.3rem;
+			text-align: center;
+		}
+
+		/*
+		 * Submenu title doesn't need to display (it's the name of the tab!)
+		 */
+		div[data-schemapath$=".actions"] > h3 > label {
+			display: none;
+		}
+
+		/*
+		 * Nor does the action name
+		 */
+		 div.tab-pane[role="tabpanel"] > label {
+			display: none;
 		}
 
 		/*
@@ -142,16 +178,6 @@
 			background-color: rgba(0,0,0,.04) !important;
 		}
 
-		/*
-		 * The container in general needs to be centered
-		 * with some space at the top
-		 */
-		.container {
-			position: absolute;
-			margin-top: 1rem;
-			left: 0;
-			right: 0;
-		}
 	</style>
 </head>
 

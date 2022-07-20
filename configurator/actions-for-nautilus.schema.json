@@ -61,7 +61,7 @@
 					"items": {
 						"$ref": "#/definitions/Action"
 					},
-					"title": "Top Level Actions",
+					"title": "Main Menu",
 					"options": {
 						"infoText": "The list of command configurations and/or submenus that will be added to the Nautilus context menu."
 					}
