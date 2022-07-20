@@ -27,12 +27,13 @@
 		 * The container in general needs to be centered
 		 * with some space at the top
 		 */
-		 .container {
+		.container {
 			position: absolute;
 			margin-top: 2rem;
 			left: 0;
 			right: 0;
 		}
+
 		/*
 		 * The title needs to be centered with a bigger font
 		 */
@@ -45,14 +46,14 @@
 		/*
 		 * Submenu title doesn't need to display (it's the name of the tab!)
 		 */
-		div[data-schemapath$=".actions"] > h3 > label {
+		div[data-schemapath$=".actions"]>h3>label {
 			display: none;
 		}
 
 		/*
 		 * Nor does the action name
 		 */
-		 div.tab-pane[role="tabpanel"] > label {
+		div.tab-pane[role="tabpanel"]>label {
 			display: none;
 		}
 
@@ -75,7 +76,7 @@
 		 */
 		div[data-schemapath$=".mimetypes"] table tr td:nth-of-type(2),
 		div[data-schemapath$=".filetypes"] table tr td:nth-of-type(2) {
-			padding-top: 0.47rem !important;
+			vertical-align: middle;
 		}
 
 		/*
@@ -97,13 +98,17 @@
 		 */
 		.jsoneditor-twbs4-text-button {
 			padding-left: 1rem !important;
+			vertical-align: middle;
 		}
 
 		/*
-		 * Command/Menu selector box has "Command" truncated
+		 * Command/Menu selector box is too narrow, too low
+		 * and not centered
 		 */
-		div[data-schemapath*=".actions."] .je-switcher {
+		.a4n-action-type-chooser {
 			width: 5.3rem !important;
+			height: 1.94rem !important;
+			vertical-align: middle !important;
 		}
 
 		/*
@@ -143,7 +148,7 @@
 		}
 
 		/*
-		 * A icons to the action selectors
+		 * Add icons to the action selectors
 		 */
 		.action-command i::before {
 			content: "$\f054";
@@ -171,13 +176,12 @@
 		 * Some shading adjustments
 		 */
 		.card-header {
-			background-color: rgba(0,0,0,.05);
+			background-color: rgba(0, 0, 0, .05);
 		}
 
 		.card-body.bg-light {
-			background-color: rgba(0,0,0,.04) !important;
+			background-color: rgba(0, 0, 0, .04) !important;
 		}
-
 	</style>
 </head>
 
@@ -227,12 +231,11 @@
 			 * and have activation/deactivation classes associated with the 
 			 * view
 			 */
-			getTab (text, id) {
+			getTab(text, id) {
 				var element = super.getTab(text, id);
 				var myEditor = this.jsoneditor.getEditor(id);
 				if (/\.actions\.[0-9]+$/.test(id)) {
 					var actionType = myEditor.value.type;
-//					console.log(actionType, myEditor);
 					var ite = document.createElement('i');
 					ite.classList.add("fas")
 					element.insertBefore(ite, element.firstChild);
@@ -250,7 +253,7 @@
 			 * So we have to "correct" those two functions - these are copies that are
 			 * so-corrected
 			 */
-			markTabActive (row) {
+			markTabActive(row) {
 				if (row.tab.classList.contains("action-command") || row.tab.classList.contains("action-menu")) {
 					row.tab.firstChild.nextSibling.classList.add('active');
 					row.tab.classList.add('active');
@@ -265,7 +268,7 @@
 				}
 			}
 
-			markTabInactive (row) {
+			markTabInactive(row) {
 				if (row.tab.classList.contains("action-command")
 					|| row.tab.classList.contains("action-menu")) {
 					row.tab.firstChild.nextSibling.classList.remove('active');
@@ -366,6 +369,49 @@
 			}
 			return returnValue;
 		}
+
+		/*
+		 * Part 3
+		 *
+		 * Action object editors also need some reordering
+		 */
+		defaultArrayGetElementEditor = JSONEditor.defaults.editors.array.prototype.getElementEditor;
+		JSONEditor.defaults.editors.array.prototype.getElementEditor = function (value) {
+			var returnValue = defaultArrayGetElementEditor.bind(this)(value);
+			if (/\.actions\.[0-9]+$/.test(returnValue.path)) {
+				/*
+				 * THIS is the completed container that we need to swap around a bit
+				 *
+				 * There should be four elements:
+				 *     LABEL (CSS will hide this)
+				 *     SELECT (choice between menu and command
+				 *     DIV (the object editor for the  menu/command)
+				 *     SPAN (the buttons)
+				 * 
+				 * What we want is
+				 *     LABEL
+				 *     SPAN
+				 *     SELECT
+				 *     DIV
+				 * 
+				 * And, while we are at it, we put an a4n-specific class on the selector
+				 * to make it easier to style
+				 */
+				if (returnValue.container.children.length == 4
+				&&  returnValue.container.children[0].tagName == "LABEL"
+				&&  returnValue.container.children[1].tagName == "SELECT"
+				&&  returnValue.container.children[2].tagName == "DIV"
+				&&  returnValue.container.children[3].tagName == "SPAN"
+				) {
+					returnValue.container.children[1].classList.add("a4n-action-type-chooser");
+					returnValue.container.insertBefore(returnValue.container.children[3], returnValue.container.children[1]);
+				} else {
+					console.log("Unexpected container layout for " + returnValue.path + " container", returnValue.container);
+				}
+			}
+			return returnValue;
+		}
+
 
 		/*********************
 		 * *******************
