@@ -1,5 +1,5 @@
 # Actions For Nautilus
-A "replacement" for the now defunct `filemanager/nautilus-actions` project.
+A "replacement" for the now-defunct `filemanager/nautilus-actions` project.
 
 The extension supports many of the most commonly used features of that project,
 including:
@@ -20,7 +20,7 @@ including:
 
 [A configuration application](#configuration-ui) by the name "Actions For Nautilus 
 Configurator" is installed into your desktop applications collection. When you
-first use the configurator, if no existing configuration file exists, the delivered
+first use the configurator, if no existing configuration file is found, the delivered
 [sample configuration](./configurator/sample-config.json) will be installed.
 
 # Installation
