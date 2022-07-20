@@ -29,7 +29,7 @@ first use the configurator, if no existing configuration file is found, the deli
 Firstly, of course, the extension relies upon GNOME and GNOME Files (aka
 Nautilus) being installed.
 
-Then it extension relies on `python 3+`, `nautilus-python`, and certain
+Then it relies on `python 3+`, `nautilus-python`, and certain
 process management tools (which are likely already installed but
 just in case :)).
 
