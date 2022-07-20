@@ -121,6 +121,26 @@
 		}
 
 		/*
+		 * Opt-in toggles need a tooltip
+		 *
+		 * This is the interesting way to do it; but, in the end
+		 * we simply hack the function that creates the box in order
+		 * to add a title.
+		 *
+		input.json-editor-opt-in:hover::after {
+			content: "Enable/disable optional setting in the configuration.";
+			position: absolute;
+			font-size: initial;
+			left: 2em;
+			padding: 2px 5px;
+			min-width: 200px;
+			color: rgb(200,200,200);
+			background-color: rgb(64,64,64);
+			z-index: 1;
+		}
+		*/
+
+		/*
 		 * Command/Menu selector box is too narrow, too low
 		 * and not centered
 		 */
@@ -225,6 +245,8 @@
 		addEventListener("unload", onUnload);
 
 		console.log(JSONEditor.defaults);
+
+		console.log(JSONEditor.defaults.editors.object.prototype);
 
 		/*********************
 		 * *******************
@@ -417,10 +439,10 @@
 				 * to make it easier to style
 				 */
 				if (returnValue.container.children.length == 4
-				&&  returnValue.container.children[0].tagName == "LABEL"
-				&&  returnValue.container.children[1].tagName == "SELECT"
-				&&  returnValue.container.children[2].tagName == "DIV"
-				&&  returnValue.container.children[3].tagName == "SPAN"
+					&& returnValue.container.children[0].tagName == "LABEL"
+					&& returnValue.container.children[1].tagName == "SELECT"
+					&& returnValue.container.children[2].tagName == "DIV"
+					&& returnValue.container.children[3].tagName == "SPAN"
 				) {
 					returnValue.container.children[1].classList.add("a4n-action-type-chooser");
 					returnValue.container.insertBefore(returnValue.container.children[3], returnValue.container.children[1]);
@@ -431,6 +453,21 @@
 			return returnValue;
 		}
 
+		/*
+		 * Part 4
+		 *
+		 * We want a tooltip on the opt-in checkboxes.
+		 * 
+		 * Complicated (but interesting) way - use an ::after:hover CSS setup
+		 * Easy way: just ad a title
+		 */
+		const abstractEditorPrototype = Object.getPrototypeOf(JSONEditor.defaults.editors.object.prototype);
+		const defaultSetOptInCheckbox = abstractEditorPrototype.setOptInCheckbox
+		abstractEditorPrototype.setOptInCheckbox = function (value) {
+			var returnValue = defaultSetOptInCheckbox.bind(this)(value);
+			this.optInCheckbox.setAttribute("title", "Enable/disable optional setting in the configuration");
+			return returnValue;
+		}
 
 		/*********************
 		 * *******************
