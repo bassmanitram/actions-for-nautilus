@@ -225,7 +225,7 @@
 </head>
 
 <body>
-	<div class='container col-md-10'>
+	<div class='container col-md-12'>
 		<div id='editor_holder'></div>
 	</div>
 
@@ -436,7 +436,7 @@
 				 *     DIV
 				 * 
 				 * And, while we are at it, we put an a4n-specific class on the selector
-				 * to make it easier to style
+				 * to make it easier to style, and add a tooltip
 				 */
 				if (returnValue.container.children.length == 4
 					&& returnValue.container.children[0].tagName == "LABEL"
@@ -444,6 +444,7 @@
 					&& returnValue.container.children[2].tagName == "DIV"
 					&& returnValue.container.children[3].tagName == "SPAN"
 				) {
+					returnValue.container.children[1].setAttribute("title", "Select the type of action");
 					returnValue.container.children[1].classList.add("a4n-action-type-chooser");
 					returnValue.container.insertBefore(returnValue.container.children[3], returnValue.container.children[1]);
 				} else {
