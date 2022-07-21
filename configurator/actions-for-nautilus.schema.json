@@ -179,7 +179,7 @@
 					"minLength": 1,
 					"title": "Current working directory",
 					"options": {
-						"infoText": "The Current working directory to set when executing the command. Placeholders are allowed.",
+						"infoText": "The current working directory to set when executing the command. Placeholders are allowed.",
 						"grid_columns": 2
 					}
 				},
