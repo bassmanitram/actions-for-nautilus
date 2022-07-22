@@ -7,6 +7,18 @@
 			"pattern": "^(!?[A-Za-z0-9-]+\\/(([A-Za-z0-9-]+)|\\*))|(\\*)|(\\*\\/\\*)$",
 			"title": "Mimetype"
 		},
+		"SortStyles": {
+			"type": "string",
+			"enum": [
+				"manual",
+				"auto"
+			],
+			"default": "manual",
+			"title": "Menu sorting",
+			"options": {
+				"infoText": "Whether actions should be sorted automatically or left in the configured order."
+			}
+		},
 		"FileType": {
 			"type": "string",
 			"enum": [
@@ -66,6 +78,9 @@
 						"infoText": "The list of command configurations and/or submenus that will be added to the Nautilus context menu."
 					}
 				},
+				"sort": {
+					"$ref": "#/definitions/SortStyles"
+				},
 				"debug": {
 					"title": "Enable debugging output",
 					"type": "boolean",
@@ -101,6 +116,10 @@
 					"options": {
 						"infoText":  "The label that will appear in the context menu for this sub menu."
 					}
+				},
+				"sort": {
+					"$ref": "#/definitions/SortStyles",
+					"title": "Submenu sorting"
 				},
 				"actions": {
 					"type": "array",

@@ -18,7 +18,8 @@ def create_menu_items(config, files, group, act_function):
 			"uri": urlparse(file.get_uri())
 		}, files))
 
-	return sorted(list(filter(None, map(lambda action: _create_menu_item(action, my_files, group, act_function), config["actions"]))), key=lambda element: element.props.label)
+	actions = list(filter(None, map(lambda action: _create_menu_item(action, my_files, group, act_function), config["actions"])))
+	return sorted(actions, key=lambda element: element.props.label) if config.get("sort","manual") == "auto" else actions
 	
 #
 # Triage the menu item creation based on type
@@ -42,7 +43,7 @@ def _create_submenu_menu_item(action, files, group, act_function):
 			label=action["label"],
 		)
 		menu_item.set_submenu(menu)
-		for menu_sub_item in sorted(actions,key=lambda element: element.props.label):
+		for menu_sub_item in (sorted(actions,key=lambda element: element.props.label) if action.get("action","manual") else actions):
 			menu.append_item(menu_sub_item)
 		return menu_item
 

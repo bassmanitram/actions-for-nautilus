@@ -159,7 +159,7 @@ that describes exactly how the configuration file needs to be built.
 ## Top level structure
 The top level structure in the configuration file must be a JSON object which is 
 expected to contain a property named `actions` whose value is, itself, an array of 
-objects:
+objects, and a string property named `sort`:
 
 ```
 {
@@ -167,10 +167,21 @@ objects:
     {
       ...
     },
-    ...
+    "sort": "manual or auto"
   ]
 }
 ```
+
+The `sort` property is optional and indicates the approach to use for sorting 
+the actions presented by the top level menu. The allowed values are:
+* `manual` - The extension leaves the items in the order in which they appear 
+  in the configuration
+* `auto` - The extension sorts the items in alphanumeric order
+
+The default value is - `manual`
+
+The `actions` array contains the configuration of each action to be presented
+in the top level menu
 
 Each element of the array is then an object (and *action*) which, primarily, must have a 
 property named `type` whose value is either `command` or `menu`, and a property 
@@ -191,6 +202,9 @@ context menu.
     ...
 
 ```
+
+The subsequent sections describe these action objects in detail.
+
 ## Menu actions
 Actions with a `type` property of `menu` define "sub menu" actions that, when 
 clicked on, expose a nested menu of further actions, themselves being command 
@@ -203,20 +217,29 @@ actions or further nested menus.
       "label": "My Sub Menu",
       "actions": [
         ...
-      ]
+      ],
+      "sort": "manual or auto"
     },
     ...
 ```
 
-Menu actions are expected to contain one addition property:
+Menu actions are expected to contain two additional properties:
 
 * `actions` - REQUIRED - an array of elements each of which follows the same
   pattern as the elements contained by the configuration's root `actions` 
   property
 
-When the Nautilus/Files context menu is activated for a selection, Actions For Nautilus asseses 
+* `sort` - OPTIONAL - The approach to use for sorting the actions
+  presented by the menu
+  * `manual` - The extension leaves the items in the order in which they appear 
+    in the configuration
+  * `auto` - The extension sorts the items in alphanumeric order
+
+  *Default* - `manual`
+
+When the Nautilus/Files context menu is activated for a selection, the extension assesses 
 all the commands configured within a menu to establish if the commands are relevant for the current 
-selection. If no commands are so-relevant, then the menu does not appear in the Nautilus/Files 
+selection. If no commands are found to be relevant, then the menu does not appear in the Nautilus/Files 
 context menu.
 
 ## Command actions
@@ -268,6 +291,27 @@ These are expected to have the following additional properties:
 
   *Default* - `false`
 
+* `filetypes` - OPTIONAL - the general filetypes of the selected files for which
+  this action is to be displayed (or for which the action is not to be displayed)
+
+  The value should be a JSON list of strings each one of which should have one 
+  of the following values:
+
+  * `unknown` - for files of an unknown type
+  * `directory` - for directories
+  * `file` - for standard files
+  * `symbolic-link` - for symbolic links
+  * `special` - for special files (pipes, devices, ...)
+  * `standard` - shorthand for directories, standard files, and symbolic links
+  
+  Again, these can be prefixed with a `!` character to indicate that the 
+  selected files should _not_ be of that type.
+
+  Only the first appearance of a specific filetype (regardless of any `!` "not"
+  prefix) is taken into account.
+
+  *Default* - all filetypes
+
 * `max_items` - OPTIONAL - the maximum number of items in the selection for 
   which this action will be displayed.
 
@@ -302,26 +346,6 @@ These are expected to have the following additional properties:
 
   *Default* - all mimetypes 
 
-* `filetypes` - OPTIONAL - the general filetypes of the selected files for which
-  this action is to be displayed (or for which the action is not to be displayed)
-
-  The value should be a JSON list of strings each one of which should have one 
-  of the following values:
-
-  * `unknown` - for files of an unknown type
-  * `directory` - for directories
-  * `file` - for standard files
-  * `symbolic-link` - for symbolic links
-  * `special` - for special files (pipes, devices, ...)
-  * `standard` - shorthand for directories, standard files, and symbolic links
-  
-  Again, these can be prefixed with a `!` character to indicate that the 
-  selected files should _not_ be of that type.
-
-  Only the first appearance of a specific filetype (regardless of any `!` "not"
-  prefix) is taken into account.
-
-  *Default* - all filetypes
 
 # Place holders
 All the command line and `cwd` placeholders implemented by the 
