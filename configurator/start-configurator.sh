@@ -1,9 +1,4 @@
 #!/bin/sh
-_MY_DIR="$( cd "$( dirname $( readlink -f "${BASH_SOURCE[0]}" ))" && pwd )"
-
-#env | sort >> /tmp/a4n-start.log
-
-cd $_MY_DIR
 
 #
 # Create inital config if necessary
