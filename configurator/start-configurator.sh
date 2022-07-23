@@ -28,7 +28,7 @@ PORT=$(python ./find-a-port.py)
 #
 # Start the server and detatch
 #
-python ./actions-for-nautilus-configurator.py $PORT & # >> /tmp/a4n-start.log 2>&1 &
+python3 ./actions-for-nautilus-configurator.py $PORT & # >> /tmp/a4n-start.log 2>&1 &
 RC=$?
 #echo "server started $RC" # >> /tmp/a4n-start.log
 

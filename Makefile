@@ -9,7 +9,7 @@ install:
 	mkdir -p $(LOCALLOC)/applications
 	cp -a extensions $(LOCALLOC)/nautilus-python
 	cp -a configurator/* $(LOCALLOC)/actions-for-nautilus-configurator
-	LOC=$(LOCALLOC) python -c 'import os,sys; sys.stdout.write(os.path.expandvars(sys.stdin.read()))' \
+	LOC=$(LOCALLOC) python3 -c 'import os,sys; sys.stdout.write(os.path.expandvars(sys.stdin.read()))' \
 		< $(LOCALLOC)/actions-for-nautilus-configurator/actions-for-nautilus-configurator.desktop \
 		> $(LOCALLOC)/applications/actions-for-nautilus-configurator.desktop
 	@echo 'Restarting nautilus'
@@ -31,7 +31,7 @@ install_global:
 	mkdir -p $(GLOBALLOC)/applications
 	cp -a extensions $(GLOBALLOC)/nautilus-python
 	cp -a configurator/* $(GLOBALLOC)/actions-for-nautilus-configurator
-	LOC=$(GLOBALLOC) python -c 'import os,sys; sys.stdout.write(os.path.expandvars(sys.stdin.read()))' \
+	LOC=$(GLOBALLOC) python3 -c 'import os,sys; sys.stdout.write(os.path.expandvars(sys.stdin.read()))' \
 		< $(GLOBALLOC)/actions-for-nautilus-configurator/actions-for-nautilus-configurator.desktop \
 		> $(GLOBALLOC)/applications/actions-for-nautilus-configurator.desktop
 	@echo 'You must now restart nautilus by running the command "nautilus -q"'

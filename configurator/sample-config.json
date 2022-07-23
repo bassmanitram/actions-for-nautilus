@@ -54,7 +54,7 @@
 					"mimetypes": [
 						"inode/directory"
 					],
-					"command_line": "gnome-terminal -t \"HTTP Server on %f\" -- python -m http.server --bind 127.0.0.1",
+					"command_line": "gnome-terminal -t \"HTTP Server on %f\" -- python3 -m http.server --bind 127.0.0.1",
 					"cwd": "%f",
 					"max_items": 1
 				}
