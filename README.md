@@ -18,6 +18,10 @@ including:
 * support for all the command line placeholders implemented by the 
   `filemanager/nautilus-actions` project, with the same semantics
 
+It is also _much_ better at executing commands in a shell than the original
+extension, allowing the construction of pipelines, loops, and the use of more
+complex shell expressions without the need for writing wrapper scripts.
+
 [A configuration application](#configuration-ui) by the name "Actions For Nautilus 
 Configurator" is installed into your desktop applications collection. When you
 first use the configurator, if no existing configuration file is found, the delivered
@@ -67,43 +71,59 @@ The sample configuration will be installed for the user simply by starting the
    application in your desktop applications list
 
 
-## Sample Scripts
-The delivered [sample configuration file](./configurator/sample-config.json) (copied to 
+## Sample configuration
+The delivered [sample configuration file](./configurator/sample-config.json) is copied to 
 
 ```
 ${HOME}/.local/share/actions-for-nautilus/config.json
 ```
 
-when you first start the configuration UI, if no such file exists) is, obviously, highly 
-tailored to my own set-up and to
-testing and feature demonstration. But in order to make things work upon
-installation, I deliver the scripts that are referenced by that configuration 
-in the folder [sample-scripts](./sample-scripts). 
+when you first start the configuration UI, if there is no existing configuration. 
 
-On the other hand, I don't want to invade your privacy, so these are NOT
-installed in an executable location by the installation process.
+The configuration contains examples of command and menu construction, 
+including:
 
-So, if you want to fully use the delivered config you'll need to do the 
-following:
+* contextual submenus, 
+* mimetype, file type, and selection count conditions, 
+* the use of command pipelines, 
+* exploiting `$(...)`/backtick command and argument substitution.
+* ...
 
-* Copy the contents of the folder `sample-scripts` to a location that is in your
-  normal `PATH` environment variable setting (e.g. `${HOME}/bin`)
-* Make the scripts executable
-  * Select them in Nautilus/Files
-  * Right click, then click on `Properties`
-  * Select the `Permissions` tab
-  * Ensure that the `Execute` checkbox is checked
+The configured commands rely on a few extra dependencies that need to be installed
+if you want to see the sample configuration working properly:
 
-You'll also need to install the following from your package manager if you want
-_all_ the actions to fully work
-
-* `gedit` - the standard Gnome editor
-* `git` - (you probably have that already if you followed the installation 
+* `gedit` - the standard Gnome editor - you probably already have this
+* `gnome-terminal` - the standard Gnome terminal emulator (for now) - you probably have
+  this too.
+* `git` - (you probably have that already as well, if you followed the installation 
   instructions above :))
-* `nodejs` - you likely know what that is - but, just in case, it is a framework
-  for executing Javascript programs outside of a browser.
 * `xclip`  - a command line tool for managing the X clipboards 
 * `zenity` - a Gnome UI toolkit for shell scripts
+
+Again, these can be installed using your platform package manager as shown above.
+
+It is also possible that the semantics of the more complex command structures rely
+upon shell features, if you are not using BASH as your system shell, will not
+work for you.
+
+### The Gnome Terminal "No Close" profile
+When executing the `gnome terminal` command, the sample configuration references a 
+`gnome terminal` profile named "No Close".
+
+This is not a standard profile, but is a useful one to define in that the terminal
+doesn't close when the command it is running ends, allowing you to see command output
+and/or to relaunch the command.
+  
+You can create this profile as follows:
+  
+* Open the `gnome-terminal` application
+* Find the `Preferences` dialog (either a menu item or click on the `...` button, then
+  on `Preferences`)
+* Click on the **+** next to the word `Profiles`
+* Give the new profile the name `No Close`
+* Click on the `Command` tab
+* Ensure that the `When command exits:` option is set to `Hold terminal open`
+* Configure anything else you need concerning the profile behavior and look and feel
 
 # Configuration UI
 When you install this extension, a configuration application is installed into 
@@ -275,6 +295,18 @@ These are expected to have the following additional properties:
   The full set of placeholders implemented by the `filemanager/nautilus-actions` 
   project are supported, with the same semantics - these are further documented 
   below.
+
+  Note that, when using the `use_shell` option (below), the command line can
+  be just about anything you can enter at a shell prompt - including the following 
+  features:
+
+  * Pipelines
+  * `$(...)` or "backtick" command and argument generation/expansion
+  * Environment variable resolution
+  * Loops
+  * ...
+
+  See the [sample configuration](./configurator/sample-config.json) for a few examples.
 
 * `cwd` - OPTIONAL - the working directory that the command should "run in"
   expressed as a string

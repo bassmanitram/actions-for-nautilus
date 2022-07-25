@@ -2,11 +2,11 @@
 	"actions": [
 		{
 			"type": "command",
-			"label": "Run in node",
+			"label": "Run in python3",
 			"mimetypes": [
-				"application/javascript"
+				"text/x-python"
 			],
-			"command_line": "gnome-terminal -t \"Running Node %b\" --profile \"No Close\" -- node %b",
+			"command_line": "gnome-terminal -t \"Running Python %b\" --profile \"No Close\" -- python3 %b",
 			"cwd": "%d",
 			"max_items": 1
 		},
@@ -17,7 +17,7 @@
 		},
 		{
 			"type": "command",
-			"label": "Open in Gedit",
+			"label": "Open in gedit",
 			"filetypes": [
 				"!directory",
 				"standard"
@@ -30,27 +30,28 @@
 			"actions": [
 				{
 					"type": "command",
-					"label": "Clone GIT Repo Here",
-					"mimetypes": [
-						"inode/directory"
-					],
-					"command_line": "zenity-git-clone.sh %f",
-					"use_shell": true,
-					"max_items": 1
+					"label": "Clone GIT repository here",
+					"command_line": "git clone $(zenity --entry --text \"Enter GIT repository URL\" --title \"git clone into %f\" --width 800)",
+					"cwd": "%f",
+					"max_items": 1,
+					"filetypes": [
+						"directory"
+					]
 				},
 				{
 					"type": "command",
-					"label": "Execute Command Here",
-					"mimetypes": [
-						"inode/directory"
-					],
-					"command_line": "zenity-exec-in-dir.sh %f",
+					"label": "Execute command here",
+					"command_line": "$(zenity --entry --text \"Enter command\" --title \"execute command in %f\" --width 800)",
 					"use_shell": true,
-					"max_items": 1
+					"cwd": "%f",
+					"max_items": 1,
+					"filetypes": [
+						"directory"
+					]
 				},
 				{
 					"type": "command",
-					"label": "Start HTTP Server Here",
+					"label": "Start HTTP server here",
 					"mimetypes": [
 						"inode/directory"
 					],
@@ -62,25 +63,25 @@
 		},
 		{
 			"type": "menu",
-			"label": "Copy Details",
+			"label": "Copy details",
 			"actions": [
 				{
 					"type": "command",
-					"label": "Copy Name",
-					"use_shell": true,
-					"command_line": "arg1-to-clipboard.sh %B"
+					"label": "Copy name",
+					"command_line": "echo %B | xclip -f -selection primary | xclip -selection clipboard",
+					"use_shell": true
 				},
 				{
 					"type": "command",
-					"label": "Copy Path",
-					"use_shell": true,
-					"command_line": "arg1-to-clipboard.sh %F"
+					"label": "Copy path",
+					"command_line": "echo %F | xclip -f -selection primary | xclip -selection clipboard",
+					"use_shell": true
 				},
 				{
 					"type": "command",
 					"label": "Copy URI",
-					"use_shell": true,
-					"command_line": "arg1-to-clipboard.sh %U"
+					"command_line": "echo %U | xclip -f -selection primary | xclip -selection clipboard",
+					"use_shell": true
 				}
 			]
 		}
