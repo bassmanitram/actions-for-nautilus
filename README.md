@@ -1,5 +1,6 @@
 # Actions For Nautilus
-A "replacement" for the now-defunct `filemanager/nautilus-actions` project.
+A "replacement" for the now-defunct `filemanager/nautilus-actions` project for the Gnome
+Files file manager (otherwise known as Nautilus).
 
 The extension supports many of the most commonly used features of that project,
 including:
