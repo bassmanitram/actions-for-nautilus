@@ -44,3 +44,15 @@ uninstall_global:
 	rm -f $(GLOBALLOC)/applications/actions-for-nautilus-configurator.desktop
 	@echo 'You must now restart nautilus by running the command "nautilus -q"'
 	@echo 'You may also have to restart the gnome shell in order to no longer see the configuration application'
+
+deb:
+	mkdir -p build/$(GLOBALLOC)/nautilus-python
+	mkdir -p build/$(GLOBALLOC)/actions-for-nautilus-configurator
+	mkdir -p build/$(GLOBALLOC)/applications
+	cp -a extensions build/$(GLOBALLOC)/nautilus-python
+	cp -a configurator/* build/$(GLOBALLOC)/actions-for-nautilus-configurator
+	cp -a packaging/DEBIAN build/
+	LOC=$(GLOBALLOC) python3 -c 'import os,sys; sys.stdout.write(os.path.expandvars(sys.stdin.read()))' \
+		< build/$(GLOBALLOC)/actions-for-nautilus-configurator/actions-for-nautilus-configurator.desktop \
+		> build/$(GLOBALLOC)/applications/actions-for-nautilus-configurator.desktop
+	dpkg-deb --build build actions-for-nautilus.deb

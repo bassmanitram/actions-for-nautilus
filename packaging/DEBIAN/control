@@ -1,0 +1,10 @@
+Package: actions-for-nautilus
+Version: 1.0.0
+Maintainer: Martin Bartlett
+Architecture: all
+Description: A Gnome Files (Nautilus) extension for creating selection context menu entries that can execute arbitrary commands
+Depends: python3-nautilus (>= 1.2.3), procps
+Suggests: zenity (>= 3.0.0), xclip, bash
+Section: GNOME Desktop Environment
+Priority: optional
+Homepage: https://github.com/bassmanitram/actions-for-nautilus
