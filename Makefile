@@ -60,4 +60,4 @@ deb:
 	VERSION=$(VERSION) python3 -c 'import os,sys; sys.stdout.write(os.path.expandvars(sys.stdin.read()))' \
 		< packaging/DEBIAN/control \
 		> build/DEBIAN/control
-	dpkg-deb --build build actions-for-nautilus_$(VERSION)_all.deb
+	dpkg-deb --build build dist/actions-for-nautilus_$(VERSION)_all.deb
