@@ -2,6 +2,7 @@ SHELL=/bin/bash
 nautilus_path=`which nautilus`
 GLOBALLOC=/usr/share
 LOCALLOC=~/.local/share
+VERSION=1.0.0
 
 install:
 	mkdir -p $(LOCALLOC)/nautilus-python/extensions/actions-for-nautilus
@@ -50,10 +51,13 @@ deb:
 	mkdir -p build/$(GLOBALLOC)/nautilus-python
 	mkdir -p build/$(GLOBALLOC)/actions-for-nautilus-configurator
 	mkdir -p build/$(GLOBALLOC)/applications
+	mkdir -p build/DEBIAN
 	cp -a extensions build/$(GLOBALLOC)/nautilus-python
 	cp -a configurator/* build/$(GLOBALLOC)/actions-for-nautilus-configurator
-	cp -a packaging/DEBIAN build/
 	LOC=$(GLOBALLOC) python3 -c 'import os,sys; sys.stdout.write(os.path.expandvars(sys.stdin.read()))' \
 		< build/$(GLOBALLOC)/actions-for-nautilus-configurator/actions-for-nautilus-configurator.desktop \
 		> build/$(GLOBALLOC)/applications/actions-for-nautilus-configurator.desktop
-	dpkg-deb --build build actions-for-nautilus.deb
+	VERSION=$(VERSION) python3 -c 'import os,sys; sys.stdout.write(os.path.expandvars(sys.stdin.read()))' \
+		< packaging/DEBIAN/control \
+		> build/DEBIAN/control
+	dpkg-deb --build build actions-for-nautilus_$(VERSION)_all.deb
