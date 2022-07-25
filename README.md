@@ -19,8 +19,8 @@ including:
   `filemanager/nautilus-actions` project, with the same semantics
 
 It is also _much_ better at executing commands in a shell than the original
-extension, allowing the construction of pipelines, loops, and the use of more
-complex shell expressions without the need for writing wrapper scripts.
+extension, allowing for the construction of pipelines and loops, as well as the 
+use of more complex shell expressions, without the need for writing wrapper scripts.
 
 [A configuration application](#configuration-ui) by the name "Actions For Nautilus 
 Configurator" is installed into your desktop applications collection. When you
@@ -545,6 +545,6 @@ whose [Nautilus Copy Path](https://github.com/chr314/nautilus-copy-path)
 extension provided the inspiration and template for the original POC of this 
 extension, and whose project structure, installation procedure and doc I 
 mercilessly ripped off :)... and I'm even disrespectful enough to have provided 
-an alternative to his extension in my own sample config and scripts! 
+an alternative to his extension in my own sample config! 
 
 Thanks and apologies, Christoforos.
