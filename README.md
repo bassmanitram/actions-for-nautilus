@@ -28,7 +28,26 @@ first use the configurator, if no existing configuration file is found, the deli
 [sample configuration](./configurator/sample-config.json) will be installed.
 
 # Installation
-## Install Dependencies
+## Debian-based systems
+
+Debian packages of the most recent releases are provided in the [dist](./dist) folder.
+
+Simply download the package, install with your package installer, then launch the
+**Actions For Nautilus Configurator** application from your applications list in
+order to start building a configuration based upon the delivered 
+[sample](#sample-configuration).
+
+The Debian package specifies the following **Suggests** dependencies that will
+greatly enhance the utility of the extension as well as allow the delivered sample
+configuration to work on first launch:
+
+* `xclip`  - a command line tool for managing the X clipboards 
+* `zenity` - a Gnome UI toolkit for shell scripts
+
+It is highly recommended to install these extra packages.
+
+## Manual Installation
+### Install Dependencies
 
 Firstly, of course, the extension relies upon GNOME and GNOME Files (aka
 Nautilus) being installed.
@@ -41,7 +60,7 @@ just in case :)).
 * Ubuntu `sudo apt install python3-nautilus python3-gi procps`
 * Arch `sudo pacman -S python-nautilus python-gobject procps-ng`
 
-## Download & Install the Extension
+### Download & Install the Extension
 
 At the moment, no distribution-specific packaging is provided for the extension,
 although I do intend to build those out soon - for now, then, you will need to
@@ -62,7 +81,7 @@ menus, because you need to have a working configuration for anything to change.
 The sample configuration will be installed for the user simply by starting the 
 [configuration UI](#configuration-ui).
 
-## Uninstallation
+### Uninstallation
 
 1. `cd path/to/actions-for-nautilus`   
 2. `make uninstall` if you installed for only your use, or `sudo make install_global`
@@ -95,8 +114,6 @@ if you want to see the sample configuration working properly:
 * `gedit` - the standard Gnome editor - you probably already have this
 * `gnome-terminal` - the standard Gnome terminal emulator (for now) - you probably have
   this too.
-* `git` - (you probably have that already as well, if you followed the installation 
-  instructions above :))
 * `xclip`  - a command line tool for managing the X clipboards 
 * `zenity` - a Gnome UI toolkit for shell scripts
 
