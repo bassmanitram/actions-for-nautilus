@@ -30,16 +30,6 @@
 			"actions": [
 				{
 					"type": "command",
-					"label": "Clone GIT repository here",
-					"command_line": "git clone $(zenity --entry --text \"Enter GIT repository URL\" --title \"git clone into %f\" --width 800)",
-					"cwd": "%f",
-					"max_items": 1,
-					"filetypes": [
-						"directory"
-					]
-				},
-				{
-					"type": "command",
 					"label": "Execute command here",
 					"command_line": "$(zenity --entry --text \"Enter command\" --title \"execute command in %f\" --width 800)",
 					"use_shell": true,
