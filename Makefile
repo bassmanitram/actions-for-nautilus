@@ -46,6 +46,7 @@ uninstall_global:
 	@echo 'You may also have to restart the gnome shell in order to no longer see the configuration application'
 
 deb:
+	rm -rf build
 	mkdir -p build/$(GLOBALLOC)/nautilus-python
 	mkdir -p build/$(GLOBALLOC)/actions-for-nautilus-configurator
 	mkdir -p build/$(GLOBALLOC)/applications
