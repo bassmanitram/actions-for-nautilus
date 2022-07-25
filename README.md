@@ -47,6 +47,13 @@ configuration to work on first launch:
 
 It is highly recommended to install these extra packages.
 
+To enable the extesnion after installation, will need to restart Nautilus/Files:
+
+* `Alt F2`
+* `nautilus -q`
+
+should do it.
+
 ## Manual Installation
 ### Install Dependencies
 
