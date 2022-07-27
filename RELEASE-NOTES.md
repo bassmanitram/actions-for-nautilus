@@ -4,4 +4,4 @@
   These were missed in the original "use python3" mod.
   
   PR: https://github.com/bassmanitram/actions-for-nautilus/pull/3
-  Thanks to @Nova1545 for spotting this
+  Thanks to @Nova1545 for spotting this.
