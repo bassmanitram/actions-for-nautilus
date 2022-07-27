@@ -15,14 +15,14 @@ mkdir -p $HOME/.local/share/actions-for-nautilus
 # Kill existing instance
 #
 #pgrep -U $USER -f "python ./actions-for-nautilus-configurator.py" >> /tmp/a4n-start.log 2>&1
-pkill -U $USER -f "python ./actions-for-nautilus-configurator.py"
+pkill -U $USER -f "python3 ./actions-for-nautilus-configurator.py"
 RC=$?
 #echo "after the kill - $RC" # >> /tmp/a4n-start.log
 
 #
 # Find a port
 #
-PORT=$(python ./find-a-port.py)
+PORT=$(python3 ./find-a-port.py)
 #echo "the port $PORT" # >> /tmp/a4n-start.log 
 
 #
