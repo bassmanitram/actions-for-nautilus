@@ -82,7 +82,7 @@ follow these steps to install the extension.
    application in your desktop applications list
    
 If you don't have the `make` command in your system, sumply install the `make`
-pacjake in the same way you installed the [other dependencies](#install-dependencies).
+package in the same way you installed the [other dependencies](#install-dependencies).
 
 On _first_ installation, you won't see anything different in the Nautilus context 
 menus, because you need to have a working configuration for anything to change. 
@@ -92,7 +92,7 @@ The sample configuration will be installed for the user simply by starting the
 ### Uninstallation
 
 1. `cd path/to/actions-for-nautilus`   
-2. `make uninstall` if you installed for only your use, or `sudo make install_global`
+2. `make uninstall` if you installed for only your use, or `sudo make uninstall_global`
    if you installed for all users.
 3. You _may_ have to restart the Gnome shell in order to see the configuration
    application in your desktop applications list
