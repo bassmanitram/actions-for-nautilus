@@ -15,6 +15,6 @@ Description: Nautilus extension for creating selection context menu entries
  features and semantics of that extension.
 Depends: python3 (>= 3.10.0), python3-nautilus (>= 1.2.3), procps (>= 2:3), libjs-jquery (>=3.5.0)
 Suggests: zenity (>= 3.0.0), xclip (>= 0.10-0), bash (>= 4.0)
-Section: GNOME Desktop Environment
+Section: gnome
 Priority: optional
 Homepage: https://github.com/bassmanitram/actions-for-nautilus
