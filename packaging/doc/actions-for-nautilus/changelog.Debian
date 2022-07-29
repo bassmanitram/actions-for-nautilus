@@ -1,6 +1,0 @@
-actions-for-nautilus (1.0.2) stable; urgency=medium
-
-  * Standardize control file
-  * Remove external "http" dependencies
- 
- -- Martin Bartlett <martin.j.bartlett@gmail.com>  Fri, 29 Jul 2022 12:00:00 +0100

@@ -13,7 +13,7 @@ Description: Nautilus extension for creating selection context menu entries
  This is intended to be a replacement for the Nautilus functionality of the 
  now-discontinued Filemanager Actions extension and supports most of the 
  features and semantics of that extension.
-Depends: python3 (>= 3.10.0), python3-nautilus (>= 1.2.3), procps (>= 2:3), libjs-jquery (>=3.5.0)
+Depends: python3 (>= 3.10.0), python3-nautilus (>= 1.2.3), procps (>= 2:3), libjs-jquery (>= 3.5.0), xdg-utils (>= 1.1.0)
 Suggests: zenity (>= 3.0.0), xclip (>= 0.10-0), bash (>= 4.0)
 Section: gnome
 Priority: optional
