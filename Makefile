@@ -76,5 +76,8 @@ else
 	VERSION=$(VERSION) python3 -c 'import os,sys; sys.stdout.write(os.path.expandvars(sys.stdin.read()))' \
 		< packaging/DEBIAN/control \
 		> build/DEBIAN/control
+	find build/ -type d -exec chmod 0755 {} \;
+	find build/ -type f -exec chmod 0644 {} \;
+	chmod +x build/$(GLOBALLOC)/actions-for-nautilus-configurator/start-configurator.sh
 endif
 	dpkg-deb --build build dist/actions-for-nautilus_$(VERSION)_all.deb
