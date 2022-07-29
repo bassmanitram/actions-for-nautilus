@@ -76,6 +76,8 @@ else
 	VERSION=$(VERSION) python3 -c 'import os,sys; sys.stdout.write(os.path.expandvars(sys.stdin.read()))' \
 		< packaging/DEBIAN/control \
 		> build/DEBIAN/control
+	cp -r --preserve=mode,timestamps packaging/doc build/$(GLOBALLOC)
+	gzip -9 build/$(GLOBALLOC)/doc/actions-for-nautilus/changelog.Debian
 	find build/ -type d -exec chmod 0755 {} \;
 	find build/ -type f -exec chmod 0644 {} \;
 	chmod +x build/$(GLOBALLOC)/actions-for-nautilus-configurator/start-configurator.sh
