@@ -2,7 +2,7 @@ SHELL=/bin/bash
 nautilus_path=`which nautilus`
 GLOBALLOC=/usr/share
 LOCALLOC=~/.local/share
-VERSION=1.0.1
+VERSION=1.0.1-1
 
 install:
 	mkdir -p $(LOCALLOC)/nautilus-python/extensions/actions-for-nautilus
@@ -27,6 +27,10 @@ uninstall:
 	@echo 'You may have to restart the gnome shell in order to no longer see the configuration application'
 
 install_global:
+ifneq ($(shell id -u), 0)
+	@echo "You must be root to perform this action."
+	exit 1
+else
 	mkdir -p $(GLOBALLOC)/nautilus-python
 	mkdir -p $(GLOBALLOC)/actions-for-nautilus-configurator
 	mkdir -p $(GLOBALLOC)/applications
@@ -37,27 +41,40 @@ install_global:
 		> $(GLOBALLOC)/applications/actions-for-nautilus-configurator.desktop
 	@echo 'You must now restart nautilus by running the command "nautilus -q"'
 	@echo 'You may also have to restart the gnome shell in order to see the configuration application'
+endif
 
 uninstall_global:
+ifneq ($(shell id -u), 0)
+	@echo "You must be root to perform this action."
+	exit 1
+else
 	rm -rf $(GLOBALLOC)/nautilus-python/extensions/actions-for-nautilus
 	rm -f $(GLOBALLOC)/nautilus-python/extensions/actions-for-nautilus.py
 	rm -rf $(GLOBALLOC)/actions-for-nautilus-configurator
 	rm -f $(GLOBALLOC)/applications/actions-for-nautilus-configurator.desktop
 	@echo 'You must now restart nautilus by running the command "nautilus -q"'
 	@echo 'You may also have to restart the gnome shell in order to no longer see the configuration application'
+endif
 
 deb:
+ifneq ($(shell id -u), 0)
+	@echo "You must be root to perform this action."
+	exit 1
+else
 	rm -rf build
 	mkdir -p build/$(GLOBALLOC)/nautilus-python
 	mkdir -p build/$(GLOBALLOC)/actions-for-nautilus-configurator
 	mkdir -p build/$(GLOBALLOC)/applications
+	mkdir -p build/$(GLOBALLOC)/doc/actions-for-nautilus
 	mkdir -p build/DEBIAN
-	cp -a extensions build/$(GLOBALLOC)/nautilus-python
-	cp -a configurator/* build/$(GLOBALLOC)/actions-for-nautilus-configurator
+	cp -r --preserve=mode,timestamps extensions build/$(GLOBALLOC)/nautilus-python
+	cp -r --preserve=mode,timestamps configurator/* build/$(GLOBALLOC)/actions-for-nautilus-configurator
+	rm build/$(GLOBALLOC)/actions-for-nautilus-configurator/packages/jquery.min.js
 	LOC=$(GLOBALLOC) python3 -c 'import os,sys; sys.stdout.write(os.path.expandvars(sys.stdin.read()))' \
 		< build/$(GLOBALLOC)/actions-for-nautilus-configurator/actions-for-nautilus-configurator.desktop \
 		> build/$(GLOBALLOC)/applications/actions-for-nautilus-configurator.desktop
 	VERSION=$(VERSION) python3 -c 'import os,sys; sys.stdout.write(os.path.expandvars(sys.stdin.read()))' \
 		< packaging/DEBIAN/control \
 		> build/DEBIAN/control
+endif
 	dpkg-deb --build build dist/actions-for-nautilus_$(VERSION)_all.deb

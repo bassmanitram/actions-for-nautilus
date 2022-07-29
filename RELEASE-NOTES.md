@@ -5,3 +5,4 @@
   
   PR: https://github.com/bassmanitram/actions-for-nautilus/pull/3
   Thanks to @Nova1545 for spotting this.
+* Debian package fixes 

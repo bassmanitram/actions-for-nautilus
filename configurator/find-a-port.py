@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import socket
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind(('', 0))
