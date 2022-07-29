@@ -2,7 +2,7 @@ SHELL=/bin/bash
 nautilus_path=`which nautilus`
 GLOBALLOC=/usr/share
 LOCALLOC=~/.local/share
-VERSION="1.0.2~rc1"
+VERSION="1.0.2"
 
 install:
 	mkdir -p $(LOCALLOC)/nautilus-python/extensions/actions-for-nautilus
@@ -80,10 +80,11 @@ else
 	cp README.md build/$(GLOBALLOC)/doc/actions-for-nautilus
 	cp RELEASE-NOTES.md build/$(GLOBALLOC)/doc/actions-for-nautilus/NEWS
 	mv build/$(GLOBALLOC)/actions-for-nautilus-configurator/README.md build/$(GLOBALLOC)/doc/actions-for-nautilus/configurator.README.md
-	gzip -9 build/$(GLOBALLOC)/doc/actions-for-nautilus/NEWS
-	gzip -9 build/$(GLOBALLOC)/doc/actions-for-nautilus/changelog
+	gzip -n9 build/$(GLOBALLOC)/doc/actions-for-nautilus/NEWS
+	gzip -n9 build/$(GLOBALLOC)/doc/actions-for-nautilus/changelog
 	find build/ -type d -exec chmod 0755 {} \;
 	find build/ -type f -exec chmod 0644 {} \;
 	chmod +x build/$(GLOBALLOC)/actions-for-nautilus-configurator/start-configurator.sh
 endif
 	dpkg-deb --build build dist/actions-for-nautilus_$(VERSION)_all.deb
+	lintian dist/actions-for-nautilus_$(VERSION)_all.deb
