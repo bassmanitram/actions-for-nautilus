@@ -82,6 +82,11 @@ docs = {
         "path": "./packages/fontawesome.css",
         "mimetype": "text/css",
         "default": None
+    },
+    "/webfonts/fa-solid-900.woff2": {
+        "path": "./packages/fa-solid-900.woff2",
+        "mimetype": "font/woff2",
+        "default": None
     }
 }
 
