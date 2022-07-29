@@ -1,0 +1,18 @@
+actions-for-nautilus (1.0.2) stable; urgency=medium
+
+  * Standardize and "purify" Debian control file
+  * Remove external "http" dependencies
+ 
+ -- Martin Bartlett <martin.j.bartlett@gmail.com>  Fri, 29 Jul 2022 16:00:00 +0200
+
+actions-for-nautilus (1.0.1) stable; urgency=medium
+
+  * Fixed `python` references in the config startup script to be `python3`.
+  
+ -- Martin Bartlett <martin.j.bartlett@gmail.com>  Fri, 27 Jul 2022 08:39:00 +0200
+
+actions-for-nautilus (1.0.0) stable; urgency=medium
+
+  * initial release
+  
+ -- Martin Bartlett <martin.j.bartlett@gmail.com>  Fri, 25 Jul 2022 17:11:00 +0200

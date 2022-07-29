@@ -3,23 +3,22 @@ Firstly, if you simply want to edit the config file using the installed
 "application", then you don't need to read this - just navigate to
 your system's "Applications" menu/panel/whatever, find 
 **Actions For Nautilus Configurator**, click on it, and you'll be
-presented with a web-based configurator - which I ASSURE you makes
-no external server calls except to get some UI tools used to render 
-the configurator.
+presented with a web-based configuration tool - which I ASSURE you makes
+no external server calls whatsoever.
 
 If, on the other hand, you want to know why on earth this _is_ a 
 web-based UI, then read on.
 
 ## The rationale
-The config file is a JSON file that very closely follows the model
-that it describes - a recursive set of "objects" that represent submenus
-and their component "actionable" items.
+The config file is a JSON file the structure of which that very closely 
+follows the model that it describes - a recursive set of "objects" that 
+represent submenus and their component "actionable" items.
 
 A tree, if you like.
 
 And that configuration has a detailed canonical JSON Schema describing it.
 
-So, I COULD have built a GTK-based UI from scratch and become highly
+Now, I COULD have built a GTK-based UI from scratch and become highly
 frustrated with all little details necessary to make configuring
 this tiny extension pleasant for you.
 
@@ -34,7 +33,7 @@ But back to the JSON Schema - that describes the config in perfect detail!
 And JSON Schema is *ubiquitous* - SURELY *someone* has thought of building
 a UI generator that gives you a JSON editor based upon a schema.
 
-Well **YES** they have! But not for a desktop app! For a *web-based* app.
+Well **YES** they have! But not as a desktop app! As a *web-based* app.
 
 It is [JSON Editor](https://github.com/json-editor/json-editor) - and it's 
 AWESOME!
@@ -51,27 +50,23 @@ The configurator, then, consists of the following components:
 * [The single-page HTML document](./actions-for-nautilus-configurator.html) that uses 
   [JSON Editor](https://github.com/json-editor/json-editor)
   to generate a (what I think is) beautiful UI based upon the config schema, with
-  various customizations to make it easy to use.
+  various customizations to make it easy to use in this context.
 
-  All Actions For Nautilus data is fetched from the _local_ http server, _NOT_
+  All resources used by the UI are fetched from the _local_ http server, _NOT_
   from a public server (your privacy is protected).
 
-  Tools used for rendering the configurator are all fetched from the 
-  [JSDELIVR CDN](https://cdn.jsdelivr.net).
-
-  No other site is accessed by the page
-
-  When you *closes* the configurator page, it automatically stops the local server.
+  When you *close* the configurator page, it automatically stops the local server.
 
 * [A TINY backend HTTP server](./actions-for-nautilus-configurator.py), that serves 
-  the page, any existing config, and the schema, and can save the updated the config 
-  and restart Nautilus on demand from the UI.
+  the page, any existing config, and the schema, and can save the updated config 
+  on demand from the UI.
   
   It is terminated when you close the configurator web page.
 
-* [A shell script that kills](./start-configurator.sh) any existing copy of the server, 
+* [A shell script](./start-configurator.sh) that kills any existing copy of the server, 
   starts the server, then uses `xdg-open` to open the page in your system default 
   browser.
+  
 * [A Desktop file](./actions-for-nautilus-configurator.desktop) that gets installed into 
   your local Applications repository, and launches the afore-mentioned startup script 
   when you "open" that application.

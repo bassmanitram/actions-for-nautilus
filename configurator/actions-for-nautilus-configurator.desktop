@@ -1,4 +1,3 @@
-#!/usr/bin/env xdg-open
 [Desktop Entry]
 Name=Actions For Nautilus Configurator
 Exec=$LOC/actions-for-nautilus-configurator/start-configurator.sh

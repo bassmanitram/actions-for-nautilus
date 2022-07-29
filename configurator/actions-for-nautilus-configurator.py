@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import http.server
 import json
 import sys
@@ -9,25 +9,27 @@ import datetime
 PORT = 8000
 HOME = os.environ.get('HOME')
 
-config_html = "./actions-for-nautilus-configurator.html"
-cmdline_help = "./command-line-help.html"
+# config_html = "./actions-for-nautilus-configurator.html"
+# cmdline_help = "./command-line-help.html"
 config_file = HOME + \
     "/.local/share/actions-for-nautilus/config.json"
-config_schema = "./actions-for-nautilus.schema.json"
-favicon = "./sub-menu.png"
+# config_schema = "./actions-for-nautilus.schema.json"
+# favicon = "./sub-menu.png"
 
 textual_mimes = [
     "text/html",
-    "application/json"
+    "application/json",
+    "text/css",
+    "application/javascript"
 ]
 docs = {
     "/": {
-        "path": config_html,
+        "path": "./actions-for-nautilus-configurator.html",
         "mimetype": "text/html",
         "default": None
     },
     "/actions-for-nautilus-configurator.html": {
-        "path": config_html,
+        "path": "./actions-for-nautilus-configurator.html",
         "mimetype": "text/html",
         "default": None
     },
@@ -37,18 +39,53 @@ docs = {
         "default": "{\"actions\":[],\"debug\":false}"
     },
     "/schema": {
-        "path": config_schema,
+        "path": "./actions-for-nautilus.schema.json",
         "mimetype": "application/json",
         "default": None
     },
     "/command-line-help.html": {
-        "path": cmdline_help,
+        "path": "./command-line-help.html",
         "mimetype": "text/html",
         "default": None
     },
     "/favicon.ico": {
-        "path": favicon,
+        "path": "./sub-menu.png",
         "mimetype": "image/png",
+        "default": None
+    },
+    "/packages/jquery.min.js": {
+        "path": "/usr/share/javascript/jquery/jquery.min.js",
+        "mimetype": "application/javascript",
+        "default": None
+    },
+    "/packages/bootstrap.min.js": {
+        "path": "./packages/bootstrap.min.js",
+        "mimetype": "application/javascript",
+        "default": None
+    },
+    "/packages/jsoneditor.js": {
+        "path": "./packages/jsoneditor.js",
+        "mimetype": "application/javascript",
+        "default": None
+    },
+    "/packages/jsoneditor.min.css": {
+        "path": "./packages/jsoneditor.min.css",
+        "mimetype": "text/css",
+        "default": None
+    },
+    "/packages/bootstrap.min.css": {
+        "path": "./packages/bootstrap.min.css",
+        "mimetype": "text/css",
+        "default": None
+    },
+    "/packages/fontawesome.css": {
+        "path": "./packages/fontawesome.css",
+        "mimetype": "text/css",
+        "default": None
+    },
+    "/webfonts/fa-solid-900.woff2": {
+        "path": "./packages/fa-solid-900.woff2",
+        "mimetype": "font/woff2",
         "default": None
     }
 }

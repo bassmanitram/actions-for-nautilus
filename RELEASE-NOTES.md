@@ -1,3 +1,26 @@
+# Release 1.0.2
+
+* Debian package fixes 
+  Various changes that pertain to getting the Debian package past the
+  Lintian tool and Gdebi installation problems.
+
+  The one remaining issue is a warning that the copyright file doesn't
+  contain a copyright notice. It does - it's modeled on many other similar
+  files so I'm pretty confident it's correct.
+
+  It IS just a warning, so Gdebi should now be fine (I did a Gdebi install
+  to test that).
+
+* Removal of external dependencies
+  The one functional thing that the Debian package "purification" entailed was
+  removing the external library dependencies from the configurator web app - these
+  are now delivered with this package, or (better still) provided by Debian
+  packages that are now listed as dependencies.
+
+  This, of course, improves the privacy posture of the extension.
+
+  PR: https://github.com/bassmanitram/actions-for-nautilus/pull/7
+
 # Release 1.0.1
 
 * Fixed `python` references in the config startup script to be `python3`.

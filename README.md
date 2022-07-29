@@ -186,9 +186,7 @@ seconds.
 Simply close the web page to quit the configurator.
 
 *NOTE* the configurator web application NEVER communicates outside of your own
-system, with the exception of downloading a few UI toolkit resources used in
-presenting the application as a web page. No data is shared AT ALL. Your
-privacy is guaranteed.
+system, Your privacy is guaranteed.
 
 # Configuration reference
 The configuration is specified in a JSON text file named `config.json` located in
