@@ -77,6 +77,10 @@ else
 		< packaging/DEBIAN/control \
 		> build/DEBIAN/control
 	cp -r --preserve=mode,timestamps packaging/doc build/$(GLOBALLOC)
+	cp README.md build/$(GLOBALLOC)/doc/actions-for-nautilus
+	cp RELEASE-NOTES.md build/$(GLOBALLOC)/doc/actions-for-nautilus/NEWS
+	mv build/$(GLOBALLOC)/actions-for-nautilus-configurator/README.md build/$(GLOBALLOC)/doc/actions-for-nautilus/configurator.README.md
+	gzip -9 build/$(GLOBALLOC)/doc/actions-for-nautilus/NEWS
 	gzip -9 build/$(GLOBALLOC)/doc/actions-for-nautilus/changelog.Debian
 	find build/ -type d -exec chmod 0755 {} \;
 	find build/ -type f -exec chmod 0644 {} \;
