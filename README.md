@@ -80,8 +80,8 @@ follow these steps:
 5. You _may_ have to restart the Gnome shell in order to see the configuration
    application in your desktop applications list
    
-If you don't have the `make` command in your system, sumply install the `make`
-package in the same way you installed the [other dependencies](#install-dependencies).
+If you don't have the `git` or `make` commands in your system, simply install them
+in the same way you installed the [other dependencies](#install-dependencies).
 
 On _first_ installation, you won't see anything different in the Nautilus context 
 menus, because you need to have a working configuration for anything to change. 
