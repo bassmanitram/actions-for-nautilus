@@ -70,9 +70,8 @@ just in case :)).
 
 ### Download & Install the Extension
 
-At the moment, no distribution-specific packaging is provided for the extension,
-although I do intend to build those out soon - for now, then, you will need to
-follow these steps to install the extension.
+To install the extension manually, then, you will need to
+follow these steps:
 
 1. `git clone https://github.com/bassmanitram/actions-for-nautilus.git`
 2. `cd actions-for-nautilus`
