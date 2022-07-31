@@ -9,6 +9,7 @@
 	<script src="/packages/jquery.min.js"></script>
 	<script src="/packages/bootstrap.min.js"></script>
 	<script src="/packages/jsoneditor.js"></script>
+	<script src="/packages/minimatch.min.js"></script>
 
 	<link rel="stylesheet" href="/packages/jsoneditor.min.css">
 	<link rel="stylesheet" href="/packages/bootstrap.min.css">
@@ -70,26 +71,30 @@
 		}
 
 		/*
-		 * Mimetype and Filetype row buttons are not central aligned,
+		 * Mimetype, Filetype, and path_pattern row buttons are not central aligned,
 		 * And we really don't need the 'TH' or the repeat of the 
 		 * title in the array tab
 		 */
+		div[data-schemapath$=".path_patterns"] table tr td,
 		div[data-schemapath$=".mimetypes"] table tr td,
 		div[data-schemapath$=".filetypes"] table tr td {
 			vertical-align: middle;
 		}
 
+		div[data-schemapath$=".path_patterns"] table tr th,
 		div[data-schemapath$=".mimetypes"] table tr th,
 		div[data-schemapath$=".filetypes"] table tr th {
 			display: none;
 		}
 
+		div[data-schemapath$=".path_patterns"]>h3>label,
 		div[data-schemapath$=".mimetypes"]>h3>label,
 		div[data-schemapath$=".filetypes"]>h3>label {
 			visibility: collapse;
 			font-size: 0;
 		}
 
+		div[data-schemapath$=".path_patterns"]>h3>label>input,
 		div[data-schemapath$=".mimetypes"]>h3>label>input,
 		div[data-schemapath$=".filetypes"]>h3>label>input {
 			visibility: visible;
@@ -228,6 +233,7 @@
 	</div>
 
 	<script>
+		console.log(minimatch);
 		/*
 		 * Because this is a local UI tightly related to
 		 * backend server that it is using, unload should
@@ -468,6 +474,82 @@
 			return returnValue;
 		}
 
+		/* 
+		 * Part 5
+		 *
+		 * Custom validator for glob and regular expression patterns. Must return an array of errors or an empty array if valid.
+		 */
+		JSONEditor.defaults.custom_validators.push((schema, value, path) => {
+			var myValue = value;
+			const errors = [];
+			if (schema.format === "pattern") {
+				console.log(schema, value, path);
+				if (myValue.startsWith("!")) {
+					/*
+					 * It's a negation pattern - remove for further checking
+					 */
+					myValue = myValue.substring(1);
+				}
+				if (myValue.trim().length < 1) {
+					errors.push({
+						path: path,
+						property: 'path_patterns',
+						message: 'Cannot be empty'
+					});
+				} else if (myValue.startsWith("/") || myValue.endsWith("/")) {
+					/*
+					 * It's an RE
+					 */
+					if (!(myValue.startsWith("/") && myValue.endsWith("/"))) {
+						errors.push({
+							path: path,
+							property: 'path_patterns',
+							message: 'Regular expressions must start and end with "/"'
+						});
+					} else {
+						myValue = myValue.substring(1, myValue.length - 1);
+						if (myValue.trim().length < 1) {
+							errors.push({
+								path: path,
+								property: 'path_patterns',
+								message: 'Regular expression cannot be empty'
+							});
+						} else {
+							var reError = null;
+							try {
+								new RegExp(myValue);
+							} catch (e) {
+								reError = e;
+							}
+							if (reError) {
+								errors.push({
+									path: path,
+									property: 'path_patterns',
+									message: `Invalid regular expression pattern: ${reError.message}`
+								});
+
+							}
+						}
+					}
+				} else {
+					var globError = null;
+					try {
+						const myGlob = (minimatch.makeRe(myValue), {dot: true, nonegate: true /*we handle negation ourselves*/ })
+					} catch (e) {
+						globError = e;
+					}
+					if (globError) {
+						errors.push({
+							path: path,
+							property: 'path_patterns',
+							message: `Invalid glob expression pattern: ${globError.message}`
+						});
+
+					}
+				}
+			}
+			return errors;
+		});
 		/*********************
 		 * *******************
 		 * *******************
