@@ -200,7 +200,7 @@ def _gen_pattern(pattern):
             pattern = pattern[1:]
         patternRE = _gen_pattern_re_from_re(pattern, comparison) if (pattern.startwith("/") and pattern.endsWith("/")) else _gen_pattern_re_from_glob(pattern, comparison)
         if patternRE is not None:
-            return {"re": patternRE, "comparison": comparison}
+            return {"re": patternRE, "path_pattern": pattern, "comparison": comparison}
 
     print("Ignoring pattern: unrecognized", pattern)
 
