@@ -57,7 +57,8 @@ def _create_command_menu_item(action, files, group, activate_function):
 			return None
 
 	if ((action["all_mimetypes"] or _applicable_to_mimetype(action, files)) and
-	    (action["all_filetypes"] or _applicable_to_filetype(action, files))):
+	    (action["all_filetypes"] or _applicable_to_filetype(action, files)) and
+	    (action["all_path_patterns"] or _applicable_to_path_patterns(action, files))):
 		menu_item = Nautilus.MenuItem(
 			name="NautilusCopyPath::Item" + action["idString"] + group,
 			label=action["label"],
@@ -78,3 +79,11 @@ def _applicable_to_mimetype(action, files):
 #
 def _applicable_to_filetype(action, files):
 	return all(map(lambda file: any((file["filetype"] == filetype["filetype"]) == filetype["comparison"] for filetype in action["filetypes"]), files))
+
+
+#
+# Compares each file path to the action path_patterns
+# Returns True if a match is found for every one, otherwise False
+#
+def _applicable_to_path_patterns(action, files):
+	return all(map(lambda file: any(getattr(path_pattern["re"],path_pattern["comparator"])(file["path"]) == path_pattern["comparison"] for path_pattern in action["path_patterns"]), files))

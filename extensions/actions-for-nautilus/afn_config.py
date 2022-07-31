@@ -161,9 +161,9 @@ def _check_command_action(idString, action):
 
         if "path_patterns" in action and type(action["path_patterns"]) == list:
             action["path_patterns"] = _remove_duplicates_by_key(_flatten_list(list(filter(None, map(_gen_pattern, action["path_patterns"])))),"path_pattern")
-            action["path_patterns"] = len(action["path_patterns"]) < 1
+            action["all_path_patterns"] = len(action["path_patterns"]) < 1
         else:
-            action["path_patterns"] = True
+            action["all_path_patterns"] = True
 
         action["idString"] = idString
         action["cmd_behavior"] = afn_place_holders.get_behavior(action["command_line"])
@@ -198,9 +198,10 @@ def _gen_pattern(pattern):
         comparison = not pattern.startswith("!")
         if not comparison:
             pattern = pattern[1:]
-        patternRE = _gen_pattern_re_from_re(pattern, comparison) if (pattern.startwith("/") and pattern.endsWith("/")) else _gen_pattern_re_from_glob(pattern, comparison)
+        re = (pattern.startwith("/") and pattern.endsWith("/"))
+        patternRE = _gen_pattern_re_from_re(pattern, comparison) if re else _gen_pattern_re_from_glob(pattern, comparison)
         if patternRE is not None:
-            return {"re": patternRE, "path_pattern": pattern, "comparison": comparison}
+            return {"re": patternRE, "comparator": "search" if re else "match", "path_pattern": pattern, "comparison": comparison}
 
     print("Ignoring pattern: unrecognized", pattern)
 
