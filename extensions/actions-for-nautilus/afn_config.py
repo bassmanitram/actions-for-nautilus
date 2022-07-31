@@ -1,7 +1,7 @@
 #
 # Config management
 #
-import os, json, threading, time
+import os, json, threading, time, fnmatch, re
 import afn_place_holders
 from gi.repository import Gio, GLib
 
@@ -159,6 +159,12 @@ def _check_command_action(idString, action):
         else:
             action["all_filetypes"] = True
 
+        if "path_patterns" in action and type(action["path_patterns"]) == list:
+            action["path_patterns"] = _remove_duplicates_by_key(_flatten_list(list(filter(None, map(_gen_pattern, action["path_patterns"])))),"path_pattern")
+            action["path_patterns"] = len(action["path_patterns"]) < 1
+        else:
+            action["path_patterns"] = True
+
         action["idString"] = idString
         action["cmd_behavior"] = afn_place_holders.get_behavior(action["command_line"])
 
@@ -186,6 +192,30 @@ def _gen_filetype(filetype):
         return list(map(lambda gio_filetype: {"filetype": gio_filetype, "comparison": comparison}, _filetypes.get(filetype, [])))
 
     print("Ignoring filetype: unrecognized", filetype)
+
+def _gen_pattern(pattern):
+    if type(pattern) == str and len(pattern := pattern.lower().strip()) > 3:
+        comparison = not pattern.startswith("!")
+        if not comparison:
+            pattern = pattern[1:]
+        patternRE = _gen_pattern_re_from_re(pattern, comparison) if (pattern.startwith("/") and pattern.endsWith("/")) else _gen_pattern_re_from_glob(pattern, comparison)
+        if patternRE is not None:
+            return {"re": patternRE, "comparison": comparison}
+
+    print("Ignoring pattern: unrecognized", pattern)
+
+def _gen_pattern_re_from_re(pattern, comparison):
+    try:
+        return re.compile(pattern[1:-1])
+    except Exception as e:
+        print("Failed regular expression compilation", e)
+
+def _gen_pattern_re_from_glob(pattern, comparison):
+    try:
+        return fnmatch.translate(pattern)
+    except Exception as e:
+        print("Failed glob compilation", e)
+
 
 def _flatten_list(lst):
     lst1 = []
