@@ -68,6 +68,11 @@ docs = {
         "mimetype": "application/javascript",
         "default": None
     },
+    "/packages/minimatch.min.js": {
+        "path": "./packages/minimatch.js",
+        "mimetype": "application/javascript",
+        "default": None
+    },
     "/packages/jsoneditor.min.css": {
         "path": "./packages/jsoneditor.min.css",
         "mimetype": "text/css",

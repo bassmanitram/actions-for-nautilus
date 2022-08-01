@@ -7,6 +7,14 @@
 			"pattern": "^(!?[A-Za-z0-9-]+\\/(([A-Za-z0-9-]+)|\\*))|(\\*)|(\\*\\/\\*)$",
 			"title": "Mimetype"
 		},
+		"PathPattern": {
+			"type": "string",
+			"format": "pattern",
+			"title": "Path pattern",
+			"options": {
+				"infoText": "A file path pattern that, when matched, allows the associated command action to appear in its assigned menu. It can be expressed in glob syntax (*, +, [...]) or as a regular expression(re:...). If the pattern is prefixed with '!' character then the selected items must not match this pattern."
+			}
+		},
 		"SortStyles": {
 			"type": "string",
 			"enum": [
@@ -237,6 +245,19 @@
 					"title": "File types",
 					"options": {
 						"infoText": "A list of file types for which the action will be displayed, or not be displayed in the event of a '!' prefix.",
+						"grid_columns": 2
+					}
+				},
+				"path_patterns": {
+					"type": "array",
+					"uniqueItems": true,
+					"format": "table",
+					"items": {
+						"$ref": "#/definitions/PathPattern"
+					},
+					"title": "Path patterns",
+					"options": {
+						"infoText": "A list of path patterns for which the action will be displayed, or not be displayed in the event of a '!' prefix.",
 						"grid_columns": 2
 					}
 				}

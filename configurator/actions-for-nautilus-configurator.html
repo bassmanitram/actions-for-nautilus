@@ -70,26 +70,30 @@
 		}
 
 		/*
-		 * Mimetype and Filetype row buttons are not central aligned,
+		 * Mimetype, Filetype, and path_pattern row buttons are not central aligned,
 		 * And we really don't need the 'TH' or the repeat of the 
 		 * title in the array tab
 		 */
+		div[data-schemapath$=".path_patterns"] table tr td,
 		div[data-schemapath$=".mimetypes"] table tr td,
 		div[data-schemapath$=".filetypes"] table tr td {
-			vertical-align: middle;
+			vertical-align: text-top;
 		}
 
+		div[data-schemapath$=".path_patterns"] table tr th,
 		div[data-schemapath$=".mimetypes"] table tr th,
 		div[data-schemapath$=".filetypes"] table tr th {
 			display: none;
 		}
 
+		div[data-schemapath$=".path_patterns"]>h3>label,
 		div[data-schemapath$=".mimetypes"]>h3>label,
 		div[data-schemapath$=".filetypes"]>h3>label {
 			visibility: collapse;
 			font-size: 0;
 		}
 
+		div[data-schemapath$=".path_patterns"]>h3>label>input,
 		div[data-schemapath$=".mimetypes"]>h3>label>input,
 		div[data-schemapath$=".filetypes"]>h3>label>input {
 			visibility: visible;
@@ -468,6 +472,87 @@
 			return returnValue;
 		}
 
+		/* 
+		 * Part 5
+		 *
+		 * Custom validator for glob and regular expression patterns. Must return an array of errors or an empty array if valid.
+		 */
+		JSONEditor.defaults.custom_validators.push((schema, value, path) => {
+			var myValue = value;
+			const errors = [];
+			if (schema.format === "pattern") {
+				console.log(schema, value, path);
+				if (myValue.startsWith("!")) {
+					/*
+					 * It's a negation pattern - remove for further checking
+					 */
+					myValue = myValue.substring(1);
+				}
+				if (myValue.trim().length < 1) {
+					errors.push({
+						path: path,
+						property: 'path_patterns',
+						message: 'Cannot be empty'
+					});
+				} else if (myValue.startsWith("re:")) {
+					myValue = myValue.substring(3);
+					if (myValue.trim().length < 1) {
+						errors.push({
+							path: path,
+							property: 'path_patterns',
+							message: 'Regular expression cannot be empty'
+						});
+					} else {
+						var reError = null;
+						try {
+							/*
+							 * Python REs and JS REs are both based on Perl REs, meaning that for
+							 * all but the most complex cases they should be equivalent - so a simple
+							 * "compile" here using JS RegExp should be enough to ensure that an RE
+							 * is usable in the implementation (which is in python)
+							 */
+							new RegExp(myValue);
+						} catch (e) {
+							reError = e;
+						}
+						if (reError) {
+							errors.push({
+								path: path,
+								property: 'path_patterns',
+								message: `Invalid regular expression pattern: ${reError.message}`
+							});
+
+						}
+					}
+				} else {
+					var globError = null;
+					try {
+						/*
+						 * Python fnmatch is basically the same as the -wholename parameter of the UNIX find
+						 * command ... and no library in JS is that simple! So we do our own home-baked conversion
+						 * to a regular expression, which is, effectively:
+						 * 
+						 *     - . becomes \.
+						 *     - * becomes .*
+						 *     - ? becomes .
+						 *     - [! becomes [^
+						 *     - everything else remains the same
+						 */
+						const globRE = new RegExp("^" + myValue.replaceAll(".","\\.").replaceAll("*",".*").replaceAll("?",".").replace("[!","[^") + "$");
+					} catch (e) {
+						globError = e;
+					}
+					if (globError) {
+						errors.push({
+							path: path,
+							property: 'path_patterns',
+							message: `Invalid glob expression pattern: ${globError.message}`
+						});
+					}
+				}
+			}
+			return errors;
+		});
 		/*********************
 		 * *******************
 		 * *******************

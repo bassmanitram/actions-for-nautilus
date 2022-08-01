@@ -1,7 +1,7 @@
 #
 # Config management
 #
-import os, json, threading, time
+import os, json, threading, time, fnmatch, re
 import afn_place_holders
 from gi.repository import Gio, GLib
 
@@ -64,7 +64,7 @@ class ActionsForNautilusConfig():
         except Exception as e:
             print("Config file " + _config_path + " load failed", e)
     
-        print(json.dumps(self.__config))
+        print(json.dumps(self.__config, default=_fix_json))
 
 
     def reset_config(self):
@@ -72,6 +72,12 @@ class ActionsForNautilusConfig():
             "actions": []
         }
         self.__mtime = None
+
+###
+### fix non-JSONible objects
+###
+def _fix_json(value):
+    return "not-serializable"
 
 ###
 ### Private functions and values
@@ -159,6 +165,12 @@ def _check_command_action(idString, action):
         else:
             action["all_filetypes"] = True
 
+        if "path_patterns" in action and type(action["path_patterns"]) == list:
+            action["path_patterns"] = _remove_duplicates_by_key(_flatten_list(list(filter(None, map(_gen_pattern, action["path_patterns"])))),"path_pattern")
+            action["all_path_patterns"] = len(action["path_patterns"]) < 1
+        else:
+            action["all_path_patterns"] = True
+
         action["idString"] = idString
         action["cmd_behavior"] = afn_place_holders.get_behavior(action["command_line"])
 
@@ -186,6 +198,31 @@ def _gen_filetype(filetype):
         return list(map(lambda gio_filetype: {"filetype": gio_filetype, "comparison": comparison}, _filetypes.get(filetype, [])))
 
     print("Ignoring filetype: unrecognized", filetype)
+
+def _gen_pattern(pattern):
+    if type(pattern) == str and len(pattern := pattern.strip()) > 0:
+        comparison = not pattern.startswith("!")
+        if not comparison:
+            pattern = pattern[1:]
+        re = (pattern.startswith("re:"))
+        patternRE = _gen_pattern_re_from_re(pattern, comparison) if re else _gen_pattern_re_from_glob(pattern, comparison)
+        if patternRE is not None:
+            return {"re": patternRE, "comparator": "search" if re else "fullmatch", "path_pattern": pattern, "comparison": comparison}
+
+    print("Ignoring pattern: unrecognized", pattern)
+
+def _gen_pattern_re_from_re(pattern, comparison):
+    try:
+        return re.compile(pattern[3:])
+    except Exception as e:
+        print("Failed regular expression compilation", e)
+
+def _gen_pattern_re_from_glob(pattern, comparison):
+    try:
+        return re.compile(fnmatch.translate(pattern))
+    except Exception as e:
+        print("Failed glob compilation", e)
+
 
 def _flatten_list(lst):
     lst1 = []
