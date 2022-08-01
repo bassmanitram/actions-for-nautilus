@@ -538,7 +538,7 @@
 						 *     - [! becomes [^
 						 *     - everything else remains the same
 						 */
-						const globRE = new RegExp("^" + pattern.replaceAll(".","\\.").replaceAll("*",".*").replaceAll("?",".").replace("[!","[^") + "$");
+						const globRE = new RegExp("^" + myValue.replaceAll(".","\\.").replaceAll("*",".*").replaceAll("?",".").replace("[!","[^") + "$");
 					} catch (e) {
 						globError = e;
 					}

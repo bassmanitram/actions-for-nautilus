@@ -422,8 +422,18 @@ These are expected to have the following additional properties:
     Quite often this syntax is all that you need in order to express the pattern
     you wish to match against.
 
+    Note that globs inherently match against the whole path.
+
   * `re:` followed by a regular expression (WITHOUT `/` delimiters) - more complex 
     needs can be expressed as regular expressions.
+
+    Note that regular expressions _do not_ inherently match against the whole path.
+    
+    This means that if any part of a selected file path matches the regular 
+    expression, the path will be accepted.
+
+    If you want to match against the whole path, start your regular expression with
+    `^` and end it with `$`.
    
   Either pattern format can be prefixed with `!` in order to negate the pattern.
 

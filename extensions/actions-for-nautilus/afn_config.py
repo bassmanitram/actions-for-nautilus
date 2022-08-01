@@ -64,7 +64,7 @@ class ActionsForNautilusConfig():
         except Exception as e:
             print("Config file " + _config_path + " load failed", e)
     
-        print(json.dumps(self.__config))
+        print(json.dumps(self.__config, default=_fix_json))
 
 
     def reset_config(self):
@@ -72,6 +72,12 @@ class ActionsForNautilusConfig():
             "actions": []
         }
         self.__mtime = None
+
+###
+### fix non-JSONible objects
+###
+def _fix_json(value):
+    return "not-serializable"
 
 ###
 ### Private functions and values
@@ -194,14 +200,14 @@ def _gen_filetype(filetype):
     print("Ignoring filetype: unrecognized", filetype)
 
 def _gen_pattern(pattern):
-    if type(pattern) == str and len(pattern := pattern.lower().strip()) > 3:
+    if type(pattern) == str and len(pattern := pattern.strip()) > 0:
         comparison = not pattern.startswith("!")
         if not comparison:
             pattern = pattern[1:]
-        re = (pattern.startwith("re:"))
+        re = (pattern.startswith("re:"))
         patternRE = _gen_pattern_re_from_re(pattern, comparison) if re else _gen_pattern_re_from_glob(pattern, comparison)
         if patternRE is not None:
-            return {"re": patternRE, "comparator": "search" if re else "match", "path_pattern": pattern, "comparison": comparison}
+            return {"re": patternRE, "comparator": "search" if re else "fullmatch", "path_pattern": pattern, "comparison": comparison}
 
     print("Ignoring pattern: unrecognized", pattern)
 
@@ -213,7 +219,7 @@ def _gen_pattern_re_from_re(pattern, comparison):
 
 def _gen_pattern_re_from_glob(pattern, comparison):
     try:
-        return fnmatch.translate(pattern)
+        return re.compile(fnmatch.translate(pattern))
     except Exception as e:
         print("Failed glob compilation", e)
 

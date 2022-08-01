@@ -61,10 +61,10 @@ def _expand_percent_D(index, files, escape):
     return " ".join(map(lambda file: file["folder"].replace(" ","\\ ") if escape else file["folder"], files))
 
 def _expand_percent_f(index, files, escape):
-    return files[0]["filename"].replace(" ","\\ ") if escape else files[0]["filename"]
+    return files[0]["filepath"].replace(" ","\\ ") if escape else files[0]["filepath"]
 
 def _expand_percent_F(index, files, escape):
-    return " ".join(map(lambda file: file["filename"].replace(" ","\\ ") if escape else file["filename"], files))
+    return " ".join(map(lambda file: file["filepath"].replace(" ","\\ ") if escape else file["filepath"], files))
 
 def _expand_percent_h(index, files, escape):
     h = files[index]["uri"].hostname

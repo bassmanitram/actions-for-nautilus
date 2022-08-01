@@ -13,7 +13,7 @@ def create_menu_items(config, files, group, act_function):
 			"mimetype": file.get_mime_type(),
 			"filetype": file.get_file_type(),
 			"basename": os.path.basename(file.get_location().get_path()),
-			"filename": file.get_location().get_path(),
+			"filepath": file.get_location().get_path(),
 			"folder": os.path.dirname(file.get_location().get_path()),
 			"uri": urlparse(file.get_uri())
 		}, files))
@@ -86,4 +86,4 @@ def _applicable_to_filetype(action, files):
 # Returns True if a match is found for every one, otherwise False
 #
 def _applicable_to_path_patterns(action, files):
-	return all(map(lambda file: any(getattr(path_pattern["re"],path_pattern["comparator"])(file["path"]) == path_pattern["comparison"] for path_pattern in action["path_patterns"]), files))
+	return all(map(lambda file: any((getattr(path_pattern["re"],path_pattern["comparator"])(file["filepath"]) is not None) == path_pattern["comparison"] for path_pattern in action["path_patterns"]), files))
