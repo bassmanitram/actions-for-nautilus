@@ -529,15 +529,16 @@
 					try {
 						/*
 						 * Python fnmatch is basically the same as the -wholename parameter of the UNIX find
-						 * command ... and no library in JS is that simple! So we do our own home-baked version
-						 * which is, effectively:
+						 * command ... and no library in JS is that simple! So we do our own home-baked conversion
+						 * to a regular expression, which is, effectively:
 						 * 
 						 *     - . becomes \.
 						 *     - * becomes .*
 						 *     - ? becomes .
+						 *     - [! becomes [^
 						 *     - everything else remains the same
 						 */
-						const globRE = new RegExp("^" + pattern.replaceAll(".","\\.").replaceAll("*",".*").replaceAll("?",".") + "$");
+						const globRE = new RegExp("^" + pattern.replaceAll(".","\\.").replaceAll("*",".*").replaceAll("?",".").replace("[!","[^") + "$");
 					} catch (e) {
 						globError = e;
 					}
