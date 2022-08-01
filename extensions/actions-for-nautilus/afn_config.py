@@ -198,7 +198,7 @@ def _gen_pattern(pattern):
         comparison = not pattern.startswith("!")
         if not comparison:
             pattern = pattern[1:]
-        re = (pattern.startwith("/") and pattern.endsWith("/"))
+        re = (pattern.startwith("re:"))
         patternRE = _gen_pattern_re_from_re(pattern, comparison) if re else _gen_pattern_re_from_glob(pattern, comparison)
         if patternRE is not None:
             return {"re": patternRE, "comparator": "search" if re else "match", "path_pattern": pattern, "comparison": comparison}
@@ -207,7 +207,7 @@ def _gen_pattern(pattern):
 
 def _gen_pattern_re_from_re(pattern, comparison):
     try:
-        return re.compile(pattern[1:-1])
+        return re.compile(pattern[3:])
     except Exception as e:
         print("Failed regular expression compilation", e)
 
