@@ -8,11 +8,13 @@ including:
 * structuring context menu items for Nautilus File Manager selections including
   nested sub menus
 * filtering the displayed items based on:
-   * number of files in the selection, 
-   * mimetypes of the selected files (matching and non-matching conditions
-     supported, as well as mimetype globs)
-   * basic filetypes of the selected files - e.g. 'file', 'directory',
-     'symbolic-link' ... - (matching and non-matching conditions supported)
+  * number of files in the selection, 
+  * mimetypes of the selected files (matching and non-matching conditions
+    supported, as well as mimetype globs)
+  * basic filetypes of the selected files - e.g. 'file', 'directory',
+    'symbolic-link' ... - (matching and non-matching conditions supported)
+  * full path pattern matching, expressed as glob patterns or regular expressions, again
+    with support for matching and non-matching conditions
 * execution of an arbitrary command/script when a menu item is activated, with
   the same "PLURAL" and "SINGULAR" semantics as the 
   `filemanager/nautilus-actions` project
@@ -301,6 +303,9 @@ Actions with a `type` property of `command` define actions that, when clicked on
       ],
       "filetypes": [
         ...
+      ],
+      "path_patterns": [
+        ...
       ]
     },
     ...
@@ -391,7 +396,7 @@ These are expected to have the following additional properties:
   * `!type/*` - to _not_ display the action for files whose mimetypes are any 
     subtype of a specific type
 
-  All files in the selection must match an actions's mimetype rules for that action
+  All files in the selection must match an action's mimetype rules for that action
   to be displayed. Mixing "not" rules with ... well, "not not" rules, can be
   confusing.
 
@@ -400,6 +405,39 @@ These are expected to have the following additional properties:
 
   *Default* - all mimetypes 
 
+* `path_patterns` - OPTIONAL - a list of glob or regular expression patterns against
+  which the full paths of the selected files are to be matched.
+
+  The value should be a JSON list of strings, each in one of the following formats:
+
+  * a "glob" expression - a simple but limited string pattern expression syntax that 
+    is used by many UNIX shell commands as well as the shell itself, consisting of 
+    the following placeholders:
+
+    * `*` indicating zero or more characters
+    * `?` indicating a single character
+    * `[abc]` indicating one of the characters between the brackets
+    * `[!abc]` indicating none of the characters between the brackets
+
+    Quite often this syntax is all that you need in order to express the pattern
+    you wish to match against.
+
+  * `re:` followed by a regular expression (WITHOUT `/` delimiters) - more complex 
+    needs can be expressed as regular expressions.
+   
+  Either pattern format can be prefixed with `!` in order to negate the pattern.
+
+  All files in the selection must match an action's path pattern rules for that 
+  action to be displayed. Mixing "not" rules with ... well, "not not" rules, can be
+  confusing.
+
+  Only the first appearance of a specific rule (regardless of any `!` "not"
+  prefix) is taken into account.
+
+  The accepted Globbing syntax is fully documented [here](https://docs.python.org/3/library/fnmatch.html).
+  The accepted Regular Expression syntax is fully documented [here ](https://docs.python.org/3/library/re.html#regular-expression-syntax).
+
+  *Default* - all file paths are accepted
 
 # Place holders
 All the command line and `cwd` placeholders implemented by the 
