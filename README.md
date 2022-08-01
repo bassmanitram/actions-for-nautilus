@@ -444,7 +444,7 @@ These are expected to have the following additional properties:
   Only the first appearance of a specific rule (regardless of any `!` "not"
   prefix) is taken into account.
 
-  The accepted Globbing syntax is fully documented [here](https://docs.python.org/3/library/fnmatch.html).
+  The accepted glob syntax is fully documented [here](https://docs.python.org/3/library/fnmatch.html).
   The accepted Regular Expression syntax is fully documented [here ](https://docs.python.org/3/library/re.html#regular-expression-syntax).
 
   *Default* - all file paths are accepted

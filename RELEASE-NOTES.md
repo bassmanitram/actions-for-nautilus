@@ -1,3 +1,11 @@
+# Release 1.1.0
+* Add `path_patterns` to command action configurations. This allows
+  selected files to be matched against path patterns to establish if 
+  the command should appear in the menu.
+
+  Glob and Regular Expressions syntaxes are supported, as is pattern
+  negation.
+
 # Release 1.0.2
 
 * Debian package fixes 

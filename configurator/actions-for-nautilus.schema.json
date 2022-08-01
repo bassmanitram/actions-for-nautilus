@@ -12,7 +12,7 @@
 			"format": "pattern",
 			"title": "Path pattern",
 			"options": {
-				"infoText": "A file path pattern that, when matched, allows the associated command action to appear in its assigned menu. It can be expressed in glob syntax (*, +, [...]) or as a regular expression(/ ... /). If the pattern is prefixed with '!' character then the selected items must not match this pattern."
+				"infoText": "A file path pattern that, when matched, allows the associated command action to appear in its assigned menu. It can be expressed in glob syntax (*, +, [...]) or as a regular expression(re:...). If the pattern is prefixed with '!' character then the selected items must not match this pattern."
 			}
 		},
 		"SortStyles": {
