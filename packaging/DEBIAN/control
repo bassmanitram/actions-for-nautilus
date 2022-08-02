@@ -7,8 +7,8 @@ Description: Nautilus extension for creating selection context menu entries
  allows you to create  context menu action items that execute arbitrary 
  commands when activated. The action items can be organized into submenus, 
  and they can be configured to appear only when the files in the selection
- match file type and/or mimetype rules, as well as based upon the number of 
- files in the selection.
+ match file type and/or mimetype and/or path pattern rules, as well as based 
+ upon the number of files in the selection.
  .
  This is intended to be a replacement for the Nautilus functionality of the 
  now-discontinued Filemanager Actions extension and supports most of the 
