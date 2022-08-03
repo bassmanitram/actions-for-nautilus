@@ -1,3 +1,8 @@
+actions-for-nautilus (1.1.1) stable; urgency=medium
+  * Fix mimetype, file type, and path pattern rule evaluation.
+
+ -- Martin Bartlett <martin.j.bartlett@gmail.com>  Tue, 05 Aug 2022 09:00:00 +0200
+
 actions-for-nautilus (1.1.0) stable; urgency=medium
   * Path pattern matching added 
 
