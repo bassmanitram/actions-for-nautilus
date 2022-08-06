@@ -7,13 +7,22 @@
 		/*
 	     * The resizable wrapper
 	     */
-		html, body, iframe {
+		html,
+		body,
+		iframe {
 			height: 100%;
 			width: 100%;
+			margin: 0;
+			overflow: hide;
+			border: 0;
 		}
 
 		.hide {
-		/*	display: none;*/
+			display: none;
+		}
+
+		.alone {
+			width: 100%
 		}
 
 		.resize-wrapper {
@@ -23,9 +32,9 @@
 		}
 
 		.left-side {
-			width: 75%;
-			min-width: 50%;
 			height: 100%;
+			width: 100%;
+			min-width: 50%
 		}
 
 		.resizer {
@@ -37,7 +46,8 @@
 		.right-side {
 			/* Take the remaining width */
 			flex: 1;
-			min-width: 20%;
+			min-width: 30%;
+			width: 30%;
 			height: 100%;
 		}
 	</style>
@@ -45,7 +55,7 @@
 
 <body>
 	<div class="resize-wrapper">
-		<div class="left-side">
+		<div class="left-side alone">
 			<iframe src="/actions-for-nautilus-configurator.html"></iframe>
 		</div>
 		<div id="resizer" class="resizer hide"></div>
@@ -59,6 +69,19 @@
 		var rightSide;
 		var resizer;
 		var moving = false;
+
+		function show(show) {
+			console.log(show)
+			if (show) {
+				leftSide.classList.remove("alone");
+				rightSide.classList.remove("hide");
+				resizer.classList.remove("hide");
+			} else {
+				leftSide.classList.add("alone");
+				rightSide.classList.add("hide");
+				resizer.classList.add("hide");
+			}
+		}
 
 		function resizeMouseDown(e) {
 			// Get the current mouse position
@@ -115,8 +138,8 @@
 			 * Wire up the resizing capability
 			 */
 			resizer = document.getElementById('resizer');
-            leftSide = resizer.previousElementSibling;
-            rightSide = resizer.nextElementSibling;
+			leftSide = resizer.previousElementSibling;
+			rightSide = resizer.nextElementSibling;
 			resizer.addEventListener('mousedown', resizeMouseDown);
 		});
 	</script>

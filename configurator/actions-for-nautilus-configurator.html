@@ -648,16 +648,10 @@
 		}
 
 		function help(e) {
-			console.log(e);
-/*			if (helpWrapper.classList.contains("hide")) {
-				helpWrapper.classList.remove("hide");
-				resizer.classList.remove("hide");
-				e.currentTarget.innerText = "Hide Help"
-			} else {
-				helpWrapper.classList.add("hide");
-				resizer.classList.add("hide");
-				e.currentTarget.innerText = "Show Help"
-			}*/
+			console.log("'" + e.currentTarget.innerText+ "'");
+			var hidden = e.currentTarget.innerText.trim() == "Show Help"
+			parent.show(hidden)
+			e.currentTarget.innerText = hidden ? "Hide Help" : "Show Help";
 		}
 
 		function configChanged(e) {
