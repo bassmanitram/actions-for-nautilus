@@ -19,6 +19,8 @@
 		 */
 		body {
 			font-size: 18px !important;
+			height: 100%;
+			width: 100%
 		}
 
 		/*
@@ -26,7 +28,6 @@
 		 * with some space at the top
 		 */
 		.container {
-			position: absolute;
 			margin-top: 2rem;
 			left: 0;
 			right: 0;
@@ -227,6 +228,7 @@
 </head>
 
 <body>
+
 	<div class='container col-md-12'>
 		<div id='editor_holder'></div>
 	</div>
@@ -245,10 +247,6 @@
 			});
 		}
 		addEventListener("unload", onUnload);
-
-		console.log(JSONEditor.defaults);
-
-		console.log(JSONEditor.defaults.editors.object.prototype);
 
 		/*********************
 		 * *******************
@@ -371,13 +369,13 @@
 					/*
 					 * Get the placeholder help link container and give it a class
 					 */
-					helpDiv = helps[0].parentNode;
-					helpDiv.classList.add("placeholder-help-div")
+					var phHelpWrapper = helps[0].parentNode;
+					phHelpWrapper.classList.add("placeholder-help-div")
 
 					/*
 					 * Insert it before the last element (the input element)
 					 */
-					formGroups[0].insertBefore(helpDiv, formGroups[0].lastElementChild)
+					formGroups[0].insertBefore(phHelpWrapper, formGroups[0].lastElementChild)
 
 				} else {
 					console.log("FAILED move the command line help link", formGroups, helps, formGroups.length, helps.length);
@@ -399,7 +397,6 @@
 				var element = this.tab;
 				var actionType = this.value.type;
 				var existingActionType = this.a4nActionType;
-				//				console.log(actionType, existingActionType);
 				if (actionType != existingActionType) {
 					if (existingActionType) {
 						element.classList.remove("action-" + existingActionType);
@@ -481,7 +478,6 @@
 			var myValue = value;
 			const errors = [];
 			if (schema.format === "pattern") {
-				console.log(schema, value, path);
 				if (myValue.startsWith("!")) {
 					/*
 					 * It's a negation pattern - remove for further checking
@@ -538,7 +534,7 @@
 						 *     - [! becomes [^
 						 *     - everything else remains the same
 						 */
-						const globRE = new RegExp("^" + myValue.replaceAll(".","\\.").replaceAll("*",".*").replaceAll("?",".").replace("[!","[^") + "$");
+						const globRE = new RegExp("^" + myValue.replaceAll(".", "\\.").replaceAll("*", ".*").replaceAll("?", ".").replace("[!", "[^") + "$");
 					} catch (e) {
 						globError = e;
 					}
@@ -593,8 +589,9 @@
 		var undo_button;
 		var redo_button;
 		var save_button;
-		var restart_button;
+		var help_button;
 		var editor;
+
 
 		function setUndoRedoButtonStates() {
 			undo_button.disabled = (current_value_index == 0);
@@ -650,10 +647,22 @@
 			});
 		}
 
+		function help(e) {
+			console.log(e);
+/*			if (helpWrapper.classList.contains("hide")) {
+				helpWrapper.classList.remove("hide");
+				resizer.classList.remove("hide");
+				e.currentTarget.innerText = "Hide Help"
+			} else {
+				helpWrapper.classList.add("hide");
+				resizer.classList.add("hide");
+				e.currentTarget.innerText = "Show Help"
+			}*/
+		}
+
 		function configChanged(e) {
 			new_value = JSON.stringify(editor.getValue());
 			if (previous_values[current_value_index] != new_value) {
-				//console.log("Editor really changed!")
 				/*
 				 * The editor changed outside of undo-redo
 				 * Everything after the current index is lost
@@ -673,9 +682,8 @@
 			}
 		}
 
-		function finalizeEditorConfig(e) {
-			console.log(editor)
 
+		function finalizeEditorConfig(e) {
 			saved_value = JSON.stringify(editor.getValue());
 			previous_values[0] = saved_value;
 
@@ -705,14 +713,8 @@
 			save_button.addEventListener('click', saveConfig, false);
 			save_button.disabled = true
 
-			/*
-			 * Create a 'restart Nautilus' config button
-			 *
-			 * NO LONGER USED - the extension has a file-change watcher
-			 * 
-			restart_button = editor.root.getButton('Restart Nautilus', 'refresh', 'Restart Nautilus');
-			restart_button.addEventListener('click', restartNautilus, false);
-			*/
+			help_button = editor.root.getButton('Show Help', 'refresh', 'Show Help');
+			help_button.addEventListener('click', help, false);
 
 			/*
 			 * Add the buttons to the top of the page
@@ -721,7 +723,7 @@
 			button_holder.appendChild(undo_button);
 			button_holder.appendChild(redo_button);
 			button_holder.appendChild(save_button);
-			//button_holder.appendChild(restart_button);
+			button_holder.appendChild(help_button);
 			editor.root.header.parentNode.insertBefore(button_holder, editor.root.header.nextSibling);
 
 			/*

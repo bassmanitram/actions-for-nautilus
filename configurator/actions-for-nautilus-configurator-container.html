@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<script src="/packages/jquery.min.js"></script>
+	<style>
+		/*
+	     * The resizable wrapper
+	     */
+		html, body, iframe {
+			height: 100%;
+			width: 100%;
+		}
+
+		.hide {
+		/*	display: none;*/
+		}
+
+		.resize-wrapper {
+			display: flex;
+			height: 100%;
+			width: 100%;
+		}
+
+		.left-side {
+			width: 75%;
+			min-width: 50%;
+			height: 100%;
+		}
+
+		.resizer {
+			background-color: #cbd5e0;
+			cursor: ew-resize;
+			width: 2px;
+		}
+
+		.right-side {
+			/* Take the remaining width */
+			flex: 1;
+			min-width: 20%;
+			height: 100%;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="resize-wrapper">
+		<div class="left-side">
+			<iframe src="/actions-for-nautilus-configurator.html"></iframe>
+		</div>
+		<div id="resizer" class="resizer hide"></div>
+		<div class="right-side hide">
+			<iframe src="/command-line-help.html"></iframe>
+		</div>
+	</div>
+
+	<script>
+		var leftSide;
+		var rightSide;
+		var resizer;
+		var moving = false;
+
+		function resizeMouseDown(e) {
+			// Get the current mouse position
+			x = e.clientX;
+			y = e.clientY;
+			leftWidth = leftSide.getBoundingClientRect().width;
+
+			// Attach the listeners to `document`
+			document.addEventListener('mousemove', resizeMouseMove);
+			document.addEventListener('mouseup', resizeMouseUp);
+		}
+
+		function resizeMouseMove(e) {
+			// How far the mouse has been moved
+			const dx = e.clientX - x;
+			const dy = e.clientY - y;
+
+			const newLeftWidth = ((leftWidth + dx) * 100) / resizer.parentNode.getBoundingClientRect().width;
+			leftSide.style.width = `${newLeftWidth}%`;
+
+			if (!moving) {
+
+				resizer.style.cursor = 'col-resize';
+				document.body.style.cursor = 'col-resize';
+
+				leftSide.style.userSelect = 'none';
+				leftSide.style.pointerEvents = 'none';
+
+				rightSide.style.userSelect = 'none';
+				rightSide.style.pointerEvents = 'none';
+				moving = true;
+			}
+		}
+
+		function resizeMouseUp(e) {
+			moving = false;
+			resizer.style.removeProperty('cursor');
+			document.body.style.removeProperty('cursor');
+
+			leftSide.style.removeProperty('user-select');
+			leftSide.style.removeProperty('pointer-events');
+
+			rightSide.style.removeProperty('user-select');
+			rightSide.style.removeProperty('pointer-events');
+
+			// Remove the handlers of `mousemove` and `mouseup`
+			document.removeEventListener('mousemove', resizeMouseMove);
+			document.removeEventListener('mouseup', resizeMouseUp);
+
+		}
+
+		$(function () {
+			/*
+			 * Wire up the resizing capability
+			 */
+			resizer = document.getElementById('resizer');
+            leftSide = resizer.previousElementSibling;
+            rightSide = resizer.nextElementSibling;
+			resizer.addEventListener('mousedown', resizeMouseDown);
+		});
+	</script>
+</body>
+
+</html>

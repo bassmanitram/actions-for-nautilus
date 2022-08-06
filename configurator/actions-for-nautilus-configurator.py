@@ -24,7 +24,12 @@ textual_mimes = [
 ]
 docs = {
     "/": {
-        "path": "./actions-for-nautilus-configurator.html",
+        "path": "./actions-for-nautilus-configurator-container.html",
+        "mimetype": "text/html",
+        "default": None
+    },
+    "/actions-for-nautilus-configurator-container.html": {
+        "path": "./actions-for-nautilus-configurator-container.html",
         "mimetype": "text/html",
         "default": None
     },
