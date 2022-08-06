@@ -648,7 +648,6 @@
 		}
 
 		function help(e) {
-			console.log("'" + e.currentTarget.innerText+ "'");
 			var hidden = e.currentTarget.innerText.trim() == "Show Help"
 			parent.show(hidden)
 			e.currentTarget.innerText = hidden ? "Hide Help" : "Show Help";

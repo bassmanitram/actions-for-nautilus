@@ -21,10 +21,6 @@
 			display: none;
 		}
 
-		.alone {
-			width: 100%
-		}
-
 		.resize-wrapper {
 			display: flex;
 			height: 100%;
@@ -32,9 +28,9 @@
 		}
 
 		.left-side {
-			height: 100%;
 			width: 100%;
-			min-width: 50%
+			min-width: 50%;
+			height: 100%;
 		}
 
 		.resizer {
@@ -46,8 +42,7 @@
 		.right-side {
 			/* Take the remaining width */
 			flex: 1;
-			min-width: 30%;
-			width: 30%;
+			min-width: 20%;
 			height: 100%;
 		}
 	</style>
@@ -55,7 +50,7 @@
 
 <body>
 	<div class="resize-wrapper">
-		<div class="left-side alone">
+		<div class="left-side">
 			<iframe src="/actions-for-nautilus-configurator.html"></iframe>
 		</div>
 		<div id="resizer" class="resizer hide"></div>
@@ -66,6 +61,7 @@
 
 	<script>
 		var leftSide;
+		var leftWidth;
 		var rightSide;
 		var resizer;
 		var moving = false;
@@ -73,13 +69,16 @@
 		function show(show) {
 			console.log(show)
 			if (show) {
-				leftSide.classList.remove("alone");
 				rightSide.classList.remove("hide");
 				resizer.classList.remove("hide");
+				if (leftWidth) {
+					leftSide.style.width = leftWidth;
+				}
 			} else {
-				leftSide.classList.add("alone");
 				rightSide.classList.add("hide");
 				resizer.classList.add("hide");
+				leftWidth = leftSide.style.width
+				leftSide.style.removeProperty('width');
 			}
 		}
 
