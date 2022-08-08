@@ -1,9 +1,9 @@
 # Actions For Nautilus
 
 The Actions For Nautilus extension allows you to add items to the Gnome Files
-(called Nautilus from here-on, to avoid confusion) context (right click) menu 
-based upon the characteristics of the files and directories (simply called 
-_files_ from here-on) that you have selected.
+(called Nautilus from here-on, to avoid confusion) context menu (i.e. the right click menu)
+based upon the characteristics of the files and directories that you have selected
+(simply called _files_ from here-on).
 
 Within the context of the extension, these menu items are called _actions_.
 
@@ -37,7 +37,7 @@ The configurator UI is basically layed out in two columns:
   * remove all actions from the main menu (which removes all actions from the entire configuration)
 
   It also allows you to set the ordering options for the main menu actions, and to set the debug
-  output option if you need to resolve problems with your configuration.
+  output option if you need to resolve problems with your configuration (not yet fully implemented).
 
 * The right column shows the details and characteristics of the currently selected main menu item
   in the left-most column
@@ -57,8 +57,8 @@ Of special note is the **Submenu Actions** tab for menu actions ... this present
 elements in a nested format - i.e. the creation and manipulation of submenu actions is exactly
 the same as for main menu items, performed within the ui presented by the **Submenu Actions** tab.
 
-The instructions below are presented for main actions, but the same semantics apply to creating
-submenu actions
+The instructions below are presented for main menu actions, but the same semantics apply to creating
+submenu actions.
 
 ## Menu Actions
 To create a menu action, then, do the following:
@@ -83,15 +83,15 @@ You will also notice that the selection item in the left column has a new icon:
 
 ![Menu icon](images/menu-icon.png) instead of ![Menu icon](images/command-icon.png).
 
-You must now give your menu a label, which should be unique among all actions at the
-nesting level to which you are adding the menu.
+You must now give your menu a label, which should be unique among all actions in the 
+parent menu to which you are adding the menu.
 
 You can also opt to have the extension sort the actions that will appear in this new menu
 in alphanumeric order (the default is that the order you specify is the one that is used).
 
-To add actions to your new menu, click on the **Submenu Actions** tab to reveal a nested 
-dialog that is similar to the top level dialog. Here you can, again, click on  
-![Add Action](images/add-action-button.png) to configure the actions that will appear in your 
+To add actions to your new menu, click on the **Submenu Actions** tab to reveal a nested
+dialog that is similar to the top level dialog. Here you can, again, click on
+![Add Action](images/add-action-button.png) to configure the actions that will appear in your
 newly created menu.
 
 That is all there is to menu creation.
@@ -101,7 +101,7 @@ actions to it, and then only if those commands are pertinent to the files that y
 selected in the Nautilus window...
 
 ## Command Actions
-Command actions are really what this is all about - executing a command string of your choice
+Command actions are really what this is all about - executing a command string of your choice,
 passing details of the file(s) you have selected as arguments to the command.
 
 Examples of commands:
@@ -118,7 +118,7 @@ scenarios and even pipelines that are then executed with a simply click on the N
 context menu item
 
 ### Creating a Command Action
-You create a command action in the same way you create a menu action - 
+You create a command action in the same way you create a menu action: 
 
 * click on the **+ Action** button at the top of the left-most column of the configurator
   tool:
@@ -135,10 +135,10 @@ Upon creating the action, you see the details that can be specified for the comm
 Firstly give your command a label, which should be unique within the menu/submenu to which
 you are adding the command.
 
-And, evidently, you must provide a command line to execute with the action is clicked on.
+And, evidently, you must provide a command line to execute when the action is clicked on.
 We'll cover that below.
 
-Firstly, however, we'll cover the rules that dictate if a command action is appropriate to the
+Firstly, however, we'll cover the rules that dictate if a command action is applicable to the
 current files in the Nautilus selection.
 
 ### Filtering rules
@@ -170,11 +170,11 @@ current selection, that submenu will not appear in the Nautilus context menu.
 This is pretty simple to explain: the maximum number of files that are in the selection in order 
 for the command action to be shown.
 
-Normally you will looking at values of either **0** - meaning unlimited - or **1** meaning ... well ...
-1. However, other values can be used. For example, for an action that compares two files, you might
+Normally you will be looking at values of either **0** - meaning unlimited - or **1** meaning ... well
+... 1. However, other values can be used. For example, for an action that compares two files, you might
 want to specify a value of **2** here.
 
-Note that, at present, there is no capability to specify an exact number other that **1**.
+Note that, at present, there is no capability to specify an exact number other than **1**.
 
 #### Mimetypes
 
@@ -191,7 +191,7 @@ mimetypes filter rule.
 A mimetype can be declared in one of the ways standard to IANA Media Types:
 
 * _type/subtype_ - a specific mimetype (e.g. **application/javascript** as in the above example)
-* _type/\*_ - all subtypes of a specific type 'e.g. **audio/\*** for audio files of any encoding)
+* _type/\*_ - all subtypes of a specific type (e.g. **audio/\*** for audio files of any encoding)
 
 You can specify **\*** or **\*/\*** to specify all mimetypes - but since this is the default setting
 it's a bit superfluous to do so!
@@ -205,13 +205,12 @@ In this example, the **Edit with gvim** action will not appear if any of the sel
 audio file, or an image file.
 
 You should probably avoid mixing standard (positive) rules with negative rules, since the result could
-be confusing, but the algorithm is fairly straightforward:
-
-* All selected files must match one of the "positive" rules and none of the "negative rules".
+be confusing, but the algorithm is fairly straightforward: All selected files must match one of the 
+"positive" rules, if any, and none of the "negative rules".
 
 #### File types
 
-With the file types list, entered in the **File types** tab, you can specify the Gnome file type. 
+With the file types list, entered in the **File types** tab, you can specify the Gnome file types 
 to which your command applies. E.g.
 
 ![Command action tabs](images/filetypes.png)
@@ -229,11 +228,11 @@ The most useful filetypes are likely to be `directory`, `file` and `symbolic lin
 "macro" filetype is available - `standard` - which encapsulates all three.
 
 As with [mimetypes](#mimetypes), mixing negative and standard rules could be confusing, however
-there is a useful case for a such a mix:
+there is a useful case for such a mix:
 
 ![Command action tabs](images/mixed-filetypes.png)
 
-This configuration specifies all `standard` types EXCEPT directories/folders - a sensible filter for
+This configuration specifies all `standard` types EXCEPT directories - a sensible filter for
 an editor command.
 
 #### Path patterns
@@ -248,7 +247,7 @@ directory.
 
 Patterns can be entered as "GLOB" patterns, or regular expressions.
 
-* Glob Patterns allow to you specify placeholders in the pattern string, as follows:
+* Glob Patterns allow you to specify the following placeholders in the pattern string:
 
   * **\*** - indicating any number of characters
   * **?** - indicating any single character
@@ -269,11 +268,11 @@ Patterns can be entered as "GLOB" patterns, or regular expressions.
   the regular expression syntax implemented by Python. Documentation of this syntax is available
   elsewhere.
 
-  To use a regular expression, precede the pattern with the tag `re:`. E.g.
+  To use a regular expression, precede the pattern with the tag **re:**. E.g.
 
   ![Regex path pattern](images/regex-path-pattern.png)
 
-  This example specifies the same rule as the glob example above as a regular expression ...
+  This example specifies the same rule as the glob example above, but as a regular expression ...
 
   weeelllll - not quite .... 
 
