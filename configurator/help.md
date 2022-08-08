@@ -218,7 +218,7 @@ to which your command applies. E.g.
 
 In this example, the **Start HTTP server here** action only applies to directories.
 
-The available filetypes are defined by Gnomeitself and are, therefore, presented in a selection list:
+The available filetypes are defined by Gnome itself and are, therefore, presented in a selection list:
 
 ![Command action tabs](images/available-filetypes.png)
 
@@ -226,14 +226,14 @@ You will notice that "negative" versions of the file types are also available - 
 NOT be of such file types.
 
 The most useful filetypes are likely to be `directory`, `file` and `symbolic link` and, as such, a
-"macro" filetype is available - `standard` which encapsulates all three.
+"macro" filetype is available - `standard` - which encapsulates all three.
 
 As with [mimetypes](#mimetypes), mixing negative and standard rules could be confusing, however
-there is a use ful case for a such a mix:
+there is a useful case for a such a mix:
 
 ![Command action tabs](images/mixed-filetypes.png)
 
-This configuration specifies all `standard` types EXCEPT directories/folders -  sensible filter for a
+This configuration specifies all `standard` types EXCEPT directories/folders - a sensible filter for
 an editor command.
 
 #### Path patterns
@@ -248,18 +248,18 @@ directory.
 
 Patterns can be entered as "GLOB" patterns, or regular expressions.
 
-* Glob Patterns allow you specify placeholders in the pattern string, as follows:
+* Glob Patterns allow to you specify placeholders in the pattern string, as follows:
 
   * **\*** - indicating any number of characters
   * **?** - indicating any single character
-  * **[abcd] - indicating any character in the set of characters between the brackets
-  * **[!abcd] - indicating _not_ any character in the set of characters between the brackets
-  * All other characters are literal
+  * **[abcd]** - indicating any character in the set of characters between the brackets
+  * **[!abcd]** - indicating _not_ any character in the set of characters between the brackets
+  * all other characters are literal
 
   The above example is a glob pattern.
 
   Globs are simple but limited - on the other hand most needs can be expressed accurately enough
-  using them
+  using them.
 
   Note that GLOB patterns inherently match against the _whole_ path name - so, for example, a 
   path of `/etc/home/jdoe/myfile` would _not_ match the above example.
@@ -269,19 +269,19 @@ Patterns can be entered as "GLOB" patterns, or regular expressions.
   the regular expression syntax implemented by Python. Documentation of this syntax is available
   elsewhere.
 
-  To use a regular expression, precede the pattern with the tag `re:`:
+  To use a regular expression, precede the pattern with the tag `re:`. E.g.
 
   ![Regex path pattern](images/regex-path-pattern.png)
 
   This example specifies the same rule as the glob example above as a regular expression ...
 
-  welllll - not quite .... 
+  weeelllll - not quite .... 
 
-  Regex patterns do not inherently match against the _whole_ path name - so, for example, a 
+  Regular expression patterns do _not_ inherently match against the _whole_ path name - so, for example, a 
   path of `/etc/home/jdoe/myfile` _would_ match this reular expression.
 
-  To make the pattern match the path, you need to prefix it with a carat character and suffix it with
-  a a dollar character:
+  To make the pattern match the whole path, you need to prefix it with a carat character and suffix it with
+  a dollar character:
 
   ![Regex whole path pattern](images/regex-whole-path-pattern.png)
 
