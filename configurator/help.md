@@ -91,7 +91,7 @@ in alphanumeric order (the default is that the order you specify is the one that
 
 To add actions to your new menu, click on the **Submenu Actions** tab to reveal a nested 
 dialog that is similar to the top level dialog. Here you can, again, click on the 
-![Add Action](images/add-action.png) to configure the actions that will appear in your 
+![Add Action](images/add-action-button.png) to configure the actions that will appear in your 
 newly created menu.
 
 That is all there is to menu creation.
