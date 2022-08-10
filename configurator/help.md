@@ -66,7 +66,7 @@ redo changes that you have undone, and save changes back to the configuration fi
 
 ![Undo, redo, save, help](images/undo-redo-save-help.png)
 
-The help button (which you have already discovered if you are reading this) is also there, and allows
+The `Show Help` button (which you have already discovered if you are reading this) is also there, and allows
 you to hide this help window once you have shown it.
 
 The save button will not be enabled if there are no changes to save, nor if there are problems with the 
@@ -87,13 +87,13 @@ You will notice that optional parameters are not automatically enabled for modif
 modify an optional parameter from its default value, you first need to enable the inclusion of the
 optional parameter into the configuration by checking the check box associated with that parameter. E.g.:
 
-    disabled:
+* disabled:
 
-    ![Disabled optional parameter](images/disabled-optional-parameter.png)
+  ![Disabled optional parameter](images/disabled-optional-parameter.png)
 
-    enabled:
+* enabled:
 
-    ![Enabled optional parameter](images/enabled-optional-parameter.png)
+  ![Enabled optional parameter](images/enabled-optional-parameter.png)
 
 Note also that if you disable an optional parameter that you have previously enabled and modified, the
 displayed value is _not_ modified to the default value but retains the modified value you previously set.
