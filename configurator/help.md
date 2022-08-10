@@ -110,11 +110,9 @@ To create a menu action, then, do the following:
   ![Add a top-level menu](images/add-menu-top.png)
 
 * In the newly-created action details area (to the right), click on the type indicator
-  box,
+  box and change its value to _Menu_:
 
   ![Change type to menu](images/action-type-command.png)
-
-  and change it to _Menu_
 
 You will now see the tabs that are relevant to menu actions:
 
@@ -122,7 +120,8 @@ You will now see the tabs that are relevant to menu actions:
 
 You will also notice that the selection item in the left column has a new icon:
 
-![Menu icon](images/menu-icon.png) instead of ![Command icon](images/command-icon.png).
+![Menu icon](images/menu-icon.png) - the menu icon - instead of ![Command icon](images/command-icon.png),
+the command icon.
 
 You must now give your menu a label, which should be unique among all actions in the 
 parent menu to which you are adding the menu.
@@ -131,13 +130,13 @@ You can also opt to have the extension sort the actions that will appear in this
 in alphanumeric order (the default is that the order you specify is the one that is used).
 
 To add actions to your new menu, click on the **Submenu Actions** tab to reveal a nested
-dialog that is similar to the top level dialog. Here you can, again, click on
-![Add Action](images/add-action-button.png) to configure the actions that will appear in your
+panel that is similar to the top level UI. Here you can, again, click on the
+![Add Action](images/add-action-button.png) button to configure the actions that will appear in your
 newly created menu.
 
 That is all there is to menu creation.
 
-However, your menu will not appear in the Nautilus context menu until you add command
+Note, however, that your menu will not appear in the Nautilus context menu until you add command
 actions to it, and then only if those commands are pertinent to the files that you have 
 selected in the Nautilus window...
 
@@ -161,17 +160,17 @@ context menu item
 ### Creating a Command Action
 You create a command action in the same way you create a menu action: 
 
-* click on the **+ Action** button at the top of the left-most column of the configurator
-  tool:
-
-  ![Add a top-level command](images/add-menu-top.png)
+* click on the ![Add Action](images/add-action-button.png) button at the top of the left-most column 
+  of the configurator tool
 
 * In the newly-created action details area (to the right), click on the type indicator
   box and change it to _Command_
 
-Upon creating the action, you see the details that can be specified for the command:
+Upon creating the action, you will see the details that can be specified for the command:
 
 ![Command action tabs](images/command-action-tabs.png)
+
+(as well as warning that minimal required information has not yet been provided)
 
 Firstly give your command a label, which should be unique within the menu/submenu to which
 you are adding the command.
@@ -183,10 +182,10 @@ Firstly, however, we'll cover the rules that dictate if a command action is appl
 current files in the Nautilus selection.
 
 ### Filtering rules
-Actions For Nautilus can filter the Nautilus selection to decide if a specific command action
+Actions For Nautilus can examine the Nautilus selection to decide if a specific command action
 should be available to that selection.
 
-This filtering can apply four different criteria:
+This examination can apply four different criteria:
 
 * The number of files in the selection 
 * The mimetypes of the selected files
@@ -208,16 +207,18 @@ It is also important to note that if none of the actions in a submenu are applic
 current selection, that submenu will not appear in the Nautilus context menu.
 
 #### Max items
+
+![Max items](images/max-items.png)
+
 This is pretty simple to explain: the maximum number of files that are in the selection in order 
 for the command action to be shown.
 
-The parameter is optional, so, before changing it, you will need to enable it.
-
 Normally you will be looking at values of either **0** - meaning unlimited (the default) - or 
 **1** meaning ... well ... 1. However, other values can be used. For example, for an action that 
-compares two files, you might want to specify a value of **2** here.
+compares up to two files, you might want to specify a value of **2** here.
 
-Note that, at present, there is no capability to specify an exact number other than **1**.
+Note that, at present, there is no capability to specify an exact number other than **1**, nor to
+specify a minimum number.
 
 #### Mimetypes
 
