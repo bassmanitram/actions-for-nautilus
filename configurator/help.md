@@ -266,7 +266,7 @@ will _not_ allow `application/json` files through the filter, whereas
 application/*
 ```
 
-will "correctly" block `application/json` files while (only) allowing all other files of `application`
+will "correctly" block `application/json` files while allowing all other files of (only) `application`
 subtypes.
 
 This is a known current limitation of the feature that may be alleviated in a future release to allow more 
