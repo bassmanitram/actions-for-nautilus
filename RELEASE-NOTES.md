@@ -1,3 +1,8 @@
+# Release 1.1.1
+* Fix mimetype, file type, and path pattern rule evaluation.
+* Fix syslog errors when virtual locations (Trash, Recent, ...) are
+  in the selection
+
 # Release 1.1.0
 * Add `path_patterns` to command action configurations. This allows
   selected files to be matched against path patterns to establish if 

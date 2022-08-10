@@ -369,7 +369,7 @@ These are expected to have the following additional properties:
   Only the first appearance of a specific filetype (regardless of any `!` "not"
   prefix) is taken into account.
 
-  *Default* - all filetypes
+  *Default* - all filetypes are accepted
 
 * `max_items` - OPTIONAL - the maximum number of items in the selection for 
   which this action will be displayed.
@@ -403,7 +403,7 @@ These are expected to have the following additional properties:
   Only the first appearance of a specific rule (regardless of any `!` "not"
   prefix) is taken into account.
 
-  *Default* - all mimetypes 
+  *Default* - all mimetypes are accepted
 
 * `path_patterns` - OPTIONAL - a list of glob or regular expression patterns against
   which the full paths of the selected files are to be matched.
@@ -448,6 +448,11 @@ These are expected to have the following additional properties:
   The accepted Regular Expression syntax is fully documented [here ](https://docs.python.org/3/library/re.html#regular-expression-syntax).
 
   *Default* - all file paths are accepted
+
+With the `mimetypes`, `filetypes` and `path_patterns` filter lists, all selected files
+must match at least one non-negated rule (if there are any non-negated rules), while 
+matching none of the negated rules, in order for the associated action to appear in the 
+context menu.
 
 # Place holders
 All the command line and `cwd` placeholders implemented by the 

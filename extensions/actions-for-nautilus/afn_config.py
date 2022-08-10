@@ -154,20 +154,20 @@ def _check_command_action(idString, action):
         if "mimetypes" in action and type(action["mimetypes"]) == list:
             action["all_mimetypes"] = ( "*/*" in action["mimetypes"] or "*" in action["mimetypes"])
             if not action["all_mimetypes"]:
-                action["mimetypes"] = _remove_duplicates_by_key(list(filter(None, map(_gen_mimetype, action["mimetypes"]))),"mimetype")
-                action["all_mimetypes"] = len(action["mimetypes"]) < 1
+                action["mimetypes"] = _split_rules(_remove_duplicates_by_key(list(filter(None, map(_gen_mimetype, action["mimetypes"]))),"mimetype"))
+                action["all_mimetypes"] = len(action["mimetypes"]["n_rules"]) + len(action["mimetypes"]["p_rules"]) < 1
         else:
             action["all_mimetypes"] = True
 
         if "filetypes" in action and type(action["filetypes"]) == list:
-            action["filetypes"] = _remove_duplicates_by_key(_flatten_list(list(filter(None, map(_gen_filetype, action["filetypes"])))),"filetype")
-            action["all_filetypes"] = len(action["filetypes"]) < 1
+            action["filetypes"] = _split_rules(_remove_duplicates_by_key(_flatten_list(list(filter(None, map(_gen_filetype, action["filetypes"])))),"filetype"))
+            action["all_filetypes"] = len(action["filetypes"]["n_rules"]) + len(action["filetypes"]["p_rules"]) < 1
         else:
             action["all_filetypes"] = True
 
         if "path_patterns" in action and type(action["path_patterns"]) == list:
-            action["path_patterns"] = _remove_duplicates_by_key(_flatten_list(list(filter(None, map(_gen_pattern, action["path_patterns"])))),"path_pattern")
-            action["all_path_patterns"] = len(action["path_patterns"]) < 1
+            action["path_patterns"] = _split_rules(_remove_duplicates_by_key(_flatten_list(list(filter(None, map(_gen_pattern, action["path_patterns"])))),"path_pattern"))
+            action["all_path_patterns"] = len(action["path_patterns"]["n_rules"]) + len(action["path_patterns"]["p_rules"]) < 1
         else:
             action["all_path_patterns"] = True
 
@@ -237,3 +237,12 @@ def _remove_duplicates_by_key(lst,key):
 def _add_to_set(set, element, key):
     set.add(element[key])
     return element
+
+def _split_rules(lst):
+    rc = {
+        "p_rules": list(filter(lambda element: element["comparison"], lst)),
+        "n_rules": list(filter(lambda element: not element["comparison"], lst))
+    }
+
+    print(rc)
+    return rc
