@@ -22,6 +22,20 @@ The details of the configuration file itself can be found in the project documen
 This help information is intended to help you use the configurator tool to create and
 modify the configuration.
 
+## Table of Contents
+
+* [Layout](#layout)
+  * [Undo, Redo and Save](#undo-redo-and-save)
+  * [Optional parameters](#optional-parameters)
+* [Menu Actions](#menu-actions)
+* [Command Actions](#command-actions)
+  * [Creating a Command Action](#creating-a-command-action)
+  * [Filtering rules](#filtering-rules)
+      * [Max items](#max-items)
+      * [Mimetypes](#mimetypes)
+      * [File types](#file-types)
+      * [Path patterns](#path-patterns)
+
 ## Layout
 The configurator UI is basically layed out in two columns:
 
