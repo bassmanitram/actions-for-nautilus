@@ -1,5 +1,6 @@
 actions-for-nautilus (1.1.1) stable; urgency=medium
   * Fix mimetype, file type, and path pattern rule evaluation.
+  * Fix errors when virtual locations are selected
 
  -- Martin Bartlett <martin.j.bartlett@gmail.com>  Tue, 05 Aug 2022 09:00:00 +0200
 
