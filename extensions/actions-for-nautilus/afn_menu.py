@@ -9,26 +9,35 @@ from gi.repository import Nautilus, Gio
 # Consolidate background and selection calls to create menus
 #
 def create_menu_items(config, files, group, act_function):
-	my_files = list(map(lambda file: {
-			"mimetype": file.get_mime_type(),
-			"filetype": file.get_file_type(),
-			"basename": os.path.basename(file.get_location().get_path()),
-			"filepath": file.get_location().get_path(),
-			"folder": os.path.dirname(file.get_location().get_path()),
-			"uri": urlparse(file.get_uri())
-		}, files))
+	try:
+		my_files = list(filter(None, map(lambda file: {
+				"mimetype": file.get_mime_type(),
+				"filetype": file.get_file_type(),
+				"basename": os.path.basename(file.get_location().get_path()),
+				"filepath": file.get_location().get_path(),
+				"folder": os.path.dirname(file.get_location().get_path()),
+				"uri": urlparse(file.get_uri())
+			} if file.get_location().get_path() is not None else None, files)))
+		actions = list(filter(None, map(lambda action: _create_menu_item(action, my_files, group, act_function), config["actions"])))
+		return sorted(actions, key=lambda element: element.props.label) if config.get("sort","manual") == "auto" else actions
+	except Exception as e:
+		print("Error constructing file descriptors")
+		print(group)
+		print(files)
+		print(e)
+		return []
 
-	actions = list(filter(None, map(lambda action: _create_menu_item(action, my_files, group, act_function), config["actions"])))
-	return sorted(actions, key=lambda element: element.props.label) if config.get("sort","manual") == "auto" else actions
-	
 #
 # Triage the menu item creation based on type
 #
 def _create_menu_item(action, files, group, act_function):
-	if action["type"] == "menu":
-		return _create_submenu_menu_item(action, files, group, act_function)
+	if len(files) > 0:
+		if action["type"] == "menu":
+			return _create_submenu_menu_item(action, files, group, act_function)
+		else:
+			return _create_command_menu_item(action, files, group, act_function)
 	else:
-		return _create_command_menu_item(action, files, group, act_function)
+		return []
 
 #
 # Generate an item that has a submenu attached, with its own actions recursively added
