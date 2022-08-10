@@ -27,7 +27,7 @@ The configurator UI is basically layed out in two columns:
 
 * The left most column shows you the current items that will be added to the Nautilus context menu.
   
-  ![Add a top-level menu](images/main-menu-list.png)
+  ![Main menu list](images/main-menu-list.png)
 
   This allows you to: 
   
@@ -42,7 +42,7 @@ The configurator UI is basically layed out in two columns:
 * The right column shows the details and characteristics of the currently selected main menu item
   in the left-most column
 
-  ![Add a top-level menu](images/action-details.png)
+  ![Action details panel](images/action-details.png)
 
   Here you:
 
@@ -59,6 +59,47 @@ the same as for main menu items, performed within the ui presented by the **Subm
 
 The instructions below are presented for main menu actions, but the same semantics apply to creating
 submenu actions.
+
+### Undo, Redo and Save
+Next to the title, you will see three buttons that allow you to undo changes that you have made,
+redo changes that you have undone, and save changes back to the configuration file:
+
+![Undo, redo, save, help](images/undo-redo-save-help.png)
+
+The help button (which you have already discovered if you are reading this) is also there, and allows
+you to hide this help window once you have shown it.
+
+The save button will not be enabled if there are no changes to save, nor if there are problems with the 
+configuration. If you have made changes but the save button is disabled, you will need to revisit those
+changes and correct the problems that are reported in order to be able to save the configuration.
+
+Once saved, the previous configuration is backed up in the `~/.local/share/actions-for-nautilus` folder:
+
+![Backups](images/backups.png)
+
+You can, of course, restore a previous version of the configuration by replacing the file `config.json`
+with the contents of a backup file.
+
+You are responsible for deleting backups that are no longer required.
+
+### Optional parameters
+You will notice that optional parameters are not automatically enabled for modification. In order to
+modify an optional parameter from its default value, you first need to enable the inclusion of the
+optional parameter into the configuration by checking the check box associated with that parameter. E.g.:
+
+    disabled:
+
+    ![Disabled optional parameter](images/disabled-optional-parameter.png)
+
+    enabled:
+
+    ![Enabled optional parameter](images/enabled-optional-parameter.png)
+
+Note also that if you disable an optional parameter that you have previously enabled and modified, the
+displayed value is _not_ modified to the default value but retains the modified value you previously set.
+
+The saved configuration however will not contain the parameter which, therefore, will revert to its default
+value.
 
 ## Menu Actions
 To create a menu action, then, do the following:
@@ -81,7 +122,7 @@ You will now see the tabs that are relevant to menu actions:
 
 You will also notice that the selection item in the left column has a new icon:
 
-![Menu icon](images/menu-icon.png) instead of ![Menu icon](images/command-icon.png).
+![Menu icon](images/menu-icon.png) instead of ![Command icon](images/command-icon.png).
 
 You must now give your menu a label, which should be unique among all actions in the 
 parent menu to which you are adding the menu.
@@ -123,7 +164,7 @@ You create a command action in the same way you create a menu action:
 * click on the **+ Action** button at the top of the left-most column of the configurator
   tool:
 
-  ![Add a top-level menu](images/add-menu-top.png)
+  ![Add a top-level command](images/add-menu-top.png)
 
 * In the newly-created action details area (to the right), click on the type indicator
   box and change it to _Command_
@@ -170,9 +211,11 @@ current selection, that submenu will not appear in the Nautilus context menu.
 This is pretty simple to explain: the maximum number of files that are in the selection in order 
 for the command action to be shown.
 
-Normally you will be looking at values of either **0** - meaning unlimited - or **1** meaning ... well
-... 1. However, other values can be used. For example, for an action that compares two files, you might
-want to specify a value of **2** here.
+The parameter is optional, so, before changing it, you will need to enable it.
+
+Normally you will be looking at values of either **0** - meaning unlimited (the default) - or 
+**1** meaning ... well ... 1. However, other values can be used. For example, for an action that 
+compares two files, you might want to specify a value of **2** here.
 
 Note that, at present, there is no capability to specify an exact number other than **1**.
 
@@ -181,7 +224,7 @@ Note that, at present, there is no capability to specify an exact number other t
 With the mimetypes list, entered in the **Mimetypes** tab, you can specify the IANA Media Types 
 to which your command action applies. E.g.
 
-![Command action tabs](images/mimetypes.png)
+![Mimetype](images/mimetypes.png)
 
 In this example, the **Run in node** action only applies to files whose mimetype is **application/javascript**.
 
@@ -193,13 +236,13 @@ A mimetype can be declared in one of the ways standard to IANA Media Types:
 * _type/subtype_ - a specific mimetype (e.g. **application/javascript** as in the above example)
 * _type/\*_ - all subtypes of a specific type (e.g. **audio/\*** for audio files of any encoding)
 
-You can specify **\*** or **\*/\*** to specify all mimetypes - but since this is the default setting
+You can specify **\*** or **\*/\*** to accept all mimetypes - but since this is the default setting
 it's a bit superfluous to do so!
 
 You can make a mimetype _"negative"_ by preceding it with an exclamation point, in order to declare 
 that NONE of the selected files should be of the specified mimetype(s). E.g.
 
-![Command action tabs](images/negative-mimetypes.png)
+![Negative mimetypes](images/negative-mimetypes.png)
 
 In this example, the **Edit with gvim** action will not appear if any of the selected files is a PDF, an 
 audio file, or an image file.
@@ -208,18 +251,38 @@ You should probably avoid mixing standard (positive) rules with negative rules, 
 be confusing, but the algorithm is fairly straightforward: All selected files must match one of the 
 "positive" rules, if any, and none of the "negative rules".
 
+Note that negative rules take precedence over "positive" rules - so (at present) specifying
+
+```
+!application/*
+application/json
+```
+
+will _not_ allow `application/json` files through the filter, whereas
+
+```
+!application/json
+application/*
+```
+
+will "correctly" block `application/json` files while (only) allowing all other files of `application`
+subtypes.
+
+This is a known current limitation of the feature that may be alleviated in a future release to allow more 
+specific rules to take precedence over more general rules.
+
 #### File types
 
 With the file types list, entered in the **File types** tab, you can specify the Gnome file types 
 to which your command applies. E.g.
 
-![Command action tabs](images/filetypes.png)
+![File type](images/filetypes.png)
 
 In this example, the **Start HTTP server here** action only applies to directories.
 
 The available filetypes are defined by Gnome itself and are, therefore, presented in a selection list:
 
-![Command action tabs](images/available-filetypes.png)
+![Available file types](images/available-filetypes.png)
 
 You will notice that "negative" versions of the file types are also available - the selected files must
 NOT be of such file types.
@@ -230,7 +293,7 @@ The most useful filetypes are likely to be `directory`, `file` and `symbolic lin
 As with [mimetypes](#mimetypes), mixing negative and standard rules could be confusing, however
 there is a useful case for such a mix:
 
-![Command action tabs](images/mixed-filetypes.png)
+![Mixed file types](images/mixed-filetypes.png)
 
 This configuration specifies all `standard` types EXCEPT directories - a sensible filter for
 an editor command.
@@ -242,17 +305,17 @@ of the files in the selection should match certain patterns. E.g.
 
 ![Glob path pattern](images/glob-path-pattern.png)
 
-In this example, the **Edit with gvim** action only applies to files that are in the user jdoe's home 
+In this example, the **Edit with gvim** action only applies to files that are in user jdoe's home 
 directory.
 
-Patterns can be entered as "GLOB" patterns, or regular expressions.
+Patterns can be entered as "glob" patterns, or regular expressions.
 
 * Glob Patterns allow you to specify the following placeholders in the pattern string:
 
   * **\*** - indicating any number of characters
   * **?** - indicating any single character
   * **[abcd]** - indicating any character in the set of characters between the brackets
-  * **[!abcd]** - indicating _not_ any character in the set of characters between the brackets
+  * **[!abcd]** - indicating any character _not_ in the set of characters between the brackets
   * all other characters are literal
 
   The above example is a glob pattern.
@@ -263,10 +326,10 @@ Patterns can be entered as "GLOB" patterns, or regular expressions.
   Note that GLOB patterns inherently match against the _whole_ path name - so, for example, a 
   path of `/etc/home/jdoe/myfile` would _not_ match the above example.
 
-* Regular expressions allow for a far more complex pattern to be expressed. It is beyond the 
+* Regular expressions allow for far more complex patterns to be expressed. It is beyond the 
   scope of this document to explain regular expressions, but the extension specifically supports
   the regular expression syntax implemented by Python. Documentation of this syntax is available
-  elsewhere.
+  [here](https://docs.python.org/3/library/re.html#regular-expression-syntax).
 
   To use a regular expression, precede the pattern with the tag **re:**. E.g.
 
@@ -277,14 +340,15 @@ Patterns can be entered as "GLOB" patterns, or regular expressions.
   weeelllll - not quite .... 
 
   Regular expression patterns do _not_ inherently match against the _whole_ path name - so, for example, a 
-  path of `/etc/home/jdoe/myfile` _would_ match this reular expression.
+  path of `/etc/home/jdoe/myfile` _would_ match this regular expression.
 
-  To make the pattern match the whole path, you need to prefix it with a carat character and suffix it with
-  a dollar character:
+  To make the pattern match only the whole path, you need to prefix it with a carat character and suffix 
+  it with a dollar character:
 
   ![Regex whole path pattern](images/regex-whole-path-pattern.png)
 
 Again, you can prefix the entire pattern string with an exclamation point to specify a "negative"
 path pattern - no file in the selection should have a path that matches that pattern - and again 
 mixing standard and negative rules _may_ be confusing, but may also be useful in breaking down
-complex patterns into simpler components.
+complex patterns into simpler components (noting, again, that negative patterns take
+precedence over positive patterns).
