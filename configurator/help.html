@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+<style type="text/css">
+	.wrapper {
+		width: 960px;
+		margin: 0 auto;
+	}
+
+
+	body {
+		font-family: sans-serif;
+		margin: 20px;
+		font-size: 110%
+	}
+
+	code {
+		font-family: monospace;
+		font-size: 120%
+	}
+
+	table {
+		border-collapse: collapse;
+		margin: 25px 0;
+		min-width: 400px;
+		box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+	}
+
+	table thead tr {
+		background-color: silver;
+		color: #ffffff;
+		text-align: left;
+	}
+
+	table th,
+	table td {
+		padding: 6px 15px;
+	}
+
+	table tbody tr {
+		border-bottom: 1px solid #dddddd;
+	}
+
+	table tbody tr:nth-of-type(even) {
+		background-color: #f3f3f3;
+	}
+
+	table tbody tr:last-of-type {
+		border-bottom: 2px solid #009879;
+	}
+
+	blockquote {
+		background: #f9f9f9;
+		border-left: 3px solid #ccc;
+		margin: 1.5em 10px;
+		padding: 0.1em 10px;
+	}
+</style>
+
+<body>
+	<div class="wrapper">
+		<h1 id="actions-for-nautilus">Actions For Nautilus</h1>
+		<p>The Actions For Nautilus extension allows you to add items to the Gnome Files
+			(called Nautilus from here-on, to avoid confusion) context menu (i.e. the right click menu)
+			based upon the characteristics of the files and directories that you have selected
+			(simply called <em>files</em> from here-on).</p>
+		<p>Within the context of the extension, these menu items are called <em>actions</em>.</p>
+		<p>You can add two types of actions.</p>
+		<ul>
+			<li>Commands - a command action allows you to execute an arbitrary command, passing
+				the selected files to the command as arguments.</li>
+			<li>Menus - a menu action contains other actions, allowing you to structure your
+				configured commands into logical groups in any way you see fit.</li>
+		</ul>
+		<p>The configuration of the extension is, effectively, the declaration of the menu and
+			command actions that you wish to see in the Nautilus context menu for different types
+			of files.</p>
+		<p>The details of the configuration file itself can be found in the project documentation.
+			This help information is intended to help you use the configurator tool to create and
+			modify the configuration.</p>
+		<h2 id="table-of-contents">Table of Contents</h2>
+		<ul>
+			<li><a href="#layout">Layout</a>
+				<ul>
+					<li><a href="#undo-redo-and-save">Undo, Redo and Save</a></li>
+					<li><a href="#optional-parameters">Optional parameters</a></li>
+				</ul>
+			</li>
+			<li><a href="#menu-actions">Menu Actions</a></li>
+			<li><a href="#command-actions">Command Actions</a>
+				<ul>
+					<li><a href="#creating-a-command-action">Creating a Command Action</a></li>
+					<li><a href="#filtering-rules">Filtering rules</a>
+						<ul>
+							<li><a href="#max-items">Max items</a></li>
+							<li><a href="#mimetypes">Mimetypes</a></li>
+							<li><a href="#file-types">File types</a></li>
+							<li><a href="#path-patterns">Path patterns</a></li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+		<h2 id="layout">Layout</h2>
+		<p>The configurator UI is basically layed out in two columns:</p>
+		<ul>
+			<li>
+				<p>The left most column shows you the current items that will be added to the Nautilus context menu.</p>
+				<p><img src="images/main-menu-list.png" alt="Main menu list"></p>
+				<p>This allows you to: </p>
+				<ul>
+					<li>see the actions already added to the main context menu, </li>
+					<li>add new actions to that menu</li>
+					<li>select an existing action in order to edit its characteristics</li>
+					<li>remove all actions from the main menu (which removes all actions from the entire configuration)
+					</li>
+				</ul>
+				<p>It also allows you to set the ordering options for the main menu actions, and to set the debug
+					output option if you need to resolve problems with your configuration (not yet fully implemented).
+				</p>
+			</li>
+			<li>
+				<p>The right column shows the details and characteristics of the currently selected main menu item
+					in the left-most column</p>
+				<p><img src="images/action-details.png" alt="Action details panel"></p>
+				<p>Here you:</p>
+				<ul>
+					<li>set the type of the selected action - <em>Menu</em> or <em>Command</em></li>
+					<li>set the label for the action</li>
+					<li>set the submenu items for a menu action</li>
+					<li>set the command string, cwd, and filter rules that pertain to a command action</li>
+					<li>reorder the action within its containing menu</li>
+					<li>delete the action</li>
+				</ul>
+			</li>
+		</ul>
+		<p>Of special note is the <strong>Submenu Actions</strong> tab for menu actions ... this presents the identical
+			UI
+			elements in a nested format - i.e. the creation and manipulation of submenu actions is exactly
+			the same as for main menu items, performed within the ui presented by the <strong>Submenu Actions</strong>
+			tab.</p>
+		<p>The instructions below are presented for main menu actions, but the same semantics apply to creating
+			submenu actions.</p>
+		<h3 id="undo-redo-and-save">Undo, Redo and Save</h3>
+		<p>Next to the title, you will see three buttons that allow you to undo changes that you have made,
+			redo changes that you have undone, and save changes back to the configuration file:</p>
+		<p><img src="images/undo-redo-save-help.png" alt="Undo, redo, save, help"></p>
+		<p>The <code>Show Help</code> button (which you have already discovered if you are reading this) is also there,
+			and allows
+			you to hide this help window once you have shown it.</p>
+		<p>The save button will not be enabled if there are no changes to save, nor if there are problems with the
+			configuration. If you have made changes but the save button is disabled, you will need to revisit those
+			changes and correct the problems that are reported in order to be able to save the configuration.</p>
+		<p>Once saved, the previous configuration is backed up in the <code>~/.local/share/actions-for-nautilus</code>
+			folder:</p>
+		<p><img src="images/backups.png" alt="Backups"></p>
+		<p>You can, of course, restore a previous version of the configuration by replacing the file
+			<code>config.json</code>
+			with the contents of a backup file.</p>
+		<p>You are responsible for deleting backups that are no longer required.</p>
+		<h3 id="optional-parameters">Optional parameters</h3>
+		<p>You will notice that optional parameters are not automatically enabled for modification. In order to
+			modify an optional parameter from its default value, you first need to enable the inclusion of the
+			optional parameter into the configuration by checking the check box associated with that parameter. E.g.:
+		</p>
+		<ul>
+			<li>
+				<p>disabled:</p>
+				<p><img src="images/disabled-optional-parameter.png" alt="Disabled optional parameter"></p>
+			</li>
+			<li>
+				<p>enabled:</p>
+				<p><img src="images/enabled-optional-parameter.png" alt="Enabled optional parameter"></p>
+			</li>
+		</ul>
+		<p>Note also that if you disable an optional parameter that you have previously enabled and modified, the
+			displayed value is <em>not</em> modified to the default value but retains the modified value you previously
+			set.</p>
+		<p>The saved configuration however will not contain the parameter which, therefore, will revert to its default
+			value.</p>
+		<h2 id="menu-actions">Menu Actions</h2>
+		<p>To create a menu action, then, do the following:</p>
+		<ul>
+			<li>
+				<p>click on the <strong>+ Action</strong> button at the top of the left-most column of the configurator
+					tool:</p>
+				<p><img src="images/add-menu-top.png" alt="Add a top-level menu"></p>
+			</li>
+			<li>
+				<p>In the newly-created action details area (to the right), click on the type indicator
+					box and change its value to <em>Menu</em>:</p>
+				<p><img src="images/action-type-command.png" alt="Change type to menu"></p>
+			</li>
+		</ul>
+		<p>You will now see the tabs that are relevant to menu actions:</p>
+		<p><img src="images/menu-action-tabs.png" alt="Menu action tabs"></p>
+		<p>You will also notice that the selection item in the left column has a new icon:</p>
+		<p><img src="images/menu-icon.png" alt="Menu icon"> - the menu icon - instead of <img
+				src="images/command-icon.png" alt="Command icon">,
+			the command icon.</p>
+		<p>You must now give your menu a label, which should be unique among all actions in the
+			parent menu to which you are adding the menu.</p>
+		<p>You can also opt to have the extension sort the actions that will appear in this new menu
+			in alphanumeric order (the default is that the order you specify is the one that is used).</p>
+		<p>To add actions to your new menu, click on the <strong>Submenu Actions</strong> tab to reveal a nested
+			panel that is similar to the top level UI. Here you can, again, click on the
+			<img src="images/add-action-button.png" alt="Add Action"> button to configure the actions that will appear
+			in your
+			newly created menu.
+		</p>
+		<p>That is all there is to menu creation.</p>
+		<p>Note, however, that your menu will not appear in the Nautilus context menu until you add command
+			actions to it, and then only if those commands are pertinent to the files that you have
+			selected in the Nautilus window...</p>
+		<h2 id="command-actions">Command Actions</h2>
+		<p>Command actions are really what this is all about - executing a command string of your choice,
+			passing details of the file(s) you have selected as arguments to the command.</p>
+		<p>Examples of commands:</p>
+		<ul>
+			<li>Start an HTTP server using a specific folder as the root folder</li>
+			<li>Restore the previous version of a versioned file</li>
+			<li>Copying details of the selected files to the clipboard</li>
+			<li>Running a script file with an appropriate interpreter</li>
+			<li>Executing an arbitrary command in a selected folder</li>
+			<li>...</li>
+		</ul>
+		<p>Using tools such as Zenity, XClip, Gnome Terminal, and others, you can construct complex
+			scenarios and even pipelines that are then executed with a simply click on the Nautilus
+			context menu item</p>
+		<h3 id="creating-a-command-action">Creating a Command Action</h3>
+		<p>You create a command action in the same way you create a menu action: </p>
+		<ul>
+			<li>
+				<p>click on the <img src="images/add-action-button.png" alt="Add Action"> button at the top of the
+					left-most column
+					of the configurator tool</p>
+			</li>
+			<li>
+				<p>In the newly-created action details area (to the right), click on the type indicator
+					box and change it to <em>Command</em></p>
+			</li>
+		</ul>
+		<p>Upon creating the action, you will see the details that can be specified for the command:</p>
+		<p><img src="images/command-action-tabs.png" alt="Command action tabs"></p>
+		<p>(as well as warning that minimal required information has not yet been provided)</p>
+		<p>Firstly give your command a label, which should be unique within the menu/submenu to which
+			you are adding the command.</p>
+		<p>And, evidently, you must provide a command line to execute when the action is clicked on.
+			We&#39;ll cover that below.</p>
+		<p>Firstly, however, we&#39;ll cover the rules that dictate if a command action is applicable to the
+			current files in the Nautilus selection.</p>
+		<h3 id="filtering-rules">Filtering rules</h3>
+		<p>Actions For Nautilus can examine the Nautilus selection to decide if a specific command action
+			should be available to that selection.</p>
+		<p>This examination can apply four different criteria:</p>
+		<ul>
+			<li>The number of files in the selection </li>
+			<li>The mimetypes of the selected files</li>
+			<li>The basic filetypes of the selected files</li>
+			<li>The paths of the selected files</li>
+		</ul>
+		<p>Firstly note that each of these is optional - if not used, the action applies to a selection
+			of any size, any file type, any mimetype, and any path.</p>
+		<p>As with other optional configuration items, in order to apply a filter, you must first activate
+			the filter by checking the checkbox situated next to the entry field.</p>
+		<p>After that, you can start adding filter rules.</p>
+		<p>It is important to note that <em>all</em> files in the selection must pass the filtering rules in
+			order for the action to be shown in the Nautilus context menu.</p>
+		<p>It is also important to note that if none of the actions in a submenu are applicable to the
+			current selection, that submenu will not appear in the Nautilus context menu.</p>
+		<h4 id="max-items">Max items</h4>
+		<p><img src="images/max-items.png" alt="Max items"></p>
+		<p>This is pretty simple to explain: the maximum number of files that are in the selection in order
+			for the command action to be shown.</p>
+		<p>Normally you will be looking at values of either <strong>0</strong> - meaning unlimited (the default) - or
+			<strong>1</strong> meaning ... well ... 1. However, other values can be used. For example, for an action
+			that
+			compares up to two files, you might want to specify a value of <strong>2</strong> here.
+		</p>
+		<p>Note that, at present, there is no capability to specify an exact number other than <strong>1</strong>, nor
+			to
+			specify a minimum number.</p>
+		<h4 id="mimetypes">Mimetypes</h4>
+		<p>With the mimetypes list, entered in the <strong>Mimetypes</strong> tab, you can specify the IANA Media Types
+			to which your command action applies. E.g.</p>
+		<p><img src="images/mimetypes.png" alt="Mimetype"></p>
+		<p>In this example, the <strong>Run in node</strong> action only applies to files whose mimetype is
+			<strong>application/javascript</strong>.</p>
+		<p>You can specify any number of mimetypes - the selected files must match one of these in order to pass the
+			mimetypes filter rule.</p>
+		<p>A mimetype can be declared in one of the ways standard to IANA Media Types:</p>
+		<ul>
+			<li><em>type/subtype</em> - a specific mimetype (e.g. <strong>application/javascript</strong> as in the
+				above example)</li>
+			<li><em>type/*</em> - all subtypes of a specific type (e.g. <strong>audio/*</strong> for audio files of any
+				encoding)</li>
+		</ul>
+		<p>You can specify <strong>*</strong> or <strong>*/*</strong> to accept all mimetypes - but since this is the
+			default setting
+			it&#39;s a bit superfluous to do so!</p>
+		<p>You can make a mimetype <em>&quot;negative&quot;</em> by preceding it with an exclamation point, in order to
+			declare
+			that NONE of the selected files should be of the specified mimetype(s). E.g.</p>
+		<p><img src="images/negative-mimetypes.png" alt="Negative mimetypes"></p>
+		<p>In this example, the <strong>Edit with gvim</strong> action will not appear if any of the selected files is a
+			PDF, an
+			audio file, or an image file.</p>
+		<p>You should probably avoid mixing standard (positive) rules with negative rules, since the result could
+			be confusing, but the algorithm is fairly straightforward: All selected files must match one of the
+			&quot;positive&quot; rules, if any, and none of the &quot;negative rules&quot;.</p>
+		<p>Note that negative rules take precedence over &quot;positive&quot; rules - so (at present) specifying</p>
+		<pre><code>!<span class="hljs-built_in">application</span>/*
+<span class="hljs-built_in">application</span>/json
+</code></pre>
+		<p>will <em>not</em> allow <code>application/json</code> files through the filter, whereas</p>
+		<pre><code>!<span class="hljs-built_in">application</span>/json
+<span class="hljs-built_in">application</span>/*
+</code></pre>
+		<p>will &quot;correctly&quot; block <code>application/json</code> files while allowing all other files of (only)
+			<code>application</code>
+			subtypes.</p>
+		<p>This is a known current limitation of the feature that may be alleviated in a future release to allow more
+			specific rules to take precedence over more general rules.</p>
+		<h4 id="file-types">File types</h4>
+		<p>With the file types list, entered in the <strong>File types</strong> tab, you can specify the Gnome file
+			types
+			to which your command applies. E.g.</p>
+		<p><img src="images/filetypes.png" alt="File type"></p>
+		<p>In this example, the <strong>Start HTTP server here</strong> action only applies to directories.</p>
+		<p>The available filetypes are defined by Gnome itself and are, therefore, presented in a selection list:</p>
+		<p><img src="images/available-filetypes.png" alt="Available file types"></p>
+		<p>You will notice that &quot;negative&quot; versions of the file types are also available - the selected files
+			must
+			NOT be of such file types.</p>
+		<p>The most useful filetypes are likely to be <code>directory</code>, <code>file</code> and
+			<code>symbolic link</code> and, as such, a
+			&quot;macro&quot; filetype is available - <code>standard</code> - which encapsulates all three.</p>
+		<p>As with <a href="#mimetypes">mimetypes</a>, mixing negative and standard rules could be confusing, however
+			there is a useful case for such a mix:</p>
+		<p><img src="images/mixed-filetypes.png" alt="Mixed file types"></p>
+		<p>This configuration specifies all <code>standard</code> types EXCEPT directories - a sensible filter for
+			an editor command.</p>
+		<h4 id="path-patterns">Path patterns</h4>
+		<p>With the path patterns list, entered in the <strong>Path patterns</strong> tab, you can state that the paths
+			of the files in the selection should match certain patterns. E.g.</p>
+		<p><img src="images/glob-path-pattern.png" alt="Glob path pattern"></p>
+		<p>In this example, the <strong>Edit with gvim</strong> action only applies to files that are in user jdoe&#39;s
+			home
+			directory.</p>
+		<p>Patterns can be entered as &quot;glob&quot; patterns, or regular expressions.</p>
+		<ul>
+			<li>
+				<p><strong>Glob patterns</strong> allow you to specify the following placeholders in the pattern string:</p>
+				<ul>
+					<li><strong>*</strong> - indicating any number of characters</li>
+					<li><strong>?</strong> - indicating any single character</li>
+					<li><strong>[abcd]</strong> - indicating any character in the set of characters between the brackets
+					</li>
+					<li><strong>[!abcd]</strong> - indicating any character <em>not</em> in the set of characters
+						between the brackets</li>
+					<li>all other characters are literal</li>
+				</ul>
+				<p>The above example is a glob pattern.</p>
+				<p>Globs are simple but limited - on the other hand most needs can be expressed accurately enough
+					using them.</p>
+				<p>Note that glob patterns inherently match against the <em>whole</em> path name - so, for example, a
+					path of <code>/etc/home/jdoe/myfile</code> would <em>not</em> match the above example.</p>
+			</li>
+			<li>
+				<p><strong>Regular expressions</strong> allow for far more complex patterns to be expressed. It is beyond the
+					scope of this document to explain regular expressions, but the extension specifically supports
+					the regular expression syntax implemented by Python. Documentation of this syntax is available
+					<a href="https://docs.python.org/3/library/re.html#regular-expression-syntax">here</a>.
+				</p>
+				<p>To use a regular expression, precede the pattern with the tag <strong>re:</strong>. E.g.</p>
+				<p><img src="images/regex-path-pattern.png" alt="Regex path pattern"></p>
+				<p>This example specifies the same rule as the glob example above, but as a regular expression ...</p>
+				<p>weeelllll - not quite .... </p>
+				<p>Regular expression patterns do <em>not</em> inherently match against the <em>whole</em> path name -
+					so, for example, a
+					path of <code>/etc/home/jdoe/myfile</code> <em>would</em> match this regular expression.</p>
+				<p>To make the pattern match only the whole path, you need to prefix it with a carat character and
+					suffix
+					it with a dollar character:</p>
+				<p><img src="images/regex-whole-path-pattern.png" alt="Regex whole path pattern"></p>
+			</li>
+		</ul>
+		<p>Again, you can prefix the entire pattern string with an exclamation point to specify a &quot;negative&quot;
+			path pattern - no file in the selection should have a path that matches that pattern - and again
+			mixing standard and negative rules <em>may</em> be confusing, but may also be useful in breaking down
+			complex patterns into simpler components (noting, again, that negative patterns take
+			precedence over positive patterns).</p>
+	</div>
+</body>
+
+</html>
