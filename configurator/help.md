@@ -24,7 +24,7 @@ modify the configuration.
 
 ## Table of Contents
 
-* [Layout](#layout)
+* [Configurator Layout](#layout)
   * [Undo, Redo and Save](#undo-redo-and-save)
   * [Optional parameters](#optional-parameters)
 * [Menu Actions](#menu-actions)
@@ -36,7 +36,7 @@ modify the configuration.
       * [File types](#file-types)
       * [Path patterns](#path-patterns)
 
-## Layout
+## Configurator Layout
 The configurator UI is basically layed out in two columns:
 
 * The left most column shows you the current items that will be added to the Nautilus context menu.
