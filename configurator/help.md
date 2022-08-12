@@ -415,40 +415,40 @@ And perhaps that is the most important point here - you get no feedback unless t
 inherently opens its own user interface.
 
 The command string is _mostly_ devoid of characters with special meaning to the extension.
-You alter the space-delimited tokenization by using `\` characters to escape spaces or quotes
+You can alter the space-delimited tokenization by using `\` characters to escape spaces or quotes
 to include spaces in tokens - and `\` characters to escape quotes. Here is the full example 
-from the sample config, setting the terminal title to value that includes spaces;
+from the sample config, setting the terminal title to a value that includes spaces:
 
 ![cwd](images/full-command.png)
 
 You will notice that we haven't specified which directory the HTTP server should 
 use as its root. For the embedded python HTTP server, the root directory is the "current working 
 directory" when the command is executed... and you can specify _that_ by using the optional
-parameter name **Current working directory**:
+parameter named **Current working directory**:
 
 ![cwd](images/cwd.png)
 
-If you don't specify the **Current working directory** (or, CWD), the setting is "undefined" -
+If you don't specify the **Current working directory** (or CWD), the setting is "undefined" -
 i.e. the extension itself makes no special arrangements to specify a default.
 
 The glaring problem with this particular CWD is that, on the face of it, the setting - `%f` - 
-is _not_ a valid directory. However, for the extension, it _is_! That particular setting tells 
+is _not_ a valid directory. However, within the extension, it _is_. That particular value tells 
 the extension to use the file path of the first file in the selection as the CWD ... and, because 
-this particular command action is configured to only be shown when the selection size is 1 and the
-selected file is a directory, we ra guaranteed that `%f` will always be a valid directory.
+this particular command action is configured to only be available when the selection size is 1 and the
+selected file is a directory, we are guaranteed that `%f` will always resolve to a valid directory.
 
-You'll also note that we used that same placeholder in the command line as the `--title` 
-**gnome-terminal** option value.
+You'll also see that we used that same placeholder in the command line as the `--title` 
+**gnome-terminal** command option value.
 
-In general character pairs that start with `%` are placeholders for values that are drawn
-from the details of the files in the selection... but before we discuss those at length,
-there is one more optional parameter to present:
+In general, the, character pairs that start with `%` are placeholders for values that are drawn
+from the details of the files in the selection... but before we discuss those at length, there is one 
+more optional parameter to present:
 
 ### Use shell
 
 By default the extension will directly execute the command via operating system APIs. However,
 you can tell the extension to use the default system shell to execute the command by enabling
-and setting this option:
+and setting to `true` this option:
 
 ![Use shell](images/use-shell.png)
 
@@ -459,31 +459,32 @@ a shell, and that is a lot more powerful than simply using a prefix.
 Why would you want to do this? 
 
 Well, firstly, if you want top execute a shell script that is not itself executable, does not
-have a "hash bang" (`#!/path/to/shell`) stanza as its first line, and/or in the system executable 
-PATH, you will need to set this option.
+have a "hash bang" (`#!/path/to/shell`) stanza as its first line, and/or is not in the system 
+executable PATH, you will need to set this option.
 
 Writing shell scripts to be executed by this extension is a prime use case, allowing you to 
 implement just about any scenario imaginable and have it available in the Nautilus context menu.
 
-But this option can _also_ avoid the need for writing a script at all:
+But this option may _also_ avoid the need for writing a script at all:
 
 ![Pipe command](images/pipe-command.png)
 
-This command string is a shell pipeline! it executes _three_ commands
+This command string is a shell pipeline! It executes _three_ commands
 
-* `echo` the basenames of all the files in the selection to `stdout` (again, the `%B` is a placeholder),
+* `echo`, to write the basenames of all the files in the selection to `stdout` (again, `%B` is a 
+  file detail placeholder),
 * `xclip` with parameters that tell it to 
   * Read `stdin` (i.e. the `stdout` from the `echo` command)
   * Set the contents of the desktop _primary_ clipboard to that
-  * pass that out on `stdout`
+  * re-echo `stdin` to `stdout`
 * `xclip` again, this time with parameters that tell it to 
   * Read `stdin` (i.e. the `stdout` from the first `xclip` command)
   * Set the contents of the desktop _default_ clipboard to that
 
-(Read the `xclip` documentation for more details about the clipboards)
+(Read the `xclip` documentation for more details about the available clipboards)
 
 After executing this action, the default and primary clipboards will contain the basenames
-of all the files that selected. You can then paste them wherever you want.
+of all the files that you selected. You can then paste them wherever you want.
 
 Another really instructive example:
 
@@ -502,15 +503,18 @@ Obviously, the primary purpose of this example is to show that shell environment
 expressions can be directly used... but it also solves the "mystery" of what the CWD of 
 a command action is if you don't specify it - no spoilers; try it!
 
+_Most_ things you can specify at a shell prompt can also be used in the **Command line**
+string when the **Use shell** option is set to `true`. Simply experiment to find the limits!
+
 #### Shells
 
 At this time there is no way within the extension to specify the default shell to use when the 
-**Use shell** option is activated. The extension effectively uses whatever is bound to the `sh` 
-command. 
+**Use shell** option is activated. The extension effectively uses whatever is bound to the system 
+`sh` command. 
 
 In _most_ Gnome environments this is usually at least a minimally BASH-compatible shell, but if 
 you are executing a shell script, this particular shell implementation may not be adequate for your 
-needs (looking at you, `dash`, the default shell in Ubuntu and some derivatives). 
+needs (looking at you, `dash`, the default system shell in Ubuntu and some derivatives). 
 
 You can overcome this either by rebinding the `sh` command to the shell of your choice, or by
 _not_ using the **Use shell** option and, instead, doing the following:
@@ -527,16 +531,18 @@ _not_ using the **Use shell** option and, instead, doing the following:
     #!/bin/bash
     ```
   
-* Make your shell script executable (`chmod +x /path/to/your/shell/script`)
+* Make your shell script executable via the Nautilus file properties dialog (or by executing the command 
+  `chmod +x /path/to/your/shell/script`)
 * Put your shell script in a directory that is listed in your environment's PATH environment variable, _or_
-  specify the full path to your script when constructing you command action *Command line** string.
+  specify the full path to your script as the first token when constructing you command action 
+  **Command line** string.
 
 ### Command line placeholders
 
-The command line would be of limited use it it didn't have access to the information in the 
-selection. As already hinted at, though, it does!
+The command line would be of limited use it it didn't have access to information about the files in the 
+Nautilus selection. As already hinted at, though, it does!
 
-When specifying the command line you can use a number of placeholders as arguments to the
-command that will be replaced with various details of the files that are in the selection. Furthermore
-the placeholders at your disposal have different "flavors" that affect _how_ the extension executes
-the command that you have configured.
+When specifying the command line you can use a number of placeholders as arguments to your desired
+command, each of which will be replaced with specific details of the files that are in the selection. 
+Furthermore the placeholders at your disposal have different "flavors" that affect _how_ the extension 
+executes the command that you have configured.
