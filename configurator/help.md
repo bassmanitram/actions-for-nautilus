@@ -37,6 +37,7 @@ modify the configuration.
       * [Path patterns](#path-patterns)
   * [Commands](#commands)
     * [Use shell](#use-shell)
+        * [Shells](#shells)
     * [Command line placeholders](#command-line-placeholders)
 
 # Configurator Layout
@@ -414,9 +415,14 @@ And perhaps that is the most important point here - you get no feedback unless t
 inherently opens its own user interface.
 
 The command string is _mostly_ devoid of characters with special meaning to the extension.
+You alter the space-delimited tokenization by using `\` characters to escape spaces or quotes
+to include spaces in tokens - and `\` characters to escape quotes. Here is the full example 
+from the sample config, setting the terminal title to value that includes spaces;
 
-You will also notice that we didn't specify which directory the HTTP server should use as 
-its root. For the embedded python HTTP server, the root directory is the "current working 
+![cwd](images/full-command.png)
+
+You will notice that we haven't specified which directory the HTTP server should 
+use as its root. For the embedded python HTTP server, the root directory is the "current working 
 directory" when the command is executed... and you can specify _that_ by using the optional
 parameter name **Current working directory**:
 
@@ -425,11 +431,14 @@ parameter name **Current working directory**:
 If you don't specify the **Current working directory** (or, CWD), the setting is "undefined" -
 i.e. the extension itself makes no special arrangements to specify a default.
 
-The glaring problem with this particular CWD is that, on the face of it the setting - `%f` - 
-is _not_ a valid directory! However, it _is_ that particular setting tells the extension to
-use the file path of the first file in the selection as the CWD ... and, because this
-particular command is configured to only be shown when the selection size is 1 and the
-selected file is a directory, we ra egauranteed thet `%f` will always be a valid directory!
+The glaring problem with this particular CWD is that, on the face of it, the setting - `%f` - 
+is _not_ a valid directory. However, for the extension, it _is_! That particular setting tells 
+the extension to use the file path of the first file in the selection as the CWD ... and, because 
+this particular command action is configured to only be shown when the selection size is 1 and the
+selected file is a directory, we ra guaranteed that `%f` will always be a valid directory.
+
+You'll also note that we used that same placeholder in the command line as the `--title` 
+**gnome-terminal** option value.
 
 In general character pairs that start with `%` are placeholders for values that are drawn
 from the details of the files in the selection... but before we discuss those at length,
@@ -447,8 +456,11 @@ In effect, this is _similar_ to prefixing the command string with `sh` - but it 
 the same, since the extension exploits the embedded python capability of executing commands in 
 a shell, and that is a lot more powerful than simply using a prefix.
 
-Why would you want to do this? Well, firstly, if you want top execute a shell script that is
-not itself executable and/or in the system executable PATH, you will need to set this option.
+Why would you want to do this? 
+
+Well, firstly, if you want top execute a shell script that is not itself executable, does not
+have a "hash bang" (`#!/path/to/shell`) stanza as its first line, and/or in the system executable 
+PATH, you will need to set this option.
 
 Writing shell scripts to be executed by this extension is a prime use case, allowing you to 
 implement just about any scenario imaginable and have it available in the Nautilus context menu.
@@ -488,7 +500,36 @@ What does this do?
 
 Obviously, the primary purpose of this example is to show that shell environment variable
 expressions can be directly used... but it also solves the "mystery" of what the CWD of 
-a command action is if you don't specify it - no spoilers; try it! 
+a command action is if you don't specify it - no spoilers; try it!
+
+#### Shells
+
+At this time there is no way within the extension to specify the default shell to use when the 
+**Use shell** option is activated. The extension effectively uses whatever is bound to the `sh` 
+command. 
+
+In _most_ Gnome environments this is usually at least a minimally BASH-compatible shell, but if 
+you are executing a shell script, this particular shell implementation may not be adequate for your 
+needs (looking at you, `dash`, the default shell in Ubuntu and some derivatives). 
+
+You can overcome this either by rebinding the `sh` command to the shell of your choice, or by
+_not_ using the **Use shell** option and, instead, doing the following:
+
+* Make the first line of your script be 
+  
+    ```
+    #!/path/to/shell
+    ```
+  
+  e.g.
+  
+    ```
+    #!/bin/bash
+    ```
+  
+* Make your shell script executable (`chmod +x /path/to/your/shell/script`)
+* Put your shell script in a directory that is listed in your environment's PATH environment variable, _or_
+  specify the full path to your script when constructing you command action *Command line** string.
 
 ### Command line placeholders
 
@@ -496,4 +537,6 @@ The command line would be of limited use it it didn't have access to the informa
 selection. As already hinted at, though, it does!
 
 When specifying the command line you can use a number of placeholders as arguments to the
-command that will be replaced with various details of the files that are in the selection. 
+command that will be replaced with various details of the files that are in the selection. Furthermore
+the placeholders at your disposal have different "flavors" that affect _how_ the extension executes
+the command that you have configured.
