@@ -352,41 +352,6 @@
 		/*
 		 * Part 1
 		 *
-		 * Without this, the help link appears under the cmd box. With it it appears to
-		 * the right of the general info tooltip hoverspot. 
-		 * 
-		 * This puts it next to the label for the associated input
-		 *
-		 * "root.actions.n.command_line.container" is the container div that we see here
-		 */
-		defaultStringPostBuild = JSONEditor.defaults.editors.string.prototype.postBuild;
-		JSONEditor.defaults.editors.string.prototype.postBuild = function (value) {
-			var returnValue = defaultStringPostBuild.bind(this)(value);
-			if (this.path.endsWith(".command_line")) {
-				var formGroups = this.container.getElementsByClassName("form-group");
-				var helps = this.container.getElementsByClassName("placeholder-help");
-				if (formGroups.length > 0 && helps.length > 0) {
-					/*
-					 * Get the placeholder help link container and give it a class
-					 */
-					var phHelpWrapper = helps[0].parentNode;
-					phHelpWrapper.classList.add("placeholder-help-div")
-
-					/*
-					 * Insert it before the last element (the input element)
-					 */
-					formGroups[0].insertBefore(phHelpWrapper, formGroups[0].lastElementChild)
-
-				} else {
-					console.log("FAILED move the command line help link", formGroups, helps, formGroups.length, helps.length);
-				}
-			}
-			return returnValue;
-		};
-
-		/*
-		 * Part 2
-		 *
 		 * The tab selectors have icons and classes we can use - now we have to
 		 * switch them as necessary
 		 */
@@ -411,7 +376,7 @@
 		}
 
 		/*
-		 * Part 3
+		 * Part 2
 		 *
 		 * Action object editors also need some reordering
 		 */
@@ -454,7 +419,7 @@
 		}
 
 		/*
-		 * Part 4
+		 * Part 3
 		 *
 		 * We want a tooltip on the opt-in checkboxes.
 		 * 
@@ -470,7 +435,7 @@
 		}
 
 		/* 
-		 * Part 5
+		 * Part 4
 		 *
 		 * Custom validator for glob and regular expression patterns. Must return an array of errors or an empty array if valid.
 		 */

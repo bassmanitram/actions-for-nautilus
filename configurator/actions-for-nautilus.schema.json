@@ -183,15 +183,7 @@
 						"infoText":  "The command line to execute when the action is clicked on. Placeholders are allowed and affect the semantics of the execution.",
 						"grid_columns": 5,
 						"grid_break": true
-					},
-					"links": [
-						{
-						  "rel": "Placeholder help",
-						  "href": "/command-line-help.html",
-						  "mediaType": "text/html",
-						  "class": "placeholder-help"
-						}
-					  ]
+					}
 				},
 				"use_shell": {
 					"type": "boolean",
