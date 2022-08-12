@@ -413,7 +413,7 @@ You can start the HTTP server without **gnome terminal** - just remove `gnome-te
 from the command string - but you will see no feedback and you will have to make other 
 arrangements to stop the server when you are done with it.
 
-And that is an important point here - you get no feedback unless the command
+And that is an important point here - you get no feedback unless the command you execute
 inherently opens its own user interface.
 
 The command string is _mostly_ devoid of characters with special meaning to the extension.
