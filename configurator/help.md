@@ -435,15 +435,16 @@ If you don't specify the CWD, the setting is "undefined" - i.e. the extension it
 arrangements to specify a default.
 
 The glaring problem with this particular CWD is that, on the face of it, the setting - `%f` - 
-is _not_ a valid directory. However, within the extension, it _is_. That particular value tells 
+is _not_ a valid directory. However, within the extension, it _is_ valid. That particular value tells 
 the extension to use the file path of the first file in the selection as the CWD ... and, because 
 this particular command action is configured to only be available when the selection size is 1 and the
-selected file is a directory, we are guaranteed that `%f` will always resolve to a valid directory.
+selected file is a directory, we are guaranteed that `%f` will always resolve to a valid directory from
+which to serve HTTP content.
 
 You'll also see that we used that same placeholder in the command line as the `--title` 
 **gnome-terminal** command option value.
 
-In general, the, character pairs that start with `%` are placeholders for values that are drawn
+In general, then, character pairs that start with `%` are placeholders for values that are drawn
 from the details of the files in the selection... but before we discuss those at length, there is one 
 more optional parameter to present:
 
