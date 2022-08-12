@@ -418,20 +418,21 @@ inherently opens its own user interface.
 
 The command string is _mostly_ devoid of characters with special meaning to the extension.
 You can alter the space-delimited tokenization by using `\` characters to escape spaces or quotes
-to include spaces in tokens - and `\` characters to escape quotes. Here is the full example 
-from the sample config, setting the terminal title to a value that includes spaces:
+to include spaces in tokens - and `\` characters to escape quotes and backslashes. Here is the full 
+example from the sample config, setting the terminal title to a value that includes spaces:
 
 ![cwd](images/full-command.png)
 
 You will notice that we haven't specified which directory the HTTP server should 
-use as its root. For the embedded python HTTP server, the root directory is the "current working 
-directory" when the command is executed... and you can specify _that_ by using the optional
-parameter named **Current working directory**:
+use as its root. For the embedded python HTTP server, the default root directory is the "current 
+working directory" (or CWD) when the command is executed. Reliance upon the CWD is ubiquitous behavior
+in Linux commands... and you can specify _that_ for your commands by using the optional parameter 
+named **Current working directory**:
 
 ![cwd](images/cwd.png)
 
-If you don't specify the **Current working directory** (or CWD), the setting is "undefined" -
-i.e. the extension itself makes no special arrangements to specify a default.
+If you don't specify the CWD, the setting is "undefined" - i.e. the extension itself makes no special 
+arrangements to specify a default.
 
 The glaring problem with this particular CWD is that, on the face of it, the setting - `%f` - 
 is _not_ a valid directory. However, within the extension, it _is_. That particular value tells 
