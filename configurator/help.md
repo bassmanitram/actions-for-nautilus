@@ -387,8 +387,8 @@ in the Nautilus context menu.
 
 In essence, the command string is very similar to commands you would enter at a shell prompt
 or at the Gnome ALT-F2 prompt. It is comprised of (normally) space-delimited tokens, the
-first of which is the name of the command you wish to execute, the others being arguments
-passed to the command.
+first of which is the name of, or the full path to, the command you wish to execute, the remainder 
+being the positional arguments to be passed to that command.
 
 A slightly modified example from the delivered sample configuration...
 
@@ -400,18 +400,20 @@ The command here is `gnome-terminal` - everything after that is an argument to t
 **gnome-terminal** window is open.
 
 So here, when we click on the action, the extension will execute `gnome-terminal` and pass
-the arguments provided. **gome-terminal** will open in a new window and _itself_ execute
+the rest of the space-delimited tokens as positional argumants. 
+
+**gnome-terminal** will open in a new window and _itself_ execute
 the command `python3 -m http.server --bind 127.0.0.1` which starts the embedded python
-HTTP server, listening on the `127.0.0.1` (or **localhost**) interface on port 8000, and 
+HTTP server, listening on the `127.0.0.1` (or **localhost**) network interface, on port 8000, 
 reporting all activity into the **gnome-terminal** window.
 
 When you close the window the HTTP server stops.
 
-You can start the http server without **gnome terminal** - just remove `gnome-terminal --` 
+You can start the HTTP server without **gnome terminal** - just remove `gnome-terminal --` 
 from the command string - but you will see no feedback and you will have to make other 
 arrangements to stop the server when you are done with it.
 
-And perhaps that is the most important point here - you get no feedback unless the command
+And that is an important point here - you get no feedback unless the command
 inherently opens its own user interface.
 
 The command string is _mostly_ devoid of characters with special meaning to the extension.
