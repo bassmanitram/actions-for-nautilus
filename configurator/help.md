@@ -392,7 +392,7 @@ passed to the command.
 
 A slightly modified example from the delivered sample configuration...
 
-![Simple command](images/backups.png)
+![Simple command](images/simple-command.png)
 
 The command here is `gnome-terminal` - everything after that is an argument to the 
 **gnome-terminal** command ... except that this is a bit special - the `--` actually tells
