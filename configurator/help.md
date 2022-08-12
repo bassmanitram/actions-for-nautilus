@@ -22,9 +22,9 @@ The details of the configuration file itself can be found in the project documen
 This help information is intended to help you use the configurator tool to create and
 modify the configuration.
 
-## Table of Contents
+# Table of Contents
 
-* [Configurator Layout](#layout)
+* [Configurator Layout](#configurator-layout)
   * [Undo, Redo and Save](#undo-redo-and-save)
   * [Optional parameters](#optional-parameters)
 * [Menu Actions](#menu-actions)
@@ -35,8 +35,11 @@ modify the configuration.
       * [Mimetypes](#mimetypes)
       * [File types](#file-types)
       * [Path patterns](#path-patterns)
+  * [Commands](#commands)
+    * [Use shell](#use-shell)
+    * [Command line placeholders](#command-line-placeholders)
 
-## Configurator Layout
+# Configurator Layout
 The configurator UI is basically layed out in two columns:
 
 * The left most column shows you the current items that will be added to the Nautilus context menu.
@@ -74,7 +77,7 @@ the same as for main menu items, performed within the ui presented by the **Subm
 The instructions below are presented for main menu actions, but the same semantics apply to creating
 submenu actions.
 
-### Undo, Redo and Save
+## Undo, Redo and Save
 Next to the title, you will see three buttons that allow you to undo changes that you have made,
 redo changes that you have undone, and save changes back to the configuration file:
 
@@ -96,7 +99,7 @@ with the contents of a backup file.
 
 You are responsible for deleting backups that are no longer required.
 
-### Optional parameters
+## Optional parameters
 You will notice that optional parameters are not automatically enabled for modification. In order to
 modify an optional parameter from its default value, you first need to enable the inclusion of the
 optional parameter into the configuration by checking the check box associated with that parameter. E.g.:
@@ -115,7 +118,7 @@ displayed value is _not_ modified to the default value but retains the modified 
 The saved configuration however will not contain the parameter which, therefore, will revert to its default
 value.
 
-## Menu Actions
+# Menu Actions
 To create a menu action, then, do the following:
 
 * click on the **+ Action** button at the top of the left-most column of the configurator
@@ -154,7 +157,7 @@ Note, however, that your menu will not appear in the Nautilus context menu until
 actions to it, and then only if those commands are pertinent to the files that you have 
 selected in the Nautilus window...
 
-## Command Actions
+# Command Actions
 Command actions are really what this is all about - executing a command string of your choice,
 passing details of the file(s) you have selected as arguments to the command.
 
@@ -171,7 +174,7 @@ Using tools such as Zenity, XClip, Gnome Terminal, and others, you can construct
 scenarios and even pipelines that are then executed with a simply click on the Nautilus
 context menu item
 
-### Creating a Command Action
+## Creating a Command Action
 You create a command action in the same way you create a menu action: 
 
 * click on the ![Add Action](images/add-action-button.png) button at the top of the left-most column 
@@ -195,7 +198,7 @@ We'll cover that below.
 Firstly, however, we'll cover the rules that dictate if a command action is applicable to the
 current files in the Nautilus selection.
 
-### Filtering rules
+## Filtering rules
 Actions For Nautilus can examine the Nautilus selection to decide if a specific command action
 should be available to that selection.
 
@@ -220,7 +223,7 @@ order for the action to be shown in the Nautilus context menu.
 It is also important to note that if none of the actions in a submenu are applicable to the
 current selection, that submenu will not appear in the Nautilus context menu.
 
-#### Max items
+### Max items
 
 ![Max items](images/max-items.png)
 
@@ -234,7 +237,7 @@ compares up to two files, you might want to specify a value of **2** here.
 Note that, at present, there is no capability to specify an exact number other than **1**, nor to
 specify a minimum number.
 
-#### Mimetypes
+### Mimetypes
 
 With the mimetypes list, entered in the **Mimetypes** tab, you can specify the IANA Media Types 
 to which your command action applies. E.g.
@@ -286,7 +289,15 @@ subtypes.
 This is a known current limitation of the feature that may be alleviated in a future release to allow more 
 specific rules to take precedence over more general rules.
 
-#### File types
+However, _also_ note that the first of these two examples can be "corrected" simply by using only a positive rule:
+
+```
+application/json
+```
+
+which automatically blocks anything not matching that mimetype (See what I mean by confusing!)
+
+### File types
 
 With the file types list, entered in the **File types** tab, you can specify the Gnome file types 
 to which your command applies. E.g.
@@ -313,7 +324,7 @@ there is a useful case for such a mix:
 This configuration specifies all `standard` types EXCEPT directories - a sensible filter for
 an editor command.
 
-#### Path patterns
+### Path patterns
 
 With the path patterns list, entered in the **Path patterns** tab, you can state that the paths
 of the files in the selection should match certain patterns. E.g.
@@ -367,3 +378,122 @@ path pattern - no file in the selection should have a path that matches that pat
 mixing standard and negative rules _may_ be confusing, but may also be useful in breaking down
 complex patterns into simpler components (noting, again, that negative patterns take
 precedence over positive patterns).
+
+## Commands
+
+And so to the most important part - the command that is executed when you click on an action 
+in the Nautilus context menu.
+
+In essence, the command string is very similar to commands you would enter at a shell prompt
+or at the Gnome ALT-F2 prompt. It is comprised of (normally) space-delimited tokens, the
+first of which is the name of the command you wish to execute, the others being arguments
+passed to the command.
+
+A slightly modified example from the delivered sample configuration...
+
+![Simple command](images/simple-command.png)
+
+The command here is `gnome-terminal` - everything after that is an argument to the 
+**gnome-terminal** command ... except that this is a bit special - the `--` actually tells
+**gnome-terminal** that everything after _that_ is a command line to be executed once the
+**gnome-terminal** window is open.
+
+So here, when we click on the action, the extension will execute `gnome-terminal` and pass
+the arguments provided. **gome-terminal** will open in a new window and _itself_ execute
+the command `python3 -m http.server --bind 127.0.0.1` which starts the embedded python
+HTTP server, listening on the `127.0.0.1` (or **localhost**) interface on port 8000, and 
+reporting all activity into the **gnome-terminal** window.
+
+When you close the window the HTTP server stops.
+
+You can start the http server without **gnome terminal** - just remove `gnome-terminal --` 
+from the command string - but you will see no feedback and you will have to make other 
+arrangements to stop the server when you are done with it.
+
+And perhaps that is the most important point here - you get no feedback unless the command
+inherently opens its own user interface.
+
+The command string is _mostly_ devoid of characters with special meaning to the extension.
+
+You will also notice that we didn't specify which directory the HTTP server should use as 
+its root. For the embedded python HTTP server, the root directory is the "current working 
+directory" when the command is executed... and you can specify _that_ by using the optional
+parameter name **Current working directory**:
+
+![cwd](images/cwd.png)
+
+If you don't specify the **Current working directory** (or, CWD), the setting is "undefined" -
+i.e. the extension itself makes no special arrangements to specify a default.
+
+The glaring problem with this particular CWD is that, on the face of it the setting - `%f` - 
+is _not_ a valid directory! However, it _is_ that particular setting tells the extension to
+use the file path of the first file in the selection as the CWD ... and, because this
+particular command is configured to only be shown when the selection size is 1 and the
+selected file is a directory, we ra egauranteed thet `%f` will always be a valid directory!
+
+In general character pairs that start with `%` are placeholders for values that are drawn
+from the details of the files in the selection... but before we discuss those at length,
+there is one more optional parameter to present:
+
+### Use shell
+
+By default the extension will directly execute the command via operating system APIs. However,
+you can tell the extension to use the default system shell to execute the command by enabling
+and setting this option:
+
+![Use shell](images/use-shell.png)
+
+In effect, this is _similar_ to prefixing the command string with `sh` - but it is not exactly
+the same, since the extension exploits the embedded python capability of executing commands in 
+a shell, and that is a lot more powerful than simply using a prefix.
+
+Why would you want to do this? Well, firstly, if you want top execute a shell script that is
+not itself executable and/or in the system executable PATH, you will need to set this option.
+
+Writing shell scripts to be executed by this extension is a prime use case, allowing you to 
+implement just about any scenario imaginable and have it available in the Nautilus context menu.
+
+But this option can _also_ avoid the need for writing a script at all:
+
+![Pipe command](images/pipe-command.png)
+
+This command string is a shell pipeline! it executes _three_ commands
+
+* `echo` the basenames of all the files in the selection to `stdout` (again, the `%B` is a placeholder),
+* `xclip` with parameters that tell it to 
+  * Read `stdin` (i.e. the `stdout` from the `echo` command)
+  * Set the contents of the desktop _primary_ clipboard to that
+  * pass that out on `stdout`
+* `xclip` again, this time with parameters that tell it to 
+  * Read `stdin` (i.e. the `stdout` from the first `xclip` command)
+  * Set the contents of the desktop _default_ clipboard to that
+
+(Read the `xclip` documentation for more details about the clipboards)
+
+After executing this action, the default and primary clipboards will contain the basenames
+of all the files that selected. You can then paste them wherever you want.
+
+Another really instructive example:
+
+![Environment variable](images/env-var.png)
+
+(You really _have_ to install Zenity!!!)
+
+What does this do?
+
+* echoes the value of the environment variable PWD to stdout
+* "pipes" that to the `zenity` command, telling **Zenity** to display a window with the 
+  contents of `stdin`
+* and ***NOTE WELL*** : **Current working directory** is _not set_
+
+Obviously, the primary purpose of this example is to show that shell environment variable
+expressions can be directly used... but it also solves the "mystery" of what the CWD of 
+a command action is if you don't specify it - no spoilers; try it! 
+
+### Command line placeholders
+
+The command line would be of limited use it it didn't have access to the information in the 
+selection. As already hinted at, though, it does!
+
+When specifying the command line you can use a number of placeholders as arguments to the
+command that will be replaced with various details of the files that are in the selection. 
