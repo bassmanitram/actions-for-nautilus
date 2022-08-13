@@ -1,7 +1,7 @@
 # Actions For Nautilus
 
 The Actions For Nautilus extension allows you to add items to the context menu 
-(i.e. the right click menu) of Gnome Files (called Nautilus from here-on, to avoid 
+(i.e. the right-click menu) of Gnome Files (called Nautilus from here-on, to avoid 
 confusion) based upon the characteristics of the files and directories that you have 
 selected in the Nautilus window (simply called _files_ from here-on).
 
@@ -41,9 +41,9 @@ modify the configuration.
     * [Command line placeholders](#command-line-placeholders)
 
 # Configurator Layout
-The configurator UI is basically layed out in two columns:
+The configurator UI is basically laid out in two columns:
 
-* The left most column shows you the actions that will be added to the Nautilus context menu.
+* The left-most column shows you the actions that will be added to the Nautilus context menu.
   
   ![Main menu list](images/main-menu-list.png)
 
@@ -85,7 +85,7 @@ redo changes that you have undone, and save changes back to the configuration fi
 
 ![Undo, redo, save, help](images/undo-redo-save-help.png)
 
-The `Show Help` button (which you have already discovered if you are reading this) is also there, and allows
+The `Show Help` button (which you have already discovered if you are reading this) is also there and allows
 you to hide this help window once you have shown it.
 
 The save button will not be enabled if there are no changes to save, nor if there are problems with the 
@@ -117,8 +117,7 @@ optional parameter in the configuration by checking the check box associated wit
 
   ![Enabled optional parameter](images/enabled-optional-parameter.png)
 
-Note also that if you disable an optional parameter that you have previously enabled and modified, the
-displayed value is _not_ modified to the default value but retains the modified value you previously set.
+Note also that if you disable an optional parameter that you have previously enabled and modified, the displayed value is _not_ modified to the default value but retains the modified value you previously set.
 
 The saved configuration however will not contain the parameter which, therefore, will revert to its default
 value.
@@ -140,7 +139,7 @@ You will now see the tabs that are relevant to menu actions:
 
 ![Menu action tabs](images/menu-action-tabs.png)
 
-You will also notice that the selection item in the left column has a new icon:
+You will also notice that the selected action in the left column has a new icon:
 
 ![Menu icon](images/menu-icon.png) - the menu action icon - instead of ![Command icon](images/command-icon.png),
 the command action icon.
@@ -152,14 +151,13 @@ You can also opt to have the extension sort the actions that will appear in this
 in alphanumeric order (the default is that the order you specify is the one that is used).
 
 To add actions to your new menu, click on the **Submenu Actions** tab to reveal a nested
-panel that is similar to the top level UI. Here you can, again, click on the
+panel that is similar to the top-level UI. Here you can, again, click on the
 ![Add Action](images/add-action-button.png) button to configure the actions that will appear in your
 newly created menu.
 
 That is all there is to menu creation.
 
-Note, however, that your menu will not appear in the Nautilus context menu until you add command
-actions to it, and then only if those commands are pertinent to the files that you have 
+Note, however, that your menu will not appear in the Nautilus context menu until you add command actions to it, and then only if those commands are pertinent to the files that you have 
 selected in the Nautilus window.
 
 # Command Actions
@@ -175,7 +173,7 @@ Examples of commands taken from the delivered sample configuration:
 * ...
 
 Using tools such as Zenity, XClip, Gnome Terminal, and others, you can construct complex
-scenarios and even pipelines that are then executed with a simply click on the Nautilus
+scenarios and even pipelines that are then executed with a simple click on the Nautilus
 context menu item.
 
 ## Creating a Command Action
@@ -261,7 +259,7 @@ A mimetype can be declared in one of the ways standard to IANA Media Types:
 You can specify **\*** or **\*/\*** to accept all mimetypes - but since this is the default setting
 it's a bit superfluous to do so.
 
-You can make a mimetype _"negative"_ by preceding it with an exclamation point, in order to declare 
+You can make a mimetype _"negative"_ by preceding it with an exclamation point to declare 
 that NONE of the selected files should be of the specified mimetype(s). E.g.
 
 ![Negative mimetypes](images/negative-mimetypes.png)
@@ -269,7 +267,7 @@ that NONE of the selected files should be of the specified mimetype(s). E.g.
 In this example, the **Edit with gvim** action will not appear if any of the selected files is a PDF, an 
 audio file, or an image file.
 
-You should probably avoid mixing standard (positive) rules with negative rules, since the result could
+You should probably avoid mixing standard (positive) rules with negative rules since the result could
 be confusing, but the algorithm is fairly straightforward: All selected files must match one of the 
 "positive" rules, if any, and none of the "negative rules".
 
@@ -338,7 +336,7 @@ of the files in the selection should match certain patterns. E.g.
 In this example, the **Edit with gvim** action only applies to files that are in user jdoe's home 
 directory.
 
-Patterns can be entered as "glob" patterns, or regular expressions.
+Patterns can be entered as "glob" patterns or regular expressions.
 
 * Glob Patterns allow you to specify the following placeholders in the pattern string:
 
@@ -350,7 +348,7 @@ Patterns can be entered as "glob" patterns, or regular expressions.
 
   The above example is a glob pattern.
 
-  Globs are simple but limited - on the other hand most needs can be expressed accurately enough
+  Globs are simple but limited - on the other hand, most needs can be expressed accurately enough
   using them.
 
   Note that glob patterns inherently match against the _whole_ path name - so, for example, a 
@@ -365,7 +363,7 @@ Patterns can be entered as "glob" patterns, or regular expressions.
 
   ![Regex path pattern](images/regex-path-pattern.png)
 
-  This example specifies the same rule as the glob example above, but as a regular expression ...
+  This example specifies the same rule as the glob example above but as a regular expression ...
 
   weeelllll - not quite ...
 
@@ -397,21 +395,21 @@ A slightly modified example from the delivered sample configuration...
 ![Simple command](images/simplified-command.png)
 
 The command here is `gnome-terminal` - everything after that is an argument to the 
-**gnome-terminal** command ... except that this is a bit special - the `--` actually tells
-**gnome-terminal** that everything after _that_ is a command line to be executed once the
+**gnome-terminal** command ... except that this is a bit special - the `--` argument actually
+tells **gnome-terminal** that everything after _that_ is a command line to be executed once the
 **gnome-terminal** window is open.
 
-So here, when we click on the action, the extension will execute `gnome-terminal` and pass
-the rest of the space-delimited tokens as positional argumants. 
+So here, when you click on the action, the extension will execute `gnome-terminal` and pass
+the rest of the space-delimited tokens as positional arguments. 
 
 **gnome-terminal** will open in a new window and _itself_ execute
-the command `python3 -m http.server --bind 127.0.0.1` which starts the embedded python
-HTTP server, listening on the `127.0.0.1` (or **localhost**) network interface, on port 8000, 
+the command `python3 -m http.server --bind 127.0.0.1` which starts the a python HTTP server, 
+listening on the `127.0.0.1` (or **localhost**) network interface, on port 8000, 
 reporting all activity into the **gnome-terminal** window.
 
 When you close the window the HTTP server stops.
 
-You can start the HTTP server without **gnome terminal** - just remove `gnome-terminal --` 
+You can start the HTTP server without **gnome-terminal** - just remove `gnome-terminal --` 
 from the command string - but you will see no feedback and you will have to make other 
 arrangements to stop the server when you are done with it.
 
@@ -421,61 +419,68 @@ inherently opens its own user interface.
 The command string is _mostly_ devoid of characters with special meaning to the extension.
 You can alter the space-delimited tokenization by using `\` characters to escape spaces or quotes
 to include spaces in tokens - and `\` characters to escape quotes and backslashes. Here is the full 
-example from the sample config, setting the terminal title to a value that includes spaces:
+example from the sample configuration, setting the terminal title to a value that includes spaces:
 
 ![cwd](images/full-command.png)
 
 You will notice that we haven't specified which directory the HTTP server should 
-use as its root. For the embedded python HTTP server, the default root directory is the "current 
+use as its root. For the python HTTP server, the default root directory is the "current 
 working directory" (or CWD) when the command is executed. Reliance upon the CWD is ubiquitous behavior
-in Linux commands... and you can specify _that_ for your commands by using the optional parameter 
+in Linux commands. You can specify the CWD for your commands by using the optional parameter 
 named **Current working directory**:
 
 ![cwd](images/cwd.png)
 
 If you don't specify the CWD, the setting is "undefined" - i.e. the extension itself makes no special 
-arrangements to specify a default.
+arrangements to use a default.
 
 The glaring problem with this particular CWD is that, on the face of it, the setting - `%f` - 
 is _not_ a valid directory. However, within the extension, it _is_ valid. That particular value tells 
 the extension to use the file path of the first file in the selection as the CWD ... and, because 
-this particular command action is configured to only be available when the selection size is 1 and the
+this particular command action is configured only to be available when the selection size is 1 and the
 selected file is a directory, we are guaranteed that `%f` will always resolve to a valid directory from
 which to serve content.
 
 You'll also see that we used that same placeholder in the command line within the `--title` 
-**gnome-terminal** command option value.
+**gnome-terminal** command option value, which allows the terminal title to include the root
+directory path.
 
 In general, then, character pairs that start with `%` are placeholders for values that are drawn
-from the details of the files in the selection... but before we discuss those at length, there is one 
-more optional parameter to present:
+from the details of the files in the selection. These are full explained [below](#command-line-placeholders).
 
 ### Use shell
 
-By default the extension will directly execute the command via operating system APIs. However,
-you can tell the extension to, instead, use the default system shell to execute the command by enabling
+Writing shell scripts to be executed by this extension is a prime use case, allowing you to 
+implement just about any scenario imaginable and having them available in the Nautilus context menu.
+
+By default, the extension will attempt to directly execute the command via operating system APIs. 
+
+This works when executing a shell script on if:
+
+* The script file is marked as executable
+* The script itself can inform the operating system what shell interpreter to use with a "hash bang" 
+  (`#!/path/to/shell`) stanza
+* The script is in a directory that is listed in the environment's PATH variable, or you
+  specify the full path to the script as the first token of your command string
+
+You _can_ ask the extension to use the default system shell to execute the command by enabling
 and setting to `true` this option:
 
 ![Use shell](images/use-shell.png)
 
 In effect, this is _similar_ to prefixing the command string with `sh` - but it is not exactly
 the same, since the extension exploits the embedded python capability of executing commands in 
-a shell, and that is a lot more powerful than simply using a prefix.
+a shell and that is a lot more powerful than simply using a prefix.
 
 Why would you want to do this? 
 
-Well, firstly, if you want to execute a shell script that is not itself executable, does not
-have a "hash bang" (`#!/path/to/shell`) stanza as its first line, and/or is not in the system 
-executable PATH, you will need to set this option.
-
-Writing shell scripts to be executed by this extension is a prime use case, allowing you to 
-implement just about any scenario imaginable and having them available in the Nautilus context menu.
+Well, firstly, if the conditions above aren't satisfied, this is the easiest way to execute a shell script.
 
 But this option may _also_ avoid the need for writing a script at all:
 
 ![Pipe command](images/pipe-command.png)
 
-This command string is a shell pipeline! It executes _three_ commands
+This command string runs a shell pipeline without requiring a wrapper script. It executes _three_ commands
 
 * `echo`, to write the basenames of all the files in the selection to `stdout` (again, `%B` is a 
   file detail placeholder),
@@ -509,23 +514,22 @@ Obviously, the primary purpose of this example is to show that shell environment
 expressions can be directly used... but it also solves the "mystery" of what the CWD of 
 a command action is if you don't specify it - no spoilers; try it!
 
-_Most_ things you can specify at a shell prompt can also be used in the **Command line**
+_Most_ things that you can specify at a shell prompt can also be used in the **Command line**
 string when the **Use shell** option is set to `true`. Simply experiment to find the limits!
 
 #### Shells
 
 At this time there is no way within the extension to specify the default shell to use when the 
-**Use shell** option is activated. The extension effectively uses whatever is bound to the system 
-`sh` command. 
+**Use shell** option is activated. The extension uses whatever is bound to the system `sh` command. 
 
-In _most_ Gnome environments this is usually at least a minimally BASH-compatible shell, but if 
+In _most_ Gnome environments this is usually an at least minimally BASH-compatible shell, but if 
 you are executing a shell script, this particular shell implementation may not be adequate for your 
 needs (looking at you, `dash`, the default system shell in Ubuntu and some derivatives). 
 
-You can overcome this either by rebinding the `sh` command to the shell of your choice, or by
+You can overcome this either by rebinding the `sh` command to the shell of your choice or by
 _not_ using the **Use shell** option and, instead, doing the following:
 
-* Make the first line of your script be 
+* Make the first line of your script be a "hash bang" stanza
   
     ```
     #!/path/to/shell
@@ -540,15 +544,15 @@ _not_ using the **Use shell** option and, instead, doing the following:
 * Make your shell script executable via the Nautilus file properties dialog (or by executing the command 
   `chmod +x /path/to/your/shell/script`)
 * Put your shell script in a directory that is listed in your environment's PATH environment variable, _or_
-  specify the full path to your script as the first token when constructing you command action 
+  specify the full path to your script as the first token when constructing your command action 
   **Command line** string.
 
 ### Command line placeholders
 
-The command line would be of limited use it it didn't have access to information about the files in the 
+The command line would be of limited use if it didn't have access to information about the files in the 
 Nautilus selection. As already hinted at, though, it does!
 
 When specifying the command line you can use a number of placeholders as arguments to your desired
-command, each of which will be replaced with specific details of the files that are in the selection. 
-Furthermore the placeholders at your disposal have different "flavors" that affect _how_ the extension 
+command, each of which will be replaced with specific details drawn from the files that are in the selection. 
+Furthermore, the placeholders at your disposal have different "flavors" that affect _how_ the extension 
 executes the command that you have configured.
