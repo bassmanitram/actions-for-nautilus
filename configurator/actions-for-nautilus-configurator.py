@@ -83,7 +83,12 @@ docs = {
         "mimetype": "text/css",
         "default": None
     },
-    "/packages/bootstrap.min.css": {
+    "/packages/simple.min.css": {
+        "path": "./packages/simple.min.css",
+        "mimetype": "text/css",
+        "default": None
+    },
+     "/packages/bootstrap.min.css": {
         "path": "./packages/bootstrap.min.css",
         "mimetype": "text/css",
         "default": None
