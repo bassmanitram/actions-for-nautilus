@@ -1,9 +1,9 @@
 # Actions For Nautilus
 
-The Actions For Nautilus extension allows you to add items to the Gnome Files
-(called Nautilus from here-on, to avoid confusion) context menu (i.e. the right click menu)
-based upon the characteristics of the files and directories that you have selected
-(simply called _files_ from here-on).
+The Actions For Nautilus extension allows you to add items to the context menu 
+(i.e. the right click menu) of Gnome Files (called Nautilus from here-on, to avoid 
+confusion) based upon the characteristics of the files and directories that you have 
+selected in the Nautilus window (simply called _files_ from here-on).
 
 Within the context of the extension, these menu items are called _actions_.
 
@@ -43,7 +43,7 @@ modify the configuration.
 # Configurator Layout
 The configurator UI is basically layed out in two columns:
 
-* The left most column shows you the current items that will be added to the Nautilus context menu.
+* The left most column shows you the actions that will be added to the Nautilus context menu.
   
   ![Main menu list](images/main-menu-list.png)
 
@@ -52,13 +52,14 @@ The configurator UI is basically layed out in two columns:
   * see the actions already added to the main context menu, 
   * add new actions to that menu
   * select an existing action in order to edit its characteristics
-  * remove all actions from the main menu (which removes all actions from the entire configuration)
+  * remove all actions from the main menu (which, at the top level, removes all actions from the 
+    entire configuration)
 
   It also allows you to set the ordering options for the main menu actions, and to set the debug
   output option if you need to resolve problems with your configuration (not yet fully implemented).
 
-* The right column shows the details and characteristics of the currently selected main menu item
-  in the left-most column
+* The right column shows the details and characteristics of the currently selected main menu action
+  from the left-most column.
 
   ![Action details panel](images/action-details.png)
 
@@ -67,16 +68,16 @@ The configurator UI is basically layed out in two columns:
   * set the type of the selected action - _Menu_ or _Command_
   * set the label for the action
   * set the submenu items for a menu action
-  * set the command string, cwd, and filter rules that pertain to a command action
+  * set the command string, current working directory, and filter rules that pertain to a command action
   * reorder the action within its containing menu
   * delete the action
 
 Of special note is the **Submenu Actions** tab for menu actions ... this presents the identical UI
 elements in a nested format - i.e. the creation and manipulation of submenu actions is exactly
-the same as for main menu items, performed within the ui presented by the **Submenu Actions** tab.
+the same as for main menu items, performed within the UI presented by the **Submenu Actions** tab.
 
 The instructions below are presented for main menu actions, but the same semantics apply to creating
-submenu actions.
+actions in submenus.
 
 ## Undo, Redo and Save
 Next to the title, you will see three buttons that allow you to undo changes that you have made,
@@ -91,6 +92,9 @@ The save button will not be enabled if there are no changes to save, nor if ther
 configuration. If you have made changes but the save button is disabled, you will need to revisit those
 changes and correct the problems that are reported in order to be able to save the configuration.
 
+Note that when you save the configuration, it may take up to thirty seconds to see the changes in the
+Nautilus context menu.
+
 Once saved, the previous configuration is backed up in the `~/.local/share/actions-for-nautilus` folder:
 
 ![Backups](images/backups.png)
@@ -103,7 +107,7 @@ You are responsible for deleting backups that are no longer required.
 ## Optional parameters
 You will notice that optional parameters are not automatically enabled for modification. In order to
 modify an optional parameter from its default value, you first need to enable the inclusion of the
-optional parameter into the configuration by checking the check box associated with that parameter. E.g.:
+optional parameter in the configuration by checking the check box associated with that parameter. E.g.:
 
 * disabled:
 
@@ -138,8 +142,8 @@ You will now see the tabs that are relevant to menu actions:
 
 You will also notice that the selection item in the left column has a new icon:
 
-![Menu icon](images/menu-icon.png) - the menu icon - instead of ![Command icon](images/command-icon.png),
-the command icon.
+![Menu icon](images/menu-icon.png) - the menu action icon - instead of ![Command icon](images/command-icon.png),
+the command action icon.
 
 You must now give your menu a label, which should be unique among all actions in the 
 parent menu to which you are adding the menu.
@@ -156,16 +160,15 @@ That is all there is to menu creation.
 
 Note, however, that your menu will not appear in the Nautilus context menu until you add command
 actions to it, and then only if those commands are pertinent to the files that you have 
-selected in the Nautilus window...
+selected in the Nautilus window.
 
 # Command Actions
 Command actions are really what this is all about - executing a command string of your choice,
 passing details of the file(s) you have selected as arguments to the command.
 
-Examples of commands:
+Examples of commands taken from the delivered sample configuration:
 
 * Start an HTTP server using a specific folder as the root folder
-* Restore the previous version of a versioned file
 * Copying details of the selected files to the clipboard
 * Running a script file with an appropriate interpreter
 * Executing an arbitrary command in a selected folder
@@ -173,7 +176,7 @@ Examples of commands:
 
 Using tools such as Zenity, XClip, Gnome Terminal, and others, you can construct complex
 scenarios and even pipelines that are then executed with a simply click on the Nautilus
-context menu item
+context menu item.
 
 ## Creating a Command Action
 You create a command action in the same way you create a menu action: 
@@ -188,13 +191,13 @@ Upon creating the action, you will see the details that can be specified for the
 
 ![Command action tabs](images/command-action-tabs.png)
 
-(as well as warning that minimal required information has not yet been provided)
+(as well as a warning that minimal required information has not yet been provided).
 
 Firstly give your command a label, which should be unique within the menu/submenu to which
 you are adding the command.
 
 And, evidently, you must provide a command line to execute when the action is clicked on.
-We'll cover that below.
+We'll cover that [below](#commands).
 
 Firstly, however, we'll cover the rules that dictate if a command action is applicable to the
 current files in the Nautilus selection.
@@ -222,7 +225,7 @@ It is important to note that _all_ files in the selection must pass the filterin
 order for the action to be shown in the Nautilus context menu.
 
 It is also important to note that if none of the actions in a submenu are applicable to the
-current selection, that submenu will not appear in the Nautilus context menu.
+current selection, that submenu will also not appear in the Nautilus context menu.
 
 ### Max items
 
@@ -256,7 +259,7 @@ A mimetype can be declared in one of the ways standard to IANA Media Types:
 * _type/\*_ - all subtypes of a specific type (e.g. **audio/\*** for audio files of any encoding)
 
 You can specify **\*** or **\*/\*** to accept all mimetypes - but since this is the default setting
-it's a bit superfluous to do so!
+it's a bit superfluous to do so.
 
 You can make a mimetype _"negative"_ by preceding it with an exclamation point, in order to declare 
 that NONE of the selected files should be of the specified mimetype(s). E.g.
@@ -270,7 +273,7 @@ You should probably avoid mixing standard (positive) rules with negative rules, 
 be confusing, but the algorithm is fairly straightforward: All selected files must match one of the 
 "positive" rules, if any, and none of the "negative rules".
 
-Note that negative rules take precedence over "positive" rules - so (at present) specifying
+Note that the effect of this _may_ be somewhat counter-intuitive:
 
 ```
 !application/*
@@ -296,7 +299,7 @@ However, _also_ note that the first of these two examples can be "corrected" sim
 application/json
 ```
 
-which automatically blocks anything not matching that mimetype (See what I mean by confusing!)
+which automatically blocks anything not matching that mimetype (see what I mean by confusing!)
 
 ### File types
 
@@ -307,14 +310,14 @@ to which your command applies. E.g.
 
 In this example, the **Start HTTP server here** action only applies to directories.
 
-The available filetypes are defined by Gnome itself and are, therefore, presented in a selection list:
+The available filetypes are defined by Gnome itself and are, therefore, presented as a selection list:
 
 ![Available file types](images/available-filetypes.png)
 
 You will notice that "negative" versions of the file types are also available - the selected files must
 NOT be of such file types.
 
-The most useful filetypes are likely to be `directory`, `file` and `symbolic link` and, as such, a
+The most useful filetypes are likely to be `directory`, `file`, and `symbolic link` and, as such, a
 "macro" filetype is available - `standard` - which encapsulates all three.
 
 As with [mimetypes](#mimetypes), mixing negative and standard rules could be confusing, however
@@ -350,7 +353,7 @@ Patterns can be entered as "glob" patterns, or regular expressions.
   Globs are simple but limited - on the other hand most needs can be expressed accurately enough
   using them.
 
-  Note that GLOB patterns inherently match against the _whole_ path name - so, for example, a 
+  Note that glob patterns inherently match against the _whole_ path name - so, for example, a 
   path of `/etc/home/jdoe/myfile` would _not_ match the above example.
 
 * Regular expressions allow for far more complex patterns to be expressed. It is beyond the 
@@ -364,7 +367,7 @@ Patterns can be entered as "glob" patterns, or regular expressions.
 
   This example specifies the same rule as the glob example above, but as a regular expression ...
 
-  weeelllll - not quite .... 
+  weeelllll - not quite ...
 
   Regular expression patterns do _not_ inherently match against the _whole_ path name - so, for example, a 
   path of `/etc/home/jdoe/myfile` _would_ match this regular expression.
@@ -377,8 +380,7 @@ Patterns can be entered as "glob" patterns, or regular expressions.
 Again, you can prefix the entire pattern string with an exclamation point to specify a "negative"
 path pattern - no file in the selection should have a path that matches that pattern - and again 
 mixing standard and negative rules _may_ be confusing, but may also be useful in breaking down
-complex patterns into simpler components (noting, again, that negative patterns take
-precedence over positive patterns).
+complex patterns into simpler components.
 
 ## Commands
 
