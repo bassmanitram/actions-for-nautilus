@@ -439,9 +439,9 @@ is _not_ a valid directory. However, within the extension, it _is_ valid. That p
 the extension to use the file path of the first file in the selection as the CWD ... and, because 
 this particular command action is configured to only be available when the selection size is 1 and the
 selected file is a directory, we are guaranteed that `%f` will always resolve to a valid directory from
-which to serve HTTP content.
+which to serve content.
 
-You'll also see that we used that same placeholder in the command line as the `--title` 
+You'll also see that we used that same placeholder in the command line within the `--title` 
 **gnome-terminal** command option value.
 
 In general, then, character pairs that start with `%` are placeholders for values that are drawn
@@ -451,7 +451,7 @@ more optional parameter to present:
 ### Use shell
 
 By default the extension will directly execute the command via operating system APIs. However,
-you can tell the extension to use the default system shell to execute the command by enabling
+you can tell the extension to, instead, use the default system shell to execute the command by enabling
 and setting to `true` this option:
 
 ![Use shell](images/use-shell.png)
@@ -462,12 +462,12 @@ a shell, and that is a lot more powerful than simply using a prefix.
 
 Why would you want to do this? 
 
-Well, firstly, if you want top execute a shell script that is not itself executable, does not
+Well, firstly, if you want to execute a shell script that is not itself executable, does not
 have a "hash bang" (`#!/path/to/shell`) stanza as its first line, and/or is not in the system 
 executable PATH, you will need to set this option.
 
 Writing shell scripts to be executed by this extension is a prime use case, allowing you to 
-implement just about any scenario imaginable and have it available in the Nautilus context menu.
+implement just about any scenario imaginable and having them available in the Nautilus context menu.
 
 But this option may _also_ avoid the need for writing a script at all:
 
@@ -494,11 +494,11 @@ Another really instructive example:
 
 ![Environment variable](images/env-var.png)
 
-(You really _have_ to install Zenity!!!)
+(You really _have_ to install Zenity!)
 
 What does this do?
 
-* echoes the value of the environment variable PWD to stdout
+* echoes the value of the environment variable PWD (which contains the CWD path) to `stdout`
 * "pipes" that to the `zenity` command, telling **Zenity** to display a window with the 
   contents of `stdin`
 * and ***NOTE WELL*** : **Current working directory** is _not set_
