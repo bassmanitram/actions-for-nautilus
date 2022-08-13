@@ -48,13 +48,13 @@ docs = {
         "mimetype": "application/json",
         "default": None
     },
-    "/command-line-help.html": {
-        "path": "./command-line-help.html",
+    "/help.html": {
+        "path": "./help.html",
         "mimetype": "text/html",
         "default": None
     },
     "/favicon.ico": {
-        "path": "./sub-menu.png",
+        "path": ".images/sub-menu.png",
         "mimetype": "image/png",
         "default": None
     },
@@ -97,12 +97,27 @@ docs = {
         "path": "./packages/fa-solid-900.woff2",
         "mimetype": "font/woff2",
         "default": None
-    }
+    },
+    "/images/ANY": {
+        "path": "./images/",
+        "mimetype": "image/png",
+        "default": None
+    },
 }
 
 
 def get_file_content(doc_path):
     doc_data = docs.get(doc_path)
+    if doc_data is None:
+        d = os.path.dirname(doc_path)
+        b = os.path.basename(doc_path)
+        print(d, b)
+        doc_data = docs.get(d + "/ANY")
+        if doc_data is not None:
+            doc_data = doc_data.copy()
+            doc_data["path"] = doc_data["path"] + b
+        print(doc_data)
+
     exists = False if doc_data is None else os.path.exists(doc_data["path"])
     if doc_data is None or ((not exists) and doc_data["default"] is None):
         return {
