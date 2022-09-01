@@ -3,6 +3,11 @@
 
 <head>
 	<link rel="stylesheet" href="/packages/simple.min.css">
+	<style>
+		html {
+			scroll-behavior: auto;
+		}
+	</style>
 </head>
 
 <body>
@@ -397,7 +402,7 @@
 			full
 			example from the sample configuration, setting the terminal title to a value that includes spaces:</p>
 		<p><img src="images/full-command.png" alt="cwd"></p>
-		<p>You will notice that we haven&#39;t specified which directory the HTTP server should
+		<p id="cwd">You will notice that we haven&#39;t specified which directory the HTTP server should
 			use as its root. For the python HTTP server, the default root directory is the &quot;current
 			working directory&quot; (or CWD) when the command is executed. Reliance upon the CWD is ubiquitous behavior
 			in Linux commands. You can specify the CWD for your commands by using the optional parameter

@@ -262,9 +262,53 @@
 			"command": "fa-chevron-right",
 			"menu": "fa-bars"
 		}
+		const attributeHelp = {
+			"command_line": "commands"
+		};
+
+		const infoText = {
+			"#action": { "text": "An entry that will appear in the Nautilus context menu. Such an entry can be a Command or a nested Menu.", "help_label": "actions-for-nautilus" },
+			"#command:command_line": { "text": "The command line to execute when the action is clicked on. Placeholders are allowed and affect the semantics of the execution.", "help_label": "commands" },
+			"#command:cwd": { "text": "The current working directory to set when executing the command. Placeholders are allowed.", "help_label": "cwd" },
+			"#command:filetype": { "text": "A standard Nautilus file type that, when matched, allows the associated command action to appear in its assigned menu. If the file type is prefixed with '!' character then the selected items must NOT be of this type.", "help_label": "file-types" },
+			"#command:filetypes": { "text": "A list of file types for which the action will be displayed, or not be displayed in the event of a '!' prefix.", "help_label": "file-types" },
+			"#command:label": { "text": "The label that will appear in the context menu for this command.", "help_label": "creating-a-command-action" },
+			"#command:max_items": { "text": "The maximum number of items in the selection for which this action will be displayed.", "help_label": "max-items" },
+			"#command:mimetypes": { "text": "A list of standard mimetype specifications that, when matched, allow the associated command action to appear in its assigned menu. If a mimetype is prefixed with '!' character then the selected items must NOT match that type.", "help_label": "mimetypes" },
+			"#command:path_pattern": { "text": "A file path pattern that, when matched, allows the associated command action to appear in its assigned menu. It can be expressed in glob syntax (*, +, [...]) or as a regular expression(re:...). If the pattern is prefixed with '!' character then the selected items must not match this pattern.", "help_label": "path-patterns" },
+			"#command:path_patterns": { "text": "A list of path patterns for which the action will be displayed, or not be displayed in the event of a '!' prefix.", "help_label": "path-patterns" },
+			"#command:use_shell": { "text": "Instead of directly executing the command, execute it using the default shell command.", "help_label": "use-shell" },
+			"#command": { "text": "An entry in the Nautilus context menu or sub menu that, when clicked on, results in a command being executed.", "help_label": "command-actions" },
+			"#root:actions": { "text": "The list of command actions and/or submenus that will be added to the Nautilus context menu.", "help_label": "actions-for-nautilus" },
+			"#root:debug": { "text": "When set to true, extra debugging information is sent to the Nautilus stdout/stderr destinations.", "help_label": "actions-for-nautilus" },
+			"#submenu:actions": { "text": "The list of command and/or menu actions that will be displayed when this menu action is clicked on.", "help_label": "menu-actions" },
+			"#submenu:label": { "text": "The label that will appear in the context menu for this sub menu.", "help_label": "menu-actions" },
+			"#submenu:sort": { "text": "Whether actions should be sorted automatically or left in the configured order.", "help_label": "menu-actions" },
+			"#submenu": { "text": "An entry in the Nautilus context menu or sub menu that, when clicked on, results in a sub menu being displayed.", "help_label": "menu-actions" },
+		}
+		
 		class a4nbootstrap4Theme extends JSONEditor.defaults.themes.bootstrap4 {
 			constructor(jsoneditor) {
-				super(jsoneditor)
+				super(jsoneditor);
+				this.openHelp = function (event) {
+					const targetFragment = event.srcElement.getAttribute('data-help-label');
+					console.log(targetFragment);
+					parent.show(true, targetFragment);
+				};
+			}
+
+			/*
+			 * Add a click handler to the info button
+			 */
+			getInfoButton(text) {
+				const info = text.startsWith("#") ? (infoText[text] ? infoText[text] : {text}) : {text};
+				console.log(info);
+				var button = super.getInfoButton(info.text);
+				button.addEventListener('click', this.openHelp, false);
+				if (info.help_label) {
+					button.setAttribute('data-help-label', info.help_label);
+				}
+				return button;
 			}
 
 			/*

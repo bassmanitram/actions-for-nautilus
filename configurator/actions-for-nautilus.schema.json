@@ -12,7 +12,7 @@
 			"format": "pattern",
 			"title": "Path pattern",
 			"options": {
-				"infoText": "A file path pattern that, when matched, allows the associated command action to appear in its assigned menu. It can be expressed in glob syntax (*, +, [...]) or as a regular expression(re:...). If the pattern is prefixed with '!' character then the selected items must not match this pattern."
+				"infoText": "#command:path_pattern"
 			}
 		},
 		"SortStyles": {
@@ -24,7 +24,7 @@
 			"default": "manual",
 			"title": "Menu sorting",
 			"options": {
-				"infoText": "Whether actions should be sorted automatically or left in the configured order."
+				"infoText": "#submenu:sort"
 			}
 		},
 		"FileType": {
@@ -49,7 +49,7 @@
 			],
 			"title": "File type",
 			"options": {
-				"infoText": "A standard Nautilus file type that, when matched, allows the associated command action to appear in its assigned menu. If the file type is prefixed with '!' character then the selected items must NOT be of this type."
+				"infoText": "#command:filetype"
 			}
 		},
 		"Action": {
@@ -68,7 +68,7 @@
 			],
 			"title":"Action",
 			"options": {
-				"infoText": "An entry that will appear in the Nautilus context menu. Such an entry can be a Command or a nested Menu."
+				"infoText": "#action"
 			}
 		},
 		"ActionsForNautilus": {
@@ -83,7 +83,7 @@
 					},
 					"title": "Main Menu",
 					"options": {
-						"infoText": "The list of command configurations and/or submenus that will be added to the Nautilus context menu."
+						"infoText": "#root:actions"
 					}
 				},
 				"sort": {
@@ -93,7 +93,8 @@
 					"title": "Enable debugging output",
 					"type": "boolean",
 					"options": {
-						"infoText": "When set to true, extra debugging information is sent to the Nautilus stdout/stderr destinations."							}
+						"infoText": "#root:debug"
+					}
 				}
 			},
 			"required": [
@@ -122,7 +123,7 @@
 					"minLength": 1,
 					"title": "Label for the menu",
 					"options": {
-						"infoText":  "The label that will appear in the context menu for this sub menu."
+						"infoText":  "#submenu:label"
 					}
 				},
 				"sort": {
@@ -137,7 +138,7 @@
 					},
 					"title": "Submenu Actions",
 					"options": {
-						"infoText": "The list of command and/or menu actions that will be displayed when this menu action is clicked on."
+						"infoText": "#submenu:actions"
 					}
 				}
 			},
@@ -148,7 +149,7 @@
 			],
 			"title": "Submenu",
 			"options": {
-				"infoText": "An entry in the Nautilus context menu or sub menu that, when clicked on, results in a sub menu being displayed.",
+				"infoText": "#submenu",
 				"disable_properties": true
 			}
 		},
@@ -170,7 +171,7 @@
 					"minLength": 1,
 					"title": "Label for the command",
 					"options": {
-						"infoText": "The label that will appear in the context menu for this command.",
+						"infoText": "#command:label",
 						"grid_columns": 2,
 						"grid_break": true
 					}
@@ -180,7 +181,7 @@
 					"minLength": 1,
 					"title": "Command line to execute",
 					"options": {
-						"infoText":  "The command line to execute when the action is clicked on. Placeholders are allowed and affect the semantics of the execution.",
+						"infoText":  "#command:command_line",
 						"grid_columns": 5,
 						"grid_break": true
 					}
@@ -189,7 +190,7 @@
 					"type": "boolean",
 					"title": "Use shell",
 					"options": {
-						"infoText": "Instead of directly executing the command, execute it using the default shell command.",
+						"infoText": "#command:use_shell",
 						"grid_columns": 1
 					}
 				},
@@ -198,7 +199,7 @@
 					"minLength": 1,
 					"title": "Current working directory",
 					"options": {
-						"infoText": "The current working directory to set when executing the command. Placeholders are allowed.",
+						"infoText": "#command:cwd",
 						"grid_columns": 2
 					}
 				},
@@ -208,7 +209,7 @@
 					"title": "Max items",
 					"format": "number",
 					"options": {
-						"infoText": "The maximum number of items in the selection for which this action will be displayed.",
+						"infoText": "#command:max_items",
 						"grid_columns": 1,
 						"grid_break": true
 					}
@@ -222,7 +223,7 @@
 					},
 					"title": "Mimetypes",
 					"options": {
-						"infoText": "A list of standard mimetype specifications that, when matched, allow the associated command action to appear in its assigned menu. If a mimetype is prefixed with '!' character then the selected items must NOT match that type.",
+						"infoText": "#command:mimetypes",
 						"grid_columns": 3
 					}
 		
@@ -236,7 +237,7 @@
 					},
 					"title": "File types",
 					"options": {
-						"infoText": "A list of file types for which the action will be displayed, or not be displayed in the event of a '!' prefix.",
+						"infoText": "#command:filetypes",
 						"grid_columns": 2
 					}
 				},
@@ -249,7 +250,7 @@
 					},
 					"title": "Path patterns",
 					"options": {
-						"infoText": "A list of path patterns for which the action will be displayed, or not be displayed in the event of a '!' prefix.",
+						"infoText": "#command:path_patterns",
 						"grid_columns": 2
 					}
 				}
@@ -261,7 +262,7 @@
 			],
 			"title": "Command",
 			"options": {
-				"infoText": "An entry in the Nautilus context menu or sub menu that, when clicked on, results in a command being executed."
+				"infoText": "#command"
 			}
 		}
 	}

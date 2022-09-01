@@ -57,7 +57,7 @@
 		</div>
 		<div id="resizer" class="resizer hide"></div>
 		<div class="right-side hide">
-			<iframe src="/help.html"></iframe>
+			<iframe id="help-iframe" src="/help.html"></iframe>
 		</div>
 	</div>
 
@@ -67,14 +67,25 @@
 		var rightSide;
 		var resizer;
 		var moving = false;
+		var helpIframe;
 
-		function show(show) {
-			console.log(show)
+		function show(show, fragment) {
+			console.log(show, fragment)
 			if (show) {
 				rightSide.classList.remove("hide");
 				resizer.classList.remove("hide");
 				if (leftWidth) {
 					leftSide.style.width = leftWidth;
+				}
+				if (fragment) {
+//					helpIframe.contentWindow.document.location.hash = fragment;
+					const element = helpIframe.contentWindow.document.getElementById(fragment);
+//					console.log(element)
+					if (element) {
+						element.scrollIntoView(
+						//	{behavior: "smooth", block: "start", inline: "nearest"}
+						);
+					}
 				}
 			} else {
 				rightSide.classList.add("hide");
@@ -139,6 +150,7 @@
 			 * Wire up the resizing capability
 			 */
 			resizer = document.getElementById('resizer');
+			helpIframe = document.getElementById('help-iframe');
 			leftSide = resizer.previousElementSibling;
 			rightSide = resizer.nextElementSibling;
 			resizer.addEventListener('mousedown', resizeMouseDown);
