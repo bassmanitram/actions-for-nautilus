@@ -24,7 +24,7 @@
 			"default": "manual",
 			"title": "Menu sorting",
 			"options": {
-				"infoText": "#submenu:sort"
+				"infoText": "#root:sort"
 			}
 		},
 		"FileType": {
@@ -128,8 +128,11 @@
 				},
 				"sort": {
 					"$ref": "#/definitions/SortStyles",
-					"title": "Submenu sorting"
-				},
+					"title": "Submenu sorting",
+					"options": {
+						"infoText": "#submenu:sort"
+					}
+						},
 				"actions": {
 					"type": "array",
 					"format": "tabs",

@@ -83,7 +83,7 @@
 					<li>remove all actions from the main menu (which, at the top level, removes all actions from the
 						entire configuration)</li>
 				</ul>
-				<p>It also allows you to set the ordering options for the main menu actions, and to set the debug
+				<p id="root-sort-debug">It also allows you to set the ordering options for the main menu actions, and to set the debug
 					output option if you need to resolve problems with your configuration (not yet fully implemented).
 				</p>
 			</li>
@@ -106,7 +106,7 @@
 		<p>Of special note is the <strong>Submenu Actions</strong> tab for menu actions ... this presents the identical
 			UI
 			elements in a nested format - i.e. the creation and manipulation of submenu actions is exactly
-			the same as for main menu items, performed within the UI presented by the <strong>Submenu Actions</strong>
+			the same as for main menu actions, performed within the UI presented by the <strong>Submenu Actions</strong>
 			tab.</p>
 		<p>The instructions below are presented for main menu actions, but the same semantics apply to creating
 			actions in submenus.</p>
@@ -169,9 +169,9 @@
 		<p><img src="images/menu-icon.png" alt="Menu icon"> - the menu action icon - instead of <img
 				src="images/command-icon.png" alt="Command icon">,
 			the command action icon.</p>
-		<p>You must now give your menu a label, which should be unique among all actions in the
+		<p id="submenu-label">You must now give your menu a label, which should be unique among all actions in the
 			parent menu to which you are adding the menu.</p>
-		<p>You can also opt to have the extension sort the actions that will appear in this new menu
+		<p id="submenu-sort">You can also opt to have the extension sort the actions that will appear in this new menu
 			in alphanumeric order (the default is that the order you specify is the one that is used).</p>
 		<p>To add actions to your new menu, click on the <strong>Submenu Actions</strong> tab to reveal a nested
 			panel that is similar to the top-level UI. Here you can, again, click on the
@@ -213,7 +213,7 @@
 		<p>Upon creating the action, you will see the details that can be specified for the command:</p>
 		<p><img src="images/command-action-tabs.png" alt="Command action tabs"></p>
 		<p>(as well as a warning that minimal required information has not yet been provided).</p>
-		<p>Firstly give your command a label, which should be unique within the menu/submenu to which
+		<p id="command-label">Firstly give your command a label, which should be unique within the menu/submenu to which
 			you are adding the command.</p>
 		<p>And, evidently, you must provide a command line to execute when the action is clicked on.
 			We&#39;ll cover that <a href="#commands">below</a>.</p>
@@ -280,12 +280,10 @@
 			&quot;positive&quot; rules, if any, and none of the &quot;negative rules&quot;.</p>
 		<p>Note that the effect of this <em>may</em> be somewhat counter-intuitive:</p>
 		<pre><code>!<span class="hljs-built_in">application</span>/*
-		<span class="hljs-built_in">application</span>/json
-		</code></pre>
+<span class="hljs-built_in">application</span>/json</code></pre>
 		<p>will <em>not</em> allow <code>application/json</code> files through the filter, whereas</p>
 		<pre><code>!<span class="hljs-built_in">application</span>/json
-		<span class="hljs-built_in">application</span>/*
-		</code></pre>
+<span class="hljs-built_in">application</span>/*</code></pre>
 		<p>will &quot;correctly&quot; block <code>application/json</code> files while allowing all other files of (only)
 			<code>application</code>
 			subtypes.
@@ -294,8 +292,7 @@
 			specific rules to take precedence over more general rules.</p>
 		<p>However, <em>also</em> note that the first of these two examples can be &quot;corrected&quot; simply by using
 			only a positive rule:</p>
-		<pre><code><span class="hljs-built_in">application</span>/json
-		</code></pre>
+		<pre><code><span class="hljs-built_in">application</span>/json</code></pre>
 		<p>which automatically blocks anything not matching that mimetype (see what I mean by confusing!)</p>
 		<h3 id="file-types">File types</h3>
 		<p>With the file types list, entered in the <strong>File types</strong> tab, you can specify the Gnome file
@@ -413,13 +410,13 @@
 			arrangements to use a default.</p>
 		<p>The glaring problem with this particular CWD is that, on the face of it, the setting - <code>%f</code> -
 			is <em>not</em> a valid directory. However, within the extension, it <em>is</em> valid. That particular
-			value tells
+			value is a <a href="#command-line-placeholders">placeholder</a> that tells
 			the extension to use the file path of the first file in the selection as the CWD ... and, because
 			this particular command action is configured only to be available when the selection size is 1 and the
 			selected file is a directory, we are guaranteed that <code>%f</code> will always resolve to a valid
 			directory from
 			which to serve content.</p>
-		<p>You&#39;ll also see that we used that same placeholder in the command line within the <code>--title</code>
+		<p>You&#39;ll also see that we used that same <a href="#command-line-placeholders">placeholder</a> in the command line within the <code>--title</code>
 			<strong>gnome-terminal</strong> command option value, which allows the terminal title to include the root
 			directory path.
 		</p>
@@ -456,7 +453,7 @@
 		<ul>
 			<li><code>echo</code>, to write the basenames of all the files in the selection to <code>stdout</code>
 				(again, <code>%B</code> is a
-				file detail placeholder),</li>
+				file detail <a href="#command-line-placeholders">placeholder</a>),</li>
 			<li><code>xclip</code> with parameters that tell it to <ul>
 					<li>Read <code>stdin</code> (i.e. the <code>stdout</code> from the <code>echo</code> command)</li>
 					<li>Set the contents of the desktop <em>primary</em> clipboard to that</li>
@@ -507,11 +504,9 @@
 		<ul>
 			<li>
 				<p>Make the first line of your script be a &quot;hash bang&quot; stanza</p>
-				<pre><code>  #!/path/<span class="hljs-keyword">to</span>/<span class="hljs-keyword">shell</span>
-		</code></pre>
+				<pre><code>  #!/path/<span class="hljs-keyword">to</span>/<span class="hljs-keyword">shell</span></code></pre>
 				<p>e.g.</p>
-				<pre><code>  <span class="hljs-meta">#!/bin/bash</span>
-		</code></pre>
+				<pre><code>  <span class="hljs-meta">#!/bin/bash</span></code></pre>
 			</li>
 			<li>
 				<p>Make your shell script executable via the Nautilus file properties dialog (or by executing the
@@ -702,35 +697,28 @@
 				three files <code>pierre</code>, <code>paul</code> and <code>jacques</code>.</p>
 			<p>If we have requested <code>echo %b</code>, then the following commands will be
 				successively run:</p>
-			<pre><code>
-	<span class="hljs-built_in">echo</span> pierre
-	<span class="hljs-built_in">echo</span> paul
-	<span class="hljs-built_in">echo</span> jacques
-				</code></pre>
+			<pre><code><span class="hljs-built_in">echo</span> pierre
+<span class="hljs-built_in">echo</span> paul
+<span class="hljs-built_in">echo</span> jacques</code></pre>
 			<p>This is because <code>%b</code> marks a SINGULAR parameter. The command is then run once
 				for each of the selected items.</p>
 			<p>Contrarily, if we have requested <code>echo %B</code>, then the following command will
 				be run:</p>
-			<pre><code><span class="hljs-built_in">echo</span> pierre paul jacques
-	</code></pre>
+			<pre><code><span class="hljs-built_in">echo</span> pierre paul jacques</code></pre>
 			<p>This is because <code>%B</code> marks a PLURAL parameter. The command is then run only
 				once, with the list of selected items as arguments.</p>
 			<p>If we have requested <code>echo %b %B</code>, then the following commands will be
 				successively run:</p>
-			<pre><code>
-	<span class="hljs-built_in">echo</span> pierre pierre paul jacques
-	<span class="hljs-built_in">echo</span> paul pierre paul jacques
-	<span class="hljs-built_in">echo</span> jacques pierre paul jacques
-				</code></pre>
+			<pre><code><span class="hljs-built_in">echo</span> pierre pierre paul jacques
+<span class="hljs-built_in">echo</span> paul pierre paul jacques
+<span class="hljs-built_in">echo</span> jacques pierre paul jacques</code></pre>
 			<p>This is because the first relevant parameter is <code>%b</code>, and so the command
 				is run once for each selected item, replacing at each occurrence the <code>%b</code>
 				parameter with the corresponding item. The second parameter is computed and
 				added as arguments to the executed command.</p>
 			<p>And if we have requested <code>echo %B %b</code>, then the following command will be
 				run:</p>
-			<pre><code>
-	<span class="hljs-built_in">echo</span> pierre paul jacques pierre
-				</code></pre>
+			<pre><code><span class="hljs-built_in">echo</span> pierre paul jacques pierre</code></pre>
 			<p>This is because the first relevant parameter here is <code>%B</code>. The command is
 				then run only once, replacing <code>%B</code> with the space-separated list of
 				basenames. As the command is only run once, the <code>%b</code> is substituted only once
