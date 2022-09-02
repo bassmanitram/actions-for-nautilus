@@ -1,3 +1,15 @@
+# Release 1.2.0
+* In-window, hideable, contextual help
+  The configurator is now an iframe in a container window that also
+  contains a "help" iframe. 
+
+  All "i" tooltip buttons can now be clicked and will open the help
+  iframe at the appropriate part of the (now complete) help HTML page.
+  
+  The two iframes are resizable using a drag bar.
+
+  There is also a show-help/hide-help button.
+
 # Release 1.1.1
 * Fix mimetype, file type, and path pattern rule evaluation.
 * Fix syslog errors when virtual locations (Trash, Recent, ...) are
