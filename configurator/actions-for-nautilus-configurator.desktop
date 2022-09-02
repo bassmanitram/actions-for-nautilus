@@ -5,5 +5,5 @@ Path=$LOC/actions-for-nautilus-configurator
 Terminal=false
 Version=1.0
 Type=Application
-Icon=$LOC/actions-for-nautilus-configurator/sub-menu.png
+Icon=$LOC/actions-for-nautilus-configurator/images/sub-menu.png
 
