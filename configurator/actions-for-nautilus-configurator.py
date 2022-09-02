@@ -48,8 +48,8 @@ docs = {
         "mimetype": "application/json",
         "default": None
     },
-    "/help.html": {
-        "path": "./help.html",
+    "/actions-for-nautilus-configurator-help.html": {
+        "path": "./actions-for-nautilus-configurator-help.html",
         "mimetype": "text/html",
         "default": None
     },
