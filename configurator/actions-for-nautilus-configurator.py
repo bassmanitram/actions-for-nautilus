@@ -54,48 +54,8 @@ docs = {
         "default": None
     },
     "/favicon.ico": {
-        "path": ".images/sub-menu.png",
+        "path": "./images/sub-menu.png",
         "mimetype": "image/png",
-        "default": None
-    },
-    "/packages/jquery.min.js": {
-        "path": "/usr/share/javascript/jquery/jquery.min.js",
-        "mimetype": "application/javascript",
-        "default": None
-    },
-    "/packages/bootstrap.min.js": {
-        "path": "./packages/bootstrap.min.js",
-        "mimetype": "application/javascript",
-        "default": None
-    },
-    "/packages/jsoneditor.js": {
-        "path": "./packages/jsoneditor.js",
-        "mimetype": "application/javascript",
-        "default": None
-    },
-    "/packages/minimatch.min.js": {
-        "path": "./packages/minimatch.js",
-        "mimetype": "application/javascript",
-        "default": None
-    },
-    "/packages/jsoneditor.min.css": {
-        "path": "./packages/jsoneditor.min.css",
-        "mimetype": "text/css",
-        "default": None
-    },
-    "/packages/simple.min.css": {
-        "path": "./packages/simple.min.css",
-        "mimetype": "text/css",
-        "default": None
-    },
-     "/packages/bootstrap.min.css": {
-        "path": "./packages/bootstrap.min.css",
-        "mimetype": "text/css",
-        "default": None
-    },
-    "/packages/fontawesome.css": {
-        "path": "./packages/fontawesome.css",
-        "mimetype": "text/css",
         "default": None
     },
     "/webfonts/fa-solid-900.woff2": {
@@ -106,6 +66,16 @@ docs = {
     "/images/ANY": {
         "path": "./images/",
         "mimetype": "image/png",
+        "default": None
+    },
+    "/javascript/ANY": {
+        "path": "./javascript/",
+        "mimetype": "application/javascript",
+        "default": None
+    },
+    "/css/ANY": {
+        "path": "./css/",
+        "mimetype": "text/css",
         "default": None
     },
 }
