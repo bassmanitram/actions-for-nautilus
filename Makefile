@@ -69,7 +69,7 @@ else
 	mkdir -p build/DEBIAN
 	cp -r --preserve=mode,timestamps extensions build/$(GLOBALLOC)/nautilus-python
 	cp -r --preserve=mode,timestamps configurator/* build/$(GLOBALLOC)/actions-for-nautilus-configurator
-	rm build/$(GLOBALLOC)/actions-for-nautilus-configurator/packages/jquery.min.js
+	rm build/$(GLOBALLOC)/actions-for-nautilus-configurator/javascript/jquery.min.js
 	LOC=$(GLOBALLOC) python3 -c 'import os,sys; sys.stdout.write(os.path.expandvars(sys.stdin.read()))' \
 		< build/$(GLOBALLOC)/actions-for-nautilus-configurator/actions-for-nautilus-configurator.desktop \
 		> build/$(GLOBALLOC)/applications/actions-for-nautilus-configurator.desktop

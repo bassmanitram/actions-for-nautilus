@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<link rel="stylesheet" href="/css/simple.min.css">
+	<style>
+		html {
+			scroll-behavior: auto;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="wrapper">
+		<h1 id="actions-for-nautilus">Actions For Nautilus</h1>
+		<p>The Actions For Nautilus extension allows you to add items to the context menu
+			(i.e. the right-click menu) of Gnome Files (called Nautilus from here-on, to avoid
+			confusion) based upon the characteristics of the files and directories that you have
+			selected in the Nautilus window (simply called <em>files</em> from here-on).</p>
+		<p>Within the context of the extension, these menu items are called <em>actions</em>.</p>
+		<p>You can add two types of actions.</p>
+		<ul>
+			<li>Commands - a command action allows you to execute an arbitrary command, passing
+				the selected files to the command as arguments.</li>
+			<li>Menus - a menu action contains other actions, allowing you to structure your
+				configured commands into logical groups in any way you see fit.</li>
+		</ul>
+		<p>The configuration of the extension is, effectively, the declaration of the menu and
+			command actions that you wish to see in the Nautilus context menu for different types
+			of files.</p>
+		<p>The details of the configuration file itself can be found in the project documentation.
+			This help information is intended to help you use the configurator tool to create and
+			modify the configuration.</p>
+		<h1 id="table-of-contents">Table of Contents</h1>
+		<ul>
+			<li><a href="#configurator-layout">Configurator Layout</a>
+				<ul>
+					<li><a href="#undo-redo-and-save">Undo, Redo and Save</a></li>
+					<li><a href="#optional-parameters">Optional parameters</a></li>
+				</ul>
+			</li>
+			<li><a href="#menu-actions">Menu Actions</a></li>
+			<li><a href="#command-actions">Command Actions</a>
+				<ul>
+					<li><a href="#creating-a-command-action">Creating a Command Action</a></li>
+					<li><a href="#filtering-rules">Filtering rules</a>
+						<ul>
+							<li><a href="#max-items">Max items</a></li>
+							<li><a href="#mimetypes">Mimetypes</a></li>
+							<li><a href="#file-types">File types</a></li>
+							<li><a href="#path-patterns">Path patterns</a></li>
+						</ul>
+					</li>
+					<li><a href="#commands">Commands</a>
+						<ul>
+							<li><a href="#use-shell">Use shell</a>
+								<ul>
+									<li><a href="#shells">Shells</a></li>
+								</ul>
+							</li>
+							<li><a href="#command-line-placeholders">Command line placeholders</a></li>
+							<li><a href="#execution-behavior">Execution behavior</a>
+								<ul>
+									<li><a href="#an-example">An example</a></li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+		<h1 id="configurator-layout">Configurator Layout</h1>
+		<p>The configurator UI is basically laid out in two columns:</p>
+		<ul>
+			<li>
+				<p>The left-most column shows you the actions that will be added to the Nautilus context menu.</p>
+				<p><img src="images/main-menu-list.png" alt="Main menu list"></p>
+				<p>This allows you to: </p>
+				<ul>
+					<li>see the actions already added to the main context menu, </li>
+					<li>add new actions to that menu</li>
+					<li>select an existing action in order to edit its characteristics</li>
+					<li>remove all actions from the main menu (which, at the top level, removes all actions from the
+						entire configuration)</li>
+				</ul>
+				<p id="root-sort-debug">It also allows you to set the ordering options for the main menu actions, and to set the debug
+					output option if you need to resolve problems with your configuration (not yet fully implemented).
+				</p>
+			</li>
+			<li>
+				<p>The right column shows the details and characteristics of the currently selected main menu action
+					from the left-most column.</p>
+				<p><img src="images/action-details.png" alt="Action details panel"></p>
+				<p>Here you:</p>
+				<ul>
+					<li>set the type of the selected action - <em>Menu</em> or <em>Command</em></li>
+					<li>set the label for the action</li>
+					<li>set the submenu items for a menu action</li>
+					<li>set the command string, current working directory, and filter rules that pertain to a command
+						action</li>
+					<li>reorder the action within its containing menu</li>
+					<li>delete the action</li>
+				</ul>
+			</li>
+		</ul>
+		<p>Of special note is the <strong>Submenu Actions</strong> tab for menu actions ... this presents the identical
+			UI
+			elements in a nested format - i.e. the creation and manipulation of submenu actions is exactly
+			the same as for main menu actions, performed within the UI presented by the <strong>Submenu Actions</strong>
+			tab.</p>
+		<p>The instructions below are presented for main menu actions, but the same semantics apply to creating
+			actions in submenus.</p>
+		<h2 id="undo-redo-and-save">Undo, Redo and Save</h2>
+		<p>Next to the title, you will see three buttons that allow you to undo changes that you have made,
+			redo changes that you have undone, and save changes back to the configuration file:</p>
+		<p><img src="images/undo-redo-save-help.png" alt="Undo, redo, save, help"></p>
+		<p>The <code>Show Help</code> button (which you have already discovered if you are reading this) is also there
+			and allows
+			you to hide this help window once you have shown it.</p>
+		<p>The save button will not be enabled if there are no changes to save, nor if there are problems with the
+			configuration. If you have made changes but the save button is disabled, you will need to revisit those
+			changes and correct the problems that are reported in order to be able to save the configuration.</p>
+		<p>Note that when you save the configuration, it may take up to thirty seconds to see the changes in the
+			Nautilus context menu.</p>
+		<p>Once saved, the previous configuration is backed up in the <code>~/.local/share/actions-for-nautilus</code>
+			folder:</p>
+		<p><img src="images/backups.png" alt="Backups"></p>
+		<p>You can, of course, restore a previous version of the configuration by replacing the file
+			<code>config.json</code>
+			with the contents of a backup file.
+		</p>
+		<p>You are responsible for deleting backups that are no longer required.</p>
+		<h2 id="optional-parameters">Optional parameters</h2>
+		<p>You will notice that optional parameters are not automatically enabled for modification. In order to
+			modify an optional parameter from its default value, you first need to enable the inclusion of the
+			optional parameter in the configuration by checking the check box associated with that parameter. E.g.:</p>
+		<ul>
+			<li>
+				<p>disabled:</p>
+				<p><img src="images/disabled-optional-parameter.png" alt="Disabled optional parameter"></p>
+			</li>
+			<li>
+				<p>enabled:</p>
+				<p><img src="images/enabled-optional-parameter.png" alt="Enabled optional parameter"></p>
+			</li>
+		</ul>
+		<p>Note also that if you disable an optional parameter that you have previously enabled and modified, the
+			displayed value is <em>not</em> modified to the default value but retains the modified value you previously
+			set.</p>
+		<p>The saved configuration however will not contain the parameter which, therefore, will revert to its default
+			value.</p>
+		<h1 id="menu-actions">Menu Actions</h1>
+		<p>To create a menu action, then, do the following:</p>
+		<ul>
+			<li>
+				<p>click on the <strong>+ Action</strong> button at the top of the left-most column of the configurator
+					tool:</p>
+				<p><img src="images/add-menu-top.png" alt="Add a top-level menu"></p>
+			</li>
+			<li>
+				<p>In the newly-created action details area (to the right), click on the type indicator
+					box and change its value to <em>Menu</em>:</p>
+				<p><img src="images/action-type-command.png" alt="Change type to menu"></p>
+			</li>
+		</ul>
+		<p>You will now see the tabs that are relevant to menu actions:</p>
+		<p><img src="images/menu-action-tabs.png" alt="Menu action tabs"></p>
+		<p>You will also notice that the selected action in the left column has a new icon:</p>
+		<p><img src="images/menu-icon.png" alt="Menu icon"> - the menu action icon - instead of <img
+				src="images/command-icon.png" alt="Command icon">,
+			the command action icon.</p>
+		<p id="submenu-label">You must now give your menu a label, which should be unique among all actions in the
+			parent menu to which you are adding the menu.</p>
+		<p id="submenu-sort">You can also opt to have the extension sort the actions that will appear in this new menu
+			in alphanumeric order (the default is that the order you specify is the one that is used).</p>
+		<p>To add actions to your new menu, click on the <strong>Submenu Actions</strong> tab to reveal a nested
+			panel that is similar to the top-level UI. Here you can, again, click on the
+			<img src="images/add-action-button.png" alt="Add Action"> button to configure the actions that will appear
+			in your
+			newly created menu.
+		</p>
+		<p>That is all there is to menu creation.</p>
+		<p>Note, however, that your menu will not appear in the Nautilus context menu until you add command actions to
+			it, and then only if those commands are pertinent to the files that you have
+			selected in the Nautilus window.</p>
+		<h1 id="command-actions">Command Actions</h1>
+		<p>Command actions are really what this is all about - executing a command string of your choice,
+			passing details of the file(s) you have selected as arguments to the command.</p>
+		<p>Examples of commands taken from the delivered sample configuration:</p>
+		<ul>
+			<li>Start an HTTP server using a specific folder as the root folder</li>
+			<li>Copying details of the selected files to the clipboard</li>
+			<li>Running a script file with an appropriate interpreter</li>
+			<li>Executing an arbitrary command in a selected folder</li>
+			<li>...</li>
+		</ul>
+		<p>Using tools such as Zenity, XClip, Gnome Terminal, and others, you can construct complex
+			scenarios and even pipelines that are then executed with a simple click on the Nautilus
+			context menu item.</p>
+		<h2 id="creating-a-command-action">Creating a Command Action</h2>
+		<p>You create a command action in the same way you create a menu action: </p>
+		<ul>
+			<li>
+				<p>click on the <img src="images/add-action-button.png" alt="Add Action"> button at the top of the
+					left-most column
+					of the configurator tool</p>
+			</li>
+			<li>
+				<p>In the newly-created action details area (to the right), click on the type indicator
+					box and change it to <em>Command</em></p>
+			</li>
+		</ul>
+		<p>Upon creating the action, you will see the details that can be specified for the command:</p>
+		<p><img src="images/command-action-tabs.png" alt="Command action tabs"></p>
+		<p>(as well as a warning that minimal required information has not yet been provided).</p>
+		<p id="command-label">Firstly give your command a label, which should be unique within the menu/submenu to which
+			you are adding the command.</p>
+		<p>And, evidently, you must provide a command line to execute when the action is clicked on.
+			We&#39;ll cover that <a href="#commands">below</a>.</p>
+		<p>Firstly, however, we&#39;ll cover the rules that dictate if a command action is applicable to the
+			current files in the Nautilus selection.</p>
+		<h2 id="filtering-rules">Filtering rules</h2>
+		<p>Actions For Nautilus can examine the Nautilus selection to decide if a specific command action
+			should be available to that selection.</p>
+		<p>This examination can apply four different criteria:</p>
+		<ul>
+			<li>The number of files in the selection </li>
+			<li>The mimetypes of the selected files</li>
+			<li>The basic filetypes of the selected files</li>
+			<li>The paths of the selected files</li>
+		</ul>
+		<p>Firstly note that each of these is optional - if not used, the action applies to a selection
+			of any size, any file type, any mimetype, and any path.</p>
+		<p>As with other optional configuration items, in order to apply a filter, you must first activate
+			the filter by checking the checkbox situated next to the entry field.</p>
+		<p>After that, you can start adding filter rules.</p>
+		<p>It is important to note that <em>all</em> files in the selection must pass the filtering rules in
+			order for the action to be shown in the Nautilus context menu.</p>
+		<p>It is also important to note that if none of the actions in a submenu are applicable to the
+			current selection, that submenu will also not appear in the Nautilus context menu.</p>
+		<h3 id="max-items">Max items</h3>
+		<p><img src="images/max-items.png" alt="Max items"></p>
+		<p>This is pretty simple to explain: the maximum number of files that are in the selection in order
+			for the command action to be shown.</p>
+		<p>Normally you will be looking at values of either <strong>0</strong> - meaning unlimited (the default) - or
+			<strong>1</strong> meaning ... well ... 1. However, other values can be used. For example, for an action
+			that
+			compares up to two files, you might want to specify a value of <strong>2</strong> here.
+		</p>
+		<p>Note that, at present, there is no capability to specify an exact number other than <strong>1</strong>, nor
+			to
+			specify a minimum number.</p>
+		<h3 id="mimetypes">Mimetypes</h3>
+		<p>With the mimetypes list, entered in the <strong>Mimetypes</strong> tab, you can specify the IANA Media Types
+			to which your command action applies. E.g.</p>
+		<p><img src="images/mimetypes.png" alt="Mimetype"></p>
+		<p>In this example, the <strong>Run in node</strong> action only applies to files whose mimetype is
+			<strong>application/javascript</strong>.
+		</p>
+		<p>You can specify any number of mimetypes - the selected files must match one of these in order to pass the
+			mimetypes filter rule.</p>
+		<p>A mimetype can be declared in one of the ways standard to IANA Media Types:</p>
+		<ul>
+			<li><em>type/subtype</em> - a specific mimetype (e.g. <strong>application/javascript</strong> as in the
+				above example)</li>
+			<li><em>type/*</em> - all subtypes of a specific type (e.g. <strong>audio/*</strong> for audio files of any
+				encoding)</li>
+		</ul>
+		<p>You can specify <strong>*</strong> or <strong>*/*</strong> to accept all mimetypes - but since this is the
+			default setting
+			it&#39;s a bit superfluous to do so.</p>
+		<p>You can make a mimetype <em>&quot;negative&quot;</em> by preceding it with an exclamation point to declare
+			that NONE of the selected files should be of the specified mimetype(s). E.g.</p>
+		<p><img src="images/negative-mimetypes.png" alt="Negative mimetypes"></p>
+		<p>In this example, the <strong>Edit with gvim</strong> action will not appear if any of the selected files is a
+			PDF, an
+			audio file, or an image file.</p>
+		<p>You should probably avoid mixing standard (positive) rules with negative rules since the result could
+			be confusing, but the algorithm is fairly straightforward: All selected files must match one of the
+			&quot;positive&quot; rules, if any, and none of the &quot;negative rules&quot;.</p>
+		<p>Note that the effect of this <em>may</em> be somewhat counter-intuitive:</p>
+		<pre><code>!<span class="hljs-built_in">application</span>/*
+<span class="hljs-built_in">application</span>/json</code></pre>
+		<p>will <em>not</em> allow <code>application/json</code> files through the filter, whereas</p>
+		<pre><code>!<span class="hljs-built_in">application</span>/json
+<span class="hljs-built_in">application</span>/*</code></pre>
+		<p>will &quot;correctly&quot; block <code>application/json</code> files while allowing all other files of (only)
+			<code>application</code>
+			subtypes.
+		</p>
+		<p>This is a known current limitation of the feature that may be alleviated in a future release to allow more
+			specific rules to take precedence over more general rules.</p>
+		<p>However, <em>also</em> note that the first of these two examples can be &quot;corrected&quot; simply by using
+			only a positive rule:</p>
+		<pre><code><span class="hljs-built_in">application</span>/json</code></pre>
+		<p>which automatically blocks anything not matching that mimetype (see what I mean by confusing!)</p>
+		<h3 id="file-types">File types</h3>
+		<p>With the file types list, entered in the <strong>File types</strong> tab, you can specify the Gnome file
+			types
+			to which your command applies. E.g.</p>
+		<p><img src="images/filetypes.png" alt="File type"></p>
+		<p>In this example, the <strong>Start HTTP server here</strong> action only applies to directories.</p>
+		<p>The available filetypes are defined by Gnome itself and are, therefore, presented as a selection list:</p>
+		<p><img src="images/available-filetypes.png" alt="Available file types"></p>
+		<p>You will notice that &quot;negative&quot; versions of the file types are also available - the selected files
+			must
+			NOT be of such file types.</p>
+		<p>The most useful filetypes are likely to be <code>directory</code>, <code>file</code>, and
+			<code>symbolic link</code> and, as such, a
+			&quot;macro&quot; filetype is available - <code>standard</code> - which encapsulates all three.
+		</p>
+		<p>As with <a href="#mimetypes">mimetypes</a>, mixing negative and standard rules could be confusing, however
+			there is a useful case for such a mix:</p>
+		<p><img src="images/mixed-filetypes.png" alt="Mixed file types"></p>
+		<p>This configuration specifies all <code>standard</code> types EXCEPT directories - a sensible filter for
+			an editor command.</p>
+		<h3 id="path-patterns">Path patterns</h3>
+		<p>With the path patterns list, entered in the <strong>Path patterns</strong> tab, you can state that the paths
+			of the files in the selection should match certain patterns. E.g.</p>
+		<p><img src="images/glob-path-pattern.png" alt="Glob path pattern"></p>
+		<p>In this example, the <strong>Edit with gvim</strong> action only applies to files that are in user jdoe&#39;s
+			home
+			directory.</p>
+		<p>Patterns can be entered as &quot;glob&quot; patterns or regular expressions.</p>
+		<ul>
+			<li>
+				<p>Glob Patterns allow you to specify the following placeholders in the pattern string:</p>
+				<ul>
+					<li><strong>*</strong> - indicating any number of characters</li>
+					<li><strong>?</strong> - indicating any single character</li>
+					<li><strong>[abcd]</strong> - indicating any character in the set of characters between the brackets
+					</li>
+					<li><strong>[!abcd]</strong> - indicating any character <em>not</em> in the set of characters
+						between the brackets</li>
+					<li>all other characters are literal</li>
+				</ul>
+				<p>The above example is a glob pattern.</p>
+				<p>Globs are simple but limited - on the other hand, most needs can be expressed accurately enough
+					using them.</p>
+				<p>Note that glob patterns inherently match against the <em>whole</em> path name - so, for example, a
+					path of <code>/etc/home/jdoe/myfile</code> would <em>not</em> match the above example.</p>
+			</li>
+			<li>
+				<p>Regular expressions allow for far more complex patterns to be expressed. It is beyond the
+					scope of this document to explain regular expressions, but the extension specifically supports
+					the regular expression syntax implemented by Python. Documentation of this syntax is available
+					<a href="https://docs.python.org/3/library/re.html#regular-expression-syntax">here</a>.
+				</p>
+				<p>To use a regular expression, precede the pattern with the tag <strong>re:</strong>. E.g.</p>
+				<p><img src="images/regex-path-pattern.png" alt="Regex path pattern"></p>
+				<p>This example specifies the same rule as the glob example above but as a regular expression ...</p>
+				<p>weeelllll - not quite ...</p>
+				<p>Regular expression patterns do <em>not</em> inherently match against the <em>whole</em> path name -
+					so, for example, a
+					path of <code>/etc/home/jdoe/myfile</code> <em>would</em> match this regular expression.</p>
+				<p>To make the pattern match only the whole path, you need to prefix it with a carat character and
+					suffix
+					it with a dollar character:</p>
+				<p><img src="images/regex-whole-path-pattern.png" alt="Regex whole path pattern"></p>
+			</li>
+		</ul>
+		<p>Again, you can prefix the entire pattern string with an exclamation point to specify a &quot;negative&quot;
+			path pattern - no file in the selection should have a path that matches that pattern - and again
+			mixing standard and negative rules <em>may</em> be confusing, but may also be useful in breaking down
+			complex patterns into simpler components.</p>
+		<h2 id="commands">Commands</h2>
+		<p>And so to the most important part - the command that is executed when you click on an action
+			in the Nautilus context menu.</p>
+		<p>In essence, the command string is very similar to commands you would enter at a shell prompt
+			or at the Gnome ALT-F2 prompt. It is comprised of (normally) space-delimited tokens, the
+			first of which is the name of, or the full path to, the command you wish to execute, the remainder
+			being the positional arguments to be passed to that command.</p>
+		<p>A slightly modified example from the delivered sample configuration...</p>
+		<p><img src="images/simplified-command.png" alt="Simple command"></p>
+		<p>The command here is <code>gnome-terminal</code> - everything after that is an argument to the
+			<strong>gnome-terminal</strong> command ... except that this is a bit special - the <code>--</code> argument
+			actually
+			tells <strong>gnome-terminal</strong> that everything after <em>that</em> is a command line to be executed
+			once the
+			<strong>gnome-terminal</strong> window is open.
+		</p>
+		<p>So here, when you click on the action, the extension will execute <code>gnome-terminal</code> and pass
+			the rest of the space-delimited tokens as positional arguments. </p>
+		<p><strong>gnome-terminal</strong> will open in a new window and <em>itself</em> execute
+			the command <code>python3 -m http.server --bind 127.0.0.1</code> which starts the a python HTTP server,
+			listening on the <code>127.0.0.1</code> (or <strong>localhost</strong>) network interface, on port 8000,
+			reporting all activity into the <strong>gnome-terminal</strong> window.</p>
+		<p>When you close the window the HTTP server stops.</p>
+		<p>You can start the HTTP server without <strong>gnome-terminal</strong> - just remove
+			<code>gnome-terminal --</code>
+			from the command string - but you will see no feedback and you will have to make other
+			arrangements to stop the server when you are done with it.
+		</p>
+		<p>And that is an important point here - you get no feedback unless the command you execute
+			inherently opens its own user interface.</p>
+		<p>The command string is <em>mostly</em> devoid of characters with special meaning to the extension.
+			You can alter the space-delimited tokenization by using <code>\</code> characters to escape spaces or quotes
+			to include spaces in tokens - and <code>\</code> characters to escape quotes and backslashes. Here is the
+			full
+			example from the sample configuration, setting the terminal title to a value that includes spaces:</p>
+		<p><img src="images/full-command.png" alt="cwd"></p>
+		<p id="cwd">You will notice that we haven&#39;t specified which directory the HTTP server should
+			use as its root. For the python HTTP server, the default root directory is the &quot;current
+			working directory&quot; (or CWD) when the command is executed. Reliance upon the CWD is ubiquitous behavior
+			in Linux commands. You can specify the CWD for your commands by using the optional parameter
+			named <strong>Current working directory</strong>:</p>
+		<p><img src="images/cwd.png" alt="cwd"></p>
+		<p>If you don&#39;t specify the CWD, the setting is &quot;undefined&quot; - i.e. the extension itself makes no
+			special
+			arrangements to use a default.</p>
+		<p>The glaring problem with this particular CWD is that, on the face of it, the setting - <code>%f</code> -
+			is <em>not</em> a valid directory. However, within the extension, it <em>is</em> valid. That particular
+			value is a <a href="#command-line-placeholders">placeholder</a> that tells
+			the extension to use the file path of the first file in the selection as the CWD ... and, because
+			this particular command action is configured only to be available when the selection size is 1 and the
+			selected file is a directory, we are guaranteed that <code>%f</code> will always resolve to a valid
+			directory from
+			which to serve content.</p>
+		<p>You&#39;ll also see that we used that same <a href="#command-line-placeholders">placeholder</a> in the command line within the <code>--title</code>
+			<strong>gnome-terminal</strong> command option value, which allows the terminal title to include the root
+			directory path.
+		</p>
+		<p>In general, then, character pairs that start with <code>%</code> are placeholders for values that are drawn
+			from the details of the files in the selection. These are full explained <a
+				href="#command-line-placeholders">below</a>.</p>
+		<h3 id="use-shell">Use shell</h3>
+		<p>Writing shell scripts to be executed by this extension is a prime use case, allowing you to
+			implement just about any scenario imaginable and having them available in the Nautilus context menu.</p>
+		<p>By default, the extension will attempt to directly execute the command via operating system APIs. </p>
+		<p>This works when executing a shell script on if:</p>
+		<ul>
+			<li>The script file is marked as executable</li>
+			<li>The script itself can inform the operating system what shell interpreter to use with a &quot;hash
+				bang&quot;
+				(<code>#!/path/to/shell</code>) stanza</li>
+			<li>The script is in a directory that is listed in the environment&#39;s PATH variable, or you
+				specify the full path to the script as the first token of your command string</li>
+		</ul>
+		<p>You <em>can</em> ask the extension to use the default system shell to execute the command by enabling
+			and setting to <code>true</code> this option:</p>
+		<p><img src="images/use-shell.png" alt="Use shell"></p>
+		<p>In effect, this is <em>similar</em> to prefixing the command string with <code>sh</code> - but it is not
+			exactly
+			the same, since the extension exploits the embedded python capability of executing commands in
+			a shell and that is a lot more powerful than simply using a prefix.</p>
+		<p>Why would you want to do this? </p>
+		<p>Well, firstly, if the conditions above aren&#39;t satisfied, this is the easiest way to execute a shell
+			script.</p>
+		<p>But this option may <em>also</em> avoid the need for writing a script at all:</p>
+		<p><img src="images/pipe-command.png" alt="Pipe command"></p>
+		<p>This command string runs a shell pipeline without requiring a wrapper script. It executes <em>three</em>
+			commands</p>
+		<ul>
+			<li><code>echo</code>, to write the basenames of all the files in the selection to <code>stdout</code>
+				(again, <code>%B</code> is a
+				file detail <a href="#command-line-placeholders">placeholder</a>),</li>
+			<li><code>xclip</code> with parameters that tell it to <ul>
+					<li>Read <code>stdin</code> (i.e. the <code>stdout</code> from the <code>echo</code> command)</li>
+					<li>Set the contents of the desktop <em>primary</em> clipboard to that</li>
+					<li>re-echo <code>stdin</code> to <code>stdout</code></li>
+				</ul>
+			</li>
+			<li><code>xclip</code> again, this time with parameters that tell it to <ul>
+					<li>Read <code>stdin</code> (i.e. the <code>stdout</code> from the first <code>xclip</code> command)
+					</li>
+					<li>Set the contents of the desktop <em>default</em> clipboard to that</li>
+				</ul>
+			</li>
+		</ul>
+		<p>(Read the <code>xclip</code> documentation for more details about the available clipboards)</p>
+		<p>After executing this action, the default and primary clipboards will contain the basenames
+			of all the files that you selected. You can then paste them wherever you want.</p>
+		<p>Another really instructive example:</p>
+		<p><img src="images/env-var.png" alt="Environment variable"></p>
+		<p>(You really <em>have</em> to install Zenity!)</p>
+		<p>What does this do?</p>
+		<ul>
+			<li>echoes the value of the environment variable PWD (which contains the CWD path) to <code>stdout</code>
+			</li>
+			<li>&quot;pipes&quot; that to the <code>zenity</code> command, telling <strong>Zenity</strong> to display a
+				window with the
+				contents of <code>stdin</code></li>
+			<li>and <strong><em>NOTE WELL</em></strong> : <strong>Current working directory</strong> is <em>not set</em>
+			</li>
+		</ul>
+		<p>Obviously, the primary purpose of this example is to show that shell environment variable
+			expressions can be directly used... but it also solves the &quot;mystery&quot; of what the CWD of
+			a command action is if you don&#39;t specify it - no spoilers; try it!</p>
+		<p><em>Most</em> things that you can specify at a shell prompt can also be used in the <strong>Command
+				line</strong>
+			string when the <strong>Use shell</strong> option is set to <code>true</code>. Simply experiment to find the
+			limits!</p>
+		<h4 id="shells">Shells</h4>
+		<p>At this time there is no way within the extension to specify the default shell to use when the
+			<strong>Use shell</strong> option is activated. The extension uses whatever is bound to the system
+			<code>sh</code> command.
+		</p>
+		<p>In <em>most</em> Gnome environments this is usually an at least minimally BASH-compatible shell, but if
+			you are executing a shell script, this particular shell implementation may not be adequate for your
+			needs (looking at you, <code>dash</code>, the default system shell in Ubuntu and some derivatives). </p>
+		<p>You can overcome this either by rebinding the <code>sh</code> command to the shell of your choice or by
+			<em>not</em> using the <strong>Use shell</strong> option and, instead, doing the following:
+		</p>
+		<ul>
+			<li>
+				<p>Make the first line of your script be a &quot;hash bang&quot; stanza</p>
+				<pre><code>  #!/path/<span class="hljs-keyword">to</span>/<span class="hljs-keyword">shell</span></code></pre>
+				<p>e.g.</p>
+				<pre><code>  <span class="hljs-meta">#!/bin/bash</span></code></pre>
+			</li>
+			<li>
+				<p>Make your shell script executable via the Nautilus file properties dialog (or by executing the
+					command
+					<code>chmod +x /path/to/your/shell/script</code>)
+				</p>
+			</li>
+			<li>Put your shell script in a directory that is listed in your environment&#39;s PATH environment variable,
+				<em>or</em>
+				specify the full path to your script as the first token when constructing your command action
+				<strong>Command line</strong> string.
+			</li>
+		</ul>
+		<h3 id="command-line-placeholders">Command line placeholders</h3>
+		<p>The command line would be of limited use if it didn&#39;t have access to information about the files in the
+			Nautilus selection. As already hinted at, though, it does!</p>
+		<p>When specifying the command line you can use a number of placeholders as arguments to your desired
+			command, each of which will be replaced with specific details drawn from the files that are in the
+			selection.
+			Furthermore, the placeholders at your disposal have different &quot;flavors&quot; that affect <em>how</em>
+			the extension
+			executes the command that you have configured.</p>
+
+		<p>All the command line and <code>cwd</code> placeholders implemented by the original
+			<code>filemanager/nautilus-actions</code> project are implemented by this extension, with
+			the same semantics:
+		</p>
+		<table>
+			<thead>
+				<tr>
+					<th>Placeholder</th>
+					<th>Description</th>
+					<th>Repetition</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><code>%b</code></td>
+					<td>the basename of the first selected item (e.g. <code>my-file.txt</code>)</td>
+					<td>SINGULAR</td>
+				</tr>
+				<tr>
+					<td><code>%B</code></td>
+					<td>space-separated list of the <code>%b</code> values of all selected items</td>
+					<td>PLURAL</td>
+				</tr>
+				<tr>
+					<td><code>%c</code></td>
+					<td>the number of items in the selection</td>
+					<td>ANY</td>
+				</tr>
+				<tr>
+					<td><code>%d</code></td>
+					<td>the full path to the directory holding the first selected item (e.g.
+						<code>/home/me/my-first-dir/my-second-dir</code>
+					</td>
+					<td>SINGULAR</td>
+				</tr>
+				<tr>
+					<td><code>%D</code></td>
+					<td>space-separated list of the <code>%d</code> values of all selected items</td>
+					<td>PLURAL</td>
+				</tr>
+				<tr>
+					<td><code>%f</code></td>
+					<td>the full path of the first selected item (e.g.
+						<code>/home/me/my-first-dir/my-second-dir/my-file.txt</code>
+					</td>
+					<td>SINGULAR</td>
+				</tr>
+				<tr>
+					<td><code>%F</code></td>
+					<td>space-separated list of the <code>%f</code> values of all selected items</td>
+					<td>PLURAL</td>
+				</tr>
+				<tr>
+					<td><code>%h</code></td>
+					<td>the host name from the URI of the first selected item</td>
+					<td>ANY</td>
+				</tr>
+				<tr>
+					<td><code>%m</code></td>
+					<td>the mimetype of the first selected item (e.g. <code>text/plain</code>)</td>
+					<td>SINGULAR</td>
+				</tr>
+				<tr>
+					<td><code>%M</code></td>
+					<td>space-separated list of the <code>%m</code> values of all selected items</td>
+					<td>PLURAL</td>
+				</tr>
+				<tr>
+					<td><code>%n</code></td>
+					<td>the username from the URI of the first selected item</td>
+					<td>ANY</td>
+				</tr>
+				<tr>
+					<td><code>%o</code></td>
+					<td>no-op operator which forces a SINGULAR form of execution - see below for more details</td>
+					<td>SINGULAR</td>
+				</tr>
+				<tr>
+					<td><code>%O</code></td>
+					<td>no-op operator which forces a PLURAL form of execution - see below for more details</td>
+					<td>PLURAL</td>
+				</tr>
+				<tr>
+					<td><code>%p</code></td>
+					<td>the port from the URI of the first selected item</td>
+					<td>ANY</td>
+				</tr>
+				<tr>
+					<td><code>%s</code></td>
+					<td>the URI scheme from the URI of the first selected item (e.g. <code>file</code>)</td>
+					<td>ANY</td>
+				</tr>
+				<tr>
+					<td><code>%u</code></td>
+					<td>the URI of the first selected item (e.g.
+						<code>file:///home/me/my-first-dir/my-second-dir/my-file.txt</code>)
+					</td>
+					<td>SINGULAR</td>
+				</tr>
+				<tr>
+					<td><code>%U</code></td>
+					<td>space-separated list of the <code>%u</code> values of all selected items</td>
+					<td>PLURAL</td>
+				</tr>
+				<tr>
+					<td><code>%w</code></td>
+					<td>the basename of the first selected item without it&#39;s extension (e.g. <code>my-file</code>)
+					</td>
+					<td>SINGULAR</td>
+				</tr>
+				<tr>
+					<td><code>%W</code></td>
+					<td>space-separated list of the <code>%w</code> values of all selected items</td>
+					<td>PLURAL</td>
+				</tr>
+				<tr>
+					<td><code>%x</code></td>
+					<td>the extension of the first selected item without it&#39;s extension (e.g. <code>txt</code>)</td>
+					<td>SINGULAR</td>
+				</tr>
+				<tr>
+					<td><code>%X</code></td>
+					<td>space-separated list of the <code>%x</code> values of all selected items</td>
+					<td>PLURAL</td>
+				</tr>
+				<tr>
+					<td><code>%%</code></td>
+					<td>the <code>%</code> character</td>
+					<td>ANY</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>Any embedded spaces found in the individual values are &#39;escaped&#39; to ensure that
+			the shell or system recognizes each value as an independent and complete
+			argument to the command.</p>
+		<p>The meaning of the <code>Repetition</code> value is explained in the next section.</p>
+		<h3 id="execution-behavior">Execution behavior</h3>
+		<p>The <code>filemanager/nautilus-actions</code> project implemented a feature whereby a
+			configured command could be executed once only, regardless of the number items
+			in the selection, or once for each item in the selection.</p>
+		<p>This extension implements the same feature with the same semantics.</p>
+		<p>The decision as to which mode is desired is based upon the first placeholder
+			found in the <code>command_line</code> property value for the activated action:</p>
+		<ul>
+			<li>If the placeholder has a <code>Repetition</code> property of <code>SINGULAR</code>, the command is
+				executed once for each item in the selection.</li>
+			<li>If the placeholder has a <code>Repetition</code> property of <code>PLURAL</code>, the command is
+				executed once only.</li>
+			<li>If the placeholder has a <code>Repetition</code> property of <code>ANY</code>, then the <em>next</em>
+				placeholder is examined.</li>
+			<li>If no placeholder with a <code>SINGULAR</code> or <code>PLURAL</code> repetition value is found in
+				the command, then the command is executed only once.</li>
+		</ul>
+		<p>Additionally, if the command is to be executed once for each item in the
+			selection then any placeholder with a <code>Repetition</code> value of <code>SINGULAR</code> is
+			resolved to the corresponding value for the selected item for which the command
+			is being executed.</p>
+		<p>Placeholders with <code>Repetition</code> values that are not <code>SINGULAR</code> are resolved to
+			their full values for each execution of the command.</p>
+		<h4 id="an-example">An example</h4>
+		<p>This example is taken directly from the <code>filemanager/nautilus-actions</code> project
+			documentation:</p>
+		<blockquote>
+			<p>Say the current folder is <code>/data</code>, and the current selection contains the
+				three files <code>pierre</code>, <code>paul</code> and <code>jacques</code>.</p>
+			<p>If we have requested <code>echo %b</code>, then the following commands will be
+				successively run:</p>
+			<pre><code><span class="hljs-built_in">echo</span> pierre
+<span class="hljs-built_in">echo</span> paul
+<span class="hljs-built_in">echo</span> jacques</code></pre>
+			<p>This is because <code>%b</code> marks a SINGULAR parameter. The command is then run once
+				for each of the selected items.</p>
+			<p>Contrarily, if we have requested <code>echo %B</code>, then the following command will
+				be run:</p>
+			<pre><code><span class="hljs-built_in">echo</span> pierre paul jacques</code></pre>
+			<p>This is because <code>%B</code> marks a PLURAL parameter. The command is then run only
+				once, with the list of selected items as arguments.</p>
+			<p>If we have requested <code>echo %b %B</code>, then the following commands will be
+				successively run:</p>
+			<pre><code><span class="hljs-built_in">echo</span> pierre pierre paul jacques
+<span class="hljs-built_in">echo</span> paul pierre paul jacques
+<span class="hljs-built_in">echo</span> jacques pierre paul jacques</code></pre>
+			<p>This is because the first relevant parameter is <code>%b</code>, and so the command
+				is run once for each selected item, replacing at each occurrence the <code>%b</code>
+				parameter with the corresponding item. The second parameter is computed and
+				added as arguments to the executed command.</p>
+			<p>And if we have requested <code>echo %B %b</code>, then the following command will be
+				run:</p>
+			<pre><code><span class="hljs-built_in">echo</span> pierre paul jacques pierre</code></pre>
+			<p>This is because the first relevant parameter here is <code>%B</code>. The command is
+				then run only once, replacing <code>%B</code> with the space-separated list of
+				basenames. As the command is only run once, the <code>%b</code> is substituted only once
+				with the (first) basename.</p>
+		</blockquote>
+	</div>
+</body>
+
+</html>

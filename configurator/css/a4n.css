@@ -1,0 +1,210 @@
+		/*
+		 * A readable base font!
+		 */
+		body {
+			font-size: 18px !important;
+			height: 100%;
+			width: 100%
+		}
+
+		/*
+		 * The container in general needs to be centered
+		 * with some space at the top
+		 */
+		.container {
+			margin-top: 2rem;
+			left: 0;
+			right: 0;
+		}
+
+		/*
+		 * The title needs to be centered with a bigger font
+		 */
+		h3.level-1 {
+			display: block !important;
+			font-size: 2.3rem;
+			text-align: center;
+		}
+
+		/*
+		 * Submenu title doesn't need to display (it's the name of the tab!)
+		 */
+		div[data-schemapath$=".actions"]>h3>label {
+			display: none;
+		}
+
+		/*
+		 * Nor does the action name
+		 */
+		div.tab-pane[role="tabpanel"]>label {
+			display: none;
+		}
+
+		/*
+		 * Spread Basic tab property groups out a bit more
+		 */
+		.row>div>.form-group {
+			margin-top: 1.5rem;
+		}
+
+		/*
+		 * ... except the label (the first visible one)
+		 */
+		.row>div[data-schemapath$=".label"]>.form-group {
+			margin-top: 0;
+		}
+
+		/*
+		 * Mimetype, Filetype, and path_pattern row buttons are not central aligned,
+		 * And we really don't need the 'TH' or the repeat of the 
+		 * title in the array tab
+		 */
+		div[data-schemapath$=".path_patterns"] table tr td,
+		div[data-schemapath$=".mimetypes"] table tr td,
+		div[data-schemapath$=".filetypes"] table tr td {
+			vertical-align: text-top;
+		}
+
+		div[data-schemapath$=".path_patterns"] table tr th,
+		div[data-schemapath$=".mimetypes"] table tr th,
+		div[data-schemapath$=".filetypes"] table tr th {
+			display: none;
+		}
+
+		div[data-schemapath$=".path_patterns"]>h3>label,
+		div[data-schemapath$=".mimetypes"]>h3>label,
+		div[data-schemapath$=".filetypes"]>h3>label {
+			visibility: collapse;
+			font-size: 0;
+		}
+
+		div[data-schemapath$=".path_patterns"]>h3>label>input,
+		div[data-schemapath$=".mimetypes"]>h3>label>input,
+		div[data-schemapath$=".filetypes"]>h3>label>input {
+			visibility: visible;
+			margin: 0 !important;
+		}
+
+		/*
+		 * Remove margin from the placeholder help link and make its
+		 * div display inline (see javascript below for how we swap around
+		 * the div and give it a class).
+		 */
+		.placeholder-help {
+			padding-left: 1rem !important;
+			margin-bottom: 0px !important;
+		}
+
+		.placeholder-help-div {
+			display: inline;
+		}
+
+		/*
+		 * The info buttons need some space
+		 */
+		.jsoneditor-twbs4-text-button {
+			padding-left: 1rem !important;
+			vertical-align: middle;
+		}
+
+		/*
+		 * Opt-in toggles need a tooltip
+		 *
+		 * This is the interesting way to do it; but, in the end
+		 * we simply hack the function that creates the box in order
+		 * to add a title.
+		 *
+		input.json-editor-opt-in:hover::after {
+			content: "Enable/disable optional setting in the configuration.";
+			position: absolute;
+			font-size: initial;
+			left: 2em;
+			padding: 2px 5px;
+			min-width: 200px;
+			color: rgb(200,200,200);
+			background-color: rgb(64,64,64);
+			z-index: 1;
+		}
+		*/
+
+		/*
+		 * Command/Menu selector box is too narrow, too low
+		 * and not centered
+		 */
+		.a4n-action-type-chooser {
+			width: 5.3rem !important;
+			height: 1.94rem !important;
+			vertical-align: middle !important;
+		}
+
+		/*
+		 * Button groups next to labels need more space after the label
+		 */
+		button.json-editor-btn-collapse~label {
+			padding-right: 1rem !important;
+		}
+
+		/*
+		 * Card titles were to squashed
+		 */
+		.card-title,
+		.tab-pane {
+			margin-bottom: 1rem;
+		}
+
+		/*
+		 * Nav labels have too greater distance between lines
+		 * Line breaks that look good with the icons
+		 */
+		.action-command,
+		.action-menu {
+			padding-top: 0.1rem;
+			padding-bottom: 0.4rem;
+			text-indent: -0.7rem;
+			padding-left: 1.7rem;
+			border: 0;
+			background: 0.0;
+			border-radius: 0.25rem;
+		}
+
+		.action-command.active,
+		.action-menu.active {
+			color: #fff;
+			background-color: #0d6efd;
+		}
+
+		/*
+		 * Add icons to the action selectors
+		 */
+		.action-command i::before {
+			content: "$\f054";
+			font-weight: 900;
+			padding-right: 0.25rem;
+		}
+
+		.action-menu i::before {
+			font-weight: 900;
+			padding-right: 0.5rem;
+		}
+
+		.action-menu i,
+		.action-command i {
+			font-size: 1rem;
+		}
+
+		.action-menu a,
+		.action-command a {
+			display: inline;
+			padding: 0;
+		}
+
+		/*
+		 * Some shading adjustments
+		 */
+		.card-header {
+			background-color: rgba(0, 0, 0, .05);
+		}
+
+		.card-body.bg-light {
+			background-color: rgba(0, 0, 0, .04) !important;
+		}

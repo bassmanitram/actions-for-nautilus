@@ -24,7 +24,12 @@ textual_mimes = [
 ]
 docs = {
     "/": {
-        "path": "./actions-for-nautilus-configurator.html",
+        "path": "./actions-for-nautilus-configurator-container.html",
+        "mimetype": "text/html",
+        "default": None
+    },
+    "/actions-for-nautilus-configurator-container.html": {
+        "path": "./actions-for-nautilus-configurator-container.html",
         "mimetype": "text/html",
         "default": None
     },
@@ -43,61 +48,56 @@ docs = {
         "mimetype": "application/json",
         "default": None
     },
-    "/command-line-help.html": {
-        "path": "./command-line-help.html",
+    "/help.html": {
+        "path": "./help.html",
         "mimetype": "text/html",
         "default": None
     },
     "/favicon.ico": {
-        "path": "./sub-menu.png",
+        "path": "./images/sub-menu.png",
         "mimetype": "image/png",
-        "default": None
-    },
-    "/packages/jquery.min.js": {
-        "path": "/usr/share/javascript/jquery/jquery.min.js",
-        "mimetype": "application/javascript",
-        "default": None
-    },
-    "/packages/bootstrap.min.js": {
-        "path": "./packages/bootstrap.min.js",
-        "mimetype": "application/javascript",
-        "default": None
-    },
-    "/packages/jsoneditor.js": {
-        "path": "./packages/jsoneditor.js",
-        "mimetype": "application/javascript",
-        "default": None
-    },
-    "/packages/minimatch.min.js": {
-        "path": "./packages/minimatch.js",
-        "mimetype": "application/javascript",
-        "default": None
-    },
-    "/packages/jsoneditor.min.css": {
-        "path": "./packages/jsoneditor.min.css",
-        "mimetype": "text/css",
-        "default": None
-    },
-    "/packages/bootstrap.min.css": {
-        "path": "./packages/bootstrap.min.css",
-        "mimetype": "text/css",
-        "default": None
-    },
-    "/packages/fontawesome.css": {
-        "path": "./packages/fontawesome.css",
-        "mimetype": "text/css",
         "default": None
     },
     "/webfonts/fa-solid-900.woff2": {
         "path": "./packages/fa-solid-900.woff2",
         "mimetype": "font/woff2",
         "default": None
-    }
+    },
+    "/images/ANY": {
+        "path": "./images/",
+        "mimetype": "image/png",
+        "default": None
+    },
+    "/javascript/jquery.min.js": {
+        "path": "/usr/share/javascript/jquery/jquery.min.js",
+        "mimetype": "application/javascript",
+        "default": None
+    },
+    "/javascript/ANY": {
+        "path": "./javascript/",
+        "mimetype": "application/javascript",
+        "default": None
+    },
+    "/css/ANY": {
+        "path": "./css/",
+        "mimetype": "text/css",
+        "default": None
+    },
 }
 
 
 def get_file_content(doc_path):
     doc_data = docs.get(doc_path)
+    if doc_data is None:
+        d = os.path.dirname(doc_path)
+        b = os.path.basename(doc_path)
+        print(d, b)
+        doc_data = docs.get(d + "/ANY")
+        if doc_data is not None:
+            doc_data = doc_data.copy()
+            doc_data["path"] = doc_data["path"] + b
+        print(doc_data)
+
     exists = False if doc_data is None else os.path.exists(doc_data["path"])
     if doc_data is None or ((not exists) and doc_data["default"] is None):
         return {
