@@ -133,8 +133,8 @@ upon shell features, if you are not using BASH as your system shell, will not
 work for you.
 
 ### The Gnome Terminal "No Close" profile
-When executing the `gnome terminal` command, the sample configuration references a 
-`gnome terminal` profile named "No Close".
+When executing the `gnome-terminal` command, the sample configuration references a 
+`gnome-terminal` profile named "No Close".
 
 This is not a standard profile, but is a useful one to define in that the terminal
 doesn't close when the command it is running ends, allowing you to see command output
@@ -165,9 +165,29 @@ current configuration (creating one from the [delivered sample](./configurator/s
 if no configuration yet exists for the user).
 
 The UI _should_ be pretty self-explanatory - you can add, delete, move and
-modify Menus and Commands at will. Each configuration property is described
-with a help message. 
+modify Menus and Commands at will.
 
+Simply close the web page to quit the configurator.
+
+*NOTE* the configurator web application NEVER communicates outside of your own
+system unless you click on an external link referenced in the help information.
+
+## Configurator help
+The UI includes integrated help that can be accessed in one of two ways:
+
+* Click on the `Show Help` button to open the help viewport to the right of the
+  main configurator UI, positioned at the beginning of the help information.
+* Click on any of the `i` icons to open the help viewport to the right of the
+  main configurator UI, positioned at the information pertaining to the UI element
+  to which the `i` icon is attached.
+
+When both the configurator and the help information are displayed, the viewport
+sizes can be adjusted by dragging the line that separates them.
+
+To close the help information, simply click on the `Hide Help` button (which is
+the same as the `Show Help` button, with the label modified).
+
+## Saving your changes
 In order to save configuration changes, click on the **Save Config** button. 
 Your changes should be visible in Nautilus after about 30 seconds (the timeout
 for the config file change watcher code).
@@ -183,11 +203,6 @@ ${HOME}/.local/share/nautilus-python/extensions/actions-for-nautilus
 and replacing your current `config.json` file with any of the backed up
 copies. Again, changes will take effect after a maximum of about 30
 seconds.
-
-Simply close the web page to quit the configurator.
-
-*NOTE* the configurator web application NEVER communicates outside of your own
-system, Your privacy is guaranteed.
 
 # Configuration reference
 The configuration is specified in a JSON text file named `config.json` located in
