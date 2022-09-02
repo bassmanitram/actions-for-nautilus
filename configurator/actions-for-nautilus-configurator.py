@@ -68,6 +68,11 @@ docs = {
         "mimetype": "image/png",
         "default": None
     },
+    "/javascript/jquery.min.js": {
+        "path": "/usr/share/javascript/jquery/jquery.min.js",
+        "mimetype": "application/javascript",
+        "default": None
+    },
     "/javascript/ANY": {
         "path": "./javascript/",
         "mimetype": "application/javascript",
