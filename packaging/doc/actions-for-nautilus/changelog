@@ -1,7 +1,7 @@
 actions-for-nautilus (1.2.0) stable; urgency=medium
   * Implement in-window, hideable, contextual help
 
- -- Martin Bartlett <martin.j.bartlett@gmail.com>  Tue, 03 Sep 2022 09:00:00 +0200
+ -- Martin Bartlett <martin.j.bartlett@gmail.com>  Sat, 03 Sep 2022 09:00:00 +0200
 
 actions-for-nautilus (1.1.1) stable; urgency=medium
   * Fix mimetype, file type, and path pattern rule evaluation.
