@@ -5,7 +5,6 @@
 	<meta charset="utf-8" />
 	<title>Actions For Nautilus Configurator</title>
 
-
 	<script src="/javascript/jquery.min.js"></script>
 	<script src="/javascript/bootstrap.min.js"></script>
 	<script src="/javascript/jsoneditor.js"></script>
@@ -35,7 +34,7 @@
 		 * backend server that it is using, unload should
 		 * stop that server :)
 		 */
-		 function onUnload(event) {
+		function onUnload(event) {
 			$.ajax({
 				url: '/terminate',
 				type: 'post',
@@ -62,7 +61,7 @@
 		 * *******************
 		 * *******************
 		 * *******************/
-		var editorConfig = {
+		const editorConfig = {
 			/*
 			 * Editor options
 			 */
@@ -86,7 +85,6 @@
 			"table_zebrastyle": false,
 			"table_border": false
 		}
-
 
 		/*
 		 * Kick off page initialization
