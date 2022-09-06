@@ -10,7 +10,7 @@ const infoText = {
 	"#command:filetype": { "text": "A file type for which the action will be displayed, or not be displayed in the event of a '!' prefix. Click for more info.", "help_label": "file-types" },
 	"#command:filetypes": { "text": "A list of file types for which the action will be displayed, or not be displayed in the event of a '!' prefix. Click for more info.", "help_label": "file-types" },
 	"#command:label": { "text": "The label that will appear in the context menu for this command. Click for more info.", "help_label": "command-label" },
-	"#command:min_items": { "text": "The minimum number of items in the selection for which this action will be displayed. The default is 1. Must be less than or equal to max_items. Click for more info.", "help_label": "max-items" },
+	"#command:min_items": { "text": "The minimum number of items in the selection for which this action will be displayed. The default is 1. Must be less than or equal to max_items if max_items is greater than zero. Click for more info.", "help_label": "min-items" },
 	"#command:max_items": { "text": "The maximum number of items in the selection for which this action will be displayed. Zero indicates unlimited. The default is zero. If not zero, must be greater than or equal to min_items. Click for more info.", "help_label": "max-items" },
 	"#command:mimetypes": { "text": "A list of standard mimetype specifications for which the action will be displayed, or not be displayed in the event of a '!' prefix. Click for more info.", "help_label": "mimetypes" },
 	"#command:path_pattern": { "text": "A path pattern for which the action will be displayed, or not be displayed in the event of a '!' prefix. Click for more info.", "help_label": "path-patterns" },
