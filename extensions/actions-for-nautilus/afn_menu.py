@@ -60,10 +60,11 @@ def _create_submenu_menu_item(action, files, group, act_function):
 # Generate a command item that is connected to the activate signal
 #
 def _create_command_menu_item(action, files, group, activate_function):
-	if ("max_items" in action and 
-		isinstance(action["max_items"], int) and 
-		action["max_items"] < len(files)):
-			return None
+	if action["max_items"] > 0 and action["max_items"] < len(files):
+		return None
+
+	if action["min_items"] > len(files):
+		return None
 
 	if ((action["all_mimetypes"] or _applicable_to_mimetype(action, files)) and
 	    (action["all_filetypes"] or _applicable_to_filetype(action, files)) and
