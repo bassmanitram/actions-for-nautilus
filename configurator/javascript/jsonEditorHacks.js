@@ -239,7 +239,7 @@ JSONEditor.defaults.custom_validators.push((schema, value, path) => {
 			errors.push({
 				path: path,
 				property: max ? 'max_items' : 'min_items',
-				message: `min_items must be less or equal to max_items if max_items is present and greater than zero`
+				message: `min_items must be less than or equal to max_items if max_items is activated and greater than zero`
 			});
 		}
 	}
