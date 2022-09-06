@@ -180,9 +180,9 @@ The UI includes integrated help that can be accessed in one of two ways:
 
 * Click on the `Show Help` button to open the help viewport to the right of the
   main configurator UI, positioned at the beginning of the help information.
-* Click on any of the `i` icons to open the help viewport to the right of the
+* Click on any of the &#9432; icons to open the help viewport to the right of the
   main configurator UI, positioned at the information pertaining to the UI element
-  to which the `i` icon is attached.
+  to which the &#9432; icon is attached.
 
 When both the configurator and the help information are displayed, the viewport
 sizes can be adjusted by dragging the line that separates them.
