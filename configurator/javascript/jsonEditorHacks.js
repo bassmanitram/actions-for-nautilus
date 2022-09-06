@@ -173,3 +173,52 @@ JSONEditor.defaults.custom_validators.push((schema, value, path) => {
 	}
 	return errors;
 });
+
+/* 
+ * Part 5
+ *
+ * Custom validator for min_items and max_items. Must return an array of errors or an empty array if valid.
+ */
+JSONEditor.defaults.custom_validators.push((schema, value, path) => {
+	var myValue = value;
+	const errors = [];
+	if (path.endsWith("max_items") || path.endsWith("min_items")) {
+		const max = path.endsWith("max_items");
+		/*
+		 * If the property value is the default value any value for the alternate property is OK
+		 * including absence.
+		 */
+		if (value == schema.default) return [];
+
+		/*
+		 * We have to get the alternate property editor and, if present, its value
+		 */
+		console.log(schema, value, path);
+
+		var alt_property = path.substring(0,path.length - 9) + (max ? "min_items" : "max_items");
+		console.log(alt_property);
+		var alt_editor = editor.getEditor(alt_property);
+		console.log(alt_editor);
+
+		/*
+		 * if the alternate property isn't present then any value of this property is OK
+		 */
+		if (!alt_editor) return [];
+
+		/*
+		 * This property is not default and the alternate property is present - so compare them
+		 */
+		const alt_value = alt_editor.getValue();
+
+		if (alt_value == alt_editor.schema.default) return [];
+
+		if ((max && alt_value > value) || ((!max) && value > alt_value)) {
+			errors.push({
+				path: path,
+				property: max ? 'max_items' : 'min_items',
+				message: `min_items must be less or equal to max_items if max_items is present and greater than zero`
+			});
+		}
+	}
+	return errors;
+});
