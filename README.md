@@ -193,7 +193,7 @@ the `Show Help` button with the label modified when the help information is bein
 ## Saving your changes
 In order to save configuration changes, click on the **Save Config** button. 
 Your changes should be visible in Nautilus after about 30 seconds (the timeout
-for the config file change watcher code).
+for the internal config file change watcher).
 
 The existing configuration file is backed up before being overridden by a saved
 configuration. You can reinstate an older configuration by opening Nautilus/Files,
