@@ -99,6 +99,12 @@ abstractEditorPrototype.setOptInCheckbox = function (value) {
  * Custom validator for glob and regular expression patterns. Must return an array of errors or an empty array if valid.
  */
 JSONEditor.defaults.custom_validators.push((schema, value, path) => {
+	/*
+	 * We do this because validating during editor initialization can be a bad thing.
+	 * The main driver code reruns a validate after the editor is loaded and the 
+	 * editor_ready flag is set to true.
+	 */
+	if (!editor_ready) return [];
 	var myValue = value;
 	const errors = [];
 	if (schema.format === "pattern") {
@@ -180,36 +186,54 @@ JSONEditor.defaults.custom_validators.push((schema, value, path) => {
  * Custom validator for min_items and max_items. Must return an array of errors or an empty array if valid.
  */
 JSONEditor.defaults.custom_validators.push((schema, value, path) => {
-	var myValue = value;
+	/*
+	 * We do this because SOMETHING during init gets screwed up by this validator
+	 * The main driver code reruns a validate after the editor is loaded and the 
+	 * editor_ready flag is set to true.
+	 */
+	if (!editor_ready) return [];
+//	console.log("##############################");
+
 	const errors = [];
-	if (path.endsWith("max_items") || path.endsWith("min_items")) {
+
+	/*
+	 * So I'm a rebel - break label is "not good practice" - a mantra now accepted as truth but 
+	 * which is BS if taken as a blanket rule - it certainly makes this code better (only one return)
+	 * while leaving it more readable than a bunch of else statements would.
+	 */
+	check_min_max: if (path.endsWith("max_items") || path.endsWith("min_items")) {
 		const max = path.endsWith("max_items");
 		/*
 		 * If the property value is the default value any value for the alternate property is OK
 		 * including absence.
 		 */
-		if (value == schema.default) return [];
+		if (value == schema.default) break check_min_max;
 
-		/*
+//		console.log(path, schema, value);
+			/*
 		 * We have to get the alternate property editor and, if present, its value
 		 */
 		var alt_property = path.substring(0,path.length - 9) + (max ? "min_items" : "max_items");
+//		console.log(alt_property);
 		var alt_editor = editor.getEditor(alt_property);
+//		console.log(alt_editor);
+
 
 		/*
 		 * if the alternate property isn't present then any value of this property is OK
 		 */
-		if (!alt_editor) return [];
+		if (!alt_editor) break check_min_max;
 
 		/*
 		 * This property is not default and the alternate property is present - so compare them
 		 */
 		const alt_value = alt_editor.getValue();
+//		console.log(alt_value);
 
 		/*
 		 * If the alternate property is set to its default value then any value of this property is OK
 		 */
-		if (alt_value == alt_editor.schema.default) return [];
+		if (alt_value == alt_editor.schema.default) break check_min_max;
 
 		if ((max && alt_value > value) || ((!max) && value > alt_value)) {
 			errors.push({
@@ -219,5 +243,6 @@ JSONEditor.defaults.custom_validators.push((schema, value, path) => {
 			});
 		}
 	}
+//	console.log("-----------------------------------------------------------------");
 	return errors;
 });

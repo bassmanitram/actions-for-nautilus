@@ -5,6 +5,7 @@ let current_value_index = 0;
 let undo_button;
 let redo_button;
 let save_button;
+let editor_ready = false;
 
 function setUndoRedoButtonStates() {
 	undo_button.disabled = (current_value_index == 0);
@@ -136,4 +137,6 @@ function finalizeEditorConfig(e) {
 	 * Wire up the change watcher
 	 */
 	editor.on('change', configChanged);
+	editor_ready = true;
+	editor.validate();
 }
