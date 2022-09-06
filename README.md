@@ -412,7 +412,7 @@ These are expected to have the following additional properties:
   For example, if the command is expected to, say, start an HTTP server in a 
   selected directory, it doesn't make sense for the action to be displayed when 
   more than one directory is in the selection. Therefore, in this case, you 
-  would set the value of this property would be set to `1`, which would prevent 
+  would set the value of this property to `1`, which would prevent 
   the action from appearing in the context menu when more than one directory is
   in the selection.
 
