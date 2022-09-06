@@ -1,8 +1,11 @@
 # Actions For Nautilus
-A "replacement" for the now-defunct `filemanager/nautilus-actions` project for the Gnome
-Files file manager (otherwise known as Nautilus).
+An extension to the Gnome **Files** file manager (otherwise known as Nautilus) that allows 
+you to add arbitrary actions to the Gnome Files selection context menu.
 
-The extension supports many of the most commonly used features of that project,
+This extension is a "replacement" for the now-defunct Gnome Files file manager functionality
+of the `filemanager/nautilus-actions` project.
+
+The extension supports many of the most commonly used features of the original extension project,
 including:
 
 * structuring context menu items for Nautilus File Manager selections including
@@ -95,8 +98,8 @@ The sample configuration will be installed for the user simply by starting the
 1. `cd path/to/actions-for-nautilus`   
 2. `make uninstall` if you installed for only your use, or `sudo make uninstall_global`
    if you installed for all users.
-3. You _may_ have to restart the Gnome shell in order to see the configuration
-   application in your desktop applications list
+3. You _may_ have to restart the Gnome shell in order to remove the configuration
+   application from your desktop applications list
 
 
 ## Sample configuration
