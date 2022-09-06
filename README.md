@@ -2,7 +2,7 @@
 An extension to the Gnome **Files** file manager (otherwise known as Nautilus) that allows 
 you to add arbitrary actions to the Gnome Files selection context menu.
 
-This extension is a "replacement" for the now-defunct Gnome Files file manager functionality
+This extension is a "replacement" for the now-defunct Nautilus file manager functionality
 of the `filemanager/nautilus-actions` project.
 
 The extension supports many of the most commonly used features of the original extension project,
