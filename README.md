@@ -315,6 +315,7 @@ Actions with a `type` property of `command` define actions that, when clicked on
       command_line: "my-script.sh %F %c",
       cwd: "%d",
       use_shell: true,
+      min_items: 1,
       max_items: 1,
       "mimetypes": [
         ...
@@ -389,6 +390,22 @@ These are expected to have the following additional properties:
 
   *Default* - all filetypes are accepted
 
+* `min_items` - OPTIONAL - the minimum number of items in the selection for 
+  which this action will be displayed.
+
+  For example, if the command is expected to, say, compare a number of files,
+  it doesn't make sense for the action to be displayed when less than two files
+  are in the selection. In that case, you would set the value of this property
+  to `2` which would prevent the action from appearing in the context menu when 
+  only one file is in the selection. 
+
+  If specified, the value must be greater than zero.
+
+  If the value of `max_items` is greater than zero, the value of this property must 
+  be less than or equal to the value of `max_items`.
+
+  *Default* - 1
+
 * `max_items` - OPTIONAL - the maximum number of items in the selection for 
   which this action will be displayed.
 
@@ -427,22 +444,6 @@ These are expected to have the following additional properties:
   prefix) is taken into account.
 
   *Default* - all mimetypes are accepted
-
-* `min_items` - OPTIONAL - the minimum number of items in the selection for 
-  which this action will be displayed.
-
-  For example, if the command is expected to, say, compare a number of files,
-  it doesn't make sense for the action to be displayed when less than two files
-  are in the selection. In that case, you would set the value of this property
-  to `2` which would prevent the action from appearing in the context menu when 
-  only one file is in the selection. 
-
-  If specified, the value must be greater than zero.
-
-  If the value of `max_items` is greater than zero, the value of this property must 
-  be less than or equal to the value of `max_items`.
-
-  *Default* - 1
 
 * `path_patterns` - OPTIONAL - a list of glob or regular expression patterns against
   which the full paths of the selected files are to be matched.
