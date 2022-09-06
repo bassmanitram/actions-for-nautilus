@@ -188,7 +188,7 @@ When both the configurator and the help information are displayed, the viewport
 sizes can be adjusted by dragging the line that separates them.
 
 To close the help information, simply click on the `Hide Help` button (which is
-the same as the `Show Help` button, with the label modified).
+the `Show Help` button with the label modified when the help information is being displayed).
 
 ## Saving your changes
 In order to save configuration changes, click on the **Save Config** button. 
