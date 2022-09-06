@@ -206,11 +206,24 @@
 						"grid_columns": 2
 					}
 				},
-				"max_items": {
+				"min_items": {
 					"type": "integer",
 					"minimum": 1,
+					"title": "Min items",
+					"format": "number",
+					"default": 1,
+					"options": {
+						"infoText": "#command:min_items",
+						"grid_columns": 1,
+						"grid_break": true
+					}
+				},
+				"max_items": {
+					"type": "integer",
+					"minimum": 0,
 					"title": "Max items",
 					"format": "number",
+					"default": 0,
 					"options": {
 						"infoText": "#command:max_items",
 						"grid_columns": 1,
