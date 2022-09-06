@@ -193,12 +193,8 @@ JSONEditor.defaults.custom_validators.push((schema, value, path) => {
 		/*
 		 * We have to get the alternate property editor and, if present, its value
 		 */
-//		console.log(schema, value, path);
-
 		var alt_property = path.substring(0,path.length - 9) + (max ? "min_items" : "max_items");
-//		console.log(alt_property);
 		var alt_editor = editor.getEditor(alt_property);
-//		console.log(alt_editor);
 
 		/*
 		 * if the alternate property isn't present then any value of this property is OK
@@ -210,6 +206,9 @@ JSONEditor.defaults.custom_validators.push((schema, value, path) => {
 		 */
 		const alt_value = alt_editor.getValue();
 
+		/*
+		 * If the alternate property is set to its default value then any value of this property is OK
+		 */
 		if (alt_value == alt_editor.schema.default) return [];
 
 		if ((max && alt_value > value) || ((!max) && value > alt_value)) {
