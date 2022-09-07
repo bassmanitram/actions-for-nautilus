@@ -45,13 +45,8 @@
 		 */
 		.row>div>.form-group {
 			margin-top: 1.5rem;
-		}
-
-		/*
-		 * ... except the label (the first visible one)
-		 */
-		.row>div[data-schemapath$=".label"]>.form-group {
-			margin-top: 0;
+			margin-left: 0.5rem;
+			margin-right: 0.5rem;
 		}
 
 		/*
@@ -83,6 +78,13 @@
 		div[data-schemapath$=".filetypes"]>h3>label>input {
 			visibility: visible;
 			margin: 0 !important;
+		}
+
+		/*
+		 * Object titles and object controls need to be hidden
+		 */
+		.je-object__title, span.je-object__controls {
+			display: none !important;
 		}
 
 		/*

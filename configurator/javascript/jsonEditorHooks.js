@@ -7,6 +7,51 @@ let redo_button;
 let save_button;
 let editor_ready = false;
 
+const primitives = [
+	'boolean',
+	'number',
+	'string'
+]
+
+/*
+ * These two are to do with the fact that the "Basic" tab in JSON Editor cannot
+ * be formatted nicely unless the basic property information is itself in an
+ * object.
+ * 
+ * So these convert to/from the backend format by doing that
+ */
+function convertToBackendFormat(internalConfig) {
+	const backendConfig = {};
+	for (const [key, value] of Object.entries(internalConfig)) {
+		if (key == "Basic") {
+			for (const [bkey, bvalue] of Object.entries(value)) {
+				backendConfig[bkey] = bvalue;
+			}
+		} else if (key == "actions") {
+			backendConfig.actions = value.map(convertToBackendFormat);
+		} else {
+			backendConfig[key] = value;
+		}
+	}
+	return backendConfig;
+}
+
+function convertToFrontendFormat(backendConfig, nested) {
+	const internalConfig = {};
+	let basic;
+	for (const [key, value] of Object.entries(backendConfig)) {
+		if (key == "actions") {
+			internalConfig.actions = value.map(action => convertToFrontendFormat(action, true));
+		} else if (nested && primitives.includes(typeof value)) {
+			if (!basic) basic = internalConfig.Basic = {};
+			basic[key] = value;
+		} else {
+			internalConfig[key] = value;
+		}
+	}
+	return internalConfig;
+}
+
 function setUndoRedoButtonStates() {
 	undo_button.disabled = (current_value_index == 0);
 	redo_button.disabled = (current_value_index == (previous_values.length - 1));
@@ -40,8 +85,10 @@ function saveConfig(e) {
 		alert("There are validation errors in the data");
 		return;
 	}
-	var data = JSON.stringify(editor.getValue());
-	$.ajax({
+//	console.log(JSON.stringify(convertToBackendFormat(config),null,4));
+//	var data = JSON.stringify(editor.getValue());
+	var data = JSON.stringify(convertToBackendFormat(editor.getValue()));
+$.ajax({
 		url: '/config',
 		type: 'post',
 		data: data,

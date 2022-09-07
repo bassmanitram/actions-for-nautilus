@@ -19,7 +19,7 @@ JSONEditor.defaults.editors.multiple.prototype.refreshHeaderText = function (val
 	var returnValue = defaultMultiRefreshHeaderText.bind(this)(value);
 	if (/\.actions\.[0-9]+$/.test(this.path) && this.tab) {
 		var element = this.tab;
-		var actionType = this.value.type;
+		var actionType = this.value.Basic.type;
 		var existingActionType = this.a4nActionType;
 		if (actionType != existingActionType) {
 			if (existingActionType) {
