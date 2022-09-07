@@ -1,7 +1,7 @@
 {
 	"$schema": "http://json-schema.org/draft-06/schema#",
-	"$ref": "#/definitions/ActionsForNautilus",
-	"definitions": {
+	"$ref": "#/$defs/ActionsForNautilus",
+	"$defs": {
 		"MimeType": {
 			"type": "string",
 			"pattern": "^(!?[A-Za-z0-9-]+\\/(([A-Za-z0-9-]+)|\\*))|(\\*)|(\\*\\/\\*)$",
@@ -59,11 +59,11 @@
 			"oneOf": [
 				{
 					"title": "Command",
-					"$ref": "#/definitions/Command"
+					"$ref": "#/$defs/Command"
 				},
 				{
 					"title": "Menu",
-					"$ref": "#/definitions/Menu"
+					"$ref": "#/$defs/Menu"
 				}
 			],
 			"title":"Action",
@@ -79,7 +79,7 @@
 					"type": "array",
 					"format": "tabs",
 					"items": {
-						"$ref": "#/definitions/Action"
+						"$ref": "#/$defs/Action"
 					},
 					"title": "Main Menu",
 					"options": {
@@ -87,7 +87,7 @@
 					}
 				},
 				"sort": {
-					"$ref": "#/definitions/SortStyles"
+					"$ref": "#/$defs/SortStyles"
 				},
 				"debug": {
 					"title": "Enable debugging output",
@@ -127,7 +127,7 @@
 					}
 				},
 				"sort": {
-					"$ref": "#/definitions/SortStyles",
+					"$ref": "#/$defs/SortStyles",
 					"title": "Submenu sorting",
 					"options": {
 						"infoText": "#submenu:sort"
@@ -137,7 +137,7 @@
 					"type": "array",
 					"format": "tabs",
 					"items": {
-						"$ref": "#/definitions/Action"
+						"$ref": "#/$defs/Action"
 					},
 					"title": "Submenu Actions",
 					"options": {
@@ -235,7 +235,7 @@
 					"uniqueItems": true,
 					"format": "table",
 					"items": {
-						"$ref": "#/definitions/MimeType"
+						"$ref": "#/$defs/MimeType"
 					},
 					"title": "Mimetypes",
 					"options": {
@@ -249,7 +249,7 @@
 					"uniqueItems": true,
 					"format": "table",
 					"items": {
-						"$ref": "#/definitions/FileType"
+						"$ref": "#/$defs/FileType"
 					},
 					"title": "File types",
 					"options": {
@@ -262,7 +262,7 @@
 					"uniqueItems": true,
 					"format": "table",
 					"items": {
-						"$ref": "#/definitions/PathPattern"
+						"$ref": "#/$defs/PathPattern"
 					},
 					"title": "Path patterns",
 					"options": {
