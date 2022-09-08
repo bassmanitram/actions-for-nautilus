@@ -132,7 +132,7 @@ if you want to see the sample configuration working properly:
 Again, these can be installed using your platform package manager as shown above.
 
 It is also possible that the semantics of the more complex command structures rely
-upon shell features, if you are not using BASH as your system shell, will not
+upon shell features that, if you are not using BASH as your system shell, will not
 work for you.
 
 ### The Gnome Terminal "No Close" profile
