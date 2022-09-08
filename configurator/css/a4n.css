@@ -147,12 +147,12 @@
 		}
 
 		/*
-		 * Card titles were to squashed
+		 * Main title is too squashed
 		 */
-		.card-title,
-		.tab-pane {
-			margin-bottom: 1rem;
+		.card-title.level-1 {
+			margin-bottom: 2rem;
 		}
+		
 
 		/*
 		 * Nav labels have too greater distance between lines
@@ -198,6 +198,15 @@
 		.action-command a {
 			display: inline;
 			padding: 0;
+		}
+
+		/*
+		 * Remove right-end indentation effect and too much extra space 
+		 * at the bottom
+		 */
+		.card-body {
+			padding-right: 0;
+			padding-bottom: 0;
 		}
 
 		/*
