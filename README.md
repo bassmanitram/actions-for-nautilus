@@ -218,6 +218,10 @@ The extension is delivered with a strict valid
 [JSON Schema](./configurator/actions-for-nautilus.schema.json) 
 that describes exactly how the configuration file needs to be built.
 
+(Note that there is also a _second_ [JSON Schema](./configurator/actions-for-nautilus.ui.schema.json)
+delivered. This is for internal use by the configurator and should not be
+considered a canonical description of the extension configuration file).
+
 ## Top level structure
 The top level structure in the configuration file must be a JSON object which is 
 expected to contain a property named `actions` whose value is, itself, an array of 
