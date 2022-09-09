@@ -39,7 +39,7 @@ class a4nbootstrap4Theme extends JSONEditor.defaults.themes.bootstrap4 {
 		var element = super.getTab(text, id);
 		var myEditor = this.jsoneditor.getEditor(id);
 		if (/\.actions\.[0-9]+$/.test(id)) {
-			var actionType = myEditor.value.type;
+			var actionType = myEditor.value.Basic.type;
 			var ite = document.createElement('i');
 			ite.classList.add("fas")
 			element.insertBefore(ite, element.firstChild);
