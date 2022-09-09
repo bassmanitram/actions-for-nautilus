@@ -22,10 +22,7 @@
 				"auto"
 			],
 			"default": "manual",
-			"title": "Menu sorting",
-			"options": {
-				"infoText": "#root:sort"
-			}
+			"title": "Menu sorting"
 		},
 		"FileType": {
 			"type": "string",
@@ -74,6 +71,7 @@
 		"ActionsForNautilus": {
 			"type": "object",
 			"additionalProperties": false,
+			"format": "grid-strict",
 			"properties": {
 				"actions": {
 					"type": "array",
@@ -87,13 +85,18 @@
 					}
 				},
 				"sort": {
-					"$ref": "#/$defs/SortStyles"
+					"$ref": "#/$defs/SortStyles",
+					"options": {
+						"infoText": "#root:sort",
+						"grid_columns": 6
+					}
 				},
 				"debug": {
 					"title": "Enable debugging output",
 					"type": "boolean",
 					"options": {
-						"infoText": "#root:debug"
+						"infoText": "#root:debug",
+						"grid_columns": 6
 					}
 				}
 			},
