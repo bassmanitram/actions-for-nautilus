@@ -59,19 +59,19 @@
 				{
 					"type": "command",
 					"label": "Copy name",
-					"command_line": "echo %B | xclip -f -selection primary | xclip -selection clipboard",
+					"command_line": "echo -n %B | xclip -f -selection primary | xclip -selection clipboard",
 					"use_shell": true
 				},
 				{
 					"type": "command",
 					"label": "Copy path",
-					"command_line": "echo %F | xclip -f -selection primary | xclip -selection clipboard",
+					"command_line": "echo -n %F | xclip -f -selection primary | xclip -selection clipboard",
 					"use_shell": true
 				},
 				{
 					"type": "command",
 					"label": "Copy URI",
-					"command_line": "echo %U | xclip -f -selection primary | xclip -selection clipboard",
+					"command_line": "echo -n %U | xclip -f -selection primary | xclip -selection clipboard",
 					"use_shell": true
 				}
 			]
