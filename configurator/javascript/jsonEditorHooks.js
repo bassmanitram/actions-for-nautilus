@@ -88,6 +88,7 @@ function saveConfig(e) {
 //	console.log(JSON.stringify(convertToBackendFormat(config),null,4));
 //	var data = JSON.stringify(editor.getValue());
 	var data = JSON.stringify(convertToBackendFormat(editor.getValue()));
+	//console.log(data);
 $.ajax({
 		url: '/config',
 		type: 'post',
