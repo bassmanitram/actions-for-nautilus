@@ -44,7 +44,7 @@ docs = {
         "default": "{\"actions\":[],\"debug\":false}"
     },
     "/schema": {
-        "path": "./actions-for-nautilus.schema.json",
+        "path": "./actions-for-nautilus.ui.schema.json",
         "mimetype": "application/json",
         "default": None
     },

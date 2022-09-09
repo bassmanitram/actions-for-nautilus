@@ -45,6 +45,7 @@
 					<li><a href="#creating-a-command-action">Creating a Command Action</a></li>
 					<li><a href="#filtering-rules">Filtering rules</a>
 						<ul>
+							<li><a href="#min-items">Min items</a></li>
 							<li><a href="#max-items">Max items</a></li>
 							<li><a href="#mimetypes">Mimetypes</a></li>
 							<li><a href="#file-types">File types</a></li>
@@ -238,18 +239,34 @@
 			order for the action to be shown in the Nautilus context menu.</p>
 		<p>It is also important to note that if none of the actions in a submenu are applicable to the
 			current selection, that submenu will also not appear in the Nautilus context menu.</p>
-		<h3 id="max-items">Max items</h3>
-		<p><img src="images/max-items.png" alt="Max items"></p>
-		<p>This is pretty simple to explain: the maximum number of files that are in the selection in order
+		<h3 id="min-items">Min items</h3>
+		<p><img src="images/min-items.png" alt="Min items"></p>
+		<p>This is pretty simple to explain: the minimum number of files that must be in the selection in order
 			for the command action to be shown.</p>
-		<p>Normally you will be looking at values of either <strong>0</strong> - meaning unlimited (the default) - or
-			<strong>1</strong> meaning ... well ... 1. However, other values can be used. For example, for an action
-			that
-			compares up to two files, you might want to specify a value of <strong>2</strong> here.
+		<p>The default value of this property is <strong>1</strong>. This is likely to be the most common setting
+			that you will use. However for an action that, say, compares two or more files, you might want to specify a value 
+			of <strong>2</strong> here.
 		</p>
-		<p>Note that, at present, there is no capability to specify an exact number other than <strong>1</strong>, nor
-			to
-			specify a minimum number.</p>
+		<p>As is evident, this property value and that of the <a href="#max-items">Max items</a> property value are coupled. 
+			If the value of
+			<strong>Max items</strong> is greater than its default of zero, then the value of <strong>Min items</strong>
+			must be less than or equal to the value of <strong>Max items</strong>.
+		</p>
+		<h3 id="max-items">Max items</h3>
+			<p><img src="images/max-items.png" alt="Max items"></p>
+			<p>This is also pretty simple to explain: the maximum number of files that can be in the selection in order
+				for the command action to be shown.</p>
+			<p>Normally you will be looking at values of either <strong>0</strong> - meaning unlimited (the default) - or
+				<strong>1</strong> meaning ... well ... 1. However, other values can be used. For example, for an action
+				that compares two files, you might want to specify a value of <strong>2</strong> here.
+			</p>
+			<p>In this example usage, you might also want to set the value of <a href="#min-items">Min items</a> to <strong>2</strong>
+				ensuring that the action only appears when two files have been selected.
+			</p>
+			<p>Again, this property value and that of the <a href="#min-items">Min items</a> property are coupled. If the value of
+				<strong>Max items</strong> is greater than its default of zero, then the value of <strong>Min items</strong>
+				must be less than or equal to the value of <strong>Max items</strong>.
+			</p>
 		<h3 id="mimetypes">Mimetypes</h3>
 		<p>With the mimetypes list, entered in the <strong>Mimetypes</strong> tab, you can specify the IANA Media Types
 			to which your command action applies. E.g.</p>

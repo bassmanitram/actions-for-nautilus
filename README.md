@@ -132,7 +132,7 @@ if you want to see the sample configuration working properly:
 Again, these can be installed using your platform package manager as shown above.
 
 It is also possible that the semantics of the more complex command structures rely
-upon shell features, if you are not using BASH as your system shell, will not
+upon shell features that, if you are not using BASH as your system shell, will not
 work for you.
 
 ### The Gnome Terminal "No Close" profile
@@ -217,6 +217,10 @@ ${HOME}/.local/share/actions-for-nautilus
 The extension is delivered with a strict valid 
 [JSON Schema](./configurator/actions-for-nautilus.schema.json) 
 that describes exactly how the configuration file needs to be built.
+
+(Note that there is also a _second_ [JSON Schema](./configurator/actions-for-nautilus.ui.schema.json)
+delivered. This is for internal use by the configurator and should not be
+considered a canonical description of the extension configuration file).
 
 ## Top level structure
 The top level structure in the configuration file must be a JSON object which is 
@@ -315,6 +319,7 @@ Actions with a `type` property of `command` define actions that, when clicked on
       command_line: "my-script.sh %F %c",
       cwd: "%d",
       use_shell: true,
+      min_items: 1,
       max_items: 1,
       "mimetypes": [
         ...
@@ -389,15 +394,36 @@ These are expected to have the following additional properties:
 
   *Default* - all filetypes are accepted
 
+* `min_items` - OPTIONAL - the minimum number of items in the selection for 
+  which this action will be displayed.
+
+  For example, if the command is expected to, say, compare a number of files,
+  it doesn't make sense for the action to be displayed when less than two files
+  are in the selection. In that case, you would set the value of this property
+  to `2` which would prevent the action from appearing in the context menu when 
+  only one file is in the selection. 
+
+  If specified, the value must be greater than zero.
+
+  If the value of `max_items` is greater than zero, the value of this property must 
+  be less than or equal to the value of `max_items`.
+
+  *Default* - 1
+
 * `max_items` - OPTIONAL - the maximum number of items in the selection for 
   which this action will be displayed.
 
   For example, if the command is expected to, say, start an HTTP server in a 
   selected directory, it doesn't make sense for the action to be displayed when 
   more than one directory is in the selection. Therefore, in this case, you 
-  would set the value of this property would be set to `1`, which would prevent 
+  would set the value of this property to `1`, which would prevent 
   the action from appearing in the context menu when more than one directory is
   in the selection.
+
+  A value of zero denotes `unlimited`.
+
+  If the value is greater than zero, the value of the `min_items` property must 
+  be less than or equal to this value.
 
   *Default* - unlimited
 

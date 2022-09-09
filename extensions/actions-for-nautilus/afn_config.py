@@ -174,6 +174,28 @@ def _check_command_action(idString, action):
         action["idString"] = idString
         action["cmd_behavior"] = afn_place_holders.get_behavior(action["command_line"])
 
+        #
+        # Checking max_items and min_items
+        #
+        #    * max_items = 0 means unlimited, otherwise it must be greater than 0 - forced to 0 otherwise 
+        #    * min_items must be greater than 0 - forced to 1 otherwise
+        #    * min_items must be less than or equal to max_items if max_items is greater than 1 - force to equal if otherwise
+        #
+       	if "max_items" in action and isinstance(action["max_items"], int) and action["max_items"] > 0:
+            pass
+        else:
+            action["max_items"] = 0
+
+       	if "min_items" in action and isinstance(action["min_items"], int) and action["min_items"] > 1:
+            pass
+        else:
+            action["min_items"] = 1
+
+        if action["max_items"] == 0 or (action["min_items"] <= action["max_items"]):
+            pass
+        else:
+            action["min_items"] = action["max_items"]
+
         return action
 
     print("Ignoring command action: missing properties", action)

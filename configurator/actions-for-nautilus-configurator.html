@@ -94,7 +94,10 @@
 				return response.json()
 			})
 			.then(config => {
-				editorConfig.startval = config;
+//				console.log(JSON.stringify(convertToFrontendFormat(config),null,4));
+//				editorConfig.startval = config;
+				editorConfig.startval = convertToFrontendFormat(config);
+//				console.log(JSON.stringify(editorConfig.startval,null,4));
 				return fetch("/schema");
 			})
 			.then(response => {
