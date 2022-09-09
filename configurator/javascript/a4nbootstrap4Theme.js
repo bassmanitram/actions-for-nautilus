@@ -18,6 +18,17 @@ class a4nbootstrap4Theme extends JSONEditor.defaults.themes.bootstrap4 {
 	}
 
 	/*
+	 * We want a 3/9 split instead of a 2/10 split used by the superclass
+	 */
+	getTabHolder(propertyName) {
+		const el = document.createElement('div')
+		const pName = (typeof propertyName === 'undefined') ? '' : propertyName
+		el.innerHTML = `<div class='col-md-3 tab-holder-left' ${pName ? ("data-property-name='" + pName + "'") : ""} id='${pName}'><ul class='nav flex-column nav-pills'></ul></div><div class='col-md-9 tab-holder-right' ${pName ? ("data-property-name='" + pName + "'") : ""}><div class='tab-content' id='${pName}'></div></div>`
+		el.classList.add('row')
+		return el
+	}
+
+	/*
 	 * Add a click handler to the info button
 	 */
 	getInfoButton(text) {
