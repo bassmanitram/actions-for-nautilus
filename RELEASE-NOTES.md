@@ -1,3 +1,22 @@
+# Release 1.3.0
+* Fixed [issue with `%f` interpolation when multiple files are selected](https://github.com/bassmanitram/actions-for-nautilus/issues/17).
+
+* Implemented the `min_items` property. The semantics are pretty straightforward:
+  
+  * `max_items` is now formally defaulted to zero internally, that being interpreted as unlimited.
+  * `min_items` defaults to 1 and has a minimum value of 1.
+  * If `max_items` is greater than zero, then `min_items` must be less than or equal to `max_items`.
+
+* Improved configurator layout and styling (well, I think so :)). This results in having _two_ JSON schemas:
+
+  * [one that describes the configuration file used by the extension itself](configurator/actions-for-nautilus.schema.json),
+  * [a slightly different one that describes the configuration information within the configurator](configurator/actions-for-nautilus.ui.schema.json).
+
+  Consequently, the configurator now performs model transformations when reading and writing the extension configuration.
+
+* Fixed a small issue with the "copy" actions in the sample configuration whereby a "newline" was included
+  at the end of the information written to the clipboard.
+
 # Release 1.2.0
 * In-window, hideable, contextual help
   The configurator is now an iframe in a container window that also

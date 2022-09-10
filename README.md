@@ -33,6 +33,9 @@ Configurator" is installed into your desktop applications collection. When you
 first use the configurator, if no existing configuration file is found, the delivered
 [sample configuration](./configurator/sample-config.json) will be installed.
 
+The project has a [wiki](wiki) that is used to share tips and tricks and useful configuration
+examples.
+
 # Installation
 ## Debian-based systems
 

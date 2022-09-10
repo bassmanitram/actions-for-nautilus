@@ -1,3 +1,14 @@
+actions-for-nautilus (1.3.0) stable; urgency=medium
+  * Implement min_items property
+  * Fix %f placeholder interpolation on multi-select
+  * Fix newline appearing in the clipboard when using the sample configuration
+    copy actions
+  * Separate the backend config schema from that used by the configurator to
+    add flexibility to the formatting of certain fields in the configurator
+  * Configurator styling tweaks
+
+ -- Martin Bartlett <martin.j.bartlett@gmail.com>  Sat, 10 Sep 2022 18:00:00 +0200
+
 actions-for-nautilus (1.2.0) stable; urgency=medium
   * Implement in-window, hideable, contextual help
 
