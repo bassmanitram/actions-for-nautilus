@@ -42,71 +42,80 @@ def get():
 ### Private functions and values
 ###
 
+#
+# ANY (only index 0)
+#
 def _expand_percent_percent(index, files, escape):
     return "%"
-
-def _expand_percent_b(index, files, escape):
-    return files[index]["basename"].replace(" ","\\ ")  if escape else files[index]["basename"]
-
-def _expand_percent_B(index, files, escape):
-    return " ".join(map(lambda file: file["basename"].replace(" ","\\ ") if escape else file["basename"], files))
 
 def _expand_percent_c(index, files, escape):
     return str(len(files))
 
+def _expand_percent_h(index, files, escape):
+    h = files[0]["uri"].hostname
+    return "" if h is None else h.replace(" ","\\ ") if escape else h
+
+def _expand_percent_n(index, files, escape):
+    n = files[0]["uri"].username
+    return "" if n is None else n.replace(" ","\\ ") if escape else n
+
+def _expand_percent_p(index, files, escape):
+    p = files[0]["uri"].port
+    return "" if p is None else p
+
+def _expand_percent_s(index, files, escape):
+    return files[0]["uri"].scheme
+
+#
+# SINGULAR (per index)
+#
+def _expand_percent_b(index, files, escape):
+    return files[index]["basename"].replace(" ","\\ ")  if escape else files[index]["basename"]
+
 def _expand_percent_d(index, files, escape):
     return files[index]["folder"].replace(" ","\\ ") if escape else files[index]["folder"]
 
-def _expand_percent_D(index, files, escape):
-    return " ".join(map(lambda file: file["folder"].replace(" ","\\ ") if escape else file["folder"], files))
-
 def _expand_percent_f(index, files, escape):
-    return files[0]["filepath"].replace(" ","\\ ") if escape else files[0]["filepath"]
-
-def _expand_percent_F(index, files, escape):
-    return " ".join(map(lambda file: file["filepath"].replace(" ","\\ ") if escape else file["filepath"], files))
-
-def _expand_percent_h(index, files, escape):
-    h = files[index]["uri"].hostname
-    return "" if h is None else h.replace(" ","\\ ") if escape else h
+    return files[index]["filepath"].replace(" ","\\ ") if escape else files[index]["filepath"]
 
 def _expand_percent_m(index, files, escape):
     return files[index]["mimetype"].replace(" ","\\ ") if escape else files[index]["mimetype"]
 
-def _expand_percent_M(index, files, escape):
-    return " ".join(map(lambda file: file["mimetype"].replace(" ","\\ ") if escape else file["mimetype"], files))
-
-def _expand_percent_n(index, files, escape):
-    n = files[index]["uri"].username
-    return "" if n is None else n.replace(" ","\\ ") if escape else n
-
 def _expand_percent_o(index, files, escape):
     return ""
-
-def _expand_percent_O(index, files, escape):
-    return ""
-
-def _expand_percent_p(index, files, escape):
-    p = files[index]["uri"].port
-    return "" if p is None else p
-
-def _expand_percent_s(index, files, escape):
-    return files[index]["uri"].scheme
 
 def _expand_percent_u(index, files, escape):
     return files[index]["uri"].geturl().replace(" ","\\ ") if escape else files[index]["uri"].geturl()
 
-def _expand_percent_U(index, files, escape):
-    return " ".join(map(lambda file: file["uri"].geturl().replace(" ","\\ ") if escape else file["uri"].geturl(), files))
-
 def _expand_percent_w(index, files, escape):
     return _file_name_extension(files[index]["basename"])["name"].replace(" ","\\ ") if escape else _file_name_extension(files[index]["basename"])["name"]
 
-def _expand_percent_W(index, files, escape):
-    return " ".join(map(lambda file: _file_name_extension(file["basename"])["name"].replace(" ","\\ ") if escape else _file_name_extension(file["basename"])["name"], files))
-
 def _expand_percent_x(index, files, escape):
     return _file_name_extension(files[index]["basename"])["extension"].replace(" ","\\ ") if escape else _file_name_extension(files[index]["basename"])["extension"]
+
+#
+# PLURAL (all)
+#
+def _expand_percent_B(index, files, escape):
+    return " ".join(map(lambda file: file["basename"].replace(" ","\\ ") if escape else file["basename"], files))
+
+def _expand_percent_D(index, files, escape):
+    return " ".join(map(lambda file: file["folder"].replace(" ","\\ ") if escape else file["folder"], files))
+
+def _expand_percent_F(index, files, escape):
+    return " ".join(map(lambda file: file["filepath"].replace(" ","\\ ") if escape else file["filepath"], files))
+
+def _expand_percent_M(index, files, escape):
+    return " ".join(map(lambda file: file["mimetype"].replace(" ","\\ ") if escape else file["mimetype"], files))
+
+def _expand_percent_O(index, files, escape):
+    return ""
+
+def _expand_percent_U(index, files, escape):
+    return " ".join(map(lambda file: file["uri"].geturl().replace(" ","\\ ") if escape else file["uri"].geturl(), files))
+
+def _expand_percent_W(index, files, escape):
+    return " ".join(map(lambda file: _file_name_extension(file["basename"])["name"].replace(" ","\\ ") if escape else _file_name_extension(file["basename"])["name"], files))
 
 def _expand_percent_X(index, files, escape):
     return " ".join(map(lambda file: _file_name_extension(file["basename"])["extension"].replace(" ","\\ ") if escape else _file_name_extension(file["basename"])["extension"], files))
