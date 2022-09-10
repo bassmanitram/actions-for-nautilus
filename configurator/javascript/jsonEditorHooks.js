@@ -126,6 +126,7 @@ function configChanged(e) {
 	if (editor.validation_results.length > 0) {
 		console.log(editor.validation_results);
 		save_button.disabled = true
+		//console.log(JSON.stringify(editor.getValue(),null,4));
 	} else {
 		save_button.disabled = (new_value == saved_value)
 	}
