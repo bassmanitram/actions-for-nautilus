@@ -83,17 +83,18 @@
 		/*
 		 * Object titles and object controls need to be hidden
 		 */
-		.je-object__title /*, span.je-object__controls*/ {
+		.je-object__title, span.je-object__controls.btn-group {
 			display: none !important;
 		}
 
-		.je-edit-json--textarea {
+		.a4n-editjson_holder {
+			width: 100%;
+		}
+
+		.a4n-editjson_holder .a4n-edit-json--textarea {
 			font-family: monospace;
-			height: auto !important;
-			width: auto  !important;
-			min-height: 20rem;
-			min-width: 20rem;
-			resize: both;
+			width: 100%  !important;
+			resize: vertical;
 		}
 
 		/*

@@ -162,4 +162,17 @@ function finalizeEditorConfig(e) {
 	editor_ready = true;
 	editor.validate();
 
+	/*
+	 * Seriously hack the main object JSON editor
+	 *
+	 * We move it to the main card container, set its textarea height to the
+	 * height of that, change classes etc.
+	 */
+	cardHolder = editor.root.container.getElementsByClassName('card-body')[0];
+	cardHolder.appendChild(editor.root.editjson_holder);
+	editor.root.editjson_holder.classList.add("a4n-editjson_holder");
+	editor.root.editjson_holder.firstElementChild.classList.replace("je-edit-json--textarea", "a4n-edit-json--textarea");
+	editor.root.editjson_holder.firstElementChild.style.height = `${cardHolder.offsetHeight}px`;
+	console.log(editor.root.editjson_holder.firstElementChild.offsetHeight)
+	console.log(cardHolder.offsetHeight);
 }

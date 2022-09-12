@@ -310,10 +310,6 @@ JSONEditor.defaults.editors.object.prototype.showEditJSON = function() {
 	if (!this.editjson_holder) return
 	this.hideAddProperty()
 
-	/* Position the form directly beneath the button */
-	/* TODO: edge detection */
-	this.editjson_holder.style.left = `${this.editjson_control.offsetLeft}px`
-	this.editjson_holder.style.top = `${this.editjson_control.offsetTop + this.editjson_control.offsetHeight}px`
 
 	/* Start the textarea with the current value */
 	this.editjson_textarea.value = JSON.stringify(convertToBackendFormat(this.getValue()), null, 2)
@@ -349,9 +345,3 @@ JSONEditor.defaults.editors.object.prototype.saveJSON = function() {
 	  throw e
 	}
 }
-/*
-JSONEditor.defaults.editors.object.prototype.toggleEditJSON = function() {
-    if (this.editing_json) this.hideEditJSON()
-    else this.showEditJSON()
-}
-*/
