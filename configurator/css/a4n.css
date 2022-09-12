@@ -83,8 +83,17 @@
 		/*
 		 * Object titles and object controls need to be hidden
 		 */
-		.je-object__title, span.je-object__controls {
+		.je-object__title /*, span.je-object__controls*/ {
 			display: none !important;
+		}
+
+		.je-edit-json--textarea {
+			font-family: monospace;
+			height: auto !important;
+			width: auto  !important;
+			min-height: 20rem;
+			min-width: 20rem;
+			resize: both;
 		}
 
 		/*

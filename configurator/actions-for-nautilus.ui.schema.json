@@ -104,7 +104,8 @@
 				"actions"
 			],
 			"options": {
-				"disable_properties": true
+				"disable_properties": true,
+				"disable_edit_json": false
 			},
 			"title": "Actions For Nautilus configuration"
 		},

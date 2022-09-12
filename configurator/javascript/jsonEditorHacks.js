@@ -1,3 +1,48 @@
+const primitives = [
+	'boolean',
+	'number',
+	'string'
+]
+
+/*
+ * These two are to do with the fact that the "Basic" tab in JSON Editor cannot
+ * be formatted nicely unless the basic property information is itself in an
+ * object.
+ * 
+ * So these convert to/from the backend format by doing that
+ */
+function convertToBackendFormat(internalConfig) {
+	const backendConfig = {};
+	for (const [key, value] of Object.entries(internalConfig)) {
+		if (key == "Basic") {
+			for (const [bkey, bvalue] of Object.entries(value)) {
+				backendConfig[bkey] = bvalue;
+			}
+		} else if (key == "actions") {
+			backendConfig.actions = value.map(convertToBackendFormat);
+		} else {
+			backendConfig[key] = value;
+		}
+	}
+	return backendConfig;
+}
+
+function convertToFrontendFormat(backendConfig, nested) {
+	const internalConfig = {};
+	let basic;
+	for (const [key, value] of Object.entries(backendConfig)) {
+		if (key == "actions") {
+			internalConfig.actions = value.map(action => convertToFrontendFormat(action, true));
+		} else if (nested && primitives.includes(typeof value)) {
+			if (!basic) basic = internalConfig.Basic = {};
+			basic[key] = value;
+		} else {
+			internalConfig[key] = value;
+		}
+	}
+	return internalConfig;
+}
+
 /*********************
  * *******************
  * *******************
@@ -257,3 +302,56 @@ JSONEditor.defaults.custom_validators.push((schema, value, path) => {
 	//if (init) console.log("-----------------------------------------------------------------");
 	return errors;
 });
+console.log(JSONEditor.defaults.editors)
+/*
+ * And the way we handle JSON editors
+ */
+JSONEditor.defaults.editors.object.prototype.showEditJSON = function() {
+	if (!this.editjson_holder) return
+	this.hideAddProperty()
+
+	/* Position the form directly beneath the button */
+	/* TODO: edge detection */
+	this.editjson_holder.style.left = `${this.editjson_control.offsetLeft}px`
+	this.editjson_holder.style.top = `${this.editjson_control.offsetTop + this.editjson_control.offsetHeight}px`
+
+	/* Start the textarea with the current value */
+	this.editjson_textarea.value = JSON.stringify(convertToBackendFormat(this.getValue()), null, 2)
+
+	/* Disable the rest of the form while editing JSON */
+	this.disable()
+
+	this.editjson_holder.style.display = ''
+	this.editjson_control.disabled = false
+	this.editing_json = true
+} 
+JSONEditor.defaults.editors.object.prototype.copyJSON = function() {
+	if (!this.editjson_holder) return
+	const ta = document.createElement('textarea')
+	ta.value = JSON.stringify(convertToFrontendFormat(JSON.parse(this.editjson_textarea.value)))
+	ta.setAttribute('readonly', '')
+	ta.style.position = 'absolute'
+	ta.style.left = '-9999px'
+	document.body.appendChild(ta)
+	ta.select()
+	document.execCommand('copy')
+	document.body.removeChild(ta)
+}
+JSONEditor.defaults.editors.object.prototype.saveJSON = function() {
+	if (!this.editjson_holder) return	
+	try {
+	  const json = JSON.parse(this.editjson_textarea.value)
+	  this.setValue(convertToFrontendFormat(json))
+	  this.hideEditJSON()
+	  this.onChange(true)
+	  } catch (e) {
+	  window.alert('invalid JSON')
+	  throw e
+	}
+}
+/*
+JSONEditor.defaults.editors.object.prototype.toggleEditJSON = function() {
+    if (this.editing_json) this.hideEditJSON()
+    else this.showEditJSON()
+}
+*/
