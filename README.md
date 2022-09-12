@@ -662,11 +662,17 @@ than building a configuration UI from scratch.
 
 I think I have proved my point :)
 
-The other big acknowledgement is of [Christoforos Aslanov](https://github.com/chr314)
+Another big acknowledgement is of [Christoforos Aslanov](https://github.com/chr314)
 whose [Nautilus Copy Path](https://github.com/chr314/nautilus-copy-path) 
 extension provided the inspiration and template for the original POC of this 
-extension, and whose project structure, installation procedure and doc I 
+extension, and whose project structure, installation procedure and doc I initially
 mercilessly ripped off :)... and I'm even disrespectful enough to have provided 
 an alternative to his extension in my own sample config! 
 
 Thanks and apologies, Christoforos.
+
+The JSON Schema-based editor [JSON-Editor](https://github.com/json-editor/json-editor) is an amazing find! 
+The configurator is, in effect, an instance of that editor with a few tweaks to make it
+it bit more natural for this use case! 
+
+So, a BIG shout-out to that project!
