@@ -177,8 +177,9 @@ function finalizeEditorConfig(e) {
 	 * And NOW replace the JSON editor text area with the ACE editor
 	 */
 	editor.root.editjson_holder.firstElementChild.replaceWith(ace_editor_container);
+	
+	editor.root.editjson_holder.childNodes[2].remove();
 	ace_editor_container.id = "ace-editor";
-	ace_editor_container.style.height = `${cardHolder.offsetHeight}px`;
 	editor.root.ace_editor =  ace.edit("ace-editor",{
 		mode: "ace/mode/json",
 		printMargin: false
