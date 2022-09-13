@@ -83,7 +83,8 @@
 		/*
 		 * Object titles and object controls need to be hidden
 		 */
-		.je-object__title, span.je-object__controls.btn-group {
+		.je-object__title,
+		span.je-object__controls.btn-group {
 			display: none !important;
 		}
 
@@ -91,12 +92,12 @@
 			width: 100%;
 		}
 
-		.a4n-editjson_holder .a4n-edit-json--textarea {
+/*		.a4n-editjson_holder .a4n-edit-json--textarea {
 			font-family: monospace;
-			width: 100%  !important;
+			width: 100% !important;
 			resize: vertical;
 		}
-
+*/
 		/*
 		 * Remove margin from the placeholder help link and make its
 		 * div display inline (see javascript below for how we swap around
@@ -162,7 +163,7 @@
 		.card-title.level-1 {
 			margin-bottom: 2rem;
 		}
-		
+
 
 		/*
 		 * Nav labels have too greater distance between lines
@@ -228,4 +229,13 @@
 
 		.card-body.bg-light {
 			background-color: rgba(0, 0, 0, .04) !important;
+		}
+
+		#ace-editor { 
+			position: absolute;
+			top: 0;
+			right: 0;
+			font-size: 18px;
+			font-family: monospace;
+			width: 100% !important;
 		}

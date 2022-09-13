@@ -312,7 +312,7 @@ JSONEditor.defaults.editors.object.prototype.showEditJSON = function() {
 
 
 	/* Start the textarea with the current value */
-	this.editjson_textarea.value = JSON.stringify(convertToBackendFormat(this.getValue()), null, 2)
+	this.ace_editor.setValue(JSON.stringify(convertToBackendFormat(this.getValue()), null, 4));
 
 	/* Disable the rest of the form while editing JSON */
 	this.disable()
@@ -324,7 +324,7 @@ JSONEditor.defaults.editors.object.prototype.showEditJSON = function() {
 JSONEditor.defaults.editors.object.prototype.copyJSON = function() {
 	if (!this.editjson_holder) return
 	const ta = document.createElement('textarea')
-	ta.value = JSON.stringify(convertToFrontendFormat(JSON.parse(this.editjson_textarea.value)))
+	ta.value = JSON.stringify(convertToFrontendFormat(JSON.parse(this.ace_editor.getValue())))
 	ta.setAttribute('readonly', '')
 	ta.style.position = 'absolute'
 	ta.style.left = '-9999px'
@@ -336,11 +336,12 @@ JSONEditor.defaults.editors.object.prototype.copyJSON = function() {
 JSONEditor.defaults.editors.object.prototype.saveJSON = function() {
 	if (!this.editjson_holder) return	
 	try {
-	  const json = JSON.parse(this.editjson_textarea.value)
+	  const json = JSON.parse(this.ace_editor.getValue())
 	  this.setValue(convertToFrontendFormat(json))
 	  this.hideEditJSON()
 	  this.onChange(true)
 	  } catch (e) {
+		console.log(e)
 	  window.alert('invalid JSON')
 	  throw e
 	}

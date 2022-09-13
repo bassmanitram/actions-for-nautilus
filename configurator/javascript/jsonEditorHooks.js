@@ -7,6 +7,7 @@ let redo_button;
 let save_button;
 let editor_ready = false;
 let root_editor;
+let ace_editor_container = document.createElement("div");
 
 function setUndoRedoButtonStates() {
 	undo_button.disabled = (current_value_index == 0);
@@ -168,11 +169,20 @@ function finalizeEditorConfig(e) {
 	 * We move it to the main card container, set its textarea height to the
 	 * height of that, change classes etc.
 	 */
-	cardHolder = editor.root.container.getElementsByClassName('card-body')[0];
+	let cardHolder = editor.root.container.getElementsByClassName('card-body')[0];
 	cardHolder.appendChild(editor.root.editjson_holder);
 	editor.root.editjson_holder.classList.add("a4n-editjson_holder");
-	editor.root.editjson_holder.firstElementChild.classList.replace("je-edit-json--textarea", "a4n-edit-json--textarea");
-	editor.root.editjson_holder.firstElementChild.style.height = `${cardHolder.offsetHeight}px`;
-	console.log(editor.root.editjson_holder.firstElementChild.offsetHeight)
-	console.log(cardHolder.offsetHeight);
+
+	/*
+	 * And NOW replace the JSON editor text area with the ACE editor
+	 */
+	editor.root.editjson_holder.firstElementChild.replaceWith(ace_editor_container);
+	ace_editor_container.id = "ace-editor";
+	ace_editor_container.style.height = `${cardHolder.offsetHeight}px`;
+	editor.root.ace_editor =  ace.edit("ace-editor",{
+		mode: "ace/mode/json",
+		printMargin: false
+	});
+	editor.root.ace_editor.setTheme("ace/theme/chrome");
+	editor.root.ace_editor.session.setTabSize(4);
 }
