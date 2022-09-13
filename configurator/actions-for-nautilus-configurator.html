@@ -15,11 +15,13 @@
 	<script src="/javascript/jsonEditorHacks.js"></script>
 	<script src="/javascript/jsonEditorHooks.js"></script>
 	<script src="/javascript/constants.js"></script>
+	<script src="/javascript/initAceEditor.js"></script>
 
 	<link rel="stylesheet" href="/css/jsoneditor.min.css">
 	<link rel="stylesheet" href="/css/bootstrap.min.css">
 	<link rel="stylesheet" href="/css/fontawesome.css">
 	<link rel="stylesheet" href="/css/a4n.css">
+	<link rel="stylesheet" href="/css/aceEditor.css">
 </head>
 
 <body>
@@ -28,6 +30,9 @@
 		<div id='editor_holder'></div>
 	</div>
 
+	<div id="ace-editor" class="ace-editor"></div>
+	<div id="ace-editor_dragbar" class="ace-editor_dragbar"></div>
+	
 	<script>
 
 		/*

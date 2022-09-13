@@ -7,7 +7,7 @@ let redo_button;
 let save_button;
 let editor_ready = false;
 let root_editor;
-let ace_editor_container = document.createElement("div");
+
 
 function setUndoRedoButtonStates() {
 	undo_button.disabled = (current_value_index == 0);
@@ -176,14 +176,5 @@ function finalizeEditorConfig(e) {
 	/*
 	 * And NOW replace the JSON editor text area with the ACE editor
 	 */
-	editor.root.editjson_holder.firstElementChild.replaceWith(ace_editor_container);
-	
-	editor.root.editjson_holder.childNodes[2].remove();
-	ace_editor_container.id = "ace-editor";
-	editor.root.ace_editor =  ace.edit("ace-editor",{
-		mode: "ace/mode/json",
-		printMargin: false
-	});
-	editor.root.ace_editor.setTheme("ace/theme/chrome");
-	editor.root.ace_editor.session.setTabSize(4);
+	initAceEditor(editor);
 }

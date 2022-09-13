@@ -1,0 +1,36 @@
+#ace-editor { 
+	top: 0;
+	right: 0;
+	font-size: 18px;
+	font-family: monospace;
+	width: 100% !important;
+	height: 600px;
+}
+
+.json-editor-btn-save {
+	margin-left: -1px;
+}
+
+.json-editor-btn-save, .json-editor-btn-cancel {
+	margin-left: -1px;
+	--bs-btn-border-radius: 0;
+}
+
+.ace-editor_wrapper {
+	background-color: #cccccc;
+	border-bottom: 1px solid #222222;
+}
+
+.ace-editor_dragbar {
+	background-color: #222222;
+	width: 100%;
+	height: 2px;
+	cursor: row-resize;
+	opacity: 1;
+}
+
+.a4n-editjson_holder {
+	width: 100%;
+	position: absolute;
+	z-index: 10;
+}

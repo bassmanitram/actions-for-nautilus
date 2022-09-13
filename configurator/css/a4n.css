@@ -88,19 +88,6 @@
 			display: none !important;
 		}
 
-		.a4n-editjson_holder {
-			width: 100%;
-			height: 100%;
-			position: absolute;
-			z-index: 10;
-		}
-
-/*		.a4n-editjson_holder .a4n-edit-json--textarea {
-			font-family: monospace;
-			width: 100% !important;
-			resize: vertical;
-		}
-*/
 		/*
 		 * Remove margin from the placeholder help link and make its
 		 * div display inline (see javascript below for how we swap around
@@ -232,22 +219,4 @@
 
 		.card-body.bg-light {
 			background-color: rgba(0, 0, 0, .04) !important;
-		}
-
-		#ace-editor { 
-			top: 0;
-			right: 0;
-			font-size: 18px;
-			font-family: monospace;
-			width: 100% !important;
-			height: 100% !important;
-		}
-
-		.json-editor-btn-save {
-			margin-left: -1px;
-		}
-
-		.json-editor-btn-save, .json-editor-btn-cancel {
-			margin-left: -1px;
-			--bs-btn-border-radius: 0;
 		}
