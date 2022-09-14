@@ -20,7 +20,7 @@
 		/*
 		 * The title needs to be centered with a bigger font
 		 */
-		h3.level-1 {
+		h3.level-1,  h3.level-1 label {
 			display: block !important;
 			font-size: 2.3rem;
 			text-align: center;
