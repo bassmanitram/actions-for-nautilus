@@ -154,8 +154,6 @@ function finalizeEditorConfig(e) {
 		setHelpButton(help_button);
 	}
 
-	console.log(editor.root);
-
 	/*
 	 * Wire up the change watcher
 	 */
