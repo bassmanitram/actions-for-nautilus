@@ -7,11 +7,6 @@ let aceEditorResizeBar;
 let aceEditorWrapper;
 let aceEditor;
 
-let windowInnerHeight;
-let screenUsed;
-let cardHeight;
-let wrapperMaxHeight;
-
 /*
  * And the way we handle JSON editors
  */
@@ -29,6 +24,16 @@ JSONEditor.defaults.editors.object.prototype.showEditJSON = function() {
 	this.editjson_holder.style.display = ''
 	this.editjson_control.disabled = false
 	this.editing_json = true
+
+	let mainCardHolder = editor.root.container.getElementsByClassName('card-body')[0];
+
+	let windowInnerHeight = window.innerHeight;
+	let screenUsed = Math.round(mainCardHolder.getBoundingClientRect().bottom);
+	let cardHeight = mainCardHolder.offsetHeight;
+
+	let wrapperMaxHeight = windowInnerHeight - screenUsed + cardHeight - 20;
+
+	aceEditorWrapper.style["min-height"] = `${cardHeight < wrapperMaxHeight ? cardHeight : wrapperMaxHeight}px`;
 
 	let wrapperHeight = Math.round(aceEditorWrapper.getBoundingClientRect().height);
 	let editorHeight = Math.round(aceEditor.getBoundingClientRect().height);
@@ -115,16 +120,6 @@ function initAceEditor(editor) {
 	aceEditorWrapper.firstElementChild.remove();
 	aceEditorWrapper.append(aceEditor);
 	aceEditorWrapper.append(aceEditorResizeBar);
-
-	let mainCardHolder = editor.root.container.getElementsByClassName('card-body')[0];
-
-	windowInnerHeight = window.innerHeight;
-	screenUsed = Math.round(mainCardHolder.getBoundingClientRect().bottom);
-	cardHeight = mainCardHolder.offsetHeight;
-
-	wrapperMaxHeight = innerHeight - screenUsed + cardHeight - 20;
-
-	aceEditorWrapper.style["min-height"] = `${cardHeight < wrapperMaxHeight ? cardHeight : wrapperMaxHeight}px`;
 
 	editor.root.ace_editor = ace.edit("ace-editor", {
 		mode: "ace/mode/json",
