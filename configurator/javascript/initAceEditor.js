@@ -22,7 +22,7 @@ function aceDragMouseDown(e) {
 
 	draggingAceEditor = true;
 
-	draggingEditorTopOffset = aceEditor.offsetTop;
+	draggingEditorTopOffset = e.pageY - aceEditor.offsetHeight;
 
 	// Set editor opacity to 0 to make transparent so our aceEditorWrapper div shows
 	aceEditor.style.opacity = 1;
@@ -34,16 +34,13 @@ function aceDragMouseDown(e) {
 function aceDragMouseUp (e) {
 	if (draggingAceEditor) {
 
-		var draggingEditorTopOffset = aceEditor.offsetTop;
-		var eheight = e.pageY - draggingEditorTopOffset;
-
 		document.removeEventListener('mousemove', aceDragMouseMove);
 
 		// Set aceEditorResizeBar opacity back to 1
 		aceEditorResizeBar.style.opacity = 1;
 
 		// Set height on actual editor element, and opacity back to 1
-		aceEditor.style.height = `${eheight}px`;
+		aceEditor.style.height = `${aceEditor.offsetHeight}px`;
 		aceEditor.style.opacity = 1;
 
 		// Trigger ace editor resize()
@@ -70,9 +67,7 @@ function initAceEditor(editor) {
 	aceEditor.after(aceEditorResizeBar);
 
 	let cardHolder = editor.root.container.getElementsByClassName('card-body')[0];
-	aceEditorWrapper.style.height = cardHolder.offsetHeight;
-
-
+	aceEditorWrapper.style["min-height"] = `${cardHolder.offsetHeight}px`;
 
 	editor.root.ace_editor = ace.edit("ace-editor", {
 		mode: "ace/mode/json",

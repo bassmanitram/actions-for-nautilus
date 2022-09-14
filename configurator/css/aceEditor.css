@@ -4,7 +4,7 @@
 	font-size: 18px;
 	font-family: monospace;
 	width: 100% !important;
-	height: 600px;
+	min-height: inherit;
 }
 
 .json-editor-btn-save {
@@ -33,4 +33,5 @@
 	width: 100%;
 	position: absolute;
 	z-index: 10;
+/*	height: -webkit-fill-available;*/
 }
