@@ -173,6 +173,9 @@ if no configuration yet exists for the user).
 The UI _should_ be pretty self-explanatory - you can add, delete, move and
 modify Menus and Commands at will.
 
+There is also an embedded JSON source editor with syntax checking should you wish
+to perform actions not supported by the main UI (such as copy/paste of actions).
+
 Simply close the web page to quit the configurator.
 
 *NOTE* the configurator web application NEVER communicates outside of your own
@@ -672,7 +675,11 @@ an alternative to his extension in my own sample config!
 Thanks and apologies, Christoforos.
 
 The JSON Schema-based editor [JSON-Editor](https://github.com/json-editor/json-editor) is an amazing find! 
-The configurator is, in effect, an instance of that editor with a few tweaks to make it
-it bit more natural for this use case! 
+The configurator is, in effect, an instance of that editor with a few tweaks to make it look and feel
+a bit more natural for this use case!
 
-So, a BIG shout-out to that project!
+The embedded JSON source editor is the [ACE source editor](https://ace.c9.io/) - another amazing project
+which was so easy to embed that one wonders why JSON-Editor doesn't use that for its own JSON source
+editing feature - I feel a PR coming on :).
+
+So, a BIG shout-out to those two projects!

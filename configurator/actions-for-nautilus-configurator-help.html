@@ -36,7 +36,8 @@
 			<li><a href="#configurator-layout">Configurator Layout</a>
 				<ul>
 					<li><a href="#undo-redo-and-save">Undo, Redo and Save</a></li>
-					<li><a href="#optional-parameters">Optional parameters</a></li>
+					<li><a href="#json-source-editor">The JSON Source Editor</a></li>
+					<li><a href="#optional-parameters">Optional Parameters</a></li>
 				</ul>
 			</li>
 			<li><a href="#menu-actions">Menu Actions</a></li>
@@ -112,13 +113,10 @@
 			tab.</p>
 		<p>The instructions below are presented for main menu actions, but the same semantics apply to creating
 			actions in submenus.</p>
-		<h2 id="undo-redo-and-save">Undo, Redo and Save</h2>
-		<p>Next to the title, you will see three buttons that allow you to undo changes that you have made,
-			redo changes that you have undone, and save changes back to the configuration file:</p>
-		<p><img src="images/undo-redo-save-help.png" alt="Undo, redo, save, help"></p>
-		<p>The <code>Show Help</code> button (which you have already discovered if you are reading this) is also there
-			and allows
-			you to hide this help window once you have shown it.</p>
+		<h2 id="undo-redo-and-save">Undo, Redo, Save, and Help</h2>
+		<p>Under to the title, you will see a row of buttons, the first three of which allow you to undo changes that 
+			you have made, redo changes that you have undone, and save changes back to the configuration file:</p>
+		<p><img src="images/undo-redo-save-json-help.png" alt="Undo, redo, save, help"></p>
 		<p>The save button will not be enabled if there are no changes to save, nor if there are problems with the
 			configuration. If you have made changes but the save button is disabled, you will need to revisit those
 			changes and correct the problems that are reported in order to be able to save the configuration.</p>
@@ -132,7 +130,24 @@
 			with the contents of a backup file.
 		</p>
 		<p>You are responsible for deleting backups that are no longer required.</p>
-		<h2 id="optional-parameters">Optional parameters</h2>
+
+		<p>The <code>Show Help</code> button (which you have already discovered if you are reading this) is also present
+			at the end of the button row, and allows you to hide this help window once you have shown it.</p>
+		<p>And then there is the `JSON` button...</p>
+		<h2 id="json-source-editor">The JSON Source Editor</h2>
+		<p>The configurator includes a syntax-checking JSON source editor which, unsurprisingly, is toggled using
+			the `JSON` button in the top button row.</p>
+		<p>When this editor is active, the configuration JSON source can be directly manipulated and the 
+			main configurator UI is hidden.</p>
+		<p>To close the source editor without saving changes, either click its embedded `Cancel` button or click the
+			top row `JSON` button again.</p>
+		<p>To save changes you make in the source editor, click on the embedded `Save` button. If there are any
+			JSON syntax issues, you will not be able to save the data and the source editor will remain open. The source
+		    editor itself should highlight the syntax issues.</p>
+		<p>Upon successful saving, the editor will close and the changes will be propagated to the main configurator 
+			UI with any format errors (as opposed to plain JSON syntax errors) notified to you in the normal way.</p>
+		<p>The source editor can be resized vertically by dragging the bottom border.</p>
+		<h2 id="optional-parameters">Optional Parameters</h2>
 		<p>You will notice that optional parameters are not automatically enabled for modification. In order to
 			modify an optional parameter from its default value, you first need to enable the inclusion of the
 			optional parameter in the configuration by checking the check box associated with that parameter. E.g.:</p>
