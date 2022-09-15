@@ -6,6 +6,11 @@ let draggingEditorTopOffset = 0;
 let aceEditorResizeBar;
 let aceEditorWrapper;
 let aceEditor;
+let mainCardHolder;
+
+let undoDisabled;
+let redoDisabled;
+let saveDisabled;
 
 /*
  * And the way we handle JSON editors
@@ -25,8 +30,6 @@ JSONEditor.defaults.editors.object.prototype.showEditJSON = function() {
 	this.editjson_control.disabled = false
 	this.editing_json = true
 
-	let mainCardHolder = editor.root.container.getElementsByClassName('card-body')[0];
-
 	let windowInnerHeight = window.innerHeight;
 	let screenUsed = Math.round(mainCardHolder.getBoundingClientRect().bottom);
 	let cardHeight = mainCardHolder.offsetHeight;
@@ -41,6 +44,19 @@ JSONEditor.defaults.editors.object.prototype.showEditJSON = function() {
 	let editorMaxHeight = wrapperMaxHeight - (wrapperHeight - editorHeight);
 
 	aceEditor.style["max-height"] = `${editorMaxHeight}px`
+	aceEditor.style["height"] = `${editorMaxHeight}px`
+
+	/*
+	 * Now hide the main card holder and disable the undo/redo/save buttons
+	 */
+	mainCardHolder.firstElementChild.style.display = 'none';
+	undoDisabled = undo_button.disabled;
+	redoDisabled = redo_button.disabled;
+	saveDisabled = save_button.disabled;
+
+	undo_button.disabled = true;
+	redo_button.disabled = true;
+	save_button.disabled = true;
 
 	this.ace_editor.resize()
 }
@@ -57,6 +73,21 @@ JSONEditor.defaults.editors.object.prototype.saveJSON = function() {
 	  window.alert('invalid JSON')
 	  throw e
 	}
+}
+
+JSONEditor.defaults.editors.object.prototype.hideEditJSON = function () {
+    if (!this.editjson_holder) return
+    if (!this.editing_json) return
+
+    this.editjson_holder.style.display = 'none'
+    this.enable()
+    this.editing_json = false
+
+	undo_button.disabled = undoDisabled;
+	redo_button.disabled = redoDisabled;
+	save_button.disabled = saveDisabled;
+
+	mainCardHolder.firstElementChild.style.display = '';
 }
 
 function aceDragMouseMove (e) {
@@ -120,6 +151,8 @@ function initAceEditor(editor) {
 	aceEditorWrapper.firstElementChild.remove();
 	aceEditorWrapper.append(aceEditor);
 	aceEditorWrapper.append(aceEditorResizeBar);
+
+	mainCardHolder = editor.root.container.getElementsByClassName('card-body')[0];
 
 	editor.root.ace_editor = ace.edit("ace-editor", {
 		mode: "ace/mode/json",

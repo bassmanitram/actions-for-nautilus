@@ -86,7 +86,8 @@
 					<li>remove all actions from the main menu (which, at the top level, removes all actions from the
 						entire configuration)</li>
 				</ul>
-				<p id="root-sort-debug">It also allows you to set the ordering options for the main menu actions, and to set the debug
+				<p id="root-sort-debug">It also allows you to set the ordering options for the main menu actions, and to
+					set the debug
 					output option if you need to resolve problems with your configuration (not yet fully implemented).
 				</p>
 			</li>
@@ -114,7 +115,7 @@
 		<p>The instructions below are presented for main menu actions, but the same semantics apply to creating
 			actions in submenus.</p>
 		<h2 id="undo-redo-and-save">Undo, Redo, Save, and Help</h2>
-		<p>Under to the title, you will see a row of buttons, the first three of which allow you to undo changes that 
+		<p>Under to the title, you will see a row of buttons, the first three of which allow you to undo changes that
 			you have made, redo changes that you have undone, and save changes back to the configuration file:</p>
 		<p><img src="images/undo-redo-save-json-help.png" alt="Undo, redo, save, help"></p>
 		<p>The save button will not be enabled if there are no changes to save, nor if there are problems with the
@@ -133,20 +134,29 @@
 
 		<p>The <code>Show Help</code> button (which you have already discovered if you are reading this) is also present
 			at the end of the button row, and allows you to hide this help window once you have shown it.</p>
-		<p>And then there is the `JSON` button...</p>
+		<p>And then there is the <code>JSON</code> button...</p>
 		<h2 id="json-source-editor">The JSON Source Editor</h2>
 		<p>The configurator includes a syntax-checking JSON source editor which, unsurprisingly, is toggled using
-			the `JSON` button in the top button row.</p>
-		<p>When this editor is active, the configuration JSON source can be directly manipulated and the 
-			main configurator UI is hidden.</p>
-		<p>To close the source editor without saving changes, either click its embedded `Cancel` button or click the
-			top row `JSON` button again.</p>
-		<p>To save changes you make in the source editor, click on the embedded `Save` button. If there are any
-			JSON syntax issues, you will not be able to save the data and the source editor will remain open. The source
-		    editor itself should highlight the syntax issues.</p>
-		<p>Upon successful saving, the editor will close and the changes will be propagated to the main configurator 
+			the <code>JSON</code> button in the top button row.</p>
+		<p>When this editor is active, the configuration JSON source can be directly manipulated and the
+			main configurator UI is hidden. Additionally, the top row <code>Undo</code>, <code>Redo</code>, and
+		    <code>Save</code> buttons are disabled (though neither your changes nor your undo/redo history are not lost).</p>
+		<p>Text manipulation <em>within</em> the source editor uses the same semantics, keyboard shortcuts, and context menu
+			actions as are found in most web page text widgets.</p>
+		<p>The source editor occupies the full vertical space available to it, though it can be resized vertically by dragging the 
+			bottom border.</p>
+		<p>JSON syntax errors are highlighted with a red <code>X</code> in the left margin of the editor, and explained
+			when you hover the mouse over the <code>X</code>.</p>
+		<p>To close the source editor without saving changes, either click its embedded <code>Cancel</code> button or
+			click the top row <code>JSON</code> button again.</p>
+		<p>To save changes you make in the source editor, click on the embedded <code>Save</code> button. If there are
+			any JSON syntax issues, you will not be able to save the data and the source editor will remain open. The source
+			editor itself should highlight the syntax issues.</p>
+		<p>Upon successful saving, the editor will close and the changes will be propagated to the main configurator
 			UI with any format errors (as opposed to plain JSON syntax errors) notified to you in the normal way.</p>
-		<p>The source editor can be resized vertically by dragging the bottom border.</p>
+		<p>If, after saving, you need to reverse the changes that you made in the source editor, simply click the
+			<code>Undo</code>
+			button</p>
 		<h2 id="optional-parameters">Optional Parameters</h2>
 		<p>You will notice that optional parameters are not automatically enabled for modification. In order to
 			modify an optional parameter from its default value, you first need to enable the inclusion of the
@@ -260,29 +270,33 @@
 		<p>This is pretty simple to explain: the minimum number of files that must be in the selection in order
 			for the command action to be shown.</p>
 		<p>The default value of this property is <strong>1</strong>. This is likely to be the most common setting
-			that you will use. However for an action that, say, compares two or more files, you might want to specify a value 
+			that you will use. However for an action that, say, compares two or more files, you might want to specify a
+			value
 			of <strong>2</strong> here.
 		</p>
-		<p>As is evident, this property value and that of the <a href="#max-items">Max items</a> property value are coupled. 
+		<p>As is evident, this property value and that of the <a href="#max-items">Max items</a> property value are
+			coupled.
 			If the value of
 			<strong>Max items</strong> is greater than its default of zero, then the value of <strong>Min items</strong>
 			must be less than or equal to the value of <strong>Max items</strong>.
 		</p>
 		<h3 id="max-items">Max items</h3>
-			<p><img src="images/max-items.png" alt="Max items"></p>
-			<p>This is also pretty simple to explain: the maximum number of files that can be in the selection in order
-				for the command action to be shown.</p>
-			<p>Normally you will be looking at values of either <strong>0</strong> - meaning unlimited (the default) - or
-				<strong>1</strong> meaning ... well ... 1. However, other values can be used. For example, for an action
-				that compares two files, you might want to specify a value of <strong>2</strong> here.
-			</p>
-			<p>In this example usage, you might also want to set the value of <a href="#min-items">Min items</a> to <strong>2</strong>
-				ensuring that the action only appears when two files have been selected.
-			</p>
-			<p>Again, this property value and that of the <a href="#min-items">Min items</a> property are coupled. If the value of
-				<strong>Max items</strong> is greater than its default of zero, then the value of <strong>Min items</strong>
-				must be less than or equal to the value of <strong>Max items</strong>.
-			</p>
+		<p><img src="images/max-items.png" alt="Max items"></p>
+		<p>This is also pretty simple to explain: the maximum number of files that can be in the selection in order
+			for the command action to be shown.</p>
+		<p>Normally you will be looking at values of either <strong>0</strong> - meaning unlimited (the default) - or
+			<strong>1</strong> meaning ... well ... 1. However, other values can be used. For example, for an action
+			that compares two files, you might want to specify a value of <strong>2</strong> here.
+		</p>
+		<p>In this example usage, you might also want to set the value of <a href="#min-items">Min items</a> to
+			<strong>2</strong>
+			ensuring that the action only appears when two files have been selected.
+		</p>
+		<p>Again, this property value and that of the <a href="#min-items">Min items</a> property are coupled. If the
+			value of
+			<strong>Max items</strong> is greater than its default of zero, then the value of <strong>Min items</strong>
+			must be less than or equal to the value of <strong>Max items</strong>.
+		</p>
 		<h3 id="mimetypes">Mimetypes</h3>
 		<p>With the mimetypes list, entered in the <strong>Mimetypes</strong> tab, you can specify the IANA Media Types
 			to which your command action applies. E.g.</p>
@@ -450,7 +464,8 @@
 			selected file is a directory, we are guaranteed that <code>%f</code> will always resolve to a valid
 			directory from
 			which to serve content.</p>
-		<p>You&#39;ll also see that we used that same <a href="#command-line-placeholders">placeholder</a> in the command line within the <code>--title</code>
+		<p>You&#39;ll also see that we used that same <a href="#command-line-placeholders">placeholder</a> in the
+			command line within the <code>--title</code>
 			<strong>gnome-terminal</strong> command option value, which allows the terminal title to include the root
 			directory path.
 		</p>
