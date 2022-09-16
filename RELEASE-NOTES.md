@@ -1,7 +1,7 @@
 # Release 1.4.0
 * Added a syntax-checking JSON source editor
   
-  The editor can be toggled using the new `JSON` button. Chnages within this editor
+  The editor can be toggled using the new `JSON` button. Changes within this editor
   are copied back to the main UI upon `Save`.
 
 # Release 1.3.0
