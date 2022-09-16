@@ -115,7 +115,7 @@
 		<p>The instructions below are presented for main menu actions, but the same semantics apply to creating
 			actions in submenus.</p>
 		<h2 id="undo-redo-and-save">Undo, Redo, Save, and Help</h2>
-		<p>Under to the title, you will see a row of buttons, the first three of which allow you to undo changes that
+		<p>Under the title, you will see a row of buttons, the first three of which allow you to undo changes that
 			you have made, redo changes that you have undone, and save changes back to the configuration file:</p>
 		<p><img src="images/undo-redo-save-json-help.png" alt="Undo, redo, save, help"></p>
 		<p>The save button will not be enabled if there are no changes to save, nor if there are problems with the
@@ -160,7 +160,7 @@
 		<p>Note that saving within the source editor does <em>not</em> save the configuration file itself. Instead it simply
 		    updates the main configurator UI with the modified configuration.</p>
 		<p>If, after saving, you need to reverse the changes that you made in the source editor, simply click the
-			<code>Undo</code>
+			top row <code>Undo</code>
 			button</p>
 		<h2 id="optional-parameters">Optional Parameters</h2>
 		<p>You will notice that optional parameters are not automatically enabled for modification. In order to
@@ -185,7 +185,7 @@
 		<p>To create a menu action, then, do the following:</p>
 		<ul>
 			<li>
-				<p>click on the <strong>+ Action</strong> button at the top of the left-most column of the configurator
+				<p>click on the <img src="images/add-action-button.png" alt="Add Action"> button at the top of the left-most column of the configurator
 					tool:</p>
 				<p><img src="images/add-menu-top.png" alt="Add a top-level menu"></p>
 			</li>
@@ -279,7 +279,7 @@
 			value
 			of <strong>2</strong> here.
 		</p>
-		<p>As is evident, this property value and that of the <a href="#max-items">Max items</a> property value are
+		<p>As is evident, this property value and the <a href="#max-items">Max items</a> property value are
 			coupled.
 			If the value of
 			<strong>Max items</strong> is greater than its default of zero, then the value of <strong>Min items</strong>
@@ -434,7 +434,7 @@
 		<p>So here, when you click on the action, the extension will execute <code>gnome-terminal</code> and pass
 			the rest of the space-delimited tokens as positional arguments. </p>
 		<p><strong>gnome-terminal</strong> will open in a new window and <em>itself</em> execute
-			the command <code>python3 -m http.server --bind 127.0.0.1</code> which starts the a python HTTP server,
+			the command <code>python3 -m http.server --bind 127.0.0.1</code> which starts a python HTTP server,
 			listening on the <code>127.0.0.1</code> (or <strong>localhost</strong>) network interface, on port 8000,
 			reporting all activity into the <strong>gnome-terminal</strong> window.</p>
 		<p>When you close the window the HTTP server stops.</p>
@@ -452,8 +452,9 @@
 			example from the sample configuration, setting the terminal title to a value that includes spaces:</p>
 		<p><img src="images/full-command.png" alt="cwd"></p>
 		<h3 id="cwd">Current working directory</h3>
-		<p>You will notice that we haven&#39;t specified which directory the HTTP server should
-			use as its root. For the python HTTP server, the default root directory is the &quot;current
+		<p>In the HTTP server example above, you may notice that we haven&#39;t specified which directory the HTTP server should
+			use as its document root.</p>
+		<p>For the python HTTP server, the default root directory is the &quot;current
 			working directory&quot; (or CWD) when the command is executed. Reliance upon the CWD is ubiquitous behavior
 			in Linux commands. You can specify the CWD for your commands by using the optional parameter
 			named <strong>Current working directory</strong>:</p>
@@ -481,10 +482,10 @@
 		<p>Writing shell scripts to be executed by this extension is a prime use case, allowing you to
 			implement just about any scenario imaginable and having them available in the Nautilus context menu.</p>
 		<p>By default, the extension will attempt to directly execute the command via operating system APIs. </p>
-		<p>This works when executing a shell script on if:</p>
+		<p>This works when executing a shell script too if:</p>
 		<ul>
 			<li>The script file is marked as executable</li>
-			<li>The script itself can inform the operating system what shell interpreter to use with a &quot;hash
+			<li>The script itself informs the operating system what shell interpreter to use with a &quot;hash
 				bang&quot;
 				(<code>#!/path/to/shell</code>) stanza</li>
 			<li>The script is in a directory that is listed in the environment&#39;s PATH variable, or you
@@ -701,7 +702,7 @@
 				</tr>
 				<tr>
 					<td><code>%x</code></td>
-					<td>the extension of the first selected item without it&#39;s extension (e.g. <code>txt</code>)</td>
+					<td>the extension of the first selected item (e.g. <code>txt</code>)</td>
 					<td>SINGULAR</td>
 				</tr>
 				<tr>
