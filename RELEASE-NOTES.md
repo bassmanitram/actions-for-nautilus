@@ -1,3 +1,9 @@
+# Release 1.4.0
+* Added a syntax-checking JSON source editor
+  
+  The editor can be toggled using the new `JSON` button. Chnages within this editor
+  are copied back to the main UI upon `Save`.
+
 # Release 1.3.0
 * Fixed [issue with `%f` interpolation when multiple files are selected](https://github.com/bassmanitram/actions-for-nautilus/issues/17).
 

@@ -1,3 +1,8 @@
+actions-for-nautilus (1.4.0) stable; urgency=medium
+  * Added a syntax-checking JSON source editor for complex manipulations.
+
+ -- Martin Bartlett <martin.j.bartlett@gmail.com>  Sat, 17 Sep 2022 18:00:00 +0200
+
 actions-for-nautilus (1.3.0) stable; urgency=medium
   * Implement min_items property
   * Fix %f placeholder interpolation on multi-select

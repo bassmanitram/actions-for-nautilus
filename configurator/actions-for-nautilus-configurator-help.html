@@ -36,7 +36,8 @@
 			<li><a href="#configurator-layout">Configurator Layout</a>
 				<ul>
 					<li><a href="#undo-redo-and-save">Undo, Redo and Save</a></li>
-					<li><a href="#optional-parameters">Optional parameters</a></li>
+					<li><a href="#json-source-editor">The JSON Source Editor</a></li>
+					<li><a href="#optional-parameters">Optional Parameters</a></li>
 				</ul>
 			</li>
 			<li><a href="#menu-actions">Menu Actions</a></li>
@@ -85,7 +86,8 @@
 					<li>remove all actions from the main menu (which, at the top level, removes all actions from the
 						entire configuration)</li>
 				</ul>
-				<p id="root-sort-debug">It also allows you to set the ordering options for the main menu actions, and to set the debug
+				<p id="root-sort-debug">It also allows you to set the ordering options for the main menu actions, and to
+					set the debug
 					output option if you need to resolve problems with your configuration (not yet fully implemented).
 				</p>
 			</li>
@@ -112,13 +114,10 @@
 			tab.</p>
 		<p>The instructions below are presented for main menu actions, but the same semantics apply to creating
 			actions in submenus.</p>
-		<h2 id="undo-redo-and-save">Undo, Redo and Save</h2>
-		<p>Next to the title, you will see three buttons that allow you to undo changes that you have made,
-			redo changes that you have undone, and save changes back to the configuration file:</p>
-		<p><img src="images/undo-redo-save-help.png" alt="Undo, redo, save, help"></p>
-		<p>The <code>Show Help</code> button (which you have already discovered if you are reading this) is also there
-			and allows
-			you to hide this help window once you have shown it.</p>
+		<h2 id="undo-redo-and-save">Undo, Redo, Save, and Help</h2>
+		<p>Under the title, you will see a row of buttons, the first three of which allow you to undo changes that
+			you have made, redo changes that you have undone, and save changes back to the configuration file:</p>
+		<p><img src="images/undo-redo-save-json-help.png" alt="Undo, redo, save, help"></p>
 		<p>The save button will not be enabled if there are no changes to save, nor if there are problems with the
 			configuration. If you have made changes but the save button is disabled, you will need to revisit those
 			changes and correct the problems that are reported in order to be able to save the configuration.</p>
@@ -132,7 +131,38 @@
 			with the contents of a backup file.
 		</p>
 		<p>You are responsible for deleting backups that are no longer required.</p>
-		<h2 id="optional-parameters">Optional parameters</h2>
+
+		<p>The <code>Show Help</code> button (which you have already discovered if you are reading this) is also present
+			at the end of the button row, and allows you to hide this help window once you have shown it.</p>
+		<p>And then there is the <code>JSON</code> button...</p>
+		<h2 id="json-source-editor">The JSON Source Editor</h2>
+		<p>The configurator includes a syntax-checking JSON source editor which, unsurprisingly, is toggled using
+			the <code>JSON</code> button in the top button row. This tool is useful for making bulk changes to your
+			configuration, such as copy/pasting actions or adding examples from the <a
+			href="https://github.com/bassmanitram/actions-for-nautilus/wiki/Configuration-Examples" target="_blank">project wiki</a> into 
+			your configuration.</p>
+		<p>When this editor is active, the configuration JSON source can be directly manipulated and the
+			main configurator UI is hidden. Additionally, the top row <code>Undo</code>, <code>Redo</code>, and
+		    <code>Save</code> buttons are disabled (though neither your changes nor your undo/redo history are lost).</p>
+		<p>When opened, the source editor occupies the full vertical space available to it, though it can be resized vertically 
+			by dragging the bottom border.</p>
+		<p>Text manipulation <em>within</em> the source editor uses the same semantics, keyboard shortcuts, and context menu
+			actions as are found in most web page text widgets.</p>
+		<p>JSON syntax errors are highlighted with a red <code>X</code> in the left margin of the editor, and explained
+			when you hover the mouse over the <code>X</code>.</p>
+		<p>To close the source editor without saving changes, either click its embedded <code>Cancel</code> button or
+			click the top row <code>JSON</code> button again.</p>
+		<p>To save changes you make in the source editor (and close the editor), click on the embedded <code>Save</code> button. If there are
+			any JSON syntax issues, you will not be able to save the data and the source editor will remain open. The source
+			editor itself should highlight the syntax issues.</p>
+		<p>Upon successful saving, the editor will close and the changes will be propagated to the main configurator
+			UI with any format errors (as opposed to plain JSON syntax errors) notified to you in the normal way.</p>
+		<p>Note that saving within the source editor does <em>not</em> save the configuration file itself. Instead it simply
+		    updates the main configurator UI with the modified configuration.</p>
+		<p>If, after saving, you need to reverse the changes that you made in the source editor, simply click the
+			top row <code>Undo</code>
+			button</p>
+		<h2 id="optional-parameters">Optional Parameters</h2>
 		<p>You will notice that optional parameters are not automatically enabled for modification. In order to
 			modify an optional parameter from its default value, you first need to enable the inclusion of the
 			optional parameter in the configuration by checking the check box associated with that parameter. E.g.:</p>
@@ -155,7 +185,7 @@
 		<p>To create a menu action, then, do the following:</p>
 		<ul>
 			<li>
-				<p>click on the <strong>+ Action</strong> button at the top of the left-most column of the configurator
+				<p>click on the <img src="images/add-action-button.png" alt="Add Action"> button at the top of the left-most column of the configurator
 					tool:</p>
 				<p><img src="images/add-menu-top.png" alt="Add a top-level menu"></p>
 			</li>
@@ -245,29 +275,33 @@
 		<p>This is pretty simple to explain: the minimum number of files that must be in the selection in order
 			for the command action to be shown.</p>
 		<p>The default value of this property is <strong>1</strong>. This is likely to be the most common setting
-			that you will use. However for an action that, say, compares two or more files, you might want to specify a value 
+			that you will use. However for an action that, say, compares two or more files, you might want to specify a
+			value
 			of <strong>2</strong> here.
 		</p>
-		<p>As is evident, this property value and that of the <a href="#max-items">Max items</a> property value are coupled. 
+		<p>As is evident, this property value and the <a href="#max-items">Max items</a> property value are
+			coupled.
 			If the value of
 			<strong>Max items</strong> is greater than its default of zero, then the value of <strong>Min items</strong>
 			must be less than or equal to the value of <strong>Max items</strong>.
 		</p>
 		<h3 id="max-items">Max items</h3>
-			<p><img src="images/max-items.png" alt="Max items"></p>
-			<p>This is also pretty simple to explain: the maximum number of files that can be in the selection in order
-				for the command action to be shown.</p>
-			<p>Normally you will be looking at values of either <strong>0</strong> - meaning unlimited (the default) - or
-				<strong>1</strong> meaning ... well ... 1. However, other values can be used. For example, for an action
-				that compares two files, you might want to specify a value of <strong>2</strong> here.
-			</p>
-			<p>In this example usage, you might also want to set the value of <a href="#min-items">Min items</a> to <strong>2</strong>
-				ensuring that the action only appears when two files have been selected.
-			</p>
-			<p>Again, this property value and that of the <a href="#min-items">Min items</a> property are coupled. If the value of
-				<strong>Max items</strong> is greater than its default of zero, then the value of <strong>Min items</strong>
-				must be less than or equal to the value of <strong>Max items</strong>.
-			</p>
+		<p><img src="images/max-items.png" alt="Max items"></p>
+		<p>This is also pretty simple to explain: the maximum number of files that can be in the selection in order
+			for the command action to be shown.</p>
+		<p>Normally you will be looking at values of either <strong>0</strong> - meaning unlimited (the default) - or
+			<strong>1</strong> meaning ... well ... 1. However, other values can be used. For example, for an action
+			that compares two files, you might want to specify a value of <strong>2</strong> here.
+		</p>
+		<p>In this example usage, you might also want to set the value of <a href="#min-items">Min items</a> to
+			<strong>2</strong>
+			ensuring that the action only appears when two files have been selected.
+		</p>
+		<p>Again, this property value and that of the <a href="#min-items">Min items</a> property are coupled. If the
+			value of
+			<strong>Max items</strong> is greater than its default of zero, then the value of <strong>Min items</strong>
+			must be less than or equal to the value of <strong>Max items</strong>.
+		</p>
 		<h3 id="mimetypes">Mimetypes</h3>
 		<p>With the mimetypes list, entered in the <strong>Mimetypes</strong> tab, you can specify the IANA Media Types
 			to which your command action applies. E.g.</p>
@@ -362,7 +396,7 @@
 				<p>Regular expressions allow for far more complex patterns to be expressed. It is beyond the
 					scope of this document to explain regular expressions, but the extension specifically supports
 					the regular expression syntax implemented by Python. Documentation of this syntax is available
-					<a href="https://docs.python.org/3/library/re.html#regular-expression-syntax">here</a>.
+					<a href="https://docs.python.org/3/library/re.html#regular-expression-syntax" target="_blank">here</a>.
 				</p>
 				<p>To use a regular expression, precede the pattern with the tag <strong>re:</strong>. E.g.</p>
 				<p><img src="images/regex-path-pattern.png" alt="Regex path pattern"></p>
@@ -400,7 +434,7 @@
 		<p>So here, when you click on the action, the extension will execute <code>gnome-terminal</code> and pass
 			the rest of the space-delimited tokens as positional arguments. </p>
 		<p><strong>gnome-terminal</strong> will open in a new window and <em>itself</em> execute
-			the command <code>python3 -m http.server --bind 127.0.0.1</code> which starts the a python HTTP server,
+			the command <code>python3 -m http.server --bind 127.0.0.1</code> which starts a python HTTP server,
 			listening on the <code>127.0.0.1</code> (or <strong>localhost</strong>) network interface, on port 8000,
 			reporting all activity into the <strong>gnome-terminal</strong> window.</p>
 		<p>When you close the window the HTTP server stops.</p>
@@ -418,8 +452,9 @@
 			example from the sample configuration, setting the terminal title to a value that includes spaces:</p>
 		<p><img src="images/full-command.png" alt="cwd"></p>
 		<h3 id="cwd">Current working directory</h3>
-		<p>You will notice that we haven&#39;t specified which directory the HTTP server should
-			use as its root. For the python HTTP server, the default root directory is the &quot;current
+		<p>In the HTTP server example above, you may notice that we haven&#39;t specified which directory the HTTP server should
+			use as its document root.</p>
+		<p>For the python HTTP server, the default root directory is the &quot;current
 			working directory&quot; (or CWD) when the command is executed. Reliance upon the CWD is ubiquitous behavior
 			in Linux commands. You can specify the CWD for your commands by using the optional parameter
 			named <strong>Current working directory</strong>:</p>
@@ -435,7 +470,8 @@
 			selected file is a directory, we are guaranteed that <code>%f</code> will always resolve to a valid
 			directory from
 			which to serve content.</p>
-		<p>You&#39;ll also see that we used that same <a href="#command-line-placeholders">placeholder</a> in the command line within the <code>--title</code>
+		<p>You&#39;ll also see that we used that same <a href="#command-line-placeholders">placeholder</a> in the
+			command line within the <code>--title</code>
 			<strong>gnome-terminal</strong> command option value, which allows the terminal title to include the root
 			directory path.
 		</p>
@@ -446,10 +482,10 @@
 		<p>Writing shell scripts to be executed by this extension is a prime use case, allowing you to
 			implement just about any scenario imaginable and having them available in the Nautilus context menu.</p>
 		<p>By default, the extension will attempt to directly execute the command via operating system APIs. </p>
-		<p>This works when executing a shell script on if:</p>
+		<p>This works when executing a shell script too if:</p>
 		<ul>
 			<li>The script file is marked as executable</li>
-			<li>The script itself can inform the operating system what shell interpreter to use with a &quot;hash
+			<li>The script itself informs the operating system what shell interpreter to use with a &quot;hash
 				bang&quot;
 				(<code>#!/path/to/shell</code>) stanza</li>
 			<li>The script is in a directory that is listed in the environment&#39;s PATH variable, or you
@@ -666,7 +702,7 @@
 				</tr>
 				<tr>
 					<td><code>%x</code></td>
-					<td>the extension of the first selected item without it&#39;s extension (e.g. <code>txt</code>)</td>
+					<td>the extension of the first selected item (e.g. <code>txt</code>)</td>
 					<td>SINGULAR</td>
 				</tr>
 				<tr>
