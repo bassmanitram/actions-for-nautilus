@@ -46,6 +46,14 @@ Simply download the package, install with your package installer, then launch th
 order to start building a configuration based upon the delivered 
 [sample](#sample-configuration).
 
+To enable the extension after installation, you will need to restart Nautilus/Files:
+
+* `Alt F2`
+* `nautilus -q`
+
+should do it.
+
+### Suggested Additional Packages
 The Debian package specifies the following **Suggests** dependencies that will
 greatly enhance the utility of the extension as well as allow the delivered sample
 configuration to work on first launch:
@@ -54,13 +62,6 @@ configuration to work on first launch:
 * `zenity` - a Gnome UI toolkit for shell scripts
 
 It is highly recommended to install these extra packages.
-
-To enable the extension after installation, you will need to restart Nautilus/Files:
-
-* `Alt F2`
-* `nautilus -q`
-
-should do it.
 
 ## Manual Installation
 ### Install Dependencies
