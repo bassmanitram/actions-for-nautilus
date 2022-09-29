@@ -24,4 +24,5 @@ const infoText = {
 	"#submenu:label": { "text": "The label that will appear in the context menu for this sub menu. Click for more info.", "help_label": "submenu-label" },
 	"#submenu:sort": { "text": "Whether actions should be sorted automatically or left in the configured order. Click for more info.", "help_label": "submenu-sort" },
 	"#submenu": { "text": "An entry in the Nautilus context menu or sub menu that, when clicked on, results in a sub menu being displayed. Click for more info.", "help_label": "menu-actions" },
+	"#command:permissions": { "text": "The minimum access permissions that you must have for the selected files in order for the command to be displayed. Click for more info.", "help_label": "permissions" }
 }

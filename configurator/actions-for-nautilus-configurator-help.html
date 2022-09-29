@@ -48,6 +48,7 @@
 						<ul>
 							<li><a href="#min-items">Min items</a></li>
 							<li><a href="#max-items">Max items</a></li>
+							<li><a href="#permissions">Access permissions</a></li>
 							<li><a href="#mimetypes">Mimetypes</a></li>
 							<li><a href="#file-types">File types</a></li>
 							<li><a href="#path-patterns">Path patterns</a></li>
@@ -285,6 +286,8 @@
 			<strong>Max items</strong> is greater than its default of zero, then the value of <strong>Min items</strong>
 			must be less than or equal to the value of <strong>Max items</strong>.
 		</p>
+
+
 		<h3 id="max-items">Max items</h3>
 		<p><img src="images/max-items.png" alt="Max items"></p>
 		<p>This is also pretty simple to explain: the maximum number of files that can be in the selection in order
@@ -302,6 +305,28 @@
 			<strong>Max items</strong> is greater than its default of zero, then the value of <strong>Min items</strong>
 			must be less than or equal to the value of <strong>Max items</strong>.
 		</p>
+
+
+		<h3 id="permissions">Access permissions</h3>
+		<p><img src="images/permissions.png" alt="Access permissions"></p>
+		<p>The optional <strong>Access permissions</strong> rule is used to ensure that you (the user) have at least the indicated
+		access rights to the selected files.</p>
+		<p>There are four possible values presented as a selection list:</p>
+		<ul>
+			<li><strong>read</strong>: you must have at least read permissions for the selected files.</li>
+			<li><strong>read-write</strong>: you must have at least read and write permissions for the selected files.</li>
+			<li><strong>read-execute</strong>: you must have at least read and execute permissions for selected files, or
+			read and navigation permissions for selected folders.</li>
+			<li><strong>read-write-execute</strong>: you must have full read, write and execute/navigation permissions for the selected files.</li>
+		</ul>
+		<p>The default for this rule is that permissions are not checked, and in a majority of cases it can be left to that default.</p>
+		<p>But the rule <em>is</em> useful for avoiding actions that make no sense if you don't have the necessary 
+			permissions for the selected file(s) in order for the associated command to successfully complete.</p>
+		<p>For example, if you have an action that <a href="https://github.com/bassmanitram/actions-for-nautilus/wiki/Configuration-Examples#a-less-annoying-new-document-action" target="_blank">
+			creates a new document in a folder</a>, it makes no sense to present that action in the context menu if you do not have 
+			permission to actually create files in (i.e. write to) the selected folder!</p>
+		</p>
+
 		<h3 id="mimetypes">Mimetypes</h3>
 		<p>With the mimetypes list, entered in the <strong>Mimetypes</strong> tab, you can specify the IANA Media Types
 			to which your command action applies. E.g.</p>

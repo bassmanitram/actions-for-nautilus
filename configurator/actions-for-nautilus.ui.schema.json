@@ -24,6 +24,16 @@
 			"default": "manual",
 			"title": "Menu sorting"
 		},
+		"Permissions": {
+			"type": "string",
+			"enum": [
+				"read",
+				"read-write",
+				"read-execute",
+				"read-write-execute"
+			],
+			"title": "Access permissions"
+		},
 		"FileType": {
 			"type": "string",
 			"enum": [
@@ -222,7 +232,8 @@
 							"title": "Current working directory",
 							"options": {
 								"infoText": "#command:cwd",
-								"grid_columns": 6							}
+								"grid_columns": 6
+							}
 						},
 						"use_shell": {
 							"type": "boolean",
@@ -254,6 +265,13 @@
 								"infoText": "#command:max_items",
 								"grid_columns": 6,
 								"grid_break": true
+							}
+						},
+						"permissions": {
+							"$ref": "#/$defs/Permissions",
+							"options": {
+								"infoText": "#command:permissions",
+								"grid_columns": 6
 							}
 						}
 					}

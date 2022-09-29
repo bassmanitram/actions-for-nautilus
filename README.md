@@ -500,6 +500,22 @@ These are expected to have the following additional properties:
 
   *Default* - all file paths are accepted
 
+* `permissions` - OPTIONAL - an indicator of the minimum access permissions that the user
+  must have for the selected files in order for the associated action to be presented in
+  the Nautilus context menu.
+
+  The valid values are:
+
+  * `read` - the user must at least have read permissions for the selected files
+  * `read-write` - the user must at least have read and write permissions for the selected files
+  * `read-execute` - For files, the user must at least have read and execute permissions for the selected files
+    For folders, the user must at least have read and navigational permissions for the selected folders
+  * `read-write-execute` - the user must have full read, write and execution/navigation permissions for the selected files
+
+  Any other value will disable the permissions check.
+
+  *Default* - user access permissions are not checked.
+
 With the `mimetypes`, `filetypes` and `path_patterns` filter lists, all selected files
 must match at least one non-negated rule (if there are any non-negated rules), while 
 matching none of the negated rules, in order for the associated action to appear in the 

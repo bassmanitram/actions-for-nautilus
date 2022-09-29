@@ -27,6 +27,16 @@
 				"infoText": "#root:sort"
 			}
 		},
+		"Permissions": {
+			"type": "string",
+			"enum": [
+				"read",
+				"read-write",
+				"read-execute",
+				"read-write-execute"
+			],
+			"title": "Access permissions"
+		},
 		"FileType": {
 			"type": "string",
 			"enum": [
@@ -66,7 +76,7 @@
 					"$ref": "#/$defs/Menu"
 				}
 			],
-			"title":"Action",
+			"title": "Action",
 			"options": {
 				"infoText": "#action"
 			}
@@ -123,7 +133,7 @@
 					"minLength": 1,
 					"title": "Label for the menu",
 					"options": {
-						"infoText":  "#submenu:label"
+						"infoText": "#submenu:label"
 					}
 				},
 				"sort": {
@@ -132,7 +142,7 @@
 					"options": {
 						"infoText": "#submenu:sort"
 					}
-						},
+				},
 				"actions": {
 					"type": "array",
 					"format": "tabs",
@@ -184,7 +194,7 @@
 					"minLength": 1,
 					"title": "Command line to execute",
 					"options": {
-						"infoText":  "#command:command_line",
+						"infoText": "#command:command_line",
 						"grid_columns": 5,
 						"grid_break": true
 					}
@@ -230,6 +240,13 @@
 						"grid_break": true
 					}
 				},
+				"permissions": {
+					"$ref": "#/$defs/Permissions",
+					"options": {
+						"infoText": "#command:permissions",
+						"grid_columns": 6
+					}
+				},
 				"mimetypes": {
 					"type": "array",
 					"uniqueItems": true,
@@ -242,7 +259,6 @@
 						"infoText": "#command:mimetypes",
 						"grid_columns": 3
 					}
-		
 				},
 				"filetypes": {
 					"type": "array",
