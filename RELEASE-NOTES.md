@@ -1,3 +1,12 @@
+# Release 1.4.1
+* Fix config corruption by the configurator, caused by consistency checks for `min_items` and `max_items`
+  
+  The internal checks necessary to ensure consistency between the `min_items` and `max_items`
+  properties were causing various corruptions to the extension configuration when items were
+  moved and/or deleted in the configurator.
+
+  For more details see https://github.com/bassmanitram/actions-for-nautilus/issues/23
+
 # Release 1.4.0
 * Added a syntax-checking JSON source editor
   

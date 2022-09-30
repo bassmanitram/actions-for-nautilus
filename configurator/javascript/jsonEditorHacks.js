@@ -232,73 +232,27 @@ JSONEditor.defaults.custom_validators.push((schema, value, path) => {
  */
 JSONEditor.defaults.custom_validators.push((schema, value, path) => {
 	/*
-	 * We do this because something during init gets screwed up by this validator
-	 * The main driver code reruns a validate after the editor is loaded and the 
-	 * editor_ready flag is set to true.
-	 * 
-	 * I believe I know what that "something" was - and I've now fixed it. But
-	 * we leave this in place.
-	 * 
-	 * What was it? As JSE adds or moves actions within their arrays, optional properties
-	 * that are activated in one instance but not in another do not get reset to default
-	 * in that "other" instance even though their editors are inactive. If we check the 
-	 * "alternate" value's editor to ensure it is active before making the range checks we 
-	 * fix the issue.
+	 * We check the Basic block for min_items/max_items consistency
 	 */
-	if (!editor_ready) 
-		return [];
-
 	const errors = [];
-	let init = false;
-	/*
-	 * So I'm a rebel - break label is "not good practice" - a mantra now accepted as truth but 
-	 * which is BS if taken as a blanket rule - it certainly makes this code better (only one return)
-	 * while leaving it more readable than a bunch of else statements would.
-	 */
-	check_min_max: if (path.endsWith("max_items") || path.endsWith("min_items")) {
-		init = true;
-		//console.log("##############################");
-		//console.log(path, schema, value);
 
-		const max = path.endsWith("max_items");
+	if (path.endsWith(".Basic")
+	&& path.includes(".actions.")
+	&& value.type == 'command'
+	&& typeof value.min_items == 'number'
+	&& typeof value.max_items == 'number'
+	&& value.min_items > 1
+	&& value.max_items > 0
+	&& value.min_items > value.max_items) {
+		//console.log(path, value);
 		/*
-		 * If the property value is the default value any value for the alternate property is OK
-		 * including absence.
+		 * Report the error for min_items
 		 */
-		if (value == schema.default) break check_min_max;
-
-		/*
-		 * We have to get the alternate property editor and, if present, its value
-		 */
-		var alt_property = path.substring(0,path.length - 9) + (max ? "min_items" : "max_items");
-		//console.log(alt_property);
-		var alt_editor = editor.getEditor(alt_property);
-		//console.log(alt_editor);
-
-		/*
-		 * if the alternate property isn't present, or is not active then any value of this property is OK
-		 */
-		if (!(alt_editor && alt_editor.active)) break check_min_max;
-
-		/*
-		 * This property is not default and the alternate property is present - so compare them
-		 */
-		const alt_value = alt_editor.getValue();
-		//console.log(alt_value);
-
-		/*
-		 * If the alternate property is set to its default value then any value of this property is OK
-		 */
-		if (alt_value == alt_editor.schema.default) break check_min_max;
-
-		if ((max && (alt_value > value)) || ((!max) && (value > alt_value))) {
-			errors.push({
-				path: path,
-				property: max ? 'max_items' : 'min_items',
-				message: `min_items must be less than or equal to max_items if max_items is activated and greater than zero`
-			});
-		}
+		errors.push({
+			path: path,
+			property: 'min_items',
+			message: `min_items must be less than or equal to max_items if max_items is activated and greater than zero`
+		});
 	}
-	//if (init) console.log("-----------------------------------------------------------------");
 	return errors;
 });
