@@ -1,3 +1,7 @@
+# Release 1.5.0
+* Implemented the `permissions` property to optionally require the
+  user to have specific access permissions for the selected files.
+  
 # Release 1.4.1
 * Fix config corruption by the configurator, caused by consistency checks for `min_items` and `max_items`
   
