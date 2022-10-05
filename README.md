@@ -11,13 +11,14 @@ including:
 * structuring context menu items for Nautilus File Manager selections including
   nested sub menus
 * filtering the displayed items based on:
-  * number of files in the selection, 
+  * number of files in the selection,
+  * user's access permissions for the selected files,
   * mimetypes of the selected files (matching and non-matching conditions
-    supported, as well as mimetype globs)
+    supported, as well as mimetype globs),
   * basic filetypes of the selected files - e.g. 'file', 'directory',
-    'symbolic-link' ... - (matching and non-matching conditions supported)
+    'symbolic-link' ... - (matching and non-matching conditions supported),
   * full path pattern matching, expressed as glob patterns or regular expressions, again
-    with support for matching and non-matching conditions
+    with support for matching and non-matching conditions.
 * execution of an arbitrary command/script when a menu item is activated, with
   the same "PLURAL" and "SINGULAR" semantics as the 
   `filemanager/nautilus-actions` project
@@ -33,8 +34,8 @@ Configurator" is installed into your desktop applications collection. When you
 first use the configurator, if no existing configuration file is found, the delivered
 [sample configuration](./configurator/sample-config.json) will be installed.
 
-The project has a [wiki](https://github.com/bassmanitram/actions-for-nautilus/wiki) that is used to share tips and tricks and useful configuration
-examples.
+The project has a [wiki](https://github.com/bassmanitram/actions-for-nautilus/wiki) that is used to share 
+tips and tricks and useful configuration examples.
 
 # Installation
 ## Debian-based systems
@@ -499,6 +500,22 @@ These are expected to have the following additional properties:
   The accepted Regular Expression syntax is fully documented [here ](https://docs.python.org/3/library/re.html#regular-expression-syntax).
 
   *Default* - all file paths are accepted
+
+* `permissions` - OPTIONAL - an indicator of the minimum access permissions that the user
+  must have for the selected files in order for the associated action to be presented in
+  the Nautilus context menu.
+
+  The valid values are:
+
+  * `read` - the user must at least have read permissions for the selected files
+  * `read-write` - the user must at least have read and write permissions for the selected files
+  * `read-execute` - For files, the user must at least have read and execute permissions for the selected files
+    For folders, the user must at least have read and navigational permissions for the selected folders
+  * `read-write-execute` - the user must have full read, write and execution/navigation permissions for the selected files
+
+  Any other value will disable the permissions check.
+
+  *Default* - user access permissions are not checked.
 
 With the `mimetypes`, `filetypes` and `path_patterns` filter lists, all selected files
 must match at least one non-negated rule (if there are any non-negated rules), while 

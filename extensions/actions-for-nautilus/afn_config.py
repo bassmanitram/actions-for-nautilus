@@ -28,6 +28,13 @@ _filetypes = {
     "standard":      [Gio.FileType(1), Gio.FileType(2), Gio.FileType(3)]
 }
 
+_permissions = {
+    "read": os.R_OK,
+    "read-write": os.R_OK | os.W_OK,
+    "read-execute": os.R_OK | os.X_OK,
+    "read-write-execute": os.R_OK | os.W_OK | os.X_OK
+}
+
 class ActionsForNautilusConfig():
 
     def __init__(self):
@@ -74,7 +81,7 @@ class ActionsForNautilusConfig():
         self.__mtime = None
 
 ###
-### fix non-JSONible objects
+### fix non-JSON-able objects
 ###
 def _fix_json(value):
     return "not-serializable"
@@ -171,6 +178,12 @@ def _check_command_action(idString, action):
         else:
             action["all_path_patterns"] = True
 
+        if "permissions" in action and type(action["permissions"]) == str:
+            perm = action["permissions"].strip()
+            action["permissions"] = _permissions[perm] if perm in _permissions else ""
+        else:
+            action["permissions"] = ""
+ 
         action["idString"] = idString
         action["cmd_behavior"] = afn_place_holders.get_behavior(action["command_line"])
 

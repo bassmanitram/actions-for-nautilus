@@ -106,7 +106,7 @@
 		 * The info buttons need some space
 		 */
 		.jsoneditor-twbs4-text-button {
-			padding-left: 1rem !important;
+			padding-left: 0.2rem !important;
 			vertical-align: middle;
 		}
 

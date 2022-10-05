@@ -8,7 +8,15 @@ from gi.repository import Nautilus, Gio
 #
 # Consolidate background and selection calls to create menus
 #
+# files is a list of __gi__.NautilusVFSFile instances
+#
 def create_menu_items(config, files, group, act_function):
+#	if (len(files) > 0):
+#		print(files[0].__class__)
+#		print(files[0].__class__.__name__)
+#		for base in files[0].__class__.__bases__:
+#			print(base.__name__, base)
+#		print(dir(files[0]))
 	try:
 		my_files = list(filter(None, map(lambda file: {
 				"mimetype": file.get_mime_type(),
@@ -66,7 +74,8 @@ def _create_command_menu_item(action, files, group, activate_function):
 	if action["min_items"] > len(files):
 		return None
 
-	if ((action["all_mimetypes"] or _applicable_to_mimetype(action, files)) and
+	if ((action["permissions"] == "" or _applicable_to_permissions(action, files)) and
+	    (action["all_mimetypes"] or _applicable_to_mimetype(action, files)) and
 	    (action["all_filetypes"] or _applicable_to_filetype(action, files)) and
 	    (action["all_path_patterns"] or _applicable_to_path_patterns(action, files))):
 		menu_item = Nautilus.MenuItem(
@@ -110,3 +119,10 @@ def _applicable_to_path_patterns(action, files):
 	return all(map(lambda file: (
 		(len(action["path_patterns"]["p_rules"]) == 0 or any((getattr(p_rule["re"],p_rule["comparator"])(file["filepath"]) is not None) for p_rule in action["path_patterns"]["p_rules"])) and
 		(len(action["path_patterns"]["n_rules"]) == 0 or all((getattr(n_rule["re"],n_rule["comparator"])(file["filepath"]) is None) for n_rule in action["path_patterns"]["n_rules"]))), files))
+
+#
+# Ensures that the user has at least the stated permissions to access each file
+# Returns True if OK for every one, otherwise False
+#
+def _applicable_to_permissions(action, files):
+	return all(map(lambda file: os.access(file["filepath"], action["permissions"]), files))
