@@ -1,10 +1,10 @@
 # Planned enhancements
 
-* Add `min_items` configuration property to specify the minimum number of selection items for an action 
+* ~~Add `min_items` configuration property to specify the minimum number of selection items for an action~~ 
   (DONE: in version 1.3.0)
-* Add JSON source editor to configurator 
+* ~~Add JSON source editor to configurator~~
   (DONE: in version 1.4.0)
-* Allow filtering on access permissions
+* ~~Allow filtering on access permissions~~
   (DONE: in version 1.5.0)
 * Lift "labels must be unique" restriction - then different versions of the same action can appear
   based upon different filtering
