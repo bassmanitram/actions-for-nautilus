@@ -60,7 +60,7 @@ def _create_submenu_menu_item(action, files, group, act_function):
 			label=action["label"],
 		)
 		menu_item.set_submenu(menu)
-		for menu_sub_item in (sorted(actions,key=lambda element: element.props.label) if action.get("action","manual") else actions):
+		for menu_sub_item in (sorted(actions,key=lambda element: element.props.label) if action["sort"] else actions):
 			menu.append_item(menu_sub_item)
 		return menu_item
 
