@@ -1,3 +1,7 @@
+# Release 1.5.1
+* Fix sorting of submenu items
+  The **Submenu sorting** option was not being correctly interpreted or defaulted.
+  
 # Release 1.5.0
 * Implemented the `permissions` property to optionally require the
   user to have specific access permissions for the selected files.
