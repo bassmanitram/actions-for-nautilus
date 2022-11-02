@@ -136,6 +136,7 @@ def _check_action(idString, action):
 #
 def _check_menu_action(idString, action):
     action["label"] = action["label"].strip() if "label" in action and type(action["label"]) == str else ""
+    action["sort"] = "sort" in action and action["sort"] == "auto"
     if (len(action["label"]) > 0 and
         "actions" in action and 
         type(action["actions"]) == list):
