@@ -1,7 +1,7 @@
 #
 # Create context menu items
 #
-import os
+import os, afn_config
 from urllib.parse import urlparse
 from gi.repository import Nautilus, Gio
 

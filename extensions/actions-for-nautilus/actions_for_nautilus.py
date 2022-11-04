@@ -37,9 +37,10 @@ def _run_command(menu, config_item, files):
 
     count = 1 if config_item["cmd_behavior"] == afn_place_holders.PLURAL else len(files)
 
-    print(config_item)
-    print(files)
-    print(cwd)
+    if afn_config.debug:
+        print(config_item)
+        print(files)
+        print(cwd)
 
     for i in range(count):
         #
@@ -53,6 +54,7 @@ def _run_command(menu, config_item, files):
             # Split into args and lose any shell escapes
             #
             final_command_line = list(map(lambda arg: arg.replace("\\\\","!§ESCBACKSLASH§µ").replace("\\", "").replace("!§ESCBACKSLASH§µ","\\"),shlex.split(final_command_line)))
-        print("COMMAND " + str(i))
-        print(final_command_line)
+        if afn_config.debug:
+            print("COMMAND " + str(i))
+            print(final_command_line)
         subprocess.Popen(final_command_line, cwd=cwd, shell=use_shell)
