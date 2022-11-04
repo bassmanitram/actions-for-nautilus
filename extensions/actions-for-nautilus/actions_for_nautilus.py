@@ -18,10 +18,12 @@ class ActionsForNautilus(Nautilus.MenuProvider, GObject.GObject):
 #
 # Menu provider interface implementation
 #
-    def get_file_items(self, window, files):
+    def get_file_items(self, *args):
+        files = args[-1]
         return afn_menu.create_menu_items(self.config.get_config(), files, "File", _run_command)
 
-    def get_background_items(self, window, file):
+    def get_background_items(self, *args):
+        file = args[-1]
         return afn_menu.create_menu_items(self.config.get_config(), [file], "Background", _run_command)
 
 #
