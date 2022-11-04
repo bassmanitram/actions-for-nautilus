@@ -8,7 +8,7 @@
   (DONE: in version 1.5.0)
 * Lift "labels must be unique" restriction - then different versions of the same action can appear
   based upon different filtering
-* Allow optional icons to be shown next to menu items
+* [Allow optional icons to be shown next to menu items](https://github.com/bassmanitram/actions-for-nautilus/issues/28)
 * Enhance mimetype filtering to allow more specific rules to override more general rules
 * Add "all files must match the same pattern" condition (e.g. a command applies to three different file types,
   but on a particular selection, all selected files must match the same one of those file types)
