@@ -1,10 +1,13 @@
-import subprocess, shlex
+import subprocess, shlex, inspect
 from gi.repository import Nautilus, GObject
-from gi import require_version
-
 import afn_place_holders, afn_config, afn_menu
 
-require_version('Nautilus', '3.0')
+###
+### A multi-version alternative to require_version
+###
+if not (Nautilus._version.startswith("3.") or Nautilus._version.startswith("4.")):
+    raise ValueError('Namespace %s not available for versions %s' %
+                         ("Nautilus", "3 or 4"))
 
 ###
 ### The MenuProvider implementation
