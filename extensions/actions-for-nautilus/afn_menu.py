@@ -79,7 +79,7 @@ def _create_command_menu_item(action, files, group, activate_function):
 	    (action["all_filetypes"] or _applicable_to_filetype(action, files)) and
 	    (action["all_path_patterns"] or _applicable_to_path_patterns(action, files))):
 		menu_item = Nautilus.MenuItem(
-			name="NautilusCopyPath::Item" + action["idString"] + group,
+			name="Actions4Nautilus::Item" + action["idString"] + group,
 			label=action["label"]
 		)
 		menu_item.connect("activate", activate_function, action, files)
