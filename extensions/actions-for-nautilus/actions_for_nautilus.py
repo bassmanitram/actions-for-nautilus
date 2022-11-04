@@ -1,10 +1,9 @@
 import subprocess, shlex
-from gi.repository import Nautilus, GObject, Gtk, Gdk
+from gi.repository import Nautilus, GObject
 from gi import require_version
 
 import afn_place_holders, afn_config, afn_menu
 
-require_version('Gtk', '3.0')
 require_version('Nautilus', '3.0')
 
 ###
