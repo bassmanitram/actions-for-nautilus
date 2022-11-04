@@ -6,6 +6,7 @@
   (DONE: in version 1.4.0)
 * ~~Allow filtering on access permissions~~
   (DONE: in version 1.5.0)
+* [CRITICAL: Support the upcoming nautilus-python v4 API](https://github.com/bassmanitram/actions-for-nautilus/issues/31)
 * Lift "labels must be unique" restriction - then different versions of the same action can appear
   based upon different filtering
 * [Allow optional icons to be shown next to menu items](https://github.com/bassmanitram/actions-for-nautilus/issues/28)
