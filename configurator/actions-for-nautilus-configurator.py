@@ -69,7 +69,7 @@ docs = {
         "default": None
     },
     "/javascript/jquery.min.js": {
-        "path": "/usr/share/javascript/jquery/jquery.min.js",
+        "path": "./javascript/jquery.min.js",
         "mimetype": "application/javascript",
         "default": None
     },
