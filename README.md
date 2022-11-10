@@ -74,9 +74,9 @@ Then it relies on `python 3+`, `nautilus-python`, and certain
 process management tools (which are likely already installed but
 just in case :)).
 
-* Fedora `sudo dnf install nautilus-python python3-gobject procps-ng`
-* Ubuntu `sudo apt install python3-nautilus python3-gi procps`
-* Arch `sudo pacman -S python-nautilus python-gobject procps-ng`
+* Fedora `sudo dnf install nautilus-python python3-gobject procps-ng js-jquery`
+* Ubuntu `sudo apt install python3-nautilus python3-gi procps libjs-jquery`
+* Arch `sudo pacman -S python-nautilus python-gobject procps-ng jquery`
 
 ### Download & Install the Extension
 
