@@ -1,3 +1,12 @@
+# Release 1.6.0
+* Implement compatibility with Nautilus 43+
+  Nautilus 43+ is not used ubiquitously yet, but implements some breaking changes to
+  its own API. These are exposed to python extensions via `nautilus-python` version 
+  4, which, in turn, breaks existing extensions that exploit that library. 
+
+  This release, then, implements the changes necessary to work with these new 
+  components, while maintaining compatibility with `nautilus-python` version 3.
+  
 # Release 1.5.2
 * Fix deb file installation on Debian
   The deb file is generated on Pop-OS which uses a different default compression
