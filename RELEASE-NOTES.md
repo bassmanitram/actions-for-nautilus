@@ -1,3 +1,9 @@
+# Release 1.5.2
+* Fix deb file installation on Debian
+  The deb file is generated on Pop-OS which uses a different default compression
+  to that used by Debian, and one not supported by Debian. This changes the compression
+  to one that is supported by all variants.
+  
 # Release 1.5.1
 * Fix sorting of submenu items
 
