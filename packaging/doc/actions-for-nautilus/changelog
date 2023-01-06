@@ -1,3 +1,8 @@
+actions-for-nautilus (1.6.0) stable; urgency=medium
+  * Compatibility with Nautilus 43+
+
+ -- Martin Bartlett <martin.j.bartlett@gmail.com>  Thu, 12 Jan 2023 15:00:00 +0100
+
 actions-for-nautilus (1.5.2) stable; urgency=medium
   * Fix deb file compression
 
