@@ -2,7 +2,7 @@ SHELL=/bin/bash
 nautilus_path=`which nautilus`
 GLOBALLOC=/usr/share
 LOCALLOC=~/.local/share
-VERSION=1.5.1
+VERSION=1.5.2
 
 install:
 	mkdir -p $(LOCALLOC)/nautilus-python/extensions/actions-for-nautilus
@@ -86,5 +86,5 @@ else
 	find build/ -type f -exec chmod 0644 {} \;
 	chmod +x build/$(GLOBALLOC)/actions-for-nautilus-configurator/start-configurator.sh
 endif
-	dpkg-deb --build build dist/actions-for-nautilus_$(VERSION)_all.deb
+	dpkg-deb -Z gzip --build build dist/actions-for-nautilus_$(VERSION)_all.deb
 	lintian dist/actions-for-nautilus_$(VERSION)_all.deb
