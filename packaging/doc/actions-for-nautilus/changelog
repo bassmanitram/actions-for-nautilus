@@ -1,3 +1,8 @@
+actions-for-nautilus (1.5.2) stable; urgency=medium
+  * Fix deb file compression
+
+ -- Martin Bartlett <martin.j.bartlett@gmail.com>  Fri, 06 Jan 2023 15:00:00 +0100
+
 actions-for-nautilus (1.5.1) stable; urgency=medium
   * Fix submenu sorting
 
