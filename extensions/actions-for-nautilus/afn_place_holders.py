@@ -1,7 +1,7 @@
 ###
 ### Place holder replacement functions
 ###
-import re
+import re, afn_config
 
 ###
 ### Exported functions and values

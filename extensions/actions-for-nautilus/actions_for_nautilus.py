@@ -1,11 +1,13 @@
-import subprocess, shlex
-from gi.repository import Nautilus, GObject, Gtk, Gdk
-from gi import require_version
-
+import subprocess, shlex, inspect
+from gi.repository import Nautilus, GObject
 import afn_place_holders, afn_config, afn_menu
 
-require_version('Gtk', '3.0')
-require_version('Nautilus', '3.0')
+###
+### A multi-version alternative to require_version
+###
+if not (Nautilus._version.startswith("3.") or Nautilus._version.startswith("4.")):
+    raise ValueError('Namespace %s not available for versions %s' %
+                         ("Nautilus", "3 or 4"))
 
 ###
 ### The MenuProvider implementation
@@ -18,10 +20,12 @@ class ActionsForNautilus(Nautilus.MenuProvider, GObject.GObject):
 #
 # Menu provider interface implementation
 #
-    def get_file_items(self, window, files):
+    def get_file_items(self, *args):
+        files = args[-1]
         return afn_menu.create_menu_items(self.config.get_config(), files, "File", _run_command)
 
-    def get_background_items(self, window, file):
+    def get_background_items(self, *args):
+        file = args[-1]
         return afn_menu.create_menu_items(self.config.get_config(), [file], "Background", _run_command)
 
 #
@@ -33,9 +37,10 @@ def _run_command(menu, config_item, files):
 
     count = 1 if config_item["cmd_behavior"] == afn_place_holders.PLURAL else len(files)
 
-    print(config_item)
-    print(files)
-    print(cwd)
+    if afn_config.debug:
+        print(config_item)
+        print(files)
+        print(cwd)
 
     for i in range(count):
         #
@@ -49,6 +54,7 @@ def _run_command(menu, config_item, files):
             # Split into args and lose any shell escapes
             #
             final_command_line = list(map(lambda arg: arg.replace("\\\\","!§ESCBACKSLASH§µ").replace("\\", "").replace("!§ESCBACKSLASH§µ","\\"),shlex.split(final_command_line)))
-        print("COMMAND " + str(i))
-        print(final_command_line)
+        if afn_config.debug:
+            print("COMMAND " + str(i))
+            print(final_command_line)
         subprocess.Popen(final_command_line, cwd=cwd, shell=use_shell)

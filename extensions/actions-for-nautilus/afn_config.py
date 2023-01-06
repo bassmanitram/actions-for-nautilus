@@ -35,6 +35,8 @@ _permissions = {
     "read-write-execute": os.R_OK | os.W_OK | os.X_OK
 }
 
+debug = False
+
 class ActionsForNautilusConfig():
 
     def __init__(self):
@@ -42,7 +44,8 @@ class ActionsForNautilusConfig():
         self.update_config()
         GLib.timeout_add_seconds(30, _check_config_change, self)
 #        threading.Thread(target=_watch_config_change, args=(self,), daemon=True).start()
-        print("Initialized")
+        if debug:
+            print("Initialized")
 
     def get_config(self):
         return self.__config
@@ -60,6 +63,8 @@ class ActionsForNautilusConfig():
                 self.__mtime = os.path.getmtime(_config_path)
                 with open(_config_path) as json_file:
                     my_config.update(json.load(json_file))
+                    global debug
+                    debug = "debug" in my_config and my_config["debug"]
                     actions = my_config.get("actions", [])
                     if type(actions) == list:
                         my_config["actions"] = list(filter(None, map(lambda action: _check_action(str(action[0]), action[1]), enumerate(actions))))    
@@ -71,15 +76,14 @@ class ActionsForNautilusConfig():
         except Exception as e:
             print("Config file " + _config_path + " load failed", e)
     
-        print(json.dumps(self.__config, default=_fix_json))
-
+        if debug:
+            print(json.dumps(self.__config, default=_fix_json))
 
     def reset_config(self):
         self.__config = {
             "actions": []
         }
         self.__mtime = None
-
 ###
 ### fix non-JSON-able objects
 ###
@@ -279,6 +283,6 @@ def _split_rules(lst):
         "p_rules": list(filter(lambda element: element["comparison"], lst)),
         "n_rules": list(filter(lambda element: not element["comparison"], lst))
     }
-
-    print(rc)
+    if debug:
+        print(rc)
     return rc
