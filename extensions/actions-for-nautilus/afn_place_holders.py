@@ -1,7 +1,7 @@
 ###
 ### Place holder replacement functions
 ###
-import re, afn_config
+import re, afn_config, os
 
 ###
 ### Exported functions and values
@@ -65,6 +65,14 @@ def _expand_percent_p(index, files, escape):
 
 def _expand_percent_s(index, files, escape):
     return files[0]["uri"].scheme
+
+def _expand_percent_v(index, files, escape):
+    paste_str = ""
+    try:
+        paste_str = os.popen('xclip -out').read();
+    except Exception as error:
+        return 'An exception occurred: {}'.format(error)
+    return "" if not isinstance(paste_str, str) else paste_str
 
 #
 # SINGULAR (per index)
@@ -142,6 +150,7 @@ _cmdline_place_holders = {
     "s": { "f": _expand_percent_s, "behavior": -1},
     "u": { "f": _expand_percent_u, "behavior": SINGULAR},
     "U": { "f": _expand_percent_U, "behavior": PLURAL},
+    "v": { "f": _expand_percent_v, "behavior": -1},
     "w": { "f": _expand_percent_w, "behavior": SINGULAR},
     "W": { "f": _expand_percent_W, "behavior": PLURAL},
     "x": { "f": _expand_percent_x, "behavior": SINGULAR},
