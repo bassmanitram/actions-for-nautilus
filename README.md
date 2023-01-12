@@ -546,6 +546,7 @@ the same semantics:
 | `%s`        | the URI scheme from the URI of the first selected item (e.g. `file`)                                       | ANY        |
 | `%u`        | the URI of the first selected item (e.g. `file:///home/me/my-first-dir/my-second-dir/my-file.txt`)         | SINGULAR   |
 | `%U`        | space-separated list of the `%u` values of all selected items                                              | PLURAL     |
+| `%v`        | the text content of the system clipboard (if xclip is installed)                                           | ANY        |
 | `%w`        | the basename of the first selected item without it's extension (e.g. `my-file`)                            | SINGULAR   |
 | `%W`        | space-separated list of the `%w` values of all selected items                                              | PLURAL     |
 | `%x`        | the extension of the first selected item without it's extension (e.g. `txt`)                               | SINGULAR   |
