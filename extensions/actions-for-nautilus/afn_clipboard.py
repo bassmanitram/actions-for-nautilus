@@ -1,4 +1,4 @@
-IMPL = "xclip" # or "gtk"
+IMPL = "gtk" # "gtk" or "xclip"
 
 if IMPL == "gtk":
 	import gi
