@@ -1,7 +1,7 @@
 ###
 ### Place holder replacement functions
 ###
-import re, afn_config, os
+import re, afn_config, afn_clipboard, os
 
 ###
 ### Exported functions and values
@@ -67,12 +67,7 @@ def _expand_percent_s(index, files, escape):
     return files[0]["uri"].scheme
 
 def _expand_percent_v(index, files, escape):
-    paste_str = ""
-    try:
-        paste_str = os.popen('xclip -out').read();
-    except Exception as error:
-        return 'An exception occurred: {}'.format(error)
-    return "" if not isinstance(paste_str, str) else paste_str
+    return afn_clipboard.get_from_clipboard()
 
 #
 # SINGULAR (per index)

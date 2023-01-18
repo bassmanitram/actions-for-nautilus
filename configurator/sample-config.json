@@ -13,7 +13,7 @@
 		{
 			"type": "command",
 			"label": "Test all place holders",
-			"command_line": "%O printf '%%s\\n' '#b' %b '#B' %B '#c' %c '#d' %d '#D' %D '#f' %f '#F' %F '#h' %h '#m' %m '#M' %M '#n' %n '#o' %o '#O' %O '#p' %p '#s' %s '#u' %u '#U' %U '#w' %w '#W' %W '#x' %x '#X' %X | zenity --title \"Test all place holders\" --text-info",
+			"command_line": "%O printf '%%s\\n' '#v' %v '#b' %b '#B' %B '#c' %c '#d' %d '#D' %D '#f' %f '#F' %F '#h' %h '#m' %m '#M' %M '#n' %n '#o' %o '#O' %O '#p' %p '#s' %s '#u' %u '#U' %U '#w' %w '#W' %W '#x' %x '#X' %X | zenity --title \"Test all place holders\" --text-info",
 			"use_shell": true
 		},
 		{
