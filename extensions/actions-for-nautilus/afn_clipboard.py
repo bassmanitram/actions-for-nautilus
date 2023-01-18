@@ -8,15 +8,17 @@ if IMPL == "gtk":
 
 	global _gtk_clipboard
 	_gtk_clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
+	global _gtk_selection
+	_gtk_selection = Gtk.Clipboard.get(Gdk.SELECTION_PRIMARY)
 else:
 	import os
 
-def _get_from_gtk_clipboard():
-	return _gtk_clipboard.wait_for_text()
+def _get_from_gtk_clipboard(clipboard):
+	return clipboard.wait_for_text()
 
-def _get_from_xclip():
+def _get_from_xclip(clipboard):
 	try:
-		paste_str = os.popen('xclip -out').read()
+		paste_str = os.popen(f"xclip -out -selection {clipboard}").read()
 		return "AFN_CLIPBOARD_NOT_STRING" if not isinstance(paste_str, str) else paste_str
 	except Exception as error:
 		print("Clipboard load error", error)
@@ -24,6 +26,12 @@ def _get_from_xclip():
 
 def get_from_clipboard():
 	if IMPL == "gtk":
-		return _get_from_gtk_clipboard()
+		return _get_from_gtk_clipboard(_gtk_clipboard)
 	else:
-		return _get_from_xclip()
+		return _get_from_xclip("XA_CLIPBOARD")
+
+def get_from_selection():
+	if IMPL == "gtk":
+		return _get_from_gtk_clipboard(_gtk_selection)
+	else:
+		return _get_from_xclip("XA_PRIMARY")

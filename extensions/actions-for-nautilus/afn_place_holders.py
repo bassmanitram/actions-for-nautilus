@@ -67,6 +67,9 @@ def _expand_percent_s(index, files, escape):
     return files[0]["uri"].scheme
 
 def _expand_percent_v(index, files, escape):
+    return afn_clipboard.get_from_selection()
+
+def _expand_percent_V(index, files, escape):
     return afn_clipboard.get_from_clipboard()
 
 #
@@ -146,6 +149,7 @@ _cmdline_place_holders = {
     "u": { "f": _expand_percent_u, "behavior": SINGULAR},
     "U": { "f": _expand_percent_U, "behavior": PLURAL},
     "v": { "f": _expand_percent_v, "behavior": -1},
+    "V": { "f": _expand_percent_V, "behavior": -1},
     "w": { "f": _expand_percent_w, "behavior": SINGULAR},
     "W": { "f": _expand_percent_W, "behavior": PLURAL},
     "x": { "f": _expand_percent_x, "behavior": SINGULAR},
