@@ -131,7 +131,7 @@ if you want to see the sample configuration working properly:
 * `gedit` - the standard Gnome editor - you probably already have this
 * `gnome-terminal` - the standard Gnome terminal emulator (for now) - you probably have
   this too.
-* `xclip`  - a command line tool for managing the X clipboards 
+* `xclip`  - a command line tool for managing the X clipboards
 * `zenity` - a Gnome UI toolkit for shell scripts
 
 Again, these can be installed using your platform package manager as shown above.
@@ -139,6 +139,10 @@ Again, these can be installed using your platform package manager as shown above
 It is also possible that the semantics of the more complex command structures rely
 upon shell features that, if you are not using BASH as your system shell, will not
 work for you.
+
+(Note that there are a number of programs that allow you to manage the X clipboards
+from the command line - `xsel`, `xclipboard`, ... - all are usable with this extension. 
+However for the sample configuration we had to pick one, so `xclip` was chosen).
 
 ### The Gnome Terminal "No Close" profile
 When executing the `gnome-terminal` command, the sample configuration references a 
