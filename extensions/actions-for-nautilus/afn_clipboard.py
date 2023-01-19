@@ -1,3 +1,14 @@
+#
+# I have two implementations because the original used xclip and I wanted
+# to preserve that in the sources as the "reference" for semantics while
+# we shake out the feature in general.
+#
+# However, there really isn't a need for a user switch between the GTK 
+# implementation and the xclip implementation - if GTK is proved to be
+# entirely consistent it will be the actual implementation, avoiding a 
+# dependency on xclip (even though that remains a recommended additional
+# tool.
+#
 IMPL = "gtk" # "gtk" or "xclip"
 
 if IMPL == "gtk":
