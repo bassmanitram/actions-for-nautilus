@@ -19,10 +19,10 @@ def _get_from_gtk_clipboard(clipboard):
 def _get_from_xclip(clipboard):
 	try:
 		paste_str = os.popen(f"xclip -out -selection {clipboard}").read()
-		return "AFN_CLIPBOARD_NOT_STRING" if not isinstance(paste_str, str) else paste_str
+		return "" if not isinstance(paste_str, str) else paste_str
 	except Exception as error:
 		print("Clipboard load error", error)
-		return "AFN_CLIPBOARD_UNREADABLE"
+		return ""
 
 def get_from_clipboard():
 	if IMPL == "gtk":
