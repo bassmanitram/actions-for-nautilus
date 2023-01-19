@@ -9,6 +9,10 @@
 # dependency on xclip (even though that remains a recommended additional
 # tool.
 #
+# Additionally The GTK implementation has the advantage of internally 
+# sorting out whether the content of the target clipboard is text-serializable 
+# without relying on the caller (us) having to trap and process errors.
+#
 IMPL = "gtk" # "gtk" or "xclip"
 
 if IMPL == "gtk":
@@ -39,10 +43,10 @@ def get_from_clipboard():
 	if IMPL == "gtk":
 		return _get_from_gtk_clipboard(_gtk_clipboard)
 	else:
-		return _get_from_xclip("XA_CLIPBOARD")
+		return _get_from_xclip("clipboard")
 
 def get_from_selection():
 	if IMPL == "gtk":
 		return _get_from_gtk_clipboard(_gtk_selection)
 	else:
-		return _get_from_xclip("XA_PRIMARY")
+		return _get_from_xclip("primary")
