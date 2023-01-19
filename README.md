@@ -141,8 +141,9 @@ upon shell features that, if you are not using BASH as your system shell, will n
 work for you.
 
 (Note that there are a number of programs that allow you to manage the X clipboards
-from the command line - `xsel`, `xclipboard`, ... - all are usable with this extension. 
-However for the sample configuration we had to pick one, so `xclip` was chosen).
+from the command line - `xsel`, `xclipboard`, `xcutsel`... - all are usable with this 
+extension - particularly `xsel`. However for the sample configuration we had to pick one, 
+so `xclip` was chosen).
 
 ### The Gnome Terminal "No Close" profile
 When executing the `gnome-terminal` command, the sample configuration references a 
