@@ -221,7 +221,7 @@ class ActionsForNautilusRequestHandler(http.server.BaseHTTPRequestHandler):
 handler = ActionsForNautilusRequestHandler
 
 PORT = int(sys.argv[1])
-with http.server.ThreadingHTTPServer(("", PORT), handler) as httpd:
+with http.server.ThreadingHTTPServer(("127.0.0.1", PORT), handler) as httpd:
     print("localhost:" + str(httpd.server_address[1]))
     try:
         httpd.serve_forever()
