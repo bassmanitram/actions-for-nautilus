@@ -1,3 +1,14 @@
+# Release 1.6.1
+
+**ALL USERS SHOULD UPDATE TO THIS RELEASE**
+
+* **SECURITY FIX**: The config server was being opened on all interfaces, making it
+  available to all nodes on the same network. This release fixes that to only open
+  on `localhost`.
+
+* Closing the config tab in Firefox was not closing the config server. This release
+  fixes that.
+
 # Release 1.6.0
 * Implement compatibility with Nautilus 43+
   Nautilus 43+ is not used ubiquitously yet, but implements some breaking changes to
