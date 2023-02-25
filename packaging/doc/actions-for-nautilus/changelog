@@ -1,3 +1,9 @@
+actions-for-nautilus (1.6.1) stable; urgency=high
+  * Fix config server being open on all interfaces
+  * Fix config server not being closed by FF tab close
+
+ -- Martin Bartlett <martin.j.bartlett@gmail.com>  Sat, 25 Feb 2023 17:00:00 +0100
+
 actions-for-nautilus (1.6.0) stable; urgency=medium
   * Compatibility with Nautilus 43+
 
