@@ -1,7 +1,7 @@
 ###
 ### Place holder replacement functions
 ###
-import re, afn_config
+import re, afn_config, afn_clipboard, os
 
 ###
 ### Exported functions and values
@@ -65,6 +65,14 @@ def _expand_percent_p(index, files, escape):
 
 def _expand_percent_s(index, files, escape):
     return files[0]["uri"].scheme
+
+def _expand_percent_v(index, files, escape):
+    v = afn_clipboard.get_from_selection()
+    return "" if v is None else v.replace(" ","\\ ") if escape else v
+
+def _expand_percent_V(index, files, escape):
+    V = afn_clipboard.get_from_clipboard()
+    return "" if V is None else V.replace(" ","\\ ") if escape else V
 
 #
 # SINGULAR (per index)
@@ -142,6 +150,8 @@ _cmdline_place_holders = {
     "s": { "f": _expand_percent_s, "behavior": -1},
     "u": { "f": _expand_percent_u, "behavior": SINGULAR},
     "U": { "f": _expand_percent_U, "behavior": PLURAL},
+    "v": { "f": _expand_percent_v, "behavior": -1},
+    "V": { "f": _expand_percent_V, "behavior": -1},
     "w": { "f": _expand_percent_w, "behavior": SINGULAR},
     "W": { "f": _expand_percent_W, "behavior": PLURAL},
     "x": { "f": _expand_percent_x, "behavior": SINGULAR},

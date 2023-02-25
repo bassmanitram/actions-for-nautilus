@@ -57,9 +57,9 @@ else
 endif
 
 deb:
-ifneq ($(shell id -u), 0)
-	@echo "You must be root to perform this action."
-	exit 1
+ifeq ($(FAKEROOTKEY),)
+	@echo fakerooting
+	@fakeroot make deb
 else
 	rm -rf build
 	mkdir -p build/$(GLOBALLOC)/nautilus-python
@@ -85,6 +85,7 @@ else
 	find build/ -type d -exec chmod 0755 {} \;
 	find build/ -type f -exec chmod 0644 {} \;
 	chmod +x build/$(GLOBALLOC)/actions-for-nautilus-configurator/start-configurator.sh
-endif
 	dpkg-deb -Z gzip --build build dist/actions-for-nautilus_$(VERSION)_all.deb
 	lintian dist/actions-for-nautilus_$(VERSION)_all.deb
+endif
+

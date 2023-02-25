@@ -131,7 +131,7 @@ if you want to see the sample configuration working properly:
 * `gedit` - the standard Gnome editor - you probably already have this
 * `gnome-terminal` - the standard Gnome terminal emulator (for now) - you probably have
   this too.
-* `xclip`  - a command line tool for managing the X clipboards 
+* `xclip`  - a command line tool for managing the X clipboards
 * `zenity` - a Gnome UI toolkit for shell scripts
 
 Again, these can be installed using your platform package manager as shown above.
@@ -139,6 +139,11 @@ Again, these can be installed using your platform package manager as shown above
 It is also possible that the semantics of the more complex command structures rely
 upon shell features that, if you are not using BASH as your system shell, will not
 work for you.
+
+(Note that there are a number of programs that allow you to manage the X clipboards
+from the command line - `xsel`, `xclipboard`, `xcutsel`... - all are usable with this 
+extension - particularly `xsel`. However for the sample configuration we had to pick one, 
+so `xclip` was chosen).
 
 ### The Gnome Terminal "No Close" profile
 When executing the `gnome-terminal` command, the sample configuration references a 
@@ -546,6 +551,8 @@ the same semantics:
 | `%s`        | the URI scheme from the URI of the first selected item (e.g. `file`)                                       | ANY        |
 | `%u`        | the URI of the first selected item (e.g. `file:///home/me/my-first-dir/my-second-dir/my-file.txt`)         | SINGULAR   |
 | `%U`        | space-separated list of the `%u` values of all selected items                                              | PLURAL     |
+| `%v`        | the text content of the system selection                                                                   | ANY        |
+| `%V`        | the text content of the system clipboard                                                                   | ANY        |
 | `%w`        | the basename of the first selected item without it's extension (e.g. `my-file`)                            | SINGULAR   |
 | `%W`        | space-separated list of the `%w` values of all selected items                                              | PLURAL     |
 | `%x`        | the extension of the first selected item without it's extension (e.g. `txt`)                               | SINGULAR   |
