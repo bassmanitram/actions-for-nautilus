@@ -1,3 +1,7 @@
+**IMPORTANT NOTE**
+All users of releases 1.6.0 and before should update their installations to release 1.6.1 as soon as possible
+due to a security issue.
+
 # Actions For Nautilus
 An extension to the Gnome **Files** file manager (otherwise known as Nautilus) that allows 
 you to add arbitrary actions to the Gnome Files selection context menu.
