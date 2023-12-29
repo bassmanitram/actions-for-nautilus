@@ -8,6 +8,7 @@ import datetime
 
 PORT = 8000
 HOME = os.environ.get('HOME')
+JQUERY = os.environ.get('JQUERY')
 
 # config_html = "./actions-for-nautilus-configurator.html"
 # cmdline_help = "./command-line-help.html"
@@ -69,7 +70,7 @@ docs = {
         "default": None
     },
     "/javascript/jquery.min.js": {
-        "path": "/usr/share/javascript/jquery/jquery.min.js",
+        "path": JQUERY,
         "mimetype": "application/javascript",
         "default": None
     },
