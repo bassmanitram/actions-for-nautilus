@@ -7,8 +7,15 @@ mkdir -p $HOME/.local/share/actions-for-nautilus
 
 [ -f $HOME/.local/share/actions-for-nautilus/config.json ] || cp ./sample-config.json $HOME/.local/share/actions-for-nautilus/config.json
 
+if [ -f $PWD/javascript/jquery.min.js ]; then
+	JQUERY=$PWD/javascript/jquery.min.js
+else
+	JQUERY=/usr/share/javascript/jquery/jquery.min.js
+fi
+export JQUERY
+
 #
-# Start the configuration server, the xdg-open the home page
+# Start the configuration server, then xdg-open the home page
 #
 
 #
