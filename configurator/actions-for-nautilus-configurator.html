@@ -37,17 +37,20 @@
 
 		/*
 		 * Because this is a local UI tightly related to
-		 * backend server that it is using, unload should
-		 * stop that server :)
+		 * backend server that it is using, pings will
+		 * keep it alive :)
 		 */
-		function onUnload(event) {
+		const KEEP_ALIVE_INTERVAL = 7500;
+
+		function sendKeepAlive() {
 			$.ajax({
-				url: '/terminate',
+				url: '/keep-alive',
 				type: 'post',
-				data: ""
-			});
+				data: ''
+			})
+			setTimeout(sendKeepAlive, KEEP_ALIVE_INTERVAL);
 		}
-		addEventListener("beforeunload", onUnload);
+		sendKeepAlive();
 
 		let editor;
 
