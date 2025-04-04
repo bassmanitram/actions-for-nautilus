@@ -139,6 +139,10 @@ def _check_action(idString, action):
 # Normalize a menu action
 #
 def _check_menu_action(idString, action):
+    if "disabled" in action and action["disabled"]:
+    #    print("Ignoring menu action: disabled", action)
+        return
+    
     action["label"] = action["label"].strip() if "label" in action and type(action["label"]) == str else ""
     action["sort"] = "sort" in action and action["sort"] == "auto"
     if (len(action["label"]) > 0 and
@@ -158,6 +162,10 @@ def _check_menu_action(idString, action):
 # Normalize a command action
 #
 def _check_command_action(idString, action):
+    if "disabled" in action and action["disabled"]:
+    #    print("Ignoring command action: disabled", action)
+        return
+    
     action["label"] = action["label"].strip() if "label" in action and type(action["label"]) == str else ""
     action["command_line"] = action["command_line"].strip() if "command_line" in action and type(action["command_line"]) == str else ""
     if (len(action["label"]) > 0 and
@@ -199,12 +207,12 @@ def _check_command_action(idString, action):
         #    * min_items must be greater than 0 - forced to 1 otherwise
         #    * min_items must be less than or equal to max_items if max_items is greater than 1 - force to equal if otherwise
         #
-       	if "max_items" in action and isinstance(action["max_items"], int) and action["max_items"] > 0:
+        if "max_items" in action and isinstance(action["max_items"], int) and action["max_items"] > 0:
             pass
         else:
             action["max_items"] = 0
 
-       	if "min_items" in action and isinstance(action["min_items"], int) and action["min_items"] > 1:
+        if "min_items" in action and isinstance(action["min_items"], int) and action["min_items"] > 1:
             pass
         else:
             action["min_items"] = 1

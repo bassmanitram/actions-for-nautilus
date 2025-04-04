@@ -148,6 +148,13 @@
 		}
 
 		/*
+		 * Make the save button more obvious when enabled
+		 */
+		button.json-editor-btn-save:enabled {
+			background-color: #ffad55;
+		}
+
+		/*
 		 * Main title is too squashed
 		 */
 		.card-title.level-1 {
@@ -199,6 +206,21 @@
 		.action-command a {
 			display: inline;
 			padding: 0;
+		}
+
+		.action-command.disabled,
+		.action-menu.disabled,
+		.action-command.disabled .nav-link,
+		.action-menu.disabled .nav-link{
+			color: #a1aab8;
+		}
+
+		.action-command.disabled.active,
+		.action-menu.disabled.active,
+		.action-command.disabled.active .nav-link,
+		.action-menu.disabled.active .nav-link {
+			color: #fff;
+			background-color: #a1aab8;
 		}
 
 		/*

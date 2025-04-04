@@ -154,7 +154,16 @@
 							"$ref": "#/$defs/SortStyles",
 							"title": "Submenu sorting",
 							"options": {
-								"infoText": "#submenu:sort"
+								"infoText": "#submenu:sort",
+								"grid_columns": 6
+							}
+						},
+						"disabled": {
+							"type": "boolean",
+							"title": "Disabled",
+							"options": {
+								"infoText": "#submenu:disabled",
+								"grid_columns": 6
 							}
 						}
 					}
@@ -271,6 +280,14 @@
 							"$ref": "#/$defs/Permissions",
 							"options": {
 								"infoText": "#command:permissions",
+								"grid_columns": 6
+							}
+						},
+						"disabled": {
+							"type": "boolean",
+							"title": "Disabled",
+							"options": {
+								"infoText": "#command:disabled",
 								"grid_columns": 6
 							}
 						}

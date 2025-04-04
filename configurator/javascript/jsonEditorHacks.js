@@ -65,7 +65,13 @@ JSONEditor.defaults.editors.multiple.prototype.refreshHeaderText = function (val
 	if (/\.actions\.[0-9]+$/.test(this.path) && this.tab) {
 		var element = this.tab;
 		var actionType = this.value.Basic.type;
+		var actionDisabled = this.value.Basic.disabled;
 		var existingActionType = this.a4nActionType;
+		if (actionDisabled) {
+			element.classList.add("disabled");
+		} else {
+			element.classList.remove("disabled");
+		}
 		if (actionType != existingActionType) {
 			if (existingActionType) {
 				element.classList.remove("action-" + existingActionType);

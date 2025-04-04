@@ -38,6 +38,7 @@
 					<li><a href="#undo-redo-and-save">Undo, Redo and Save</a></li>
 					<li><a href="#json-source-editor">The JSON Source Editor</a></li>
 					<li><a href="#optional-parameters">Optional Parameters</a></li>
+					<li><a href="#action-disable">Disabling an Action</a></li>
 				</ul>
 			</li>
 			<li><a href="#menu-actions">Menu Actions</a></li>
@@ -182,6 +183,13 @@
 			set.</p>
 		<p>The saved configuration however will not contain the parameter which, therefore, will revert to its default
 			value.</p>
+		<h2 id="action-disable">Disabling an Action</h2>
+		<p>Both menu actions and command actions can be disabled by enabling the <code>Disabled</code> optional parameter and
+		   setting it to <code>true</code> </p>
+		   <p><img src="images/disabled.png" alt="Disabled"></p>
+		   <p>When set to <code>true</code>, the corresponding action will not appear in the Gnome Files context menu. This allows
+		   the action to exist in the configuration, maybe as a template or a work-in-progress, but not actually be used.</p>
+		   <p>Note, however, that the action configuration must still be valid in order for you to be able to save the configuration</p>.
 		<h1 id="menu-actions">Menu Actions</h1>
 		<p>To create a menu action, then, do the following:</p>
 		<ul>
