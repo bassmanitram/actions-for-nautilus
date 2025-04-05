@@ -53,6 +53,7 @@
 							<li><a href="#mimetypes">Mimetypes</a></li>
 							<li><a href="#file-types">File types</a></li>
 							<li><a href="#path-patterns">Path patterns</a></li>
+							<li><a href="#show-if-true">Show if true</a></li>
 						</ul>
 					</li>
 					<li><a href="#commands">Commands</a>
@@ -451,6 +452,44 @@
 			path pattern - no file in the selection should have a path that matches that pattern - and again
 			mixing standard and negative rules <em>may</em> be confusing, but may also be useful in breaking down
 			complex patterns into simpler components.</p>
+
+
+		<h3 id="show-if-true">Show if true</h3>
+		<p>And, finally, the most flexible way of choosing whether a command action should be shown for a particular
+			file or selection - call an external command to decide!</p>
+
+		<p><img src="images/show-if-true.png" alt="Show if true"></p>
+
+		<p>Simply put, this optional property allows you to specify a shell pipeline to execute to determine if the command
+			action is applicable to the current selection! In this example, we switch to the selected folder, search backwards 
+			for a file or folder named <code>.git</code> and, if one is found, print the line <code>true</code> (and nothing else)
+			on <code>stdout</code>. I.e. we show the action if the selection is within a GIT repository! 
+			(<code>find-up</code> is my own script for doing a backward find).
+		</p>
+
+		<p>The command is executed by the default system shell, so all shell capabilities are available to you. 
+			You can use the <a href="#command-line-placeholders"><code>%F</code> and <code>%f</code> placeholders</a>.
+			If you use the <code>%F</code> placeholder then the paths of all selected files are passed on the command line with each one single-quoted. If you use the <code>%f</code>
+			placeholder, then the command is invoked for each file in the selection with <code>%f</code> replaced by the single-quoted full path of that file.
+		</p>
+
+		<p>Upon return, if the command emits a single line <code>true</code> on <code>stdout</code> then the action is included in the Gnome Files menu. If not
+		(including any error in execution of the command, or anything else on <code>stdout</code>) then the action will not appear in the menu.</p>
+
+		<p>Firstly, obviously this is extremely powerful and can be "piggybacked" upon to produce all sorts of wonderous side effects in addition to its prime purpose.
+			But <emphasis>DON'T</emphasis>, and if you do, I take no responsibility for unexpected bad things happening!
+		</p>
+	
+		<p>Secondly, this can significantly impact performance if over used! Selections where you use the <code>%f</code> placeholder will result in the command being called
+			once for each item - so the larger the selection, the slower the rendering of the menu will be. To combat this, all other rules are examined before an
+			action's <code>Show-if-true</code> command is executed, so use those rules to eliminate the action for other reasons before resorting to the command execution.
+		</p>
+
+		<p>For example, if you were to use the above example, and you keep all your GIT repositories in a specific directory tree, use path patterns to avoid the
+			command being unnecessarily executed for anything not in the GIT repository tree.
+		</p>
+	
+
 		<h2 id="commands">Commands</h2>
 		<p>And so to the most important part - the command that is executed when you click on an action
 			in the Nautilus context menu.</p>

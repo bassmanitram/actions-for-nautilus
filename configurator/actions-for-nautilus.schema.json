@@ -219,7 +219,7 @@
 				"show_if_true": {
 					"type": "string",
 					"minLength": 1,
-					"title": "Shell command to determine whether to show the item",
+					"title": "Show if true",
 					"options": {
 						"infoText": "#command:show_if_true",
 						"grid_columns": 12,
