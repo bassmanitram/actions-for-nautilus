@@ -16,17 +16,38 @@ class ActionsForNautilus(Nautilus.MenuProvider, GObject.GObject):
 
     def __init__(self):
         self.config = afn_config.ActionsForNautilusConfig()
+        self.previous_background_path = None
+        self.previous_background_menu = None
+        self.previous_selection_paths = None
+        self.previous_selection_menu = None
 
 #
 # Menu provider interface implementation
 #
     def get_file_items(self, *args):
         files = args[-1]
-        return afn_menu.create_menu_items(self.config.get_config(), files, "File", _run_command)
+        if len(files) < 1:
+            return None
+        selection_paths = ' '.join(f"'{f.get_location().get_path()}'" for f in files)
+        if selection_paths == self.previous_selection_paths:
+            return self.previous_selection_menu
+        print('FILES: ', selection_paths)
+        menu = afn_menu.create_menu_items(self.config.get_config(), files, "File", _run_command)
+        self.previous_selection_paths = selection_paths
+        self.previous_selection_menu = menu
+        return menu
 
     def get_background_items(self, *args):
         file = args[-1]
-        return afn_menu.create_menu_items(self.config.get_config(), [file], "Background", _run_command)
+        file_path = file.get_location().get_path()
+        if file_path == self.previous_background_path:
+            return self.previous_background_menu
+        print('BACKGROUND: ', file_path)
+        menu = afn_menu.create_menu_items(self.config.get_config(), [file], "Background", _run_command)
+        self.previous_background_path = file_path
+        self.previous_background_menu = menu
+        return menu
+
 
 #
 # Command execution

@@ -86,16 +86,17 @@ def _is_command_true(cmd):
 # Generate a command item that is connected to the activate signal
 #
 def _create_command_menu_item(action, files, group, activate_function):
-	if action["max_items"] > 0 and action["max_items"] < len(files):
-		return None
-
-	if action["min_items"] > len(files):
-		return None
-
-	if not ((action["permissions"] == "" or _applicable_to_permissions(action, files)) and
+	#
+	# Eliminate all other conditions before the very expensive "call a program" option
+	#
+	if not (
+		(action["max_items"] == 0 or action["max_items"] >= len(files)) and
+		(action["min_items"] <= len(files)) and
+		(action["permissions"] == "" or _applicable_to_permissions(action, files)) and
 	    (action["all_mimetypes"] or _applicable_to_mimetype(action, files)) and
 	    (action["all_filetypes"] or _applicable_to_filetype(action, files)) and
-	    (action["all_path_patterns"] or _applicable_to_path_patterns(action, files))):
+	    (action["all_path_patterns"] or _applicable_to_path_patterns(action, files))
+	):
 		return None
 	
 	if len(action["show_if_true"]) > 0:
