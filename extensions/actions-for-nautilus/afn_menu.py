@@ -105,7 +105,7 @@ def _create_command_menu_item(action, files, group, activate_function):
 			cmd = cmd.replace('%F', ' '.join(f"'{f['filepath']}'" for f in files)) 
 		if '%f' in cmd:
 			for file in files:
-				if not _is_command_true(cmd.replace('%f', file["filepath"])):
+				if not _is_command_true(cmd.replace('%f', f"'{file['filepath']}'")):
 					return None
 		else:
 			if not _is_command_true(cmd):

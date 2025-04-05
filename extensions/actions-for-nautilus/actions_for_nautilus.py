@@ -30,8 +30,9 @@ class ActionsForNautilus(Nautilus.MenuProvider, GObject.GObject):
             return None
         selection_paths = ' '.join(f.get_location().get_path() for f in files)
         if selection_paths == self.previous_selection_paths:
+            afn_config.debug_print(f'FILES: Using previous selection menu for "{selection_paths}"')
             return self.previous_selection_menu
-        print(f'FILES: "{selection_paths}"')
+        afn_config.debug_print(f'FILES: "{selection_paths}"')
         menu = afn_menu.create_menu_items(self.config.get_config(), files, "File", _run_command)
         self.previous_selection_paths = selection_paths
         self.previous_selection_menu = menu
@@ -41,12 +42,14 @@ class ActionsForNautilus(Nautilus.MenuProvider, GObject.GObject):
         file = args[-1]
         file_path = file.get_location().get_path()
         if file_path == self.previous_background_path:
+            afn_config.debug_print(f'BACKGROUND: Using previous background menu for "{file_path}"')
             return self.previous_background_menu
         if file_path == self.previous_selection_paths:
+            afn_config.debug_print(f'BACKGROUND: Using previous selection menu for "{file_path}"')
             self.previous_background_path = self.previous_selection_paths
             self.previous_background_menu = self.previous_selection_menu
             return self.previous_selection_menu
-        print(f'BACKGROUND: "{file_path}"')
+        afn_config.debug_print(f'BACKGROUND: "{file_path}"')
         menu = afn_menu.create_menu_items(self.config.get_config(), [file], "Background", _run_command)
         self.previous_background_path = file_path
         self.previous_background_menu = menu
