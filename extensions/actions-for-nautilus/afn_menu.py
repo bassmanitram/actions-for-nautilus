@@ -2,6 +2,7 @@
 # Create context menu items
 #
 import os, afn_config
+import subprocess
 from urllib.parse import urlparse
 from gi.repository import Nautilus, Gio
 
@@ -64,6 +65,23 @@ def _create_submenu_menu_item(action, files, group, act_function):
 			menu.append_item(menu_sub_item)
 		return menu_item
 
+def _is_command_true(cmd):
+	try:
+		afn_config.debug_print(f"Running show_if_true command <{cmd}>")
+		process = subprocess.run(
+			cmd,
+			shell=True,
+			capture_output=True,
+			text=True
+		)
+		if process.stdout.rstrip() == "true":
+			return True
+		afn_config.debug_print(f"show_if_true_command {cmd} returned non-'true': stdout={process.stdout}, stderr={process.stderr}")
+		
+	except Exception as e:
+		print(f"show_if_true_command {cmd} failed: {e}")
+	
+	return False
 #
 # Generate a command item that is connected to the activate signal
 #
@@ -74,16 +92,30 @@ def _create_command_menu_item(action, files, group, activate_function):
 	if action["min_items"] > len(files):
 		return None
 
-	if ((action["permissions"] == "" or _applicable_to_permissions(action, files)) and
+	if not ((action["permissions"] == "" or _applicable_to_permissions(action, files)) and
 	    (action["all_mimetypes"] or _applicable_to_mimetype(action, files)) and
 	    (action["all_filetypes"] or _applicable_to_filetype(action, files)) and
 	    (action["all_path_patterns"] or _applicable_to_path_patterns(action, files))):
-		menu_item = Nautilus.MenuItem(
-			name="Actions4Nautilus::Item" + action["idString"] + group,
-			label=action["label"]
-		)
-		menu_item.connect("activate", activate_function, action, files)
-		return menu_item
+		return None
+	
+	if len(action["show_if_true"]) > 0:
+		cmd = action["show_if_true"]
+		if '%F' in cmd:
+			cmd = cmd.replace('%F', ' '.join(f"'{f['filepath']}'" for f in files)) 
+		if '%f' in cmd:
+			for file in files:
+				if not _is_command_true(cmd.replace('%f', file["filepath"])):
+					return None
+		else:
+			if not _is_command_true(cmd):
+				return None
+
+	name = "Actions4Nautilus::Item" + action["idString"] + group
+	label = action["label"]
+	afn_config.debug_print(f"Attaching menu item: file={files[0]} name={name}, label={label}")
+	menu_item = Nautilus.MenuItem(name=name, label=label)
+	menu_item.connect("activate", activate_function, action, files)
+	return menu_item
 
 ###
 ### In the following, the relevant attributes of the selected files

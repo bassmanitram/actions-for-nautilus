@@ -36,6 +36,9 @@ _permissions = {
 }
 
 debug = False
+def debug_print(str):
+    if debug:
+        print(str)
 
 class ActionsForNautilusConfig():
 
@@ -102,8 +105,8 @@ def _check_config_change(config_object):
     elif this_mtime is None and last_mtime is not None:
         print("WATCHER THREAD: resetting config")
         config_object.reset_config()
-#    else:
-#        print("WATCHER THREAD: config not changed")
+    else:
+        debug_print("WATCHER THREAD: config not changed")
     return True
 
 #
@@ -140,7 +143,7 @@ def _check_action(idString, action):
 #
 def _check_menu_action(idString, action):
     if "disabled" in action and action["disabled"]:
-    #    print("Ignoring menu action: disabled", action)
+        debug_print("Ignoring menu action: disabled; {action}")
         return
     
     action["label"] = action["label"].strip() if "label" in action and type(action["label"]) == str else ""
@@ -163,7 +166,7 @@ def _check_menu_action(idString, action):
 #
 def _check_command_action(idString, action):
     if "disabled" in action and action["disabled"]:
-    #    print("Ignoring command action: disabled", action)
+        debug_print(f"Ignoring command action: disabled; {action}")
         return
     
     action["label"] = action["label"].strip() if "label" in action and type(action["label"]) == str else ""
@@ -196,6 +199,11 @@ def _check_command_action(idString, action):
             action["permissions"] = _permissions[perm] if perm in _permissions else ""
         else:
             action["permissions"] = ""
+ 
+        if "show_if_true" in action and type(action["show_if_true"]) == str:
+            action["show_if_true"] = action["show_if_true"].strip()
+        else:
+            action["show_if_true"] = ""
  
         action["idString"] = idString
         action["cmd_behavior"] = afn_place_holders.get_behavior(action["command_line"])
