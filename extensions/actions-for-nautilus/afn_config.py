@@ -8,6 +8,10 @@ from gi.repository import Gio, GLib
 HOME = os.environ.get('HOME')
 _config_path = HOME + "/.local/share/actions-for-nautilus/config.json"
 
+def _dump_dict(o) -> str:
+    attrs = o.__dict__
+    return ', '.join("%s: %s" % item for item in sorted(attrs.items(), key=lambda i: i[0]))
+
 _filetypes = {
     "unknown":       [Gio.FileType(0)],
     "file":          [Gio.FileType(1)],
@@ -38,10 +42,10 @@ class CommandAction():
         self.cmd_behaviour = ""
         self.cwd = ""
         self.show_if_true = ""
+        self.permissions = ""
         self.use_shell = False
         self.min_items = 1
         self.max_items = 0
-        self.permissions = ""
         self.all_mimetypes = True
         self.mimetypes = []
         self.all_filetypes = True
@@ -50,6 +54,9 @@ class CommandAction():
         self.path_patterns = []
         self.idString = ""
 
+    def __repr__(self) -> str:
+        return _dump_dict(self)
+
 class MenuAction():
     def __init__(self):
         self.label  = ""
@@ -57,6 +64,9 @@ class MenuAction():
         self.actions = []
         self.idString = ""
 
+    def __repr__(self) -> str:
+        return _dump_dict(self)
+        
 class ActionsForNautilusConfig():
 
     def __init__(self):
@@ -93,7 +103,7 @@ class ActionsForNautilusConfig():
             print("Config file " + _config_path + " load failed", e)
     
         if debug:
-            print(json.dumps(self.__dict__, default=_fix_json))
+            print(_dump_dict(self))
 
     def reset_config(self):
         self.actions = []
@@ -186,26 +196,31 @@ def _check_command_action(idString, json_action):
     if (len(action.label) > 0 and
     len(action.command_line) > 0):
 
-        if "mimetypes" in json_action and type(json_action["mimetypes"]) == list:
+        if type(json_action.get("mimetypes")) == list:
             action.all_mimetypes = ( "*/*" in json_action["mimetypes"] or "*" in json_action["mimetypes"])
             if not action.all_mimetypes:
                 action.mimetypes = _split_rules(_remove_duplicates_by_key(list(filter(None, map(_gen_mimetype, json_action["mimetypes"]))),"mimetype"))
                 action.all_mimetypes = len(action.mimetypes["n_rules"]) + len(action.mimetypes["p_rules"]) < 1
 
-        if "filetypes" in json_action and type(json_action["filetypes"]) == list:
+        if type(json_action.get("filetypes")) == list:
             action.filetypes = _split_rules(_remove_duplicates_by_key(_flatten_list(list(filter(None, map(_gen_filetype, json_action["filetypes"])))),"filetype"))
             action.all_filetypes = len(action.filetypes["n_rules"]) + len(action.filetypes["p_rules"]) < 1
 
-        if "path_patterns" in json_action and type(json_action["path_patterns"]) == list:
+        if type(json_action.get("path_patterns")) == list:
             action.path_patterns = _split_rules(_remove_duplicates_by_key(_flatten_list(list(filter(None, map(_gen_pattern, json_action["path_patterns"])))),"path_pattern"))
             action.all_path_patterns = len(action.path_patterns["n_rules"]) + len(action.path_patterns["p_rules"]) < 1
 
-        if "permissions" in json_action and type(json_action["permissions"]) == str:
+        if type(json_action.get("permissions")) == str:
             perm = json_action["permissions"].strip()
             action.permissions = _permissions[perm] if perm in _permissions else ""
  
-        if "show_if_true" in json_action and type(json_action["show_if_true"]) == str:
+        if type(json_action.get("show_if_true")) == str:
             action.show_if_true = json_action["show_if_true"].strip()
+ 
+        action.cwd = None if type(json_action.get("cwd")) != str or len(json_action["cwd"].strip()) == 0 else json_action["cwd"].strip()
+ 
+        if type(json_action.get("use_shell")) == bool:
+            action.use_shell = json_action["use_shell"]
  
         action.idString = idString
         action.cmd_behaviour = afn_place_holders.get_behavior(action.command_line)
@@ -217,10 +232,10 @@ def _check_command_action(idString, json_action):
         #    * min_items must be greater than 0 - forced to 1 otherwise
         #    * min_items must be less than or equal to max_items if max_items is greater than 1 - force to equal if otherwise
         #
-        if "max_items" in json_action and isinstance(json_action["max_items"], int) and json_action["max_items"] > 0:
+        if type(json_action.get("max_items", None)) == int and json_action["max_items"] > 0:
             action.max_items = json_action["max_items"]
 
-        if "min_items" in json_action and isinstance(json_action["min_items"], int) and json_action["min_items"] > 1:
+        if type(json_action.get("min_items", None)) == int and json_action["min_items"] > 1:
             action.min_items = json_action["min_items"]
 
         if action.max_items == 0 or (action.min_items <= action.max_items):
