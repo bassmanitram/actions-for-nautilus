@@ -1,3 +1,9 @@
+# Release 1.7.0
+* Implement show-if-true - call a program to determine if an action is applicable to a selection (#46)
+* Implement ability to have items in the config that are ignored when building the 
+  context menu (#57)
+* Make the save button clearer when there are changes that are needed (#60)
+
 # Release 1.6.1
 
 **ALL USERS SHOULD UPDATE TO THIS RELEASE**
