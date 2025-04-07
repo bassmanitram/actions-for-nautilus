@@ -8,14 +8,9 @@ from gi.repository import Gio, GLib
 HOME = os.environ.get('HOME')
 _config_path = HOME + "/.local/share/actions-for-nautilus/config.json"
 
-_default_config = {
-    "actions": []
-}
-
-#
-# The config dict
-#
-_config = _default_config
+def _dump_dict(o) -> str:
+    attrs = o.__dict__
+    return ', '.join("%s: %s" % item for item in sorted(attrs.items(), key=lambda i: i[0]))
 
 _filetypes = {
     "unknown":       [Gio.FileType(0)],
@@ -36,7 +31,42 @@ _permissions = {
 }
 
 debug = False
+def debug_print(str):
+    if debug:
+        print(str)
 
+class CommandAction():
+    def __init__(self):
+        self.label  = ""
+        self.command_line = ""
+        self.cmd_behaviour = ""
+        self.cwd = ""
+        self.show_if_true = ""
+        self.permissions = ""
+        self.use_shell = False
+        self.min_items = 1
+        self.max_items = 0
+        self.all_mimetypes = True
+        self.mimetypes = []
+        self.all_filetypes = True
+        self.filetypes = []
+        self.all_path_patterns = True
+        self.path_patterns = []
+        self.idString = ""
+
+    def __repr__(self) -> str:
+        return _dump_dict(self)
+
+class MenuAction():
+    def __init__(self):
+        self.label  = ""
+        self.sort = True
+        self.actions = []
+        self.idString = ""
+
+    def __repr__(self) -> str:
+        return _dump_dict(self)
+        
 class ActionsForNautilusConfig():
 
     def __init__(self):
@@ -47,42 +77,37 @@ class ActionsForNautilusConfig():
         if debug:
             print("Initialized")
 
-    def get_config(self):
-        return self.__config
-
     def get_mtime(self):
         return self.__mtime
 
     def update_config(self):
-        my_config = {
-            "actions": []
-        }
+        my_actions = []
 
         try:
             if os.path.exists(_config_path):
                 self.__mtime = os.path.getmtime(_config_path)
                 with open(_config_path) as json_file:
-                    my_config.update(json.load(json_file))
+                    file_config = json.load(json_file)
                     global debug
-                    debug = "debug" in my_config and my_config["debug"]
-                    actions = my_config.get("actions", [])
-                    if type(actions) == list:
-                        my_config["actions"] = list(filter(None, map(lambda action: _check_action(str(action[0]), action[1]), enumerate(actions))))    
+                    debug = file_config.get("debug", False)
+                    self.sort = file_config.get("sort", "manual") == "auto"
+                    json_actions = file_config.get("actions", [])
+                    if type(json_actions) == list:
+                        my_actions = list(filter(None, map(lambda action: _check_action(str(action[0]), action[1]), enumerate(json_actions))))    
                     else:
-                        my_config["actions"] = []
-                    self.__config = my_config
+                        my_actions = []
+                    self.actions = my_actions
             else:
                 print("Config file " + _config_path + " does not exist")
         except Exception as e:
             print("Config file " + _config_path + " load failed", e)
     
         if debug:
-            print(json.dumps(self.__config, default=_fix_json))
+            print(_dump_dict(self))
 
     def reset_config(self):
-        self.__config = {
-            "actions": []
-        }
+        self.actions = []
+        self.sort = False
         self.__mtime = None
 ###
 ### fix non-JSON-able objects
@@ -102,8 +127,8 @@ def _check_config_change(config_object):
     elif this_mtime is None and last_mtime is not None:
         print("WATCHER THREAD: resetting config")
         config_object.reset_config()
-#    else:
-#        print("WATCHER THREAD: config not changed")
+    else:
+        debug_print("WATCHER THREAD: config not changed")
     return True
 
 #
@@ -126,71 +151,79 @@ def _watch_config_change(config_object):
 #
 # Triage the action based on type
 #
-def _check_action(idString, action):
-    config_type = action.get("type")
+def _check_action(idString, json_action):
+    config_type = json_action.get("type")
     if config_type == "menu":
-        return _check_menu_action(idString, action)
+        return _check_menu_action(idString, json_action)
     elif config_type == "command":
-        return _check_command_action(idString, action)
+        return _check_command_action(idString, json_action)
 
-    print("Ignoring action: missing/invalid type property", action)
+    print("Ignoring action: missing/invalid type property", json_action)
 
 #
 # Normalize a menu action
 #
-def _check_menu_action(idString, action):
-    action["label"] = action["label"].strip() if "label" in action and type(action["label"]) == str else ""
-    action["sort"] = "sort" in action and action["sort"] == "auto"
-    if (len(action["label"]) > 0 and
-        "actions" in action and 
-        type(action["actions"]) == list):
-        action["actions"] = list(filter(None, map(lambda sub_action: _check_action(idString + "_" + str(sub_action[0]), sub_action[1]), enumerate(action["actions"]))))
-        action["idString"] = idString
-        if len(action["actions"]) > 0:
+def _check_menu_action(idString, json_action):
+    if json_action.get("disabled", False):
+        debug_print("Ignoring menu action: disabled; {json_action}")
+        return
+    action = MenuAction()
+    action.label = json_action["label"].strip() if type(json_action.get("label","")) == str else ""
+    action.sort = json_action.get("sort", "manual") == "auto"
+    if (len(action.label) > 0 and
+    "actions" in json_action and 
+    type(json_action["actions"]) == list):
+        action.actions = list(filter(None, map(lambda sub_action: _check_action(idString + "_" + str(sub_action[0]), sub_action[1]), enumerate(json_action["actions"]))))
+        action.idString = idString
+        if len(action.actions) > 0:
             return action
 
-        print("Ignoring action menu: no valid sub actions", action)
+        print("Ignoring action menu: no valid sub actions", json_action)
         return None
 
-    print("Ignoring menu action: missing properties", action)
+    print("Ignoring menu action: missing properties", json_action)
 
 #
 # Normalize a command action
 #
-def _check_command_action(idString, action):
-    action["label"] = action["label"].strip() if "label" in action and type(action["label"]) == str else ""
-    action["command_line"] = action["command_line"].strip() if "command_line" in action and type(action["command_line"]) == str else ""
-    if (len(action["label"]) > 0 and
-        len(action["command_line"]) > 0):
+def _check_command_action(idString, json_action):
+    if "disabled" in json_action and json_action["disabled"]:
+        debug_print(f"Ignoring command action: disabled; {json_action}")
+        return
+    action = CommandAction()
+    action.label = json_action["label"].strip() if "label" in json_action and type(json_action["label"]) == str else ""
+    action.command_line = json_action["command_line"].strip() if "command_line" in json_action and type(json_action["command_line"]) == str else ""
+    if (len(action.label) > 0 and
+    len(action.command_line) > 0):
 
-        if "mimetypes" in action and type(action["mimetypes"]) == list:
-            action["all_mimetypes"] = ( "*/*" in action["mimetypes"] or "*" in action["mimetypes"])
-            if not action["all_mimetypes"]:
-                action["mimetypes"] = _split_rules(_remove_duplicates_by_key(list(filter(None, map(_gen_mimetype, action["mimetypes"]))),"mimetype"))
-                action["all_mimetypes"] = len(action["mimetypes"]["n_rules"]) + len(action["mimetypes"]["p_rules"]) < 1
-        else:
-            action["all_mimetypes"] = True
+        if type(json_action.get("mimetypes")) == list:
+            action.all_mimetypes = ( "*/*" in json_action["mimetypes"] or "*" in json_action["mimetypes"])
+            if not action.all_mimetypes:
+                action.mimetypes = _split_rules(_remove_duplicates_by_key(list(filter(None, map(_gen_mimetype, json_action["mimetypes"]))),"mimetype"))
+                action.all_mimetypes = len(action.mimetypes["n_rules"]) + len(action.mimetypes["p_rules"]) < 1
 
-        if "filetypes" in action and type(action["filetypes"]) == list:
-            action["filetypes"] = _split_rules(_remove_duplicates_by_key(_flatten_list(list(filter(None, map(_gen_filetype, action["filetypes"])))),"filetype"))
-            action["all_filetypes"] = len(action["filetypes"]["n_rules"]) + len(action["filetypes"]["p_rules"]) < 1
-        else:
-            action["all_filetypes"] = True
+        if type(json_action.get("filetypes")) == list:
+            action.filetypes = _split_rules(_remove_duplicates_by_key(_flatten_list(list(filter(None, map(_gen_filetype, json_action["filetypes"])))),"filetype"))
+            action.all_filetypes = len(action.filetypes["n_rules"]) + len(action.filetypes["p_rules"]) < 1
 
-        if "path_patterns" in action and type(action["path_patterns"]) == list:
-            action["path_patterns"] = _split_rules(_remove_duplicates_by_key(_flatten_list(list(filter(None, map(_gen_pattern, action["path_patterns"])))),"path_pattern"))
-            action["all_path_patterns"] = len(action["path_patterns"]["n_rules"]) + len(action["path_patterns"]["p_rules"]) < 1
-        else:
-            action["all_path_patterns"] = True
+        if type(json_action.get("path_patterns")) == list:
+            action.path_patterns = _split_rules(_remove_duplicates_by_key(_flatten_list(list(filter(None, map(_gen_pattern, json_action["path_patterns"])))),"path_pattern"))
+            action.all_path_patterns = len(action.path_patterns["n_rules"]) + len(action.path_patterns["p_rules"]) < 1
 
-        if "permissions" in action and type(action["permissions"]) == str:
-            perm = action["permissions"].strip()
-            action["permissions"] = _permissions[perm] if perm in _permissions else ""
-        else:
-            action["permissions"] = ""
+        if type(json_action.get("permissions")) == str:
+            perm = json_action["permissions"].strip()
+            action.permissions = _permissions[perm] if perm in _permissions else ""
  
-        action["idString"] = idString
-        action["cmd_behavior"] = afn_place_holders.get_behavior(action["command_line"])
+        if type(json_action.get("show_if_true")) == str:
+            action.show_if_true = json_action["show_if_true"].strip()
+ 
+        action.cwd = None if type(json_action.get("cwd")) != str or len(json_action["cwd"].strip()) == 0 else json_action["cwd"].strip()
+ 
+        if type(json_action.get("use_shell")) == bool:
+            action.use_shell = json_action["use_shell"]
+ 
+        action.idString = idString
+        action.cmd_behaviour = afn_place_holders.get_behavior(action.command_line)
 
         #
         # Checking max_items and min_items
@@ -199,24 +232,20 @@ def _check_command_action(idString, action):
         #    * min_items must be greater than 0 - forced to 1 otherwise
         #    * min_items must be less than or equal to max_items if max_items is greater than 1 - force to equal if otherwise
         #
-       	if "max_items" in action and isinstance(action["max_items"], int) and action["max_items"] > 0:
-            pass
-        else:
-            action["max_items"] = 0
+        if type(json_action.get("max_items", None)) == int and json_action["max_items"] > 0:
+            action.max_items = json_action["max_items"]
 
-       	if "min_items" in action and isinstance(action["min_items"], int) and action["min_items"] > 1:
-            pass
-        else:
-            action["min_items"] = 1
+        if type(json_action.get("min_items", None)) == int and json_action["min_items"] > 1:
+            action.min_items = json_action["min_items"]
 
-        if action["max_items"] == 0 or (action["min_items"] <= action["max_items"]):
+        if action.max_items == 0 or (action.min_items <= action.max_items):
             pass
         else:
-            action["min_items"] = action["max_items"]
+            action.min_items = action.max_items
 
         return action
 
-    print("Ignoring command action: missing properties", action)
+    print("Ignoring command action: missing properties", json_action)
 
 #
 # Generates an object that facilitates fast mimetype checks

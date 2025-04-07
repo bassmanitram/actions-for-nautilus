@@ -128,6 +128,14 @@
 						"hidden": true
 					}
 				},
+				"disabled": {
+					"type": "boolean",
+					"title": "Disabled",
+					"options": {
+						"infoText": "#submenu:disabled",
+						"grid_columns": 6
+					}
+				},
 				"label": {
 					"type": "string",
 					"minLength": 1,
@@ -140,7 +148,8 @@
 					"$ref": "#/$defs/SortStyles",
 					"title": "Submenu sorting",
 					"options": {
-						"infoText": "#submenu:sort"
+						"infoText": "#submenu:sort",
+						"grid_columns": 6
 					}
 				},
 				"actions": {
@@ -179,6 +188,14 @@
 						"hidden": true
 					}
 				},
+				"disabled": {
+					"type": "boolean",
+					"title": "Disabled",
+					"options": {
+						"infoText": "#command:disabled",
+						"grid_columns": 1
+					}
+				},
 				"label": {
 					"type": "string",
 					"minLength": 1,
@@ -196,6 +213,16 @@
 					"options": {
 						"infoText": "#command:command_line",
 						"grid_columns": 5,
+						"grid_break": true
+					}
+				},
+				"show_if_true": {
+					"type": "string",
+					"minLength": 1,
+					"title": "Show if true",
+					"options": {
+						"infoText": "#command:show_if_true",
+						"grid_columns": 12,
 						"grid_break": true
 					}
 				},
