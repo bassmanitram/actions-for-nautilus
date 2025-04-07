@@ -292,7 +292,8 @@ actions or further nested menus.
       "actions": [
         ...
       ],
-      "sort": "manual or auto"
+      "sort": "manual or auto",
+      "disabled": false
     },
     ...
 ```
@@ -310,6 +311,11 @@ Menu actions are expected to contain two additional properties:
   * `auto` - The extension sorts the items in alphanumeric order
 
   *Default* - `manual`
+
+* `disabled` - OPTIONAL - used to allow a menu to be present in the configuration, but
+  ignored when the Gnome Files context menu is constructed
+
+  *Default* - `false`.
 
 When the Nautilus/Files context menu is activated for a selection, the extension assesses 
 all the commands configured within a menu to establish if the commands are relevant for the current 
