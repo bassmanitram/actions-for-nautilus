@@ -21,12 +21,17 @@ class ActionsForNautilus(Nautilus.MenuProvider, GObject.GObject):
         self.previous_selection_path = None
         self.previous_selection_menu = None
 
+    def _list_cached_paths(self):
+        print(f'previous_background_path: {self.previous_background_path}')
+        print(f'previous_selection_path: {self.previous_selection_path}')
+
 #
 # Menu provider interface implementation
 #
     def get_file_items(self, *args):
         files = args[-1]
         if len(files) < 1:
+            afn_config.debug_print("NO FILE")
             return None
         id = None
         # Debouncing double clicks
@@ -34,6 +39,9 @@ class ActionsForNautilus(Nautilus.MenuProvider, GObject.GObject):
             file_path = files[0].get_location().get_path()
             mod_time = os.path.getmtime(file_path)
             id = f'{file_path}-{mod_time}'
+            if afn_config.debug:
+                print(f"SINGLE FILE: {id}")
+                self._list_cached_paths()
             if id == self.previous_selection_path:
                 afn_config.debug_print(f'FILES: Using previous selection menu for "{file_path}"')
                 return self.previous_background_menu
@@ -46,6 +54,9 @@ class ActionsForNautilus(Nautilus.MenuProvider, GObject.GObject):
         if id is not None:
             self.previous_selection_path = id
             self.previous_selection_menu = menu
+        if afn_config.debug:
+            self._list_cached_paths()
+            print(f"END FILE: {id}")
         return menu
 
     def get_background_items(self, *args):
@@ -53,6 +64,9 @@ class ActionsForNautilus(Nautilus.MenuProvider, GObject.GObject):
         file_path = file.get_location().get_path()
         mod_time = os.path.getmtime(file_path)
         id = f'{file_path}-{mod_time}'
+        if afn_config.debug:
+            print(f"BACKGROUND: {id}")
+            self._list_cached_paths()
         # Debouncing background calls
         if id == self.previous_background_path:
             afn_config.debug_print(f'BACKGROUND: Using previous background menu for "{file_path}"')
@@ -67,6 +81,9 @@ class ActionsForNautilus(Nautilus.MenuProvider, GObject.GObject):
         menu = afn_menu.create_menu_items(self.config, [file], "Background", _run_command)
         self.previous_background_path = id
         self.previous_background_menu = menu
+        if afn_config.debug:
+            self._list_cached_paths()
+            print(f"END BACKGROUND: {id}")
         return menu
 
 
@@ -84,7 +101,7 @@ def _run_command(menu, config_item, files):
 
     context = None
     for i in range(count):
-        cwd = None if config_item.cwd is None else afn_place_holders.resolve(config_item.cwd, 0, [files[i]], False)
+        cwd = None if config_item.cwd is None else afn_place_holders.resolve(config_item.cwd, 0, [files[i]], False, None)[0]
         afn_config.debug_print(f'cwd: {cwd}')
 
         (final_command_line, context) = afn_place_holders.resolve(config_item.command_line, i, files, True, context)
