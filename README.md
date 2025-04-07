@@ -324,11 +324,12 @@ Actions with a `type` property of `command` define actions that, when clicked on
     {
       "type": "command",
       "label": "My Command",
-      command_line: "my-script.sh %F %c",
-      cwd: "%d",
-      use_shell: true,
-      min_items: 1,
-      max_items: 1,
+      "command_line": "my-script.sh %F %c",
+      "cwd": "%d",
+      "show_if_true": "...",
+      "use_shell": true,
+      "min_items": 1,
+      "max_items": 1,
       "mimetypes": [
         ...
       ],
@@ -337,7 +338,8 @@ Actions with a `type` property of `command` define actions that, when clicked on
       ],
       "path_patterns": [
         ...
-      ]
+      ],
+      "disabled": false
     },
     ...
 ```
@@ -373,6 +375,14 @@ These are expected to have the following additional properties:
   resolve to a single valid directory name
 
   *Default* - undefined
+
+* `show_if_true` - OPTIONAL - a command or shell pipeline to execute in order
+  to establish whether the action should be visible in the Gnome Files context
+  menu. The command/pipeline should emit a single line on `stdout` with the word
+  `true` in order to cause the action to appear. Any other output from the command/
+  pipeline will be prevent the action from appearing
+
+  *Default* - undefined (and, so, unused)
 
 * `use_shell` - OPTIONAL - a boolean value (`true` or `false`) that indicates
   whether the command should be run by the default system shell. If the command
@@ -516,6 +526,11 @@ These are expected to have the following additional properties:
   Any other value will disable the permissions check.
 
   *Default* - user access permissions are not checked.
+
+* `disabled` - OPTIONAL - used to allow an action to be present in the configuration, but
+  ignored when the Gnome Files context menu is constructed
+
+  *Default* - `false`.
 
 With the `mimetypes`, `filetypes` and `path_patterns` filter lists, all selected files
 must match at least one non-negated rule (if there are any non-negated rules), while 
