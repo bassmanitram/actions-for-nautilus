@@ -1,6 +1,6 @@
 import subprocess, shlex, inspect
 from gi.repository import Nautilus, GObject
-import afn_place_holders, afn_config, afn_menu
+import afn_place_holders, afn_config, afn_menu, os
 
 ###
 ### A multi-version alternative to require_version
@@ -18,7 +18,7 @@ class ActionsForNautilus(Nautilus.MenuProvider, GObject.GObject):
         self.config = afn_config.ActionsForNautilusConfig()
         self.previous_background_path = None
         self.previous_background_menu = None
-        self.previous_selection_paths = None
+        self.previous_selection_path = None
         self.previous_selection_menu = None
 
 #
@@ -28,30 +28,41 @@ class ActionsForNautilus(Nautilus.MenuProvider, GObject.GObject):
         files = args[-1]
         if len(files) < 1:
             return None
-        selection_paths = ' '.join(f.get_location().get_path() for f in files)
-        if selection_paths == self.previous_selection_paths:
-            afn_config.debug_print(f'FILES: Using previous selection menu for "{selection_paths}"')
-            return self.previous_selection_menu
-        afn_config.debug_print(f'FILES: "{selection_paths}"')
-        menu = afn_menu.create_menu_items(self.config.get_config(), files, "File", _run_command)
-        self.previous_selection_paths = selection_paths
-        self.previous_selection_menu = menu
+        id = None
+        # Debouncing double clicks
+        if len(files) == 1:
+            file_path = files[0].get_location().get_path()
+            mod_time = os.path.getmtime(file_path)
+            id = f'{file_path}-{mod_time}'
+            if id == self.previous_selection_path:
+                afn_config.debug_print(f'FILES: Using previous selection menu for "{file_path}"')
+                return self.previous_background_menu
+
+        afn_config.debug_print(f'FILES: {" ".join(f.get_location().get_path() for f in files)}')
+        menu = afn_menu.create_menu_items(self.config, files, "File", _run_command)
+        if id is not None:
+            self.previous_selection_path = id
+            self.previous_selection_menu = menu
         return menu
 
     def get_background_items(self, *args):
         file = args[-1]
         file_path = file.get_location().get_path()
-        if file_path == self.previous_background_path:
+        mod_time = os.path.getmtime(file_path)
+        id = f'{file_path}-{mod_time}'
+        # Debouncing background calls
+        if id == self.previous_background_path:
             afn_config.debug_print(f'BACKGROUND: Using previous background menu for "{file_path}"')
             return self.previous_background_menu
-        if file_path == self.previous_selection_paths:
+        # Debouncing double clicks
+        if id == self.previous_selection_path:
             afn_config.debug_print(f'BACKGROUND: Using previous selection menu for "{file_path}"')
-            self.previous_background_path = self.previous_selection_paths
+            self.previous_background_path = self.previous_selection_path
             self.previous_background_menu = self.previous_selection_menu
             return self.previous_selection_menu
         afn_config.debug_print(f'BACKGROUND: "{file_path}"')
-        menu = afn_menu.create_menu_items(self.config.get_config(), [file], "Background", _run_command)
-        self.previous_background_path = file_path
+        menu = afn_menu.create_menu_items(self.config, [file], "Background", _run_command)
+        self.previous_background_path = id
         self.previous_background_menu = menu
         return menu
 
