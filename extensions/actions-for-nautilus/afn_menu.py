@@ -5,6 +5,38 @@ import os, afn_config, traceback
 import subprocess
 from urllib.parse import urlparse
 from gi.repository import Nautilus, Gio
+from collections import deque
+
+class MenuCacheItem:
+	def __init__(self, group, path, mtime, menu):
+		self.group = group
+		self.path = path
+		self.mtime = mtime
+		self.menu = menu
+
+class MenuCache:
+	def __init__(self):
+		self.cache = deque([])
+
+	def get_menu(self, group,path, mtime):
+		return next((item.menu for item in reversed(self.cache) if item.group == group and item.path == path and item.mtime == mtime), None)
+
+	def put_menu(self, group, path, mtime, menu):
+		exists = next((index for (index,item) in enumerate(self.cache) if item.group == group and item.path == path), len(self.cache))
+		if exists < len(self.cache):
+			self.cache[exists].mtime = mtime
+			self.cache[exists].menu = menu
+		else:
+			self.cache.append(MenuCacheItem(group, path, mtime, menu))
+
+		while len(self.cache) > 5:
+			self.cache.popleft()
+
+	def clear(self):
+		self.cache = deque([])
+
+menu_cache = MenuCache()
+last_config_time = None
 
 #
 # Consolidate background and selection calls to create menus
@@ -12,13 +44,25 @@ from gi.repository import Nautilus, Gio
 # files is a list of __gi__.NautilusVFSFile instances
 #
 def create_menu_items(config, files, group, act_function):
-#	if (len(files) > 0):
-#		print(files[0].__class__)
-#		print(files[0].__class__.__name__)
-#		for base in files[0].__class__.__bases__:
-#			print(base.__name__, base)
-#		print(dir(files[0]))
+	global menu_cache
+	global last_config_time
+	# Clear cache if the config has been updated
+	if last_config_time is None or last_config_time < config.mtime:
+		menu_cache.clear()
+		last_config_time = config.mtime
+
 	try:
+		# For single files get any cached menu and return that
+		single_file_path = files[0].get_location().get_path() if len(files) == 1 else None
+		mtime = None
+		if single_file_path is not None:
+			mtime = os.path.getmtime(single_file_path)
+			cached_menu = menu_cache.get_menu(group, single_file_path, mtime)
+			if cached_menu is not None:
+				if afn_config.debug:
+					print(f"RETURNING CACHED MENU FOR {single_file_path}: {cached_menu}")
+				return cached_menu
+		
 		my_files = list(filter(None, map(lambda file: {
 				"mimetype": file.get_mime_type(),
 				"filetype": file.get_file_type(),
@@ -27,8 +71,16 @@ def create_menu_items(config, files, group, act_function):
 				"folder": os.path.dirname(file.get_location().get_path()),
 				"uri": urlparse(file.get_uri())
 			} if file.get_location().get_path() is not None else None, files)))
+		
 		actions = list(filter(None, map(lambda action: _create_menu_item(action, my_files, group, act_function), config.actions)))
-		return sorted(actions, key=lambda element: element.props.label) if config.sort else actions
+		menu = sorted(actions, key=lambda element: element.props.label) if config.sort else actions
+
+		# For single files cache the menu
+		if single_file_path is not None:
+			menu_cache.put_menu(group, single_file_path, mtime, menu)
+		
+		return menu
+
 	except Exception as e:
 		print("Error constructing menu items")
 		print(group)
@@ -36,7 +88,7 @@ def create_menu_items(config, files, group, act_function):
 		print(e)
 		print(traceback.format_exc())
 		return []
-
+	
 #
 # Triage the menu item creation based on type
 #

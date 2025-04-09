@@ -78,14 +78,14 @@ class ActionsForNautilusConfig():
             print("Initialized")
 
     def get_mtime(self):
-        return self.__mtime
+        return self.mtime
 
     def update_config(self):
         my_actions = []
 
         try:
             if os.path.exists(_config_path):
-                self.__mtime = os.path.getmtime(_config_path)
+                self.mtime = os.path.getmtime(_config_path)
                 with open(_config_path) as json_file:
                     file_config = json.load(json_file)
                     global debug
@@ -108,7 +108,7 @@ class ActionsForNautilusConfig():
     def reset_config(self):
         self.actions = []
         self.sort = False
-        self.__mtime = None
+        self.mtime = None
 ###
 ### fix non-JSON-able objects
 ###

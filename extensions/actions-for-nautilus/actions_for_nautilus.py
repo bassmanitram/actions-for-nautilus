@@ -16,76 +16,33 @@ class ActionsForNautilus(Nautilus.MenuProvider, GObject.GObject):
 
     def __init__(self):
         self.config = afn_config.ActionsForNautilusConfig()
-        self.previous_background_path = None
-        self.previous_background_menu = None
-        self.previous_selection_path = None
-        self.previous_selection_menu = None
-
-    def _list_cached_paths(self):
-        print(f'previous_background_path: {self.previous_background_path}')
-        print(f'previous_selection_path: {self.previous_selection_path}')
 
 #
 # Menu provider interface implementation
 #
     def get_file_items(self, *args):
         files = args[-1]
-        if len(files) < 1:
-            afn_config.debug_print("NO FILE")
-            return None
-        id = None
-        # Debouncing double clicks
-        if len(files) == 1:
-            file_path = files[0].get_location().get_path()
-            mod_time = os.path.getmtime(file_path)
-            id = f'{file_path}-{mod_time}'
-            if afn_config.debug:
-                print(f"SINGLE FILE: {id}")
-                self._list_cached_paths()
-            if id == self.previous_selection_path:
-                afn_config.debug_print(f'FILES: Using previous selection menu for "{file_path}"')
-                return self.previous_background_menu
-
-        self.previous_selection_path = None
-        self.previous_selection_menu = None
-
-        afn_config.debug_print(f'FILES: {" ".join(f.get_location().get_path() for f in files)}')
-        menu = afn_menu.create_menu_items(self.config, files, "File", _run_command)
-        if id is not None:
-            self.previous_selection_path = id
-            self.previous_selection_menu = menu
         if afn_config.debug:
-            self._list_cached_paths()
-            print(f"END FILE: {id}")
+            print(f'GET FILES: {" ".join(f.get_location().get_path() for f in files)}')
+
+        if len(files) < 1:
+            if afn_config.debug:
+                print("NO FILE")
+            return None
+
+        menu = afn_menu.create_menu_items(self.config, files, "File", _run_command)
+        if afn_config.debug:
+            print(f"END GET FILES")
         return menu
 
     def get_background_items(self, *args):
         file = args[-1]
-        file_path = file.get_location().get_path()
-        mod_time = os.path.getmtime(file_path)
-        id = f'{file_path}-{mod_time}'
         if afn_config.debug:
-            print(f"BACKGROUND: {id}")
-            self._list_cached_paths()
-        # Debouncing background calls
-        if id == self.previous_background_path:
-            afn_config.debug_print(f'BACKGROUND: Using previous background menu for "{file_path}"')
-            return self.previous_background_menu
-        # Debouncing double clicks
-        if id == self.previous_selection_path:
-            afn_config.debug_print(f'BACKGROUND: Using previous selection menu for "{file_path}"')
-            self.previous_background_path = self.previous_selection_path
-            self.previous_background_menu = self.previous_selection_menu
-            return self.previous_selection_menu
-        afn_config.debug_print(f'BACKGROUND: "{file_path}"')
+            print(f'GET BACKGROUND: {file.get_location().get_path()}')
         menu = afn_menu.create_menu_items(self.config, [file], "Background", _run_command)
-        self.previous_background_path = id
-        self.previous_background_menu = menu
         if afn_config.debug:
-            self._list_cached_paths()
-            print(f"END BACKGROUND: {id}")
+            print(f"END BACKGROUND")
         return menu
-
 
 #
 # Command execution
