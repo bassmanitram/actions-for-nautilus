@@ -1,3 +1,9 @@
+actions-for-nautilus (1.7.1) stable; urgency=high
+  * Fix menu caching bug that was causing the wrong menu to be used
+    for folders in a parent folder list
+
+ -- Martin Bartlett <martin.j.bartlett@gmail.com>  Wed, 09 Apr 2025 17:00:00 +0200
+
 actions-for-nautilus (1.7.0) stable; urgency=medium
   * Implement show_if_true to run a command to establish
     applicability of an action to a certain selection.

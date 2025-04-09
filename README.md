@@ -23,6 +23,7 @@ including:
     'symbolic-link' ... - (matching and non-matching conditions supported),
   * full path pattern matching, expressed as glob patterns or regular expressions, again
     with support for matching and non-matching conditions.
+  * even invoking an external program to decide if an action should be visible
 * execution of an arbitrary command/script when a menu item is activated, with
   the same "PLURAL" and "SINGULAR" semantics as the 
   `filemanager/nautilus-actions` project
