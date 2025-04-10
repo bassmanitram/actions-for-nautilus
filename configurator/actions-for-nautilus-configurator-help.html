@@ -53,6 +53,7 @@
 							<li><a href="#mimetypes">Mimetypes</a></li>
 							<li><a href="#file-types">File types</a></li>
 							<li><a href="#path-patterns">Path patterns</a></li>
+							<li><a href="#strict-match">Strict match</a></li>
 							<li><a href="#show-if-true">Show if true</a></li>
 						</ul>
 					</li>
@@ -454,6 +455,28 @@
 			mixing standard and negative rules <em>may</em> be confusing, but may also be useful in breaking down
 			complex patterns into simpler components.</p>
 
+		<h3 id="strict-match">Strict match</h3>
+		<p><a href="mimetypes">Mimetypes</a>, <a href="file-types">File types</a>, and <a href="path-patterns">Path patterns</a> have
+		an optional switch named <code>Strict match</code>, whose default value is <code>false</code>.</p>
+
+		<p>General, when this is set to <code>true</code>, it causes the extension to apply "strict" matching to the files in a
+		selection. So, if you select a set of files, while your action may accept multiple different criteria (say, multiple
+		different file types), all the selected files must match the <em>same</em> criteria (e.g. must be of the same filetype).</p>
+
+		<p>
+			Technically, this has a slightly different meaning depending on which of the above the switch applys to:
+			<ul>
+				<li>In the case of file types it means that all selected files must have the same file type.</li>
+				<li>In the case of mimetypes it means that all selected files must have the same mimetype. In particular it does <em>not</em> mean that
+					that each file must match the same mimetype <em>rule</em>. So for example, if you specify <code>*/*</code> as your mimetype, without 
+					strict matching, all files in the selection will pass. With strict matching, only if the selection contains files with exactly 
+					the same mimetype will it pass for the action.
+				</li>
+				<li>HOWEVER, in the case of path patterns, it means that all selected files must match <em>the same path pattern rule</em> as that which matched
+					the first file in the selection list (i.e. semantically the <em>opposite</em> of mimetypes and filetypes). Note also that it does <em>not</em>
+					mean that all files must match <em>a</em> same rule. The rule that is found to match the first file in the selection must match all files.</li>
+			</ul>
+		</p>
 
 		<h3 id="show-if-true">Show if true</h3>
 		<p>And, finally, the most flexible way of choosing whether a command action should be shown for a particular

@@ -4,20 +4,24 @@ const primitives = [
 	'string'
 ]
 
+const ui_structs = [
+	"Basic",
+	"FileTypes",
+	"PathPatterns",
+	"MimeTypes"
+]
+
 /*
- * These two are to do with the fact that the "Basic" tab in JSON Editor cannot
- * be formatted nicely unless the basic property information is itself in an
- * object.
+ * These two are to do with the fact that a tab in JSON Editor cannot
+ * be formatted nicely unless the property information is itself in objects.
  * 
  * So these convert to/from the backend format by doing that
  */
 function convertToBackendFormat(internalConfig) {
 	const backendConfig = {};
 	for (const [key, value] of Object.entries(internalConfig)) {
-		if (key == "Basic") {
-			for (const [bkey, bvalue] of Object.entries(value)) {
-				backendConfig[bkey] = bvalue;
-			}
+		if (ui_structs.includes(key)) {
+			backendConfig = Object.assign(backendConfig, value)
 		} else if (key == "actions") {
 			backendConfig.actions = value.map(convertToBackendFormat);
 		} else {
@@ -28,17 +32,42 @@ function convertToBackendFormat(internalConfig) {
 }
 
 function convertToFrontendFormat(backendConfig, nested) {
-	const internalConfig = {};
+	const internalConfig = (nested && backendConfig.type == "command") ? {
+		PathPatterns: {
+			path_patterns_strict_match: false,
+			path_patterns: []
+		},
+		MimeTypes: {
+			mimetypes_strict_match: false,
+			mimetypes: []
+		},
+		FileTypes: {
+			filetypes_strict_match: false,
+			filetypes: []
+		},
+	}: {};
 	let basic;
+	let mimetypes;
+	let filetypes;
+	let path_patterns;
 	for (const [key, value] of Object.entries(backendConfig)) {
 		if (key == "actions") {
 			internalConfig.actions = value.map(action => convertToFrontendFormat(action, true));
+		} else if (nested && key.startsWith("mimetypes")) {
+			internalConfig.MimeTypes[key] = value
+		} else if (nested && key.startsWith("filetypes")) {
+			internalConfig.FileTypes[key] = value
+		} else if (nested && key.startsWith("path_patterns")) {
+			internalConfig.PathPatterns[key] = value
 		} else if (nested && primitives.includes(typeof value)) {
 			if (!basic) basic = internalConfig.Basic = {};
 			basic[key] = value;
 		} else {
 			internalConfig[key] = value;
 		}
+	}
+	if (!nested) {
+		console.log(JSON.stringify(internalConfig,null,4))
 	}
 	return internalConfig;
 }
@@ -262,3 +291,18 @@ JSONEditor.defaults.custom_validators.push((schema, value, path) => {
 	}
 	return errors;
 });
+
+/*
+ * Part 6
+ *
+ * The "strict match" switches need to be tweaked!
+ */
+defaultPostBuild = JSONEditor.AbstractEditor.prototype.postBuild
+JSONEditor.AbstractEditor.prototype.postBuild = function (value) {
+	const returnValue = defaultPostBuild.bind(this)(value);
+	if (this.path.endsWith("_strict_match")) {
+		const form_group = this.container.children[0];
+		form_group.classList.add("a4n-strict-match");
+	}
+	return returnValue
+}

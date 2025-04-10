@@ -223,6 +223,11 @@
 			background-color: #a1aab8;
 		}
 
+		.a4n-strict-match {
+			margin-top:0 !important;
+			margin-bottom:0.5rem !important;
+		}
+
 		/*
 		 * Remove right-end indentation effect and too much extra space 
 		 * at the bottom

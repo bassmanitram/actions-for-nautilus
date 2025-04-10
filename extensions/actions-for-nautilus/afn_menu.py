@@ -146,9 +146,9 @@ def _create_command_menu_item(action, files, group, activate_function):
 		(action.max_items == 0 or action.max_items >= len(files)) and
 		(action.min_items <= len(files)) and
 		(action.permissions == "" or _applicable_to_permissions(action, files)) and
-	    (action.all_mimetypes or _applicable_to_mimetype(action, files)) and
-	    (action.all_filetypes or _applicable_to_filetype(action, files)) and
-	    (action.all_path_patterns or _applicable_to_path_patterns(action, files))
+	    _applicable_to_mimetype(action, files) and
+	    _applicable_to_filetype(action, files) and
+	    _applicable_to_path_patterns(action, files)
 	):
 		return None
 	
@@ -183,28 +183,49 @@ def _create_command_menu_item(action, files, group, activate_function):
 # Returns True if a match is found for every one, otherwise False
 #
 def _applicable_to_mimetype(action, files):
-	return all(map(lambda file: (
+	if len(files) > 1 and action.mimetypes_strict_match:
+		# Exact match - the first file is checked for type acceptability,
+		# then all other files must have the same type as the first file
+		file_0_type = files[0]["mimetype"]
+		if (action.all_mimetypes
+		or ((len(action.mimetypes["p_rules"]) == 0 or file_0_type in action.mimetypes["p_rules"]) 
+	    and file_0_type not in action.mimetypes["n_rules"])):
+			return all(file_0_type == file["mimetype"] for file in files)
+		else:
+			return False
+
+	return True if action.all_mimetypes else (all(map(lambda file: (
 		(len(action.mimetypes["p_rules"]) == 0 or any(getattr(file["mimetype"],p_rule["comparator"])(p_rule["mimetype"]) for p_rule in action.mimetypes["p_rules"])) and
-		not any(getattr(file["mimetype"],n_rule["comparator"])(n_rule["mimetype"]) for n_rule in action.mimetypes["n_rules"])), files))
+		not any(getattr(file["mimetype"],n_rule["comparator"])(n_rule["mimetype"]) for n_rule in action.mimetypes["n_rules"])), files)))
 
 #
 # Compares each file type to the action filetypes
 # Returns True if a match is found for every one, otherwise False
 #
 def _applicable_to_filetype(action, files):
-	return all(map(lambda file: (
+	if len(files) > 1 and action.filetypes_strict_match:
+		# Exact match - the first file is checked for type acceptability,
+		# then all other files must have the same type as the first file
+		file_0_type = files[0]["filetype"]
+		if (action.all_filetypes
+		or ((len(action.filetypes["p_rules"]) == 0 or file_0_type in action.filetypes["p_rules"]) 
+	    and file_0_type not in action.filetypes["n_rules"])):
+			return all(file_0_type == file["filetype"] for file in files)
+		else:
+			return False
+
+	return True if (action.all_filetypes) else all(map(lambda file: (
 		(len(action.filetypes["p_rules"]) == 0 or any((file["filetype"] == p_rule["filetype"]) for p_rule in action.filetypes["p_rules"])) and
 		not any((file["filetype"] == n_rule["filetype"]) for n_rule in action.filetypes["n_rules"])), files))
-
 
 #
 # Compares each file path to the action path_patterns
 # Returns True if a match is found for every one, otherwise False
 #
 def _applicable_to_path_patterns(action, files):
-	return all(map(lambda file: (
+	return True if action.all_path_patterns else (all(map(lambda file: (
 		(len(action.path_patterns["p_rules"]) == 0 or any((getattr(p_rule["re"],p_rule["comparator"])(file["filepath"]) is not None) for p_rule in action.path_patterns["p_rules"])) and
-		(len(action.path_patterns["n_rules"]) == 0 or all((getattr(n_rule["re"],n_rule["comparator"])(file["filepath"]) is None) for n_rule in action.path_patterns["n_rules"]))), files))
+		(len(action.path_patterns["n_rules"]) == 0 or all((getattr(n_rule["re"],n_rule["comparator"])(file["filepath"]) is None) for n_rule in action.path_patterns["n_rules"]))), files)))
 
 #
 # Ensures that the user has at least the stated permissions to access each file

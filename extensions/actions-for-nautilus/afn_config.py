@@ -47,10 +47,13 @@ class CommandAction():
         self.min_items = 1
         self.max_items = 0
         self.all_mimetypes = True
+        self.mimetypes_strict_match = False
         self.mimetypes = []
         self.all_filetypes = True
+        self.filetypes_strict_match = False
         self.filetypes = []
         self.all_path_patterns = True
+        self.path_patterns_strict_match = False
         self.path_patterns = []
         self.idString = ""
 

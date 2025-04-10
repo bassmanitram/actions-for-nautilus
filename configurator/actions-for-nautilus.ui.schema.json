@@ -7,6 +7,38 @@
 			"pattern": "^(!?[A-Za-z0-9-]+\\/(([A-Za-z0-9-]+)|\\*))|(\\*)|(\\*\\/\\*)$",
 			"title": "Mimetype"
 		},
+		"MimeTypes": {
+			"type": "object",
+			"additionalProperties": false,
+			"format": "grid-strict",
+			"properties": {
+				"mimetypes": {
+					"type": "array",
+					"uniqueItems": true,
+					"format": "table",
+					"items": {
+						"$ref": "#/$defs/MimeType"
+					},
+					"title": "Mimetypes",
+					"options": {
+						"infoText": "#command:mimetypes",
+						"grid_columns": 9
+					}
+				},
+				"mimetypes_strict_match": {
+					"type": "boolean",
+					"title": "Strict match",
+					"options": {
+						"infoText": "#command:strict_match",
+						"grid_columns": 3
+					}
+				}
+			},
+			"required": [
+				"mimetypes",
+				"mimetypes_strict_match"
+			]
+		},
 		"PathPattern": {
 			"type": "string",
 			"format": "pattern",
@@ -14,6 +46,39 @@
 			"options": {
 				"infoText": "#command:path_pattern"
 			}
+		},
+		"PathPatterns": {
+			"type": "object",
+			"additionalProperties": false,
+			"format": "grid-strict",
+			"properties": {
+				"path_patterns": {
+					"type": "array",
+					"uniqueItems": true,
+					"format": "table",
+					"items": {
+						"$ref": "#/$defs/PathPattern"
+					},
+					"title": "Path patterns",
+					"options": {
+						"infoText": "#command:path_patterns",
+						"grid_columns": 9
+
+					}
+				},
+				"path_patterns_strict_match": {
+					"type": "boolean",
+					"title": "Strict match",
+					"options": {
+						"infoText": "#command:strict_match",
+						"grid_columns": 3
+					}
+				}
+			},
+			"required": [
+				"path_patterns",
+				"path_patterns_strict_match"
+			]
 		},
 		"SortStyles": {
 			"type": "string",
@@ -58,6 +123,41 @@
 			"options": {
 				"infoText": "#command:filetype"
 			}
+		},
+		"FileTypes": {
+			"type": "object",
+			"additionalProperties": false,
+			"format": "grid-strict",
+			"properties": {
+				"filetypes": {
+					"type": "array",
+					"uniqueItems": true,
+					"format": "table",
+					"items": {
+						"$ref": "#/$defs/FileType"
+					},
+					"title": "File types",
+					"options": {
+						"infoText": "#command:file_types",
+						"grid_columns": 9
+					}
+				},
+				"filetypes_strict_match": {
+					"type": "boolean",
+					"title": "Strict match",
+					"options": {
+						"infoText": "#command:strict_match",
+						"grid_columns": 3,
+						"containerAttributes": {
+							"data-a4n-class": "strict-match"
+						}			  	
+					}
+				}
+			},
+			"required": [
+				"filetypes",
+				"filetypes_strict_match"
+			]
 		},
 		"Action": {
 			"type": "object",
@@ -303,41 +403,23 @@
 						}
 					}
 				},
-				"mimetypes": {
-					"type": "array",
-					"uniqueItems": true,
-					"format": "table",
-					"items": {
-						"$ref": "#/$defs/MimeType"
-					},
+				"MimeTypes": {
+					"type": "object",
+					"format": "grid-strict",
 					"title": "Mimetypes",
-					"options": {
-						"infoText": "#command:mimetypes"
-					}
+					"$ref": "#/$defs/MimeTypes"
 				},
-				"filetypes": {
-					"type": "array",
-					"uniqueItems": true,
-					"format": "table",
-					"items": {
-						"$ref": "#/$defs/FileType"
-					},
+				"FileTypes": {
+					"type": "object",
+					"format": "grid-strict",
 					"title": "File types",
-					"options": {
-						"infoText": "#command:filetypes"
-					}
+					"$ref": "#/$defs/FileTypes"
 				},
-				"path_patterns": {
-					"type": "array",
-					"uniqueItems": true,
-					"format": "table",
-					"items": {
-						"$ref": "#/$defs/PathPattern"
-					},
+				"PathPatterns": {
+					"type": "object",
+					"format": "grid-strict",
 					"title": "Path patterns",
-					"options": {
-						"infoText": "#command:path_patterns"
-					}
+					"$ref": "#/$defs/PathPatterns"
 				}
 			},
 			"required": [

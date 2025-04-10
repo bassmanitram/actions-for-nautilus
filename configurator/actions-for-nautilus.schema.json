@@ -287,6 +287,14 @@
 						"grid_columns": 3
 					}
 				},
+				"mimetypes_strict_match": {
+					"type": "boolean",
+					"title": "Strict match",
+					"options": {
+						"infoText": "#command:strict_match",
+						"grid_columns": 1
+					}
+				},
 				"filetypes": {
 					"type": "array",
 					"uniqueItems": true,
@@ -300,6 +308,14 @@
 						"grid_columns": 2
 					}
 				},
+				"filetypes_strict_match": {
+					"type": "boolean",
+					"title": "Strict match",
+					"options": {
+						"infoText": "#command:strict_match",
+						"grid_columns": 1
+					}
+				},
 				"path_patterns": {
 					"type": "array",
 					"uniqueItems": true,
@@ -311,6 +327,14 @@
 					"options": {
 						"infoText": "#command:path_patterns",
 						"grid_columns": 2
+					}
+				},
+				"path_patterns_strict_match": {
+					"type": "boolean",
+					"title": "Strict match",
+					"options": {
+						"infoText": "#command:strict_match",
+						"grid_columns": 1
 					}
 				}
 			},
