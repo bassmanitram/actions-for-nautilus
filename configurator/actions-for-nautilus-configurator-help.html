@@ -467,7 +467,7 @@
 			Technically, this has a slightly different meaning depending on which of the above the switch applys to:
 			<ul>
 				<li>In the case of file types it means that all selected files must have the same Gnome file type.</li>
-				<li><p>In the case of mimetypes strict matching means that all selected files must have the same Gnome mimetype mimetype.</p>
+				<li><p>In the case of mimetypes strict matching means that all selected files must have the same mimetype.</p>
 					<p>In particular it does <em>not</em> mean that each file must match the same mimetype <em>rule</em>.
 					 So for example, if you specify
 					<p><pre>
@@ -484,6 +484,9 @@ audio/*</pre></p>
 				</li>
 			</ul>
 		</p>
+
+		<p>Note that with mimetypes and filetypes, you can specify an empty rule set and still set the <code>strict match</code> to true in order to effect an
+		"accept all files with the same type, no matter what that type is" rule (this trick has no effect on path pattern handling)</p>
 
 		<h3 id="show-if-true">Show if true</h3>
 		<p>And, finally, the most flexible way of choosing whether a command action should be shown for a particular
