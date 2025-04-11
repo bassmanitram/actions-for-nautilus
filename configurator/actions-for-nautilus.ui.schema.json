@@ -423,7 +423,10 @@
 				}
 			},
 			"required": [
-				"Basic"
+				"Basic",
+				"MimeTypes",
+				"FileTypes",
+				"PathPatterns"
 			],
 			"title": "Command",
 			"options": {

@@ -187,13 +187,12 @@ def _applicable_to_mimetype(action, files):
 		# Exact match - the first file is checked for type acceptability,
 		# then all other files must have the same type as the first file
 		file_0_type = files[0]["mimetype"]
-		if (action.all_mimetypes
-		or ((len(action.mimetypes["p_rules"]) == 0 or file_0_type in action.mimetypes["p_rules"]) 
-	    and file_0_type not in action.mimetypes["n_rules"])):
-			return all(file_0_type == file["mimetype"] for file in files)
-		else:
-			return False
+		return (_all_applicable_to_mimetype(action, [files[0]])
+		and all(file_0_type == file["mimetype"] for file in files))
 
+	return _all_applicable_to_mimetype(action, files)
+
+def _all_applicable_to_mimetype(action, files):
 	return True if action.all_mimetypes else (all(map(lambda file: (
 		(len(action.mimetypes["p_rules"]) == 0 or any(getattr(file["mimetype"],p_rule["comparator"])(p_rule["mimetype"]) for p_rule in action.mimetypes["p_rules"])) and
 		not any(getattr(file["mimetype"],n_rule["comparator"])(n_rule["mimetype"]) for n_rule in action.mimetypes["n_rules"])), files)))
@@ -207,13 +206,12 @@ def _applicable_to_filetype(action, files):
 		# Exact match - the first file is checked for type acceptability,
 		# then all other files must have the same type as the first file
 		file_0_type = files[0]["filetype"]
-		if (action.all_filetypes
-		or ((len(action.filetypes["p_rules"]) == 0 or file_0_type in action.filetypes["p_rules"]) 
-	    and file_0_type not in action.filetypes["n_rules"])):
-			return all(file_0_type == file["filetype"] for file in files)
-		else:
-			return False
+		return (_all_applicable_to_filetype(action, [files[0]])
+		and all(file_0_type == file["filetype"] for file in files))
+	
+	return _all_applicable_to_filetype(action, files)
 
+def _all_applicable_to_filetype(action, files):
 	return True if (action.all_filetypes) else all(map(lambda file: (
 		(len(action.filetypes["p_rules"]) == 0 or any((file["filetype"] == p_rule["filetype"]) for p_rule in action.filetypes["p_rules"])) and
 		not any((file["filetype"] == n_rule["filetype"]) for n_rule in action.filetypes["n_rules"])), files))

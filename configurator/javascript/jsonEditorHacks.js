@@ -18,7 +18,7 @@ const ui_structs = [
  * So these convert to/from the backend format by doing that
  */
 function convertToBackendFormat(internalConfig) {
-	const backendConfig = {};
+	var backendConfig = {};
 	for (const [key, value] of Object.entries(internalConfig)) {
 		if (ui_structs.includes(key)) {
 			backendConfig = Object.assign(backendConfig, value)
@@ -31,8 +31,24 @@ function convertToBackendFormat(internalConfig) {
 	return backendConfig;
 }
 
-function convertToFrontendFormat(backendConfig, nested) {
-	const internalConfig = (nested && backendConfig.type == "command") ? {
+// Kick of the model transform from external to internal
+function convertToFrontendFormat(backendConfig) {
+	let internalConfig = {}
+	for (const [key, value] of Object.entries(backendConfig)) {
+		if (key == "actions") {
+			internalConfig.actions = value.map(action => convertActionToFrontendFormat(action));
+		} else {
+			internalConfig[key] = value;
+		}
+	}
+	console.log("Front end config",JSON.stringify(internalConfig,null,4))
+	return internalConfig;
+}
+
+// Return the current action
+function convertActionToFrontendFormat(externlAction) {
+	const is_command = externlAction.type == "command";
+	const internalAction = is_command ? {
 		PathPatterns: {
 			path_patterns_strict_match: false,
 			path_patterns: []
@@ -45,31 +61,25 @@ function convertToFrontendFormat(backendConfig, nested) {
 			filetypes_strict_match: false,
 			filetypes: []
 		},
-	}: {};
+		Basic: {}
+	}: {
+		Basic: {}
+	};
 	let basic;
-	let mimetypes;
-	let filetypes;
-	let path_patterns;
-	for (const [key, value] of Object.entries(backendConfig)) {
+	for (const [key, value] of Object.entries(externlAction)) {
 		if (key == "actions") {
-			internalConfig.actions = value.map(action => convertToFrontendFormat(action, true));
-		} else if (nested && key.startsWith("mimetypes")) {
-			internalConfig.MimeTypes[key] = value
-		} else if (nested && key.startsWith("filetypes")) {
-			internalConfig.FileTypes[key] = value
-		} else if (nested && key.startsWith("path_patterns")) {
-			internalConfig.PathPatterns[key] = value
-		} else if (nested && primitives.includes(typeof value)) {
-			if (!basic) basic = internalConfig.Basic = {};
-			basic[key] = value;
-		} else {
-			internalConfig[key] = value;
+			internalAction.actions = value.map(action => convertActionToFrontendFormat(action));
+		} else if (is_command && key.startsWith("mimetypes")) {
+			internalAction.MimeTypes[key] = value
+		} else if (is_command && key.startsWith("filetypes")) {
+			internalAction.FileTypes[key] = value
+		} else if (is_command && key.startsWith("path_patterns")) {
+			internalAction.PathPatterns[key] = value
+		} else if (primitives.includes(typeof value)) {
+			internalAction.Basic[key] = value;
 		}
 	}
-	if (!nested) {
-		console.log(JSON.stringify(internalConfig,null,4))
-	}
-	return internalConfig;
+	return internalAction;
 }
 
 /*********************

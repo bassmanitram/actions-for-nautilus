@@ -198,6 +198,10 @@ def _check_command_action(idString, json_action):
     action.command_line = json_action["command_line"].strip() if "command_line" in json_action and type(json_action["command_line"]) == str else ""
     if (len(action.label) > 0 and
     len(action.command_line) > 0):
+        
+        action.mimetypes_strict_match = bool(json_action.get("mimetypes_strict_match", False))
+        action.filetypes_strict_match = bool(json_action.get("filetypes_strict_match", False))
+        action.path_patterns_strict_match = bool(json_action.get("path_patterns_strict_match", False))
 
         if type(json_action.get("mimetypes")) == list:
             action.all_mimetypes = ( "*/*" in json_action["mimetypes"] or "*" in json_action["mimetypes"])
