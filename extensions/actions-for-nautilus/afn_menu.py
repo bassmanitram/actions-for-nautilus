@@ -188,7 +188,7 @@ def _applicable_to_mimetype(action, files):
 		# then all other files must have the same type as the first file
 		file_0_type = files[0]["mimetype"]
 		return (_all_applicable_to_mimetype(action, [files[0]])
-		and all(file_0_type == file["mimetype"] for file in files))
+		and all(file_0_type == file["mimetype"] for file in files[1:]))
 
 	return _all_applicable_to_mimetype(action, files)
 
@@ -207,7 +207,7 @@ def _applicable_to_filetype(action, files):
 		# then all other files must have the same type as the first file
 		file_0_type = files[0]["filetype"]
 		return (_all_applicable_to_filetype(action, [files[0]])
-		and all(file_0_type == file["filetype"] for file in files))
+		and all(file_0_type == file["filetype"] for file in files[1:]))
 	
 	return _all_applicable_to_filetype(action, files)
 
@@ -220,10 +220,36 @@ def _all_applicable_to_filetype(action, files):
 # Compares each file path to the action path_patterns
 # Returns True if a match is found for every one, otherwise False
 #
+# Strict match is far more complex here!
+#
+# Firstly, the action has to have a none-empty set of p_rules (otherwise there is nothing
+# more strict that we can apply)
+#
+# The FIRST file must pass all the rules, and we must get the p_rule it passed.
+#
+# All other files must pass that same p_rule AND pass all the n_rules.
+#
+# So, since everything must always be passed through any n_rules, we check those first
+#
 def _applicable_to_path_patterns(action, files):
-	return True if action.all_path_patterns else (all(map(lambda file: (
-		(len(action.path_patterns["p_rules"]) == 0 or any((getattr(p_rule["re"],p_rule["comparator"])(file["filepath"]) is not None) for p_rule in action.path_patterns["p_rules"])) and
-		(len(action.path_patterns["n_rules"]) == 0 or all((getattr(n_rule["re"],n_rule["comparator"])(file["filepath"]) is None) for n_rule in action.path_patterns["n_rules"]))), files)))
+	if action.all_path_patterns:
+		return True
+	if not (len(action.path_patterns["n_rules"]) == 0 or 
+		all(all((getattr(n_rule["re"],n_rule["comparator"])(file["filepath"]) is None) for n_rule in action.path_patterns["n_rules"]) for file in files)):
+		return False
+	
+	if len(action.path_patterns["p_rules"]) == 0:
+		return True
+	
+	# everything passes the n_rules and there are p_rules to use.
+	# for the p_rules, we pick the rule set to compare against - if it's
+	# a case where strict match doesn't apply (only one file, or flag is off) we apply
+	# all the rules to everything. Otherwise we apply the first rule that the first file
+	# passes (if any) to everything else
+	(p_rules, p_files) = ((action.path_patterns["p_rules"], files) if len(files) > 1 or not action.path_patterns_exact_match 
+		else ([item for item in ([next((index for (p_rule, index) in action.path_patterns["p_rules"] if getattr(p_rule["re"],p_rule["comparator"])(files[0]["filepath"])), None)]) if item is not None], files[1:]))
+	
+	return len(p_rules) > 0 and all(any((getattr(p_rule["re"],p_rule["comparator"])(file["filepath"]) is not None) for p_rule in p_rules) for file in p_files)
 
 #
 # Ensures that the user has at least the stated permissions to access each file
