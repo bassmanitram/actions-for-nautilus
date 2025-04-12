@@ -174,7 +174,7 @@ def _create_command_menu_item(action, files, group, activate_function):
 ###
 ### In the following, the relevant attributes of the selected files
 ### are compared to the "p_rules" (positive rules) and "n_rules"(negative rules) of
-### each class of attribute. At least one p_rules must match while no n_rules must 
+### each class of attribute. At least one p_rule must match while no n_rules must 
 ### match, for all files in the selection
 ###
 
@@ -184,7 +184,7 @@ def _create_command_menu_item(action, files, group, activate_function):
 #
 def _applicable_to_mimetype(action, files):
 	if len(files) > 1 and action.mimetypes_strict_match:
-		# Exact match - the first file is checked for type acceptability,
+		# Strict match - the first file is checked for type acceptability,
 		# then all other files must have the same type as the first file
 		file_0_type = files[0]["mimetype"]
 		return (_all_applicable_to_mimetype(action, [files[0]])
@@ -203,7 +203,7 @@ def _all_applicable_to_mimetype(action, files):
 #
 def _applicable_to_filetype(action, files):
 	if len(files) > 1 and action.filetypes_strict_match:
-		# Exact match - the first file is checked for type acceptability,
+		# Strict match - the first file is checked for type acceptability,
 		# then all other files must have the same type as the first file
 		file_0_type = files[0]["filetype"]
 		return (_all_applicable_to_filetype(action, [files[0]])
@@ -246,9 +246,20 @@ def _applicable_to_path_patterns(action, files):
 	# a case where strict match doesn't apply (only one file, or flag is off) we apply
 	# all the rules to everything. Otherwise we apply the first rule that the first file
 	# passes (if any) to everything else
-	(p_rules, p_files) = ((action.path_patterns["p_rules"], files) if len(files) > 1 or not action.path_patterns_exact_match 
-		else ([item for item in ([next((index for (p_rule, index) in action.path_patterns["p_rules"] if getattr(p_rule["re"],p_rule["comparator"])(files[0]["filepath"])), None)]) if item is not None], files[1:]))
-	
+	#
+	# This can be done with lots of embedded comprehensions but then, ironically, the
+	# logic becomes incomprehensible!
+	#
+	if len(files) < 2 or not action.path_patterns_strict_match:
+		p_rules = action.path_patterns["p_rules"] 
+		p_files = files
+	else:
+		p_files = files[1:]
+		p_rule = next((p_rule for p_rule in action.path_patterns["p_rules"] if getattr(p_rule["re"],p_rule["comparator"])(files[0]["filepath"])), None)
+		if p_rule is None:
+			return False
+		p_rules = [p_rule]
+
 	return len(p_rules) > 0 and all(any((getattr(p_rule["re"],p_rule["comparator"])(file["filepath"]) is not None) for p_rule in p_rules) for file in p_files)
 
 #
