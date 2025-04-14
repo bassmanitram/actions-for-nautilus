@@ -47,27 +47,33 @@ class ActionsForNautilus(Nautilus.MenuProvider, GObject.GObject):
 #
 # Command execution
 #
-def _run_command(menu, config_item, files):
-    use_shell = config_item.use_shell
+def _run_command(menu, action, files):
+    use_shell = action.use_shell
 
-    count = 1 if config_item.cmd_behaviour == afn_place_holders.PLURAL else len(files)
+    count = 1 if action.cmd_behaviour == afn_place_holders.PLURAL else len(files)
 
     if afn_config.debug:
-        print(config_item)
+        print(action)
         print(files)
 
     context = None
     for i in range(count):
-        cwd = None if config_item.cwd is None else afn_place_holders.resolve(config_item.cwd, 0, [files[i]], False, None)[0]
-        afn_config.debug_print(f'cwd: {cwd}')
+        cwd = None if action.cwd is None else afn_place_holders.resolve(action.cwd, 0, [files[i]], False, None)[0]
+        if afn_config.debug: 
+            print(f'cwd: {cwd}')
 
-        (final_command_line, context) = afn_place_holders.resolve(config_item.command_line, i, files, True, context)
+        if len(action.command_line_parts) < 1:
+            # Old command line interpolation
+            (final_command_line, context) = afn_place_holders.resolve(action.command_line, i, files, True, context)
 
-        if not use_shell:
-            #
-            # Split into args and lose any shell escapes
-            #
-            final_command_line = list(map(lambda arg: arg.replace("\\\\","!§ESCBACKSLASH§µ").replace("\\", "").replace("!§ESCBACKSLASH§µ","\\"),shlex.split(final_command_line)))
+            if not use_shell:
+                #
+                # Split into args and lose any shell escapes
+                #
+                final_command_line = list(map(lambda arg: arg.replace("\\\\","!§ESCBACKSLASH§µ").replace("\\", "").replace("!§ESCBACKSLASH§µ","\\"),shlex.split(final_command_line)))
+        else:
+            # New command line interpolation
+           (final_command_line, context) = afn_place_holders.resolve2(action.command_line_parts, i, files, False, context)                
 
         if afn_config.debug:
             print(f"COMMAND {str(i)}: {final_command_line}")

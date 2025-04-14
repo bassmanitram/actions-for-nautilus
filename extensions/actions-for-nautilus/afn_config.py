@@ -39,7 +39,9 @@ class CommandAction():
     def __init__(self):
         self.label  = ""
         self.command_line = ""
+        self.command_line_parts = []
         self.cmd_behaviour = ""
+        self.use_old_parse = False
         self.cwd = ""
         self.show_if_true = ""
         self.permissions = ""
@@ -196,8 +198,16 @@ def _check_command_action(idString, json_action):
     action = CommandAction()
     action.label = json_action["label"].strip() if "label" in json_action and type(json_action["label"]) == str else ""
     action.command_line = json_action["command_line"].strip() if "command_line" in json_action and type(json_action["command_line"]) == str else ""
+    if action.command_line.starts_with('%!'):
+        # Actions relies on old parsing
+        action.use_old_parse == True
+        action.command_line = action.command_line[2:]
+
     if (len(action.label) > 0 and
     len(action.command_line) > 0):
+        
+        if not action.use_old_parsing:
+            action.command_line_parts = afn_place_holders.split_to_parts(action.command_line)
         
         action.mimetypes_strict_match = bool(json_action.get("mimetypes_strict_match", False))
         action.filetypes_strict_match = bool(json_action.get("filetypes_strict_match", False))
