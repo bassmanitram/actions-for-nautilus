@@ -33,7 +33,11 @@ function convertToBackendFormat(internalConfig) {
 
 // Kick of the model transform from external to internal
 function convertToFrontendFormat(backendConfig) {
-	let internalConfig = {}
+	let internalConfig = {
+		actions: [],
+		sort: "manual",
+		debug: false
+	}
 	for (const [key, value] of Object.entries(backendConfig)) {
 		if (key == "actions") {
 			internalConfig.actions = value.map(action => convertActionToFrontendFormat(action));
@@ -61,9 +65,26 @@ function convertActionToFrontendFormat(externlAction) {
 			filetypes_strict_match: false,
 			filetypes: []
 		},
-		Basic: {}
+		Basic: {
+			label: "",
+			type: "command",
+			command_line: "",
+			show_if_true: "",
+			cwd: "",
+			use_shell: false,
+			min_items: 1,
+			max_items: 0,
+			permissions: "any",
+			disabled: false,
+		}
 	}: {
-		Basic: {}
+		Basic: {
+			label: "",
+			type: "menu",
+			sort: "manual",
+			disabled: false
+		},
+		actions:[]
 	};
 	let basic;
 	for (const [key, value] of Object.entries(externlAction)) {

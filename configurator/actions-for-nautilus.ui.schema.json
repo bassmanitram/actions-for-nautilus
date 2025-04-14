@@ -92,11 +92,13 @@
 		"Permissions": {
 			"type": "string",
 			"enum": [
+				"any",
 				"read",
 				"read-write",
 				"read-execute",
 				"read-write-execute"
 			],
+			"default": "any",
 			"title": "Access permissions"
 		},
 		"FileType": {
@@ -211,7 +213,9 @@
 				}
 			},
 			"required": [
-				"actions"
+				"actions",
+				"sort",
+				"debug"
 			],
 			"options": {
 				"disable_properties": true,
@@ -225,10 +229,13 @@
 			"properties": {
 				"Basic": {
 					"type": "object",
+					"additionalProperties": false,
 					"format": "grid-strict",
 					"required": [
 						"label",
-						"type"
+						"type",
+						"sort",
+						"disabled"
 					],
 					"properties": {
 						"type": {
@@ -296,6 +303,7 @@
 			"properties": {
 				"Basic": {
 					"type": "object",
+					"additionalProperties": false,
 					"format": "grid-strict",
 					"options": {
 						"disable_properties": true
@@ -303,7 +311,14 @@
 					"required": [
 						"label",
 						"type",
-						"command_line"
+						"command_line",
+						"show_if_true",
+						"cwd",
+						"use_shell",
+						"disabled",
+						"min_items",
+						"max_items",
+						"permissions"
 					],
 					"properties": {
 						"type": {
@@ -337,7 +352,6 @@
 						},
 						"show_if_true": {
 							"type": "string",
-							"minLength": 1,
 							"title": "Show if true",
 							"options": {
 								"infoText": "#command:show_if_true",
@@ -347,7 +361,6 @@
 						},
 						"cwd": {
 							"type": "string",
-							"minLength": 1,
 							"title": "Current working directory",
 							"options": {
 								"infoText": "#command:cwd",
