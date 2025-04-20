@@ -4,12 +4,30 @@ const primitives = [
 	'string'
 ]
 
-const ui_structs = [
-	"Basic",
-	"FileTypes",
-	"PathPatterns",
-	"MimeTypes"
-]
+function basicToBackend(target, source) {
+	target = Object.assign(target, source)
+	if (target.type == "command") {
+		target.use_old_interpolation = (target.interpolation == "original")
+		delete target.interpolation
+	}
+	return target
+}
+
+const ui_structs = {
+	"Basic": { toBackend: basicToBackend },
+	"FileTypes": { toBackend: Object.assign },
+	"PathPatterns": { toBackend: Object.assign },
+	"MimeTypes": { toBackend: Object.assign },
+}
+
+let use_shell_button_template;
+function get_use_shell_button_template() {
+	if (!use_shell_button_template) { 
+		use_shell_button_template = document.querySelector("#use_shell_button")
+	}
+	return use_shell_button_template
+}
+
 
 /*
  * These two are to do with the fact that a tab in JSON Editor cannot
@@ -20,8 +38,9 @@ const ui_structs = [
 function convertToBackendFormat(internalConfig) {
 	var backendConfig = {};
 	for (const [key, value] of Object.entries(internalConfig)) {
-		if (ui_structs.includes(key)) {
-			backendConfig = Object.assign(backendConfig, value)
+		const transformers = ui_structs[key]
+		if (transformers) {
+			backendConfig = (transformers.toBackend)(backendConfig, value)
 		} else if (key == "actions") {
 			backendConfig.actions = value.map(convertToBackendFormat);
 		} else {
@@ -33,19 +52,19 @@ function convertToBackendFormat(internalConfig) {
 
 // Kick of the model transform from external to internal
 function convertToFrontendFormat(backendConfig) {
-	let internalConfig = {
+	const internalConfig = {
 		actions: [],
 		sort: "manual",
 		debug: false
 	}
 	for (const [key, value] of Object.entries(backendConfig)) {
 		if (key == "actions") {
-			internalConfig.actions = value.map(action => convertActionToFrontendFormat(action));
+			internalConfig.actions = value.map(convertActionToFrontendFormat);
 		} else {
 			internalConfig[key] = value;
 		}
 	}
-	console.log("Front end config",JSON.stringify(internalConfig,null,4))
+	//console.log("Front end config",JSON.stringify(internalConfig,null,4))
 	return internalConfig;
 }
 
@@ -76,8 +95,9 @@ function convertActionToFrontendFormat(externlAction) {
 			max_items: 0,
 			permissions: "any",
 			disabled: false,
+			interpolation: "original"
 		}
-	}: {
+	} : {
 		Basic: {
 			label: "",
 			type: "menu",
@@ -86,10 +106,11 @@ function convertActionToFrontendFormat(externlAction) {
 		},
 		actions:[]
 	};
-	let basic;
 	for (const [key, value] of Object.entries(externlAction)) {
-		if (key == "actions") {
-			internalAction.actions = value.map(action => convertActionToFrontendFormat(action));
+		if ((!is_command) && key == "actions") {
+			internalAction.actions = value.map(convertActionToFrontendFormat);
+		} else if (is_command && key == "use_old_interpolation") {
+			internalAction.Basic.interpolation = value ? "original" : "improved"
 		} else if (is_command && key.startsWith("mimetypes")) {
 			internalAction.MimeTypes[key] = value
 		} else if (is_command && key.startsWith("filetypes")) {
@@ -125,13 +146,7 @@ JSONEditor.defaults.editors.multiple.prototype.refreshHeaderText = function (val
 	if (/\.actions\.[0-9]+$/.test(this.path) && this.tab) {
 		var element = this.tab;
 		var actionType = this.value.Basic.type;
-		var actionDisabled = this.value.Basic.disabled;
 		var existingActionType = this.a4nActionType;
-		if (actionDisabled) {
-			element.classList.add("disabled");
-		} else {
-			element.classList.remove("disabled");
-		}
 		if (actionType != existingActionType) {
 			if (existingActionType) {
 				element.classList.remove("action-" + existingActionType);
@@ -141,6 +156,7 @@ JSONEditor.defaults.editors.multiple.prototype.refreshHeaderText = function (val
 			element.firstChild.classList.add(iconNames[actionType]);
 		}
 		this.a4nActionType = actionType;
+		element.classList.toggle("disabled", this.value.Basic.disabled)
 	}
 	return returnValue;
 }
@@ -185,22 +201,6 @@ JSONEditor.defaults.editors.array.prototype.getElementEditor = function (value) 
 			console.log("Unexpected container layout for " + returnValue.path + " container", returnValue.container);
 		}
 	}
-	return returnValue;
-}
-
-/*
- * Part 3
- *
- * We want a tooltip on the opt-in checkboxes.
- * 
- * Complicated (but interesting) way - use an ::after:hover CSS setup
- * Easy way: just ad a title
- */
-const abstractEditorPrototype = Object.getPrototypeOf(JSONEditor.defaults.editors.object.prototype);
-const defaultSetOptInCheckbox = abstractEditorPrototype.setOptInCheckbox
-abstractEditorPrototype.setOptInCheckbox = function (value) {
-	var returnValue = defaultSetOptInCheckbox.bind(this)(value);
-	this.optInCheckbox.setAttribute("title", "Enable/disable optional setting in the configuration");
 	return returnValue;
 }
 
@@ -328,12 +328,43 @@ JSONEditor.defaults.custom_validators.push((schema, value, path) => {
  *
  * The "strict match" switches need to be tweaked!
  */
+
 defaultPostBuild = JSONEditor.AbstractEditor.prototype.postBuild
 JSONEditor.AbstractEditor.prototype.postBuild = function (value) {
 	const returnValue = defaultPostBuild.bind(this)(value);
 	if (this.path.endsWith("_strict_match")) {
 		const form_group = this.container.children[0];
 		form_group.classList.add("a4n-strict-match");
+	} else if (this.path.endsWith("Basic.command_line")) {
+		const form_group = this.container.children[0];
+		form_group.classList.add("a4n-command-line");
+		const input = form_group.children[2];
+		if (input.tagName == "INPUT") {
+			/*
+			 * Add the prepend button for the use_shell option
+			 * and hook it up to the editor
+			 */
+			const input_group = get_use_shell_button_template().content.cloneNode(true)
+			const shell_button = input_group.querySelector("button");
+			const use_shell_editor = editor.getEditor(this.path.replace("command_line","use_shell"))
+
+			input_group.children[0].appendChild(input);
+			form_group.appendChild(input_group);
+
+
+			use_shell_editor.visibleWidget = shell_button;
+
+			// Clicking the button sets the value
+			shell_button.onclick = function(){
+				use_shell_editor.setValue(!this.classList.contains("boolean-true"));
+			};	
+
+			// Setting the value changes the style of the button
+			use_shell_editor.setValue = function(value, initial) {
+				Object.getPrototypeOf(this).setValue.call(this, value, initial);
+				this.visibleWidget.classList.toggle("boolean-true",value);
+			}
+		}
 	}
 	return returnValue
 }

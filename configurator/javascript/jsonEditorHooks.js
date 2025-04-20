@@ -73,7 +73,7 @@ $.ajax({
 }
 
 function configChanged(e) {
-	new_value = JSON.stringify(editor.getValue());
+	const new_value = JSON.stringify(editor.getValue());
 	if (previous_values[current_value_index] != new_value) {
 		/*
 		 * The editor changed outside of undo-redo

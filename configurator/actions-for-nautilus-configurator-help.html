@@ -66,6 +66,7 @@
 								</ul>
 							</li>
 							<li><a href="#command-line-placeholders">Command line placeholders</a></li>
+							<li><a href="#placeholder-interpolation">Placeholder interpolation</a></li>
 							<li><a href="#execution-behavior">Execution behavior</a>
 								<ul>
 									<li><a href="#an-example">An example</a></li>
@@ -826,10 +827,74 @@ audio/*</pre></p>
 				</tr>
 			</tbody>
 		</table>
-		<p>Any embedded spaces found in the individual values are &#39;escaped&#39; to ensure that
-			the shell or system recognizes each value as an independent and complete
-			argument to the command.</p>
-		<p>The meaning of the <code>Repetition</code> value is explained in the next section.</p>
+		<h3 ID="placeholder-interpolation">Placeholder interpolation</h3>
+		<p>Previous versions of Actions For Nautilus tried to be very clever about how to expand the
+		above placeholders into a command line, and how to quote arguments and escape characters to
+		make the command execute as expected. It wasn't bad, per-sé, but it was inadequate, and
+		lead to errors when file names contained special characters, or complex argument construction
+		was desired (for example, appending a suffix to a file name).</p>
+		<p>There is now a new way to perform interpolation that should eliminate most if not all of
+		the problems with the old way!</p>
+		<p>The problem is that this new way undoubtedly will play havoc with command lines that rely
+		upon the old way</p>
+		<p>So, you have the option to stick with the old way, and, indeed, this is the default for existing
+		actions.</p>
+		<p><img src="images/original-interpolation.png" alt="Original interpolations"></p>
+		<p> The <emphasis>new</emphasis> way ... well, effectively the quoting, escaping etc is entirely the
+		user's (your) responsibility. YOU have to provide the quotes that you want and the correct backslashes
+		to escape characters etc. BUT, what you get in return is a different way that the command line itself
+		is completed just before execution.</p>
+		<p>Previously the command line was scanned for placeholders with every <code>PLURAL</code> placeholder
+		(the ones that handle all the selections at once) expanded in place. That is no longer the case.</p>
+		<p>Instead, the command line is, broadly speaking, split into space-delimited parts. Then every part that
+		contains at least one <code>PLURAL</code> placeholder is repeated for <emphasis>each</emphasis> item in 
+		the selection. Then all the parts are reassembled separated from eachother by a single space.</p>
+		<p>The final feature - you can cause this algorithm to ignore a space as a part demlimiter by escaping
+		it with a backslash.</p>
+		<p>Confused? Well, without treading on the toes of the next section, here are some examples based on a 
+		selection of two files named <code>no-spaces.png</code> and <code>one space.txt</code>:</p>
+		<table>
+			<thead>
+				<tr>
+					<th>Template Command Line</th>
+					<th>Result</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><code>ls %B</code></td>
+					<td><code>ls no-spaces.png one space.txt</code></td>
+				</tr>
+				<tr>
+					<td><code>ls "%B"</code></td>
+					<td><code>ls "no-spaces.png" "one space.txt"</code></td>
+				</tr>
+				<tr>
+					<td><code>ls "%B" "%M"</code></td>
+					<td><code>ls "no-spaces.png" "one space.txt" "image/png" "text/plain"</code></td>
+				</tr>
+				<tr>
+					<td><code>ls "%B"\ "%M"</code></td>
+					<td><code>ls "no-spaces.png" "image/png" "one space.txt" "text/plain"</code></td>
+				</tr>
+				<tr>
+					<td><code>ls "%B"\ "%B.backup"</code></td>
+					<td><code>ls "no-spaces.png" "no-spaces.png.backup" "one space.txt" "one space.txt.backup"</code></td>
+				</tr>
+				<tr>
+					<td><code>ls "\"%B\""\ "%M"</code></td>
+					<td><code>ls "\"no-spaces.png\"" "image/png" "\"one space.txt\"" "text/plain"</code></td>
+				</tr>
+			</tbody>
+		</table>
+		<p>Hopefully those examples demonstrate the potential power of this new method of completing command lines. 
+		Undoubtedly you will to have to <emphasis>always</emphasis> quote placeholders whose values may contain spaces, 
+		but I believe this is far more clear and far more flexible than the original method.</p>
+		<p>The new method is the default for <emphasis>new</emphasis> actions:</p>
+		<p><img src="images/improved-interpolation.png" alt="Improved interpolation"></p>
+		<p>and, of course, can be activated for existing actions once you have made the appropriate adjustments to the
+		command line</p>
+
 		<h3 id="execution-behavior">Execution behavior</h3>
 		<p>The <code>filemanager/nautilus-actions</code> project implemented a feature whereby a
 			configured command could be executed once only, regardless of the number items

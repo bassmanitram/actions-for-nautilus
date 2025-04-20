@@ -151,7 +151,8 @@
 		 * Make the save button more obvious when enabled
 		 */
 		button.json-editor-btn-save:enabled {
-			background-color: #ffad55;
+			background-color: #ffab5f;
+			border-color: #ffab5f;
 		}
 
 		/*
@@ -246,4 +247,20 @@
 
 		.card-body.bg-light {
 			background-color: rgba(0, 0, 0, .04) !important;
+		}
+
+		/*
+		 * The use-shell option is now a button and needs some styling
+		 */
+		button.a4n-use-shell {
+			border: 1px solid #ced4da;
+			border-top-right-radius: 0;
+    		border-bottom-right-radius: 0;
+			text-decoration-line: line-through;
+		}
+		button.a4n-use-shell.boolean-true {
+			color: black;
+			background-color: #ffab5f;
+			border-color: #ffab5f;
+			text-decoration-line: none
 		}
