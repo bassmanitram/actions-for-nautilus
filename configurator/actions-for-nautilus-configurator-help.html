@@ -183,13 +183,13 @@
 			the action to exist in the configuration, maybe as a template or a work-in-progress, but not actually be
 			used.</p>
 		<p>Note, however, that the action configuration must still be valid in order for you to be able to save the
-			configuration</p>.
+			configuration.</p>
 		<p>To help quickly identify disabled items, they appear on the left of the UI in grey rather than blue.</p>
 		<h1 id="menu-actions">Menu Actions</h1>
 		<p>To create a menu action, do the following:</p>
 		<ul>
 			<li>
-				<p>click on the <img src="images/add-action-button.png" alt="Add Action"> button at the top of the
+				<p>click on the <code>+ Action</code> button at the top of the
 					left-most column of the configurator
 					tool:</p>
 				<p><img src="images/add-menu-top.png" alt="Add a top-level menu"></p>
@@ -197,7 +197,7 @@
 			<li>
 				<p>In the newly-created action details area (to the right), click on the type indicator
 					box and change its value to <em>Menu</em>:</p>
-				<p><img src="images/action-type-command.png" alt="Change type to menu"></p>
+				<p><img src="images/action-type-menu.png" alt="Change type to menu"></p>
 			</li>
 		</ul>
 		<p>You will now see the tabs that are relevant to menu actions:</p>
@@ -213,7 +213,7 @@
 			in alphanumeric order (the default is that the order you specify is the one that is used).</p>
 		<p>To add actions to your new menu, click on the <strong>Submenu Actions</strong> tab to reveal a nested
 			panel that is similar to the top-level UI. Here you can, again, click on the
-			<img src="images/add-action-button.png" alt="Add Action"> button to configure the actions that will appear
+			<code>+ Action</code> button to configure the actions that will appear
 			in your newly created menu.
 		</p>
 		<p>That is all there is to menu creation.</p>
@@ -238,7 +238,7 @@
 		<p>You create a command action in the same way you create a menu action: </p>
 		<ul>
 			<li>
-				<p>click on the <img src="images/add-action-button.png" alt="Add Action"> button at the top of the
+				<p>click on the <code>+ Action</code> button at the top of the
 					left-most column
 					of the configurator tool</p>
 			</li>
@@ -345,14 +345,14 @@
 		<p>With the mimetypes list, entered in the <strong>Mimetypes</strong> tab, you can specify the IANA Media Types
 			to which your command action applies. E.g.</p>
 		<p><img src="images/mimetypes.png" alt="Mimetype"></p>
-		<p>In this example, the <strong>Run in node</strong> action only applies to files whose mimetype is
-			<strong>application/javascript</strong>.
+		<p>In this example, the <strong>Run in python3</strong> action only applies to files whose mimetype is
+			<strong>text/x-python</strong>.
 		</p>
 		<p>You can specify any number of mimetypes - the selected files must match one of these in order to pass the
 			mimetypes filter rule.</p>
 		<p>A mimetype can be declared in one of the ways standard to IANA Media Types:</p>
 		<ul>
-			<li><em>type/subtype</em> - a specific mimetype (e.g. <strong>application/javascript</strong> as in the
+			<li><em>type/subtype</em> - a specific mimetype (e.g. <strong>text/x-python</strong> as in the
 				above example)</li>
 			<li><em>type/*</em> - all subtypes of a specific type (e.g. <strong>audio/*</strong> for audio files of any
 				encoding)</li>
@@ -363,7 +363,7 @@
 		<p>You can make a mimetype <em>&quot;negative&quot;</em> by preceding it with an exclamation point to declare
 			that NONE of the selected files should be of the specified mimetype(s). E.g.</p>
 		<p><img src="images/negative-mimetypes.png" alt="Negative mimetypes"></p>
-		<p>In this example, the <strong>Edit with gvim</strong> action will not appear if any of the selected files is a
+		<p>In this example, the <strong>Open in gedit</strong> action will not appear if any of the selected files is a
 			PDF, an audio file, or an image file.</p>
 		<p>You should probably avoid mixing standard (positive) rules with negative rules since the result could
 			be confusing, but the algorithm is fairly straightforward: All selected files must match one of the
@@ -408,7 +408,7 @@
 		<p>With the path patterns list, entered in the <strong>Path patterns</strong> tab, you can state that the paths
 			of the files in the selection should match certain patterns. E.g.</p>
 		<p><img src="images/glob-path-pattern.png" alt="Glob path pattern"></p>
-		<p>In this example, the <strong>Edit with gvim</strong> action only applies to files that are in user jdoe&#39;s
+		<p>In this example, the <strong>Open in gedit</strong> action only applies to files that are in user jdoe&#39;s
 			home
 			directory.</p>
 		<p>Patterns can be entered as &quot;glob&quot; patterns or regular expressions.</p>
@@ -451,14 +451,14 @@
 			</li>
 		</ul>
 		<p>Again, you can prefix the entire pattern string with an exclamation point to specify a &quot;negative&quot;
-			path pattern - no file in the selection should have a path that matches that pattern - and again
+			path pattern - no file in the selection should have a path that matches such a pattern - and again
 			mixing standard and negative rules <em>may</em> be confusing, but may also be useful in breaking down
 			complex patterns into simpler components.</p>
 
 		<h3 id="strict-match">Strict match</h3>
 		<p><a href="mimetypes">Mimetypes</a>, <a href="file-types">File types</a>, and <a href="path-patterns">Path
 				patterns</a> have
-			an switch named <code>Strict match</code>, whose default value is <code>false</code>.</p>
+			an option named <code>Strict match</code>, whose default value is <code>false</code>.</p>
 
 		<p>Generally, when this is set to <code>true</code>, it causes the extension to apply "strict" matching to the
 			files in a
@@ -468,7 +468,7 @@
 			same filetype).</p>
 
 		<p>
-			Technically, this has a slightly different meaning depending on which of the above the switch applys to:
+			Technically, this has a slightly different meaning depending on which of the above the option applys to:
 		<ul>
 			<li>In the case of file types it means that all selected files must have the same Gnome file type.</li>
 			<li>
@@ -622,9 +622,8 @@ audio/*</pre>
 		<p>However, you can ask the extension to execute the command within a shell by clicking
 			on the <code><s>/bin/sh</s></code> button that sits at the left end of the command entry field. When the
 			button
-			is displayed in yellow with no strike-throug happlied to the text, the command will be executed using the
+			is displayed in yellow with no strike-through applied to the text, the command will be executed using the
 			system shell.
-		<p><img src="images/use-shell.png" alt="Use shell"></p>
 		<p>In effect, this is <em>similar</em> to prefixing the command string with <code>/bin/sh</code> - but it is not
 			exactly the same, since the extension exploits the embedded python capability of executing commands in
 			a shell and that is a lot more powerful than simply using a prefix.</p>
@@ -736,7 +735,7 @@ audio/*</pre>
 				</tr>
 				<tr>
 					<td><code>%B</code></td>
-					<td>space-separated list of the <code>%b</code> values of all selected items</td>
+					<td>a list of the <code>%b</code> values of all selected items</td>
 					<td>PLURAL</td>
 				</tr>
 				<tr>
@@ -753,7 +752,7 @@ audio/*</pre>
 				</tr>
 				<tr>
 					<td><code>%D</code></td>
-					<td>space-separated list of the <code>%d</code> values of all selected items</td>
+					<td>a list of the <code>%d</code> values of all selected items</td>
 					<td>PLURAL</td>
 				</tr>
 				<tr>
@@ -765,7 +764,7 @@ audio/*</pre>
 				</tr>
 				<tr>
 					<td><code>%F</code></td>
-					<td>space-separated list of the <code>%f</code> values of all selected items</td>
+					<td>a list of the <code>%f</code> values of all selected items</td>
 					<td>PLURAL</td>
 				</tr>
 				<tr>
@@ -780,7 +779,7 @@ audio/*</pre>
 				</tr>
 				<tr>
 					<td><code>%M</code></td>
-					<td>space-separated list of the <code>%m</code> values of all selected items</td>
+					<td>a list of the <code>%m</code> values of all selected items</td>
 					<td>PLURAL</td>
 				</tr>
 				<tr>
@@ -817,7 +816,7 @@ audio/*</pre>
 				</tr>
 				<tr>
 					<td><code>%U</code></td>
-					<td>space-separated list of the <code>%u</code> values of all selected items</td>
+					<td>a list of the <code>%u</code> values of all selected items</td>
 					<td>PLURAL</td>
 				</tr>
 				<tr>
@@ -828,7 +827,7 @@ audio/*</pre>
 				</tr>
 				<tr>
 					<td><code>%W</code></td>
-					<td>space-separated list of the <code>%w</code> values of all selected items</td>
+					<td>a list of the <code>%w</code> values of all selected items</td>
 					<td>PLURAL</td>
 				</tr>
 				<tr>
@@ -838,7 +837,7 @@ audio/*</pre>
 				</tr>
 				<tr>
 					<td><code>%X</code></td>
-					<td>space-separated list of the <code>%x</code> values of all selected items</td>
+					<td>a list of the <code>%x</code> values of all selected items</td>
 					<td>PLURAL</td>
 				</tr>
 				<tr>

@@ -158,10 +158,7 @@
 					"title": "Strict match",
 					"options": {
 						"infoText": "#command:strict_match",
-						"grid_columns": 3,
-						"containerAttributes": {
-							"data-a4n-class": "strict-match"
-						}			  	
+						"grid_columns": 3
 					}
 				}
 			},

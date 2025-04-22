@@ -4,20 +4,52 @@ const primitives = [
 	'string'
 ]
 
+const basicDefaults = {
+	show_if_true: "",
+	cwd: "",
+	use_shell: false,
+	min_items: 1,
+	max_items: 0,
+	permissions: "any",
+	disabled: false,
+	sort: "manual"
+}
+
+/*
+ * Flatten UI model to backend model and eliminate defaults
+ */
 function basicToBackend(target, source) {
-	target = Object.assign(target, source)
+	for (const [key, value] of Object.entries(source)) {
+		let dflt = basicDefaults[key]
+		if (dflt == undefined || dflt != value) {
+			target[key] = value;
+		}
+	}
 	if (target.type == "command") {
-		target.use_old_interpolation = (target.interpolation == "original")
+		if (target.interpolation != "original") {
+			target.use_old_interpolation = false
+		}
 		delete target.interpolation
 	}
 	return target
 }
 
+function nonBasicToBackend(target, source, info) {
+	if (source[info.prefix].length > 0) {
+		target[info.prefix] = source[info.prefix]
+	}
+	const strict_match_key = `${info.prefix}_strict_match`;
+	if (source[strict_match_key]) {
+		target[strict_match_key] = source[strict_match_key]
+	}
+	return target
+}
+
 const ui_structs = {
-	"Basic": { toBackend: basicToBackend },
-	"FileTypes": { toBackend: Object.assign },
-	"PathPatterns": { toBackend: Object.assign },
-	"MimeTypes": { toBackend: Object.assign },
+	"Basic": { toBackend: basicToBackend, info: null },
+	"FileTypes": { toBackend: nonBasicToBackend, info: { prefix: "filetypes" } },
+	"PathPatterns": { toBackend: nonBasicToBackend, info: { prefix: "path_patterns" } },
+	"MimeTypes": { toBackend: nonBasicToBackend, info: { prefix: "mimetypes" } },
 }
 
 let use_shell_button_template;
@@ -28,7 +60,6 @@ function get_use_shell_button_template() {
 	return use_shell_button_template
 }
 
-
 /*
  * These two are to do with the fact that a tab in JSON Editor cannot
  * be formatted nicely unless the property information is itself in objects.
@@ -38,9 +69,9 @@ function get_use_shell_button_template() {
 function convertToBackendFormat(internalConfig) {
 	var backendConfig = {};
 	for (const [key, value] of Object.entries(internalConfig)) {
-		const transformers = ui_structs[key]
-		if (transformers) {
-			backendConfig = (transformers.toBackend)(backendConfig, value)
+		const transformer = ui_structs[key]
+		if (transformer) {
+			backendConfig = (transformer.toBackend)(backendConfig, value, transformer.info)
 		} else if (key == "actions") {
 			backendConfig.actions = value.map(convertToBackendFormat);
 		} else {
@@ -64,7 +95,6 @@ function convertToFrontendFormat(backendConfig) {
 			internalConfig[key] = value;
 		}
 	}
-	//console.log("Front end config",JSON.stringify(internalConfig,null,4))
 	return internalConfig;
 }
 
@@ -328,14 +358,28 @@ JSONEditor.defaults.custom_validators.push((schema, value, path) => {
  *
  * The "strict match" switches need to be tweaked!
  */
-
-defaultPostBuild = JSONEditor.AbstractEditor.prototype.postBuild
-JSONEditor.AbstractEditor.prototype.postBuild = function (value) {
-	const returnValue = defaultPostBuild.bind(this)(value);
+defaultSelectPostBuild = JSONEditor.defaults.editors.select.prototype.postBuild;
+JSONEditor.defaults.editors.select.prototype.postBuild = function (value) {
+	const returnValue = defaultSelectPostBuild.bind(this)(value);
 	if (this.path.endsWith("_strict_match")) {
 		const form_group = this.container.children[0];
 		form_group.classList.add("a4n-strict-match");
-	} else if (this.path.endsWith("Basic.command_line")) {
+	}
+	return returnValue
+}
+
+/*
+ * Part 7
+ *
+ * The use_shell option is boolean, but it's nicer as a prelude
+ * button on the command_line - so this is where we do that
+ * (for this to work, use_shell MUST be set up before command_line,
+ * hence the ordering in the UI schema)
+ */ 
+defaultStringPostBuild = JSONEditor.defaults.editors.string.prototype.postBuild;
+JSONEditor.defaults.editors.string.prototype.postBuild = function (value) {
+	const returnValue = defaultStringPostBuild.bind(this)(value);
+	if (this.path.endsWith("Basic.command_line")) {
 		const form_group = this.container.children[0];
 		form_group.classList.add("a4n-command-line");
 		const input = form_group.children[2];
@@ -350,7 +394,6 @@ JSONEditor.AbstractEditor.prototype.postBuild = function (value) {
 
 			input_group.children[0].appendChild(input);
 			form_group.appendChild(input_group);
-
 
 			use_shell_editor.visibleWidget = shell_button;
 

@@ -107,10 +107,9 @@
 				return response.json()
 			})
 			.then(config => {
-//				console.log(JSON.stringify(convertToFrontendFormat(config),null,4));
-//				editorConfig.startval = config;
+				config.debug && console.log(JSON.stringify(convertToFrontendFormat(config),null,4));
 				editorConfig.startval = convertToFrontendFormat(config);
-//				console.log(JSON.stringify(editorConfig.startval,null,4));
+				config.debug && console.log(JSON.stringify(editorConfig.startval,null,4));
 				return fetch("/schema");
 			})
 			.then(response => {
