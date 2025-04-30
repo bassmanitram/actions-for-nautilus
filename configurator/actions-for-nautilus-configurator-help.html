@@ -176,7 +176,8 @@
 			button</p>
 		<h2 id="action-disable">Disabling an Action</h2>
 		<p>Both menu actions and command actions can be disabled by setting the <code>Disabled</code> property to
-			<code>true</code></p>
+			<code>true</code>
+		</p>
 		<p><img src="images/disabled.png" alt="Disabled"></p>
 		<p>When set to <code>true</code>, the corresponding action will not appear in the Gnome Files context menu. This
 			allows
@@ -502,7 +503,8 @@ audio/*</pre>
 		<p>Note that with mimetypes and filetypes, you can specify an empty rule set and still set the
 			<code>strict match</code> to true in order to effect an
 			"accept all files with the same type, no matter what that type is" rule (this trick has no effect on path
-			pattern handling)</p>
+			pattern handling)
+		</p>
 
 		<h3 id="show-if-true">Show if true</h3>
 		<p>And, finally, the most flexible way of choosing whether a command action should be shown for a particular
@@ -593,18 +595,19 @@ audio/*</pre>
 			use as its document root.</p>
 		<p>For the python HTTP server, the default root directory is the &quot;current
 			working directory&quot; (or CWD) when the command is executed. Reliance upon the CWD is ubiquitous behavior
-			in Linux commands. You can specify the CWD for your commands by using the property named <strong>Current working directory</strong>:</p>
+			in Linux commands. You can specify the CWD for your commands by using the property named <strong>Current
+				working directory</strong>:</p>
 		<p><img src="images/cwd.png" alt="cwd"></p>
 		<p>If you don&#39;t specify the CWD, the setting is &quot;undefined&quot; - i.e. the extension itself makes no
-			special	arrangements to use a default.</p>
+			special arrangements to use a default.</p>
 		<p>The glaring problem with this particular CWD is that, on the face of it, the setting - <code>%f</code> -
 			is <em>not</em> a valid directory. However, within the extension, it <em>is</em> valid. That particular
 			value is a <a href="#command-line-placeholders">placeholder</a> that tells
 			the extension to use the file path of the first file in the selection as the CWD ... and, because
 			this particular command action is configured only to be available when the selection size is 1 and the
 			selected file is a directory, we are guaranteed that <code>%f</code> will always resolve to a valid
-			directory from	which to serve content.</p>
-	
+			directory from which to serve content.</p>
+
 		<h3 id="use-shell">Using a shell to execute the command</h3>
 		<p>Writing shell scripts to be executed by this extension is a prime use case, allowing you to
 			implement just about any scenario imaginable and having them available in the Nautilus context menu.</p>

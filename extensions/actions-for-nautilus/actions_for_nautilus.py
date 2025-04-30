@@ -64,6 +64,7 @@ def _run_command(menu, action, files):
 
         if len(action.command_line_parts) < 1:
             # Old command line interpolation
+            afn_config.debug_print("Original parsing")
             (final_command_line, context) = afn_place_holders.resolve(action.command_line, i, files, True, context)
 
             if not use_shell:
@@ -73,7 +74,13 @@ def _run_command(menu, action, files):
                 final_command_line = list(map(lambda arg: arg.replace("\\\\","!§ESCBACKSLASH§µ").replace("\\", "").replace("!§ESCBACKSLASH§µ","\\"),shlex.split(final_command_line)))
         else:
             # New command line interpolation
-           (final_command_line, context) = afn_place_holders.resolve2(action.command_line_parts, i, files, False, context)                
+            afn_config.debug_print("Improved parsing")
+            (final_command_line, context) = afn_place_holders.resolve2(action.command_line_parts, i, files, False, context)                
+            if not use_shell:
+                #
+                # Split into args and lose any shell escapes
+                #
+                final_command_line = shlex.split(final_command_line)
 
         if afn_config.debug:
             print(f"COMMAND {str(i)}: {final_command_line}")

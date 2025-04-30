@@ -41,7 +41,7 @@ class CommandAction():
         self.command_line = ""
         self.command_line_parts = []
         self.cmd_behaviour = ""
-        self.use_old_interpolation = True
+#        self.use_old_interpolation = True
         self.cwd = ""
         self.show_if_true = ""
         self.permissions = ""
@@ -202,7 +202,7 @@ def _check_command_action(idString, json_action):
     if (len(action.label) > 0 and
     len(action.command_line) > 0):
         
-        if not action.use_old_interpolation:
+        if not json_action.get("use_old_interpolation", True):
             action.command_line_parts = afn_place_holders.split_to_parts(action.command_line)
         
         action.mimetypes_strict_match = bool(json_action.get("mimetypes_strict_match", False))
