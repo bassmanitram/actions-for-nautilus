@@ -78,7 +78,7 @@ def _run_command(menu, action, files):
             (final_command_line, context) = afn_place_holders.resolve2(action.command_line_parts, i, files, False, context)                
             if not use_shell:
                 #
-                # Split into args and lose any shell escapes
+                # Split into args
                 #
                 final_command_line = shlex.split(final_command_line)
 
