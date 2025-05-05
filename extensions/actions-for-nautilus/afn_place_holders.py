@@ -25,7 +25,7 @@ def resolve(string, file_index, files, escape, cache) -> tuple[str, PluralCache]
         cache = PluralCache()
     
     def match_replace(m):
-        return _cmdline_place_holders[m.group()[1:]]["f"](file_index, None, files, escape, cache)
+        return _cmdline_place_holders[m.group()[1:]]["f"](file_index, None, files, _original_escape if escape else None, cache)
     
     output = _place_holder_keys_re.sub(match_replace, string)
     return (output, cache)
@@ -40,9 +40,13 @@ def resolve2(array, file_index, files, escape, cache) -> tuple[str, PluralCache]
     plural_index = None
 
     def match_replace(m):
-        return _cmdline_place_holders[m.group()[1:]]["f"](file_index, plural_index, files, escape, cache)
+        return _cmdline_place_holders[m.group()[1:]]["f"](file_index, plural_index, files, _improved_escape if escape else None, cache)
 
     for string in array:
+        # If we are escaping, each token gets surrounded by quotes with inner quotes escaped
+        if escape:
+            string = string.replace('"','\\"')
+            string = '"' + string + '"'
         if _plural_place_holder_keys_re.search(string):
             for plural_index,_ in enumerate(files):
                 command_array.append(_place_holder_keys_re.sub(match_replace, string))
@@ -50,7 +54,7 @@ def resolve2(array, file_index, files, escape, cache) -> tuple[str, PluralCache]
         else:
             command_array.append(_place_holder_keys_re.sub(match_replace, string))
     
-    return (' '.join(command_array), cache)
+    return (command_array, cache)
 
 def get_behavior(string):
     behavior = -1
@@ -133,21 +137,28 @@ def split_to_parts(line):
 ###
 
 #
-# ANY (only index 0)
+# In double quoted strings - which the tokens end up being delimited
+# by when a shell is being used to execute an action, the following
+# characters must be quoted so that the shell doesn't 
 #
-def _expand_percent_percent(index, _, files, escape, cache):
-    return "%"
+TO_ESCAPE = re.compile(r'([$\`"])')
+
+def _original_escape(str):
+    return str.replace(" ","\\ ")
+
+def _improved_escape(str):
+    return TO_ESCAPE.sub(r'\\\1',str)
 
 def _expand_percent_c(index, _, files, escape, cache):
     return str(len(files))
 
 def _expand_percent_h(index, _, files, escape, cache):
     h = files[0]["uri"].hostname
-    return "" if h is None else h.replace(" ","\\ ") if escape else h
+    return "" if h is None else (escape)(h) if escape else h
 
 def _expand_percent_n(index, _, files, escape, cache):
     n = files[0]["uri"].username
-    return "" if n is None else n.replace(" ","\\ ") if escape else n
+    return "" if n is None else (escape)(n) if escape else n
 
 def _expand_percent_p(index, _, files, escape, cache):
     p = files[0]["uri"].port
@@ -160,55 +171,58 @@ def _expand_percent_s(index, _, files, escape, cache):
 # SINGULAR (per index)
 #
 def _expand_percent_b(index, _, files, escape, cache):
-    return files[index]["basename"].replace(" ","\\ ")  if escape else files[index]["basename"]
+    return (escape)(files[index]["basename"]) if escape else files[index]["basename"]
 
 def _expand_percent_d(index, _, files, escape, cache):
-    return files[index]["folder"].replace(" ","\\ ") if escape else files[index]["folder"]
+    return (escape)(files[index]["folder"]) if escape else files[index]["folder"]
 
 def _expand_percent_f(index, _, files, escape, cache):
-    return files[index]["filepath"].replace(" ","\\ ") if escape else files[index]["filepath"]
+    return (escape)(files[index]["filepath"]) if escape else files[index]["filepath"]
 
 def _expand_percent_m(index, _, files, escape, cache):
-    return files[index]["mimetype"].replace(" ","\\ ") if escape else files[index]["mimetype"]
+    return (escape)(files[index]["mimetype"]) if escape else files[index]["mimetype"]
 
 def _expand_percent_o(index, files, escape, cache):
     return ""
 
 def _expand_percent_u(index, _, files, escape, cache):
-    return files[index]["uri"].geturl().replace(" ","\\ ") if escape else files[index]["uri"].geturl()
+    return (escape)(files[index]["uri"].geturl()) if escape else files[index]["uri"].geturl()
 
 def _expand_percent_w(index, _, files, escape, cache):
-    return _file_name_extension(files[index]["basename"])["name"].replace(" ","\\ ") if escape else _file_name_extension(files[index]["basename"])["name"]
+    return (escape)(_file_name_extension(files[index]["basename"])["name"]) if escape else _file_name_extension(files[index]["basename"])["name"]
 
 def _expand_percent_x(index, _, files, escape, cache):
-    return _file_name_extension(files[index]["basename"])["extension"].replace(" ","\\ ") if escape else _file_name_extension(files[index]["basename"])["extension"]
+    return (escape)(_file_name_extension(files[index]["basename"])["extension"]) if escape else _file_name_extension(files[index]["basename"])["extension"]
 
 #
 # PLURAL (all)
 #
 def _expand_percent_B(_, index, files, escape, cache):
-    return " ".join(map(lambda file: file.replace(" ","\\ ") if escape else file, _expand_percent_B_array(files,cache,index)))
+    return " ".join(map(lambda file: (escape)(file) if escape else file, _expand_percent_B_array(files,cache,index)))
 
 def _expand_percent_D(_, index, files, escape, cache):
-    return " ".join(map(lambda file: file.replace(" ","\\ ") if escape else file, _expand_percent_D_array(files,cache,index)))
+    return " ".join(map(lambda file: (escape)(file) if escape else file, _expand_percent_D_array(files,cache,index)))
 
 def _expand_percent_F(_, index, files, escape, cache):
-    return " ".join(map(lambda file: file.replace(" ","\\ ") if escape else file, _expand_percent_F_array(files,cache,index)))
+    return " ".join(map(lambda file: (escape)(file) if escape else file, _expand_percent_F_array(files,cache,index)))
 
 def _expand_percent_M(_, index, files, escape, cache):
-    return " ".join(map(lambda file: file.replace(" ","\\ ") if escape else file, _expand_percent_M_array(files,cache,index)))
+    return " ".join(map(lambda file: (escape)(file) if escape else file, _expand_percent_M_array(files,cache,index)))
 
 def _expand_percent_U(_, index, files, escape, cache):
-    return " ".join(map(lambda file: file.replace(" ","\\ ") if escape else file, _expand_percent_U_array(files,cache,index)))
+    return " ".join(map(lambda file: (escape)(file) if escape else file, _expand_percent_U_array(files,cache,index)))
 
 def _expand_percent_W(_, index, files, escape, cache):
-    return " ".join(map(lambda file: file.replace(" ","\\ ") if escape else file, _expand_percent_W_array(files,cache,index)))
+    return " ".join(map(lambda file: (escape)(file) if escape else file, _expand_percent_W_array(files,cache,index)))
 
 def _expand_percent_X(_, index, files, escape, cache):
-    return " ".join(map(lambda file: file.replace(" ","\\ ") if escape else file, _expand_percent_X_array(files,cache,index)))
+    return " ".join(map(lambda file: (escape)(file) if escape else file, _expand_percent_X_array(files,cache,index)))
 
 def _expand_percent_O(_, index, files, escape, cache):
     return ""
+
+def _expand_percent_percent(_, index, files, escape, cache):
+    return "%"
 
 #
 # Using the plural caches
@@ -288,6 +302,8 @@ _plural_place_holder_keys_re = re.compile(f"%[{_plural_place_holder_keys}]")
 #
 if __name__ == "__main__":
 
+    import shlex
+
     test_files = [
         {
             "basename": "file-1",
@@ -304,11 +320,18 @@ if __name__ == "__main__":
             "mimetype": "test/file-2" 
         },
         {
-            "basename": "file-3",
-            "folder":   "/home/use/dir3",
-            "filepath": "/home/use/dir3/file-3",
-            "uri":      "file:///home/use/dir3/file-3",
+            "basename": "file 3",
+            "folder":   "/home/use/dir 3",
+            "filepath": "/home/use/dir 3/file 3",
+            "uri":      "file:///home/use/dir+3/file+3",
             "mimetype": "test/file-3" 
+        },
+        {
+            "basename": "4`th file has a $ sign and a \\ too",
+            "folder":   "/home/use/dir 4",
+            "filepath": "/home/use/dir 4/4`th file has a $ sign and a \\ too",
+            "uri":      "file:///home/use/dir+4/4%60th%20file%20has%20a%20%24%20sign%20and%20a%20%5C%20too",
+            "mimetype": "test/file-4" 
         },
     ]
 
@@ -316,20 +339,24 @@ if __name__ == "__main__":
         line = sys.argv[1]
         print(line)
 
-        parts = split_to_parts(line)
+        parts = shlex.split(line)
 
         b = get_behavior(line)
 
         if b == 0:
-            (final, _) = resolve(line, 0, test_files, False, None)
-            print(final)
+            (final, _) = resolve(line, 0, test_files, True, None)
+            print(f'Original: {final}')
             (final, _) = resolve2(parts, 0, test_files, False, None)
-            print(final)
+            print(f'Improved (raw): {final}')
+            (final, _) = resolve2(parts, 0, test_files, True, None)
+            print(f'Improved (shell): { " ".join(final)}')
         else:
             cache = None
             cache2 = None
             for i,_ in enumerate(test_files):
-                (final, _) = resolve(line, i, test_files, False, cache)
-                print(final)
+                (final, _) = resolve(line, i, test_files, True, cache)
+                print(f'Original: {final}')
                 (final, _) = resolve2(parts, i, test_files, False, cache2)
-                print(final)
+                print(f'Improved (raw): {final}')
+                (final, _) = resolve2(parts, i, test_files, True, cache2)
+                print(f'Improved (shell): {" ".join(final)}')

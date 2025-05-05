@@ -1,7 +1,7 @@
 #
 # Config management
 #
-import os, json, threading, time, fnmatch, re
+import os, json, time, fnmatch, re, shlex
 import afn_place_holders
 from gi.repository import Gio, GLib
 
@@ -203,7 +203,7 @@ def _check_command_action(idString, json_action):
     len(action.command_line) > 0):
         
         if not json_action.get("use_old_interpolation", True):
-            action.command_line_parts = afn_place_holders.split_to_parts(action.command_line)
+            action.command_line_parts = shlex.split(action.command_line)
         
         action.mimetypes_strict_match = bool(json_action.get("mimetypes_strict_match", False))
         action.filetypes_strict_match = bool(json_action.get("filetypes_strict_match", False))

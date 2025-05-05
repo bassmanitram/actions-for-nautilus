@@ -851,8 +851,8 @@ audio/*</pre>
 			</tbody>
 		</table>
 		<h3 id="placeholder-interpolation">Placeholder interpolation</h3>
-		<p>Previous versions of Actions For Nautilus tried to be a bit clever about how to expand the
-			above placeholders into a command line, and how to quote arguments and escape characters to
+		<p>Previous versions of Actions For Nautilus had some deficiencies when it came to interpolating the 
+			above placeholders into a command line, and in quoting arguments and escaping characters to
 			make the command execute as expected. The command line was <em>mostly</em> devoid of characters with special
 			meaning to the extension and you could alter the space-delimited tokenization by using <code>\</code>
 			characters
@@ -862,27 +862,38 @@ audio/*</pre>
 			spaces:</p>
 		<p><img src="images/full-command.png" alt="cwd"></p>
 
-		<p> This approach wasn't bad, per-sé, but it was inadequate, and
-			lead to errors when file names contained special characters, or complex argument construction
-			was desired (for example, appending a suffix to a file name).</p>
+		<p>This approach wasn't bad, per-sé, but it was inadequate, and
+		   lead to errors when file names contained special characters, or complex argument construction
+		   was desired (for example, appending a suffix to a file name).</p>
+		<p>Note also that such issues should only have affected commands that where executed by the shell. Those
+		   that are executed natively should not have experienced these problems, and yet, because of the way it
+		   was implemented, they also suffered.
+		</p>
 		<p>There is now a new way to perform interpolation that should eliminate most if not all of
-			the problems with the old way!</p>
+			the issues with the old way!</p>
 		<p>The problem is that this new way undoubtedly will play havoc with command lines that rely
 			upon the old way</p>
 		<p>So, you have the option to stick with the old way, and, indeed, this is the <em>default</em> for existing
 			actions.</p>
 		<p><img src="images/original-interpolation.png" alt="Original interpolations"></p>
-		<p> The <em>new</em> way ... well, effectively the quoting, escaping etc is entirely the
-			user's (your) responsibility. YOU have to provide the quotes that you want and the correct backslashes
-			to escape characters etc. BUT, what you get in return is a different way that the command line itself
-			is completed just before execution.</p>
+		<p>The <em>new</em> way is designed to make it much more intuitive to create a command line for an action while
+		   correctly handling the escaping special characters that may appear in file names and paths. You simply enter
+		   the command line as you would at a shell prompt treating each token as a single argument. Use placeholders
+		   at will without worrying about an <em>internal</em> special characters that may need treating specially. Any
+		   <em>explicit</em> special characters you include in your command line should be appropriately escaped as
+		   necessary, however.</p>
 		<p>Previously the command line was scanned for placeholders with every <code>PLURAL</code> placeholder
 			(the ones that handle all the selections at once) expanded in place. That is no longer the case.</p>
-		<p>Instead, the command line is, broadly speaking, split into space-delimited parts. Then every part that
-			contains at least one <code>PLURAL</code> placeholder is repeated for <em>each</em> item in
-			the selection. Then all the parts are reassembled separated from eachother by a single space.</p>
-		<p>The final feature - you can cause this algorithm to ignore a space as a part demlimiter by escaping
-			it with a backslash.</p>
+		<p>Instead, the command line is split into shell tokens by the <a href="">Python shlex</a> utility <em>before</em>
+			any interpolation is performed. Then every token that contains at least one <code>PLURAL</code> placeholder 
+			is repeated for <em>each</em> additional item in the selection.</p>
+		<p>If the command is being prepared for "native" execution (without a shell) then each token is simply expanded
+			as-is according to the place holders within it, and the token list passed directly to the system for execution.
+		</p>
+		<p>If the command is being prepared for execution in the shell, each token is surrounded by double quotes, with
+			inner quotes properly escaped. Each token is then expanded as necessary according to the place holders within it, 
+			with any necessary characters in the file information approriately escaped. Finaly the tokens are assembled into
+			a command string appropriate for passing the system shell for execution.</p>
 		<p>Confused? Well, without treading on the toes of the next section, here are some examples based on a
 			selection of two files named <code>no-spaces.png</code> and <code>one space.txt</code>:</p>
 		<table>
@@ -895,35 +906,31 @@ audio/*</pre>
 			<tbody>
 				<tr>
 					<td><code>ls %B</code></td>
-					<td><code>ls no-spaces.png one space.txt</code></td>
+					<td><code>ls "no-spaces.png "one space.txt"</code></td>
 				</tr>
 				<tr>
 					<td><code>ls "%B"</code></td>
 					<td><code>ls "no-spaces.png" "one space.txt"</code></td>
 				</tr>
 				<tr>
-					<td><code>ls "%B" "%M"</code></td>
+					<td><code>ls %B %M</code></td>
 					<td><code>ls "no-spaces.png" "one space.txt" "image/png" "text/plain"</code></td>
 				</tr>
 				<tr>
-					<td><code>ls "%B"\ "%M"</code></td>
-					<td><code>ls "no-spaces.png" "image/png" "one space.txt" "text/plain"</code></td>
+					<td><code>ls "%B %M"</code></td>
+					<td><code>ls "no-spaces.png image/png" "one space.txt text/plain"</code></td>
 				</tr>
 				<tr>
-					<td><code>ls "%B"\ "%B.backup"</code></td>
-					<td><code>ls "no-spaces.png" "no-spaces.png.backup" "one space.txt" "one space.txt.backup"</code>
+					<td><code>ls %B\ %B.backup</code></td>
+					<td><code>ls "no-spaces.png "no-spaces.png.backup" "one space.txt one space.txt.backup"</code>
 					</td>
 				</tr>
 				<tr>
 					<td><code>ls "\"%B\""\ "%M"</code></td>
-					<td><code>ls "\"no-spaces.png\"" "image/png" "\"one space.txt\"" "text/plain"</code></td>
+					<td><code>ls "\"no-spaces.png\" image/png" "\"one space.txt\" text/plain"</code></td>
 				</tr>
 			</tbody>
 		</table>
-		<p>Hopefully those examples demonstrate the potential power of this new method of completing command lines.
-			Undoubtedly you will to have to <em>always</em> quote placeholders whose values may contain
-			spaces,
-			but I believe this is far more clear and far more flexible than the original method.</p>
 		<p>The new method is the default for <em>new</em> actions:</p>
 		<p><img src="images/improved-interpolation.png" alt="Improved interpolation"></p>
 		<p>and, of course, can be activated for existing actions once you have made the appropriate adjustments to the

@@ -75,12 +75,12 @@ def _run_command(menu, action, files):
         else:
             # New command line interpolation
             afn_config.debug_print("Improved parsing")
-            (final_command_line, context) = afn_place_holders.resolve2(action.command_line_parts, i, files, False, context)                
-            if not use_shell:
+            (final_command_line, context) = afn_place_holders.resolve2(action.command_line_parts, i, files, True if use_shell else False, context)                
+            if use_shell:
                 #
-                # Split into args
+                # Join the arguments - each token is surrounded by double quotes by the resolver
                 #
-                final_command_line = shlex.split(final_command_line)
+                final_command_line = " ".join(final_command_line)
 
         if afn_config.debug:
             print(f"COMMAND {str(i)}: {final_command_line}")
