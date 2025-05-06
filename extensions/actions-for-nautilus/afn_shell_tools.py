@@ -21,7 +21,7 @@ def resolve(string, file_index, files, escape, cache) -> tuple[str, PluralCache]
     def _original_escape(str):
         return str.replace(" ","\\ ")
 
-    output = expand(string, file_index, None, files, _original_escape if escape else None, cache)
+    output = " ".join(expand(string, file_index, None, files, _original_escape if escape else None, cache))
 
     return (output, cache)
 
@@ -52,10 +52,10 @@ def resolve2(array, file_index, files, escape, cache) -> tuple[str, PluralCache]
         escape_re = ESCAPE_RES.get(token[0], RAW_ESCAPE_RE)
         if handle is Handle.PLURAL:
             for plural_index,_ in enumerate(files):
-                command_array.append(expand(token, file_index, plural_index, files, _improved_escape if escape else None, cache))
+                command_array += expand(token, file_index, plural_index, files, _improved_escape if escape else None, cache)
             plural_index = None
         elif handle is Handle.SINGULAR:
-            command_array.append(expand(file_index, None, files, _improved_escape if escape else None, cache))
+            command_array += expand(file_index, None, files, _improved_escape if escape else None, cache)
         else:
             command_array.append(token)
     
@@ -129,17 +129,7 @@ def tokenize_for_shell(input_string):
         else:
             # Handle unquoted words along with any escapes in them
             while i < string_length:
-                if input_string[i] == '%':
-                    # Handle the '% ' sequence that introduces a non-escaped space into a bare token
-                    # This allows the token to be interpolated as a single token, but passed to the
-                    # shell as multiple arguments, which has a significant bearing on argument order
-                    i += 1
-                    if i < string_length and input_string[i] == " ":
-                        token += " "
-                        i += 1
-                    else:
-                        token += "%"
-                elif input_string[i] == '\\':
+                if input_string[i] == '\\':
                     token += '\\'
                     i += 1
                     # Add the next character too, regardless

@@ -848,6 +848,11 @@ audio/*</pre>
 					<td>the <code>%</code> character</td>
 					<td>ANY</td>
 				</tr>
+				<tr>
+					<td><code>%_</code></td>
+					<td>causes a token to be split into two tokens at this point</td>
+					<td>ANY</td>
+				</tr>
 			</tbody>
 		</table>
 		<h3 id="placeholder-interpolation">Placeholder interpolation</h3>
@@ -876,24 +881,29 @@ audio/*</pre>
 		<p>So, you have the option to stick with the old way, and, indeed, this is the <em>default</em> for existing
 			actions.</p>
 		<p><img src="images/original-interpolation.png" alt="Original interpolations"></p>
-		<p>The <em>new</em> way is designed to make it much more intuitive to create a command line for an action while
-		   correctly handling the escaping special characters that may appear in file names and paths. You simply enter
+		<p>The <em>new</em> way is designed to make it more intuitive to create a command line for an action while
+		   correctly handling the escaping of special characters that may appear in file names and paths. You simply enter
 		   the command line as you would at a shell prompt treating each token as a single argument. Use placeholders
-		   at will without worrying about an <em>internal</em> special characters that may need treating specially. Any
+		   at will without worrying about any <em>internal</em> special characters that may need treating specially. Any
 		   <em>explicit</em> special characters you include in your command line should be appropriately escaped as
 		   necessary, however.</p>
 		<p>Previously the command line was scanned for placeholders with every <code>PLURAL</code> placeholder
 			(the ones that handle all the selections at once) expanded in place. That is no longer the case.</p>
-		<p>Instead, the command line is split into shell tokens by the <a href="">Python shlex</a> utility <em>before</em>
-			any interpolation is performed. Then every token that contains at least one <code>PLURAL</code> placeholder 
-			is repeated for <em>each</em> additional item in the selection.</p>
+		<p>Instead, the command line is split into shell "tokens" similar to the <a href="https://docs.python.org/3/library/shlex.html">Python shlex</a> 
+			utility <em>before</em> any interpolation is performed, resulting in a list of tokens that each constitute an argument to
+			be passed to the action's command (the first such token being the target command itself).
+			Subsequently every token that contains at least one <code>PLURAL</code> placeholder is repeated for <em>each</em> additional item in 
+			the selection.</p>
 		<p>If the command is being prepared for "native" execution (without a shell) then each token is simply expanded
 			as-is according to the place holders within it, and the token list passed directly to the system for execution.
 		</p>
-		<p>If the command is being prepared for execution in the shell, each token is surrounded by double quotes, with
-			inner quotes properly escaped. Each token is then expanded as necessary according to the place holders within it, 
-			with any necessary characters in the file information approriately escaped. Finaly the tokens are assembled into
-			a command string appropriate for passing the system shell for execution.</p>
+		<p>If the command is being prepared for execution in the shell, each token is expanded as necessary according to the 
+			place holders within it, with any necessary characters in the file information approriately escaped. Finaly the 
+			tokens are assembled into a command string appropriate for passing to the system shell for execution.</p>
+		<p>Finally there is a new placeholder, <code>% </code> that splits a single token found on the command line into two
+			arguments for the action's command. Note that, with complex quoting in your command line, the effect of this placeholder may
+			be different when using a shell from when not using a shell for your action.
+		</p>
 		<p>Confused? Well, without treading on the toes of the next section, here are some examples based on a
 			selection of two files named <code>no-spaces.png</code> and <code>one space.txt</code>:</p>
 		<table>
@@ -906,7 +916,7 @@ audio/*</pre>
 			<tbody>
 				<tr>
 					<td><code>ls %B</code></td>
-					<td><code>ls "no-spaces.png "one space.txt"</code></td>
+					<td><code>ls no-spaces.png one\ space.txt</code></td>
 				</tr>
 				<tr>
 					<td><code>ls "%B"</code></td>
@@ -914,20 +924,24 @@ audio/*</pre>
 				</tr>
 				<tr>
 					<td><code>ls %B %M</code></td>
-					<td><code>ls "no-spaces.png" "one space.txt" "image/png" "text/plain"</code></td>
+					<td><code>ls no-spaces.png one\ space.txt image/png text/plain</code></td>
 				</tr>
 				<tr>
-					<td><code>ls "%B %M"</code></td>
-					<td><code>ls "no-spaces.png image/png" "one space.txt text/plain"</code></td>
+					<td><code>ls %B%_%M</code></td>
+					<td><code>ls no-spaces.png image/png one\ space.txt text/plain</code></td>
 				</tr>
 				<tr>
-					<td><code>ls %B\ %B.backup</code></td>
-					<td><code>ls "no-spaces.png "no-spaces.png.backup" "one space.txt one space.txt.backup"</code>
+					<td><code>ls %B% %B.backup</code></td>
+					<td><code>ls no-spaces.png no-spaces.png.backup one\ space.txt one\ space.txt.backup</code>
 					</td>
 				</tr>
 				<tr>
-					<td><code>ls "\"%B\""\ "%M"</code></td>
-					<td><code>ls "\"no-spaces.png\" image/png" "\"one space.txt\" text/plain"</code></td>
+					<td><code>ls "\"%B\""%_%M</code> (using a shell)</td>
+					<td><code>ls "\"no-spaces.png\"" "\"one space.txt\"" image/png text/plain</code></td>
+				</tr>
+				<tr>
+					<td><code>ls "\"%B\""%_%M</code> (not using shell)</td>
+					<td><code>ls "\"no-spaces.png\"" image/png "\"one space.txt\"" text/plain</code></td>
 				</tr>
 			</tbody>
 		</table>

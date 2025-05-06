@@ -44,7 +44,8 @@ def expand(string, file_index, plural_index, files, escape_function, cache):
     def match_replace(m):
         return _cmdline_place_holders[m.group()[1:]]["f"](file_index, plural_index, files, escape_function if escape_function else None, cache)
     
-    return _place_holder_keys_re.sub(match_replace, string)
+    expanded = _place_holder_keys_re.sub(match_replace, string)
+    return expanded.split("\r")
 
 ###
 ### Private functions and values
@@ -70,6 +71,9 @@ def _expand_percent_s(index, _, files, escape, cache):
 
 def _expand_percent_percent(_, index, files, escape, cache):
     return "%"
+
+def _expand_percent_US(_1, _2, _3, _4, _5):
+    return "\r"
 
 #
 # SINGULAR (per index)
@@ -189,6 +193,7 @@ _cmdline_place_holders = {
     "W": { "f": _expand_percent_W, "behavior": PLURAL},
     "x": { "f": _expand_percent_x, "behavior": SINGULAR},
     "X": { "f": _expand_percent_X, "behavior": PLURAL},
+    "_": { "f": _expand_percent_US, "behavior": -1},
     "%": { "f": _expand_percent_percent,"behavior": -1}
 }
 
