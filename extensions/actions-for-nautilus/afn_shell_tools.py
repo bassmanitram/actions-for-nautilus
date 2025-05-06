@@ -55,7 +55,7 @@ def resolve2(array, file_index, files, escape, cache) -> tuple[str, PluralCache]
                 command_array += expand(token, file_index, plural_index, files, _improved_escape if escape else None, cache)
             plural_index = None
         elif handle is Handle.SINGULAR:
-            command_array += expand(file_index, None, files, _improved_escape if escape else None, cache)
+            command_array += expand(token, file_index, None, files, _improved_escape if escape else None, cache)
         else:
             command_array.append(token)
     
