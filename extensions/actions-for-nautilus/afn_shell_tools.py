@@ -129,7 +129,17 @@ def tokenize_for_shell(input_string):
         else:
             # Handle unquoted words along with any escapes in them
             while i < string_length:
-                if input_string[i] == '\\':
+                if input_string[i] == '%':
+                    # Handle the '% ' sequence that introduces a non-escaped space into a bare token
+                    # This allows the token to be interpolated as a single token, but passed to the
+                    # shell as multiple arguments, which has a significant bearing on argument order
+                    i += 1
+                    if i < string_length and input_string[i] == " ":
+                        token += " "
+                        i += 1
+                    else:
+                        token += "%"
+                elif input_string[i] == '\\':
                     token += '\\'
                     i += 1
                     # Add the next character too, regardless
