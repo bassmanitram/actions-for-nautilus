@@ -1,8 +1,8 @@
 #
 # Config management
 #
-import os, json, time, fnmatch, re, shlex
-import afn_place_holders
+import os, json, time, fnmatch, re
+from afn_shell_tools import tokenize_for_native, tokenize_for_shell, is_command_plural
 from gi.repository import Gio, GLib
 
 HOME = os.environ.get('HOME')
@@ -40,8 +40,7 @@ class CommandAction():
         self.label  = ""
         self.command_line = ""
         self.command_line_parts = []
-        self.cmd_behaviour = ""
-#        self.use_old_interpolation = True
+        self.cmd_is_plural = False
         self.cwd = ""
         self.show_if_true = ""
         self.permissions = ""
@@ -202,8 +201,11 @@ def _check_command_action(idString, json_action):
     if (len(action.label) > 0 and
     len(action.command_line) > 0):
         
+        if type(json_action.get("use_shell")) == bool:
+            action.use_shell = json_action["use_shell"]
+ 
         if not json_action.get("use_old_interpolation", True):
-            action.command_line_parts = shlex.split(action.command_line)
+            action.command_line_parts = tokenize_for_shell(action.command_line) if action.use_shell else tokenize_for_native(action.command_line)
         
         action.mimetypes_strict_match = bool(json_action.get("mimetypes_strict_match", False))
         action.filetypes_strict_match = bool(json_action.get("filetypes_strict_match", False))
@@ -232,11 +234,8 @@ def _check_command_action(idString, json_action):
  
         action.cwd = None if type(json_action.get("cwd")) != str or len(json_action["cwd"].strip()) == 0 else json_action["cwd"].strip()
  
-        if type(json_action.get("use_shell")) == bool:
-            action.use_shell = json_action["use_shell"]
- 
         action.idString = idString
-        action.cmd_behaviour = afn_place_holders.get_behavior(action.command_line)
+        action.cmd_is_plural = is_command_plural(action.command_line)
 
         #
         # Checking max_items and min_items

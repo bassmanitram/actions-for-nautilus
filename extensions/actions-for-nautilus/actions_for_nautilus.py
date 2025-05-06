@@ -1,6 +1,6 @@
-import subprocess, shlex, inspect
+import subprocess, shlex
 from gi.repository import Nautilus, GObject
-import afn_place_holders, afn_config, afn_menu, os
+import afn_shell_tools, afn_config, afn_menu
 
 ###
 ### A multi-version alternative to require_version
@@ -50,7 +50,7 @@ class ActionsForNautilus(Nautilus.MenuProvider, GObject.GObject):
 def _run_command(menu, action, files):
     use_shell = action.use_shell
 
-    count = 1 if action.cmd_behaviour == afn_place_holders.PLURAL else len(files)
+    count = 1 if action.cmd_is_plural else len(files)
 
     if afn_config.debug:
         print(action)
@@ -58,14 +58,14 @@ def _run_command(menu, action, files):
 
     context = None
     for i in range(count):
-        cwd = None if action.cwd is None else afn_place_holders.resolve(action.cwd, 0, [files[i]], False, None)[0]
+        cwd = None if action.cwd is None else afn_shell_tools.resolve(action.cwd, 0, [files[i]], False, None)[0]
         if afn_config.debug: 
             print(f'cwd: {cwd}')
 
         if len(action.command_line_parts) < 1:
             # Old command line interpolation
             afn_config.debug_print("Original parsing")
-            (final_command_line, context) = afn_place_holders.resolve(action.command_line, i, files, True, context)
+            (final_command_line, context) = afn_shell_tools.resolve(action.command_line, i, files, True, context)
 
             if not use_shell:
                 #
@@ -75,16 +75,16 @@ def _run_command(menu, action, files):
         else:
             # New command line interpolation
             afn_config.debug_print("Improved parsing")
-            (final_command_line, context) = afn_place_holders.resolve2(action.command_line_parts, i, files, True if use_shell else False, context)                
+            (final_command_line, context) = afn_shell_tools.resolve2(action.command_line_parts, i, files, True if use_shell else False, context)                
             if use_shell:
                 #
                 # Join the arguments - each token is surrounded by double quotes by the resolver
                 #
                 final_command_line = " ".join(final_command_line)
 
-        if afn_config.debug:
-            print(f"COMMAND {str(i)}: {final_command_line}")
-            print(f'Cwd: {cwd}')
-            print(f'Use shell: {use_shell}')
+#        if afn_config.debug:
+        print(f"COMMAND {str(i)}: {final_command_line}")
+        print(f'Cwd: {cwd}')
+        print(f'Use shell: {use_shell}')
 
         subprocess.Popen(final_command_line, cwd=cwd, shell=use_shell)
