@@ -1,7 +1,7 @@
 #
 # Config management
 #
-import os, json, time, fnmatch, re
+import os, json, time, fnmatch, re, inspect
 from afn_shell_tools import tokenize_for_native, tokenize_for_shell, is_command_plural
 from gi.repository import Gio, GLib
 
@@ -10,7 +10,7 @@ _config_path = HOME + "/.local/share/actions-for-nautilus/config.json"
 
 def _dump_dict(o) -> str:
     attrs = o.__dict__
-    return ', '.join("%s: %s" % item for item in sorted(attrs.items(), key=lambda i: i[0]))
+    return '\n'.join("%s: %s" % item for item in sorted(attrs.items(), key=lambda i: i[0]))
 
 _filetypes = {
     "unknown":       [Gio.FileType(0)],

@@ -78,9 +78,9 @@ def _run_command(menu, action, files):
             (final_command_line, context) = afn_shell_tools.resolve2(action.command_line_parts, i, files, True if use_shell else False, context)                
             if use_shell:
                 #
-                # Join the arguments - each token is surrounded by double quotes by the resolver
+                # Join the arguments
                 #
-                final_command_line = " ".join(final_command_line)
+                final_command_line = "".join(final_command_line)
 
 #        if afn_config.debug:
         print(f"COMMAND {str(i)}: {final_command_line}")

@@ -245,7 +245,7 @@ def main(argv):
             (final, _) = resolve2(native_parts, 0, test_files, False, None)
             print(f'Improved (raw): {final}')
             (final, _) = resolve2(shell_parts, 0, test_files, True, None)
-            print(f'Improved (shell): { " ".join(final)}')
+            print(f'Improved (shell): { "".join(final)}')
         else:
             cache = None
             cache2 = None
@@ -255,7 +255,7 @@ def main(argv):
                 (final, _) = resolve2(native_parts, i, test_files, False, cache2)
                 print(f'Improved (raw): {final}')
                 (final, _) = resolve2(shell_parts, i, test_files, True, cache2)
-                print(f'Improved (shell): {" ".join(final)}')
+                print(f'Improved (shell): {"".join(final)}')
 
 if __name__ == "__main__":
     import sys

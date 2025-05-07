@@ -120,7 +120,8 @@ def _create_submenu_menu_item(action, files, group, act_function):
 
 def _is_command_true(cmd):
 	try:
-		afn_config.debug_print(f"Running show_if_true command <{cmd}>")
+		if afn_config.debug:
+			print(f"Running show_if_true command <{cmd}>")
 		process = subprocess.run(
 			cmd,
 			shell=True,
@@ -129,7 +130,8 @@ def _is_command_true(cmd):
 		)
 		if process.stdout.rstrip() == "true":
 			return True
-		afn_config.debug_print(f"show_if_true_command {cmd} returned non-'true': stdout={process.stdout}, stderr={process.stderr}")
+		if afn_config.debug:
+			print(f"show_if_true_command {cmd} returned non-'true': stdout={process.stdout}, stderr={process.stderr}")
 		
 	except Exception as e:
 		print(f"show_if_true_command {cmd} failed: {e}")
@@ -166,7 +168,8 @@ def _create_command_menu_item(action, files, group, activate_function):
 
 	name = "Actions4Nautilus::Item" + action.idString + group
 	label = action.label
-	afn_config.debug_print(f"Attaching menu item: file={files[0]} name={name}, label={label}")
+	if afn_config.debug:
+		print(f"Attaching menu item: file={files[0]} name={name}, label={label}")
 	menu_item = Nautilus.MenuItem(name=name, label=label)
 	menu_item.connect("activate", activate_function, action, files)
 	return menu_item
