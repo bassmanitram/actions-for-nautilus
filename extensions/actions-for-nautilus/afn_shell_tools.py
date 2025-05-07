@@ -13,8 +13,10 @@ class Handle(Enum):
 def is_command_plural(string):
     return get_behavior(string) is PLURAL
 
+#
+# The original resolution algorithm
+#
 def resolve(string, file_index, files, escape, cache) -> tuple[str, PluralCache]:
-
     if cache is None:
         cache = PluralCache()
 
@@ -42,8 +44,7 @@ def resolve2(array, file_index, files, escape, cache) -> tuple[str, PluralCache]
         cache = PluralCache()
         
     command_array = []
-    plural_index = None
-    escape_re = RAW_ESCAPE_RE
+    escape_re = None
 
     def _improved_escape(str):
         return escape_re.sub(r'\\\1',str) if escape_re else str
@@ -53,7 +54,6 @@ def resolve2(array, file_index, files, escape, cache) -> tuple[str, PluralCache]
         if handle is Handle.PLURAL:
             for plural_index,_ in enumerate(files):
                 command_array += expand(token, file_index, plural_index, files, _improved_escape if escape else None, cache)
-            plural_index = None
         elif handle is Handle.SINGULAR:
             command_array += expand(token, file_index, None, files, _improved_escape if escape else None, cache)
         else:
@@ -106,7 +106,7 @@ def tokenize_for_shell(input_string):
 
         elif char == "'" or char == '"':
             # Single quoted is always treated as is
-            # Double quoted can have escaped double quotes
+            # Double quoted can have escaped double quotes (and other stuff)
             i += 1
             token += char
             handle_esc = char == '"'

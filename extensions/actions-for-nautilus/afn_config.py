@@ -288,7 +288,8 @@ def _gen_pattern(pattern):
         re = (pattern.startswith("re:"))
         patternRE = _gen_pattern_re_from_re(pattern, comparison) if re else _gen_pattern_re_from_glob(pattern, comparison)
         if patternRE is not None:
-            return {"re": patternRE, "comparator": "search" if re else "fullmatch", "path_pattern": pattern, "comparison": comparison}
+            method = getattr(patternRE, "search" if re else "fullmatch")
+            return {"re": patternRE, "comparator": method, "path_pattern": pattern, "comparison": comparison}
 
     print("Ignoring pattern: unrecognized", pattern)
 

@@ -4,7 +4,7 @@
 import os, afn_config, traceback
 import subprocess
 from urllib.parse import urlparse
-from gi.repository import Nautilus, Gio
+from gi.repository import Nautilus
 from collections import deque
 
 class MenuCacheItem:
@@ -62,6 +62,17 @@ def create_menu_items(config, files, group, act_function):
 				if afn_config.debug:
 					print(f"RETURNING CACHED MENU FOR {single_file_path}: {cached_menu}")
 				return cached_menu
+		# for f in files:
+		# 	print(f.get_uri())
+		# 	loc = f.get_location()
+		# 	print(f"  {f.get_file_type()}")
+		# 	print(f"  {f.get_mime_type()}")
+		# 	print(f"  {loc.get_basename()}")
+		# 	print(f"  {loc.get_parent()}")
+		# 	print(f"  {loc.get_parse_name()}")
+		# 	print(f"  {loc.get_path()}")
+		# 	print(f"  {loc.get_uri()}")
+		# 	print(f"  {loc.get_uri_scheme()}")
 		
 		my_files = list(filter(None, map(lambda file: {
 				"mimetype": file.get_mime_type(),
@@ -71,7 +82,7 @@ def create_menu_items(config, files, group, act_function):
 				"folder": os.path.dirname(file.get_location().get_path()),
 				"uri": urlparse(file.get_uri())
 			} if file.get_location().get_path() is not None else None, files)))
-		
+
 		actions = list(filter(None, map(lambda action: _create_menu_item(action, my_files, group, act_function), config.actions)))
 		menu = sorted(actions, key=lambda element: element.props.label) if config.sort else actions
 
@@ -238,7 +249,7 @@ def _applicable_to_path_patterns(action, files):
 	if action.all_path_patterns:
 		return True
 	if not (len(action.path_patterns["n_rules"]) == 0 or 
-		all(all((getattr(n_rule["re"],n_rule["comparator"])(file["filepath"]) is None) for n_rule in action.path_patterns["n_rules"]) for file in files)):
+		all(all((_test_rule(n_rule,file["filepath"]) is None) for n_rule in action.path_patterns["n_rules"]) for file in files)):
 		return False
 	
 	if len(action.path_patterns["p_rules"]) == 0:
@@ -258,12 +269,21 @@ def _applicable_to_path_patterns(action, files):
 		p_files = files
 	else:
 		p_files = files[1:]
-		p_rule = next((p_rule for p_rule in action.path_patterns["p_rules"] if getattr(p_rule["re"],p_rule["comparator"])(files[0]["filepath"])), None)
+		p_rule = next((p_rule for p_rule in action.path_patterns["p_rules"] if _test_rule(p_rule,files[0]["filepath"])), None)
 		if p_rule is None:
 			return False
 		p_rules = [p_rule]
+		
+	return len(p_rules) > 0 and all(any(_test_rule(p_rule,file["filepath"]) is not None for p_rule in p_rules) for file in p_files)
 
-	return len(p_rules) > 0 and all(any((getattr(p_rule["re"],p_rule["comparator"])(file["filepath"]) is not None) for p_rule in p_rules) for file in p_files)
+def _test_rule(rule, string):
+	return rule["comparator"](string)
+
+# def _test_rule(rule, string):
+# 	print(rule, string)
+# 	result = rule["comparator"](string)
+# 	print(result)
+# 	return result
 
 #
 # Ensures that the user has at least the stated permissions to access each file
