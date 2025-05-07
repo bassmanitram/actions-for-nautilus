@@ -850,15 +850,15 @@ audio/*</pre>
 				</tr>
 				<tr>
 					<td><code>%_</code></td>
-					<td>causes a token to be split into two tokens at this point</td>
+					<td>causes a token to be split into two tokens at this point - roughly speaking a token is a command argument</td>
 					<td>ANY</td>
 				</tr>
 			</tbody>
 		</table>
 		<h3 id="placeholder-interpolation">Placeholder interpolation</h3>
 		<p>Previous versions of Actions For Nautilus had some deficiencies when it came to interpolating the 
-			above placeholders into a command line, and in quoting arguments and escaping characters to
-			make the command execute as expected. The command line was <em>mostly</em> devoid of characters with special
+			above placeholders into command arguments, and in quoting arguments and escaping characters to
+			make the command execute as expected. The input command line was <em>mostly</em> devoid of characters with special
 			meaning to the extension and you could alter the space-delimited tokenization by using <code>\</code>
 			characters
 			to escape spaces or quotes to include spaces in tokens - and <code>\</code> characters to escape quotes and
@@ -867,7 +867,7 @@ audio/*</pre>
 			spaces:</p>
 		<p><img src="images/full-command.png" alt="cwd"></p>
 
-		<p>This approach wasn't bad, per-sé, but it was inadequate, and
+		<p>This approach wasn't bad, per-sé, but it was incomplete, and
 		   lead to errors when file names contained special characters, or complex argument construction
 		   was desired (for example, appending a suffix to a file name).</p>
 		<p>Note also that such issues should only have affected commands that where executed by the shell. Those
@@ -875,20 +875,20 @@ audio/*</pre>
 		   was implemented, they also suffered.
 		</p>
 		<p>There is now a new way to perform interpolation that should eliminate most if not all of
-			the issues with the old way!</p>
-		<p>The problem is that this new way undoubtedly will play havoc with command lines that rely
-			upon the old way</p>
+			the issues with the old way.</p>
+		<p>The problem is that this new way will undoubtedly play havoc with command lines that rely
+			upon the old way.</p>
 		<p>So, you have the option to stick with the old way, and, indeed, this is the <em>default</em> for existing
 			actions.</p>
-		<p><img src="images/original-interpolation.png" alt="Original interpolations"></p>
+		<p><img src="images/original-interpolation.png" alt="Original interpolation"></p>
 		<p>The <em>new</em> way is designed to make it more intuitive to create a command line for an action while
 		   correctly handling the escaping of special characters that may appear in file names and paths. You simply enter
 		   the command line as you would at a shell prompt treating each token as a single argument. Use placeholders
 		   at will without worrying about any <em>internal</em> special characters that may need treating specially. Any
-		   <em>explicit</em> special characters you include in your command line should be appropriately escaped as
-		   necessary, however.</p>
+		   <em>explicit</em> special characters you include in your command line should be appropriately escaped if
+		   needed, however.</p>
 		<p>Previously the command line was scanned for placeholders with every <code>PLURAL</code> placeholder
-			(the ones that handle all the selections at once) expanded in place. That is no longer the case.</p>
+		   (the ones that handle all the selections at once) expanded in place. That is no longer the case.</p>
 		<p>Instead, the command line is split into shell "tokens" similar to the <a href="https://docs.python.org/3/library/shlex.html">Python shlex</a> 
 			utility <em>before</em> any interpolation is performed, resulting in a list of tokens that each constitute an argument to
 			be passed to the action's command (the first such token being the target command itself).
@@ -900,7 +900,7 @@ audio/*</pre>
 		<p>If the command is being prepared for execution in the shell, each token is expanded as necessary according to the 
 			place holders within it, with any necessary characters in the file information approriately escaped. Finaly the 
 			tokens are assembled into a command string appropriate for passing to the system shell for execution.</p>
-		<p>Finally there is a new placeholder, <code>% </code> that splits a single token found on the command line into two
+		<p>Finally there is a new placeholder, <code>%_</code> that splits a single token found in the command line into two
 			arguments for the action's command. Note that, with complex quoting in your command line, the effect of this placeholder may
 			be different when using a shell from when not using a shell for your action.
 		</p>
@@ -909,46 +909,54 @@ audio/*</pre>
 		<table>
 			<thead>
 				<tr>
-					<th>Template Command Line</th>
+					<th>Action Command Line</th>
 					<th>Result</th>
+					<th>Explanation</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
 					<td><code>ls %B</code></td>
 					<td><code>ls no-spaces.png one\ space.txt</code></td>
+					<td>The command is passed two 'bare' arguments, with special characters in the interpolated file information properly escaped</td>
 				</tr>
 				<tr>
 					<td><code>ls "%B"</code></td>
 					<td><code>ls "no-spaces.png" "one space.txt"</code></td>
+					<td>The command is passed two double-quoted arguments, with <code>'</code>, <code>\</code>, <code>"</code>, and <code>$</code> characters in the interpolated file information escaped</td>
 				</tr>
 				<tr>
 					<td><code>ls %B %M</code></td>
 					<td><code>ls no-spaces.png one\ space.txt image/png text/plain</code></td>
+					<td>The command is passed four escaped arguments: the file basenames, followed by the file mimetypes</td>
 				</tr>
 				<tr>
 					<td><code>ls %B%_%M</code></td>
 					<td><code>ls no-spaces.png image/png one\ space.txt text/plain</code></td>
-				</tr>
+					<td>Note the effect of <code>%_</code> - the command is passed four escaped arguments: the basename of the first selection, the mimetype of the first selection, the basename of the second selection, and the mimetype of the second selection</td>
+					</tr>
 				<tr>
-					<td><code>ls %B% %B.backup</code></td>
-					<td><code>ls no-spaces.png no-spaces.png.backup one\ space.txt one\ space.txt.backup</code>
-					</td>
-				</tr>
-				<tr>
-					<td><code>ls "\"%B\""%_%M</code> (using a shell)</td>
-					<td><code>ls "\"no-spaces.png\"" "\"one space.txt\"" image/png text/plain</code></td>
+					<td><code>ls %B%_%B.backup</code></td>
+					<td><code>ls no-spaces.png no-spaces.png.backup one\ space.txt one\ space.txt.backup</code></td>
+					<td>The command is passed the basename followed by the <code>.backup</code> basename of each item in the selection</td>
 				</tr>
 				<tr>
 					<td><code>ls "\"%B\""%_%M</code> (not using shell)</td>
 					<td><code>ls "\"no-spaces.png\"" image/png "\"one space.txt\"" text/plain</code></td>
+					<td>Similar to the <code>ls %B%_%M</code> example above, except that the basenames have embedded quotes - this might be viewed as the <code>%_</code> placeholder behaving as expected.</td>
+				</tr>
+				<tr>
+					<td><code>ls "\"%B\""%_%M</code> (using a shell)</td>
+					<td><code>ls "\"no-spaces.png\"" "\"one space.txt\"" image/png text/plain</code></td>
+					<td>Similar to the <code>ls %B %M</code> example above, except that the basenames have embedded quotes - this might be viewed as the <code>%_</code> placeholder NOT behing as expected.
+					This is due to internal constraints when constructing a properly escaped command line for the shell. However, note that you would normally not need to resort to this kind of complex
+				    quoting because the extension now properly handles escaping of interpolated file information correctly for the context in which the placeholders are used.</td>
 				</tr>
 			</tbody>
 		</table>
 		<p>The new method is the default for <em>new</em> actions:</p>
 		<p><img src="images/improved-interpolation.png" alt="Improved interpolation"></p>
-		<p>and, of course, can be activated for existing actions once you have made the appropriate adjustments to the
-			command line</p>
+		<p>and, of course, can be activated for existing actions once you have made the appropriate adjustments to the command line</p>
 
 		<h3 id="execution-behavior">Execution behavior</h3>
 		<p>The <code>filemanager/nautilus-actions</code> project implemented a feature whereby a
