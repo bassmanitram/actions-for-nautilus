@@ -139,10 +139,10 @@ def _is_command_true(cmd):
 			capture_output=True,
 			text=True
 		)
+		if afn_config.debug:
+			print(f"show_if_true_command {cmd} returned: stdout={process.stdout}, stderr={process.stderr}")
 		if process.stdout.rstrip() == "true":
 			return True
-		if afn_config.debug:
-			print(f"show_if_true_command {cmd} returned non-'true': stdout={process.stdout}, stderr={process.stderr}")
 		
 	except Exception as e:
 		print(f"show_if_true_command {cmd} failed: {e}")
