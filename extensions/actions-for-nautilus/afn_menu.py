@@ -8,26 +8,28 @@ from gi.repository import Nautilus
 from collections import deque
 
 class MenuCacheItem:
-	def __init__(self, group, path, mtime, menu):
+	def __init__(self, group, path, mtime, ctime, menu):
 		self.group = group
 		self.path = path
 		self.mtime = mtime
+		self.ctime = ctime
 		self.menu = menu
 
 class MenuCache:
 	def __init__(self):
 		self.cache = deque([])
 
-	def get_menu(self, group,path, mtime):
-		return next((item.menu for item in reversed(self.cache) if item.group == group and item.path == path and item.mtime == mtime), None)
+	def get_menu(self, group,path, mtime, ctime):
+		return next((item.menu for item in reversed(self.cache) if item.group == group and item.path == path and item.mtime == mtime and item.ctime == ctime), None)
 
-	def put_menu(self, group, path, mtime, menu):
+	def put_menu(self, group, path, mtime, ctime, menu):
 		exists = next((index for (index,item) in enumerate(self.cache) if item.group == group and item.path == path), len(self.cache))
 		if exists < len(self.cache):
 			self.cache[exists].mtime = mtime
+			self.cache[exists].ctime = ctime
 			self.cache[exists].menu = menu
 		else:
-			self.cache.append(MenuCacheItem(group, path, mtime, menu))
+			self.cache.append(MenuCacheItem(group, path, mtime, ctime, menu))
 
 		while len(self.cache) > 5:
 			self.cache.popleft()
@@ -55,9 +57,12 @@ def create_menu_items(config, files, group, act_function):
 		# For single files get any cached menu and return that
 		single_file_path = files[0].get_location().get_path() if len(files) == 1 else None
 		mtime = None
+		ctime = None
 		if single_file_path is not None:
-			mtime = os.path.getmtime(single_file_path)
-			cached_menu = menu_cache.get_menu(group, single_file_path, mtime)
+			stat = os.stat(single_file_path)
+			mtime = stat.st_mtime
+			ctime = stat.st_ctime
+			cached_menu = menu_cache.get_menu(group, single_file_path, mtime, ctime)
 			if cached_menu is not None:
 				if afn_config.debug:
 					print(f"RETURNING CACHED MENU FOR {single_file_path}: {cached_menu}")
@@ -88,7 +93,7 @@ def create_menu_items(config, files, group, act_function):
 
 		# For single files cache the menu
 		if single_file_path is not None:
-			menu_cache.put_menu(group, single_file_path, mtime, menu)
+			menu_cache.put_menu(group, single_file_path, mtime, ctime, menu)
 		
 		return menu
 

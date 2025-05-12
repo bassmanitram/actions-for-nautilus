@@ -48,13 +48,14 @@ class ActionsForNautilus(Nautilus.MenuProvider, GObject.GObject):
 # Command execution
 #
 def _run_command(menu, action, files):
-    use_shell = action.use_shell
-
-    count = 1 if action.cmd_is_plural else len(files)
-
+    
     if afn_config.debug:
+        print(menu)
         print(action)
         print(files)
+
+    use_shell = action.use_shell
+    count = 1 if action.cmd_is_plural else len(files)
 
     context = None
     for i in range(count):
