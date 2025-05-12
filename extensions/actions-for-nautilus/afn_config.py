@@ -27,7 +27,10 @@ _permissions = {
     "read": os.R_OK,
     "read-write": os.R_OK | os.W_OK,
     "read-execute": os.R_OK | os.X_OK,
-    "read-write-execute": os.R_OK | os.W_OK | os.X_OK
+    "read-write-execute": os.R_OK | os.W_OK | os.X_OK,
+    "!write": os.W_OK,
+    "!execute": os.X_OK,
+    "!write-execute": os.W_OK | os.X_OK
 }
 
 debug = False
@@ -44,6 +47,7 @@ class CommandAction():
         self.cwd = ""
         self.show_if_true = ""
         self.permissions = ""
+        self.permissions_not = False
         self.use_shell = False
         self.min_items = 1
         self.max_items = 0
@@ -227,7 +231,9 @@ def _check_command_action(idString, json_action):
 
         if type(json_action.get("permissions")) == str:
             perm = json_action["permissions"].strip()
+            _not = perm.startswith("!")
             action.permissions = _permissions[perm] if perm in _permissions else ""
+            action.permissions_not = _not
  
         if type(json_action.get("show_if_true")) == str:
             action.show_if_true = json_action["show_if_true"].strip()

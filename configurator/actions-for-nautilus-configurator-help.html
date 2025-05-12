@@ -316,7 +316,7 @@
 		<p>The optional <strong>Access permissions</strong> rule is used to ensure that you (the user) have at least the
 			indicated
 			access rights to the selected files.</p>
-		<p>There are five possible values presented as a selection list:</p>
+		<p>There are eight possible values presented as a selection list:</p>
 		<ul>
 			<li><strong>any</strong>: the default; permissions are not checked</li>
 			<li><strong>read</strong>: you must have at least read permissions for the selected files.</li>
@@ -326,6 +326,12 @@
 				or
 				read and navigation permissions for selected folders.</li>
 			<li><strong>read-write-execute</strong>: you must have full read, write and execute/navigation permissions
+				for the selected files.</li>
+			<li><strong>!write</strong>: you must NOT have write permissions for the selected files.
+			</li>
+			<li><strong>!execute</strong>: you must NOT have and execute permissions for selected files,
+				or navigation permissions for selected folders.</li>
+			<li><strong>!write-execute</strong>: you must NOT have write and execute/navigation permissions
 				for the selected files.</li>
 		</ul>
 		<p>The rule is useful for avoiding actions that make no sense if you don't have the necessary
@@ -340,6 +346,11 @@
 		<p>Or, if your action involves executing a selected file, it would certainly be cleaner to only present that
 			action if
 			you actually had execution permissions for that file.</p>
+		</p>
+		<p>The "negative" settings are designed to allow you to present different actions depending on the permissions
+			for a selection. For example, presenting a <code>Script actions</code> submenu for non-executable scripts, but 
+			avoiding that menu when a script is executable (and thus may appear in a different menu) - you also must always
+			have read access when using the negative settings.
 		</p>
 
 		<h3 id="mimetypes">Mimetypes</h3>

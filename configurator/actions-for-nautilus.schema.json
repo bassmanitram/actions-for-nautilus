@@ -33,7 +33,10 @@
 				"read",
 				"read-write",
 				"read-execute",
-				"read-write-execute"
+				"read-write-execute",
+				"!write",
+				"!execute",
+				"!write-execute"
 			],
 			"title": "Access permissions"
 		},

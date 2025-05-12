@@ -291,8 +291,14 @@ def _test_rule(rule, string):
 # 	return result
 
 #
-# Ensures that the user has at least the stated permissions to access each file
+# Ensures that the user has at least the stated permissions to access each file (or
+# does NOT have the requested access if we are "notting")
 # Returns True if OK for every one, otherwise False
 #
+# Note that the user must always have read access
+#
 def _applicable_to_permissions(action, files):
-	return all(map(lambda file: os.access(file["filepath"], action.permissions), files))
+	if action.permissions_not:
+		return all(map(lambda file: (os.access(file["filepath"], os.R_OK) and not os.access(file["filepath"],action.permissions)), files))
+	else:
+		return all(map(lambda file: os.access(file["filepath"], action.permissions), files))
