@@ -292,10 +292,10 @@ def _test_rule(rule, string):
 
 #
 # Ensures that the user has at least the stated permissions to access each file (or
-# does NOT have the requested access if we are "notting")
+# does NOT have the stated permissions if we are "notting")
 # Returns True if OK for every one, otherwise False
 #
-# Note that the user must always have read access
+# Note that the user must always have read access if permissions are being checked
 #
 def _applicable_to_permissions(action, files):
 	if action.permissions_not:
