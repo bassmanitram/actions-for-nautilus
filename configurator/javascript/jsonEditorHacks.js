@@ -204,12 +204,14 @@ JSONEditor.defaults.editors.array.prototype.getElementEditor = function (value) 
 		 * THIS is the completed container that we need to swap around a bit
 		 *
 		 * There should be four elements:
-		 *     LABEL (CSS will hide this)
+		 *     B (CSS will hide this)
+		 *     LABEL (also hidden)
 		 *     SELECT (choice between menu and command
 		 *     DIV (the object editor for the  menu/command)
 		 *     SPAN (the buttons)
 		 * 
 		 * What we want is
+		 *     B
 		 *     LABEL
 		 *     SPAN
 		 *     SELECT
@@ -218,15 +220,16 @@ JSONEditor.defaults.editors.array.prototype.getElementEditor = function (value) 
 		 * And, while we are at it, we put an a4n-specific class on the selector
 		 * to make it easier to style, and add a tooltip
 		 */
-		if (returnValue.container.children.length == 4
-			&& returnValue.container.children[0].tagName == "LABEL"
-			&& returnValue.container.children[1].tagName == "SELECT"
-			&& returnValue.container.children[2].tagName == "DIV"
-			&& returnValue.container.children[3].tagName == "SPAN"
+		if (returnValue.container.children.length == 5
+			&& returnValue.container.children[0].tagName == "B"
+			&& returnValue.container.children[1].tagName == "LABEL"
+			&& returnValue.container.children[2].tagName == "SELECT"
+			&& returnValue.container.children[3].tagName == "DIV"
+			&& returnValue.container.children[4].tagName == "SPAN"
 		) {
-			returnValue.container.children[1].setAttribute("title", "Select the type of action");
-			returnValue.container.children[1].classList.add("a4n-action-type-chooser");
-			returnValue.container.insertBefore(returnValue.container.children[3], returnValue.container.children[1]);
+			returnValue.container.children[2].setAttribute("title", "Select the type of action");
+			returnValue.container.children[2].classList.add("a4n-action-type-chooser");
+			returnValue.container.insertBefore(returnValue.container.children[4], returnValue.container.children[2]);
 		} else {
 			console.log("Unexpected container layout for " + returnValue.path + " container", returnValue.container);
 		}
@@ -410,4 +413,59 @@ JSONEditor.defaults.editors.string.prototype.postBuild = function (value) {
 		}
 	}
 	return returnValue
+}
+
+/*
+ * Prebuild is wrong
+ */
+//const defaultArrayPreBuild = JSONEditor.defaults.editors.array.prototype.preBuild;
+JSONEditor.defaults.editors.array.prototype.preBuild = function() {
+//	super.preBuild()
+
+    this.rows = []
+    this.row_cache = []
+
+    this.hide_delete_buttons = _check_boolean_option(this.options.disable_array_delete, this.jsoneditor.options.disable_array_delete, true)
+    this.hide_delete_all_rows_buttons = this.hide_delete_buttons || _check_boolean_option(this.options.disable_array_delete_all_rows, this.jsoneditor.options.disable_array_delete_all_rows, true)
+    this.hide_delete_last_row_buttons = this.hide_delete_buttons || _check_boolean_option(this.options.disable_array_delete_last_row, this.jsoneditor.options.disable_array_delete_last_row, true)
+    this.hide_move_buttons = _check_boolean_option(this.options.disable_array_reorder, this.jsoneditor.options.disable_array_reorder, true)
+    this.hide_add_button = _check_boolean_option(this.options.disable_array_add, this.jsoneditor.options.disable_array_add, true)
+    this.show_copy_button = _check_boolean_option(this.options.enable_array_copy, this.jsoneditor.options.enable_array_copy, true)
+    this.array_controls_top = _check_boolean_option(this.options.array_controls_top, this.jsoneditor.options.array_controls_top, true)
+	console.log(this)
+}
+
+/*
+ * Too long to use a piggyback, so we replace!
+ */
+//const defaultCreateCopyButton = JSONEditor.defaults.editors.array.prototype._createCopyButton
+JSONEditor.defaults.editors.array.prototype._createCopyButton = function(i, holder) {
+    const button = this.getButton(this.getItemTitle(), 'copy', 'button_copy_row_title', [this.getItemTitle()])
+    button.classList.add('copy', 'json-editor-btntype-copy')
+    button.setAttribute('data-i', i)
+    button.addEventListener('click', e => {
+	  console.log(this);
+	  const value = this.getValue();
+	  const path = this.options.path;
+      e.preventDefault();
+      e.stopPropagation();
+
+      const i = e.currentTarget.getAttribute('data-i') * 1
+	  const newOne = value[i]
+	  value.push(newOne)
+
+      this.setValue(value)
+//	  this.active_tab = this.rows[i + 1].tab
+//      this.refreshValue(true)
+//      this.onChange(true)
+	  this.jsoneditor.getEditor(`${path}.${value.length - 1}.Basic.label`).setValue(newOne.Basic.label + " Copy")
+      this.jsoneditor.trigger('copyRow', this.rows[i + 1])
+    })
+
+    holder.appendChild(button)
+    return button
+}
+
+function _check_boolean_option(local, global, value) {
+    return typeof local ==  'boolean' ? local : global == value
 }

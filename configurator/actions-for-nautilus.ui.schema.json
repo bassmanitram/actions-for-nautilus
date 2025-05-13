@@ -22,6 +22,8 @@
 					"title": "Mimetypes",
 					"options": {
 						"infoText": "#command:mimetypes",
+						"enable_array_copy": false,
+						"disable_array_delete_last_row": true,
 						"grid_columns": 9
 					}
 				},
@@ -62,8 +64,9 @@
 					"title": "Path patterns",
 					"options": {
 						"infoText": "#command:path_patterns",
+						"enable_array_copy": false,
+						"disable_array_delete_last_row": true,
 						"grid_columns": 9
-
 					}
 				},
 				"path_patterns_strict_match": {
@@ -115,6 +118,7 @@
 		},
 		"FileType": {
 			"type": "string",
+			"format": "select",
 			"enum": [
 				"unknown",
 				"file",
@@ -145,7 +149,6 @@
 			"properties": {
 				"filetypes": {
 					"type": "array",
-					"uniqueItems": true,
 					"format": "table",
 					"items": {
 						"$ref": "#/$defs/FileType"
@@ -153,7 +156,9 @@
 					"title": "File types",
 					"options": {
 						"infoText": "#command:file_types",
-						"grid_columns": 9
+						"grid_columns": 9,
+						"enable_array_copy": false,
+						"disable_array_delete_last_row": true
 					}
 				},
 				"filetypes_strict_match": {

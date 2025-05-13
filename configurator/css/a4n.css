@@ -20,23 +20,25 @@
 		/*
 		 * The title needs to be centered with a bigger font
 		 */
-		h3.level-1,  h3.level-1 label {
+		.h3.level-1,  .h3.level-1>span {
 			display: block !important;
 			font-size: 2.3rem;
 			text-align: center;
 		}
 
 		/*
-		 * Submenu title doesn't need to display (it's the name of the tab!)
+		 * Submenu and section titles should not be displayed
 		 */
-		div[data-schemapath$=".actions"]>h3>label {
+		div[data-schemapath$=".actions"]>.h3>span,
+		.h3>span:first-of-type,
+		.json-editor-btntype-copy>span {
 			display: none;
 		}
 
 		/*
 		 * Nor does the action name
 		 */
-		div.tab-pane[role="tabpanel"]>label {
+		div.tab-pane[role="tabpanel"]>b {
 			display: none;
 		}
 
@@ -66,13 +68,13 @@
 			display: none;
 		}
 
-		div[data-schemapath$=".path_patterns"]>h3>label,
+/* 		div[data-schemapath$=".path_patterns"]>h3>label,
 		div[data-schemapath$=".mimetypes"]>h3>label,
 		div[data-schemapath$=".filetypes"]>h3>label {
 			visibility: collapse;
 			font-size: 0;
 		}
-
+ */
 		div[data-schemapath$=".path_patterns"]>h3>label>input,
 		div[data-schemapath$=".mimetypes"]>h3>label>input,
 		div[data-schemapath$=".filetypes"]>h3>label>input {
@@ -263,4 +265,14 @@
 			background-color: #ffab5f;
 			border-color: #ffab5f;
 			text-decoration-line: none
+		}
+
+		/*
+		 * The table editor is really screwed up!
+		 */
+		.json-editor-btntype-deletelast {
+			display: none !important;
+		}
+		.json-editor-btntype-deleteall {
+			display: inline-block !important;
 		}
