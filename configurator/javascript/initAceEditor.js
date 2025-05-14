@@ -13,86 +13,90 @@ let redoDisabled;
 let saveDisabled;
 
 /*
- * And the way we handle JSON editors
+ * And the way we handle the JSON editor
  */
-JSONEditor.defaults.editors.object.prototype.showEditJSON = function() {
-	if (!this.editjson_holder) return
-	this.hideAddProperty()
+class TopLevelObjectEditor extends JSONEditor.defaults.editors.object {
+	showEditJSON () {
+		if (!this.editjson_holder) return
+		this.hideAddProperty()
 
 
-	/* Start the textarea with the current value */
-	this.ace_editor.setValue(JSON.stringify(convertToBackendFormat(this.getValue()), null, 4));
+		/* Start the textarea with the current value */
+		this.ace_editor.setValue(JSON.stringify(convertToBackendFormat(this.getValue()), null, 4));
 
-	/* Disable the rest of the form while editing JSON */
-	this.disable()
+		/* Disable the rest of the form while editing JSON */
+		this.disable()
 
-	this.editjson_holder.style.display = ''
-	this.editjson_control.disabled = false
-	this.editing_json = true
+		this.editjson_holder.style.display = ''
+		this.editjson_control.disabled = false
+		this.editing_json = true
 
-	let windowInnerHeight = window.innerHeight;
-	let screenUsed = Math.round(mainCardHolder.getBoundingClientRect().bottom);
-	let cardHeight = mainCardHolder.offsetHeight;
+		let windowInnerHeight = window.innerHeight;
+		let screenUsed = Math.round(mainCardHolder.getBoundingClientRect().bottom);
+		let cardHeight = mainCardHolder.offsetHeight;
 
-	let wrapperMaxHeight = windowInnerHeight - screenUsed + cardHeight - 20;
+		let wrapperMaxHeight = windowInnerHeight - screenUsed + cardHeight - 20;
 
-	aceEditorWrapper.style["min-height"] = `${cardHeight < wrapperMaxHeight ? cardHeight : wrapperMaxHeight}px`;
+		aceEditorWrapper.style["min-height"] = `${cardHeight < wrapperMaxHeight ? cardHeight : wrapperMaxHeight}px`;
 
-	let wrapperHeight = Math.round(aceEditorWrapper.getBoundingClientRect().height);
-	let editorHeight = Math.round(aceEditor.getBoundingClientRect().height);
+		let wrapperHeight = Math.round(aceEditorWrapper.getBoundingClientRect().height);
+		let editorHeight = Math.round(aceEditor.getBoundingClientRect().height);
 
-	let editorMaxHeight = wrapperMaxHeight - (wrapperHeight - editorHeight);
+		let editorMaxHeight = wrapperMaxHeight - (wrapperHeight - editorHeight);
 
-	aceEditor.style["max-height"] = `${editorMaxHeight}px`
-	aceEditor.style["height"] = `${editorMaxHeight}px`
+		aceEditor.style["max-height"] = `${editorMaxHeight}px`
+		aceEditor.style["height"] = `${editorMaxHeight}px`
 
-	/*
-	 * Now hide the main card holder and disable the undo/redo/save buttons
-	 */
-	mainCardHolder.firstElementChild.style.display = 'none';
-	undoDisabled = undo_button.disabled;
-	redoDisabled = redo_button.disabled;
-	saveDisabled = save_button.disabled;
+		/*
+		* Now hide the main card holder and disable the undo/redo/save buttons
+		*/
+		mainCardHolder.firstElementChild.style.display = 'none';
+		undoDisabled = undo_button.disabled;
+		redoDisabled = redo_button.disabled;
+		saveDisabled = save_button.disabled;
 
-	undo_button.disabled = true;
-	redo_button.disabled = true;
-	save_button.disabled = true;
+		undo_button.disabled = true;
+		redo_button.disabled = true;
+		save_button.disabled = true;
 
-	this.ace_editor.resize()
-}
+		this.ace_editor.resize()
+	}
 
-JSONEditor.defaults.editors.object.prototype.saveJSON = function() {
-	if (!this.editjson_holder) return	
-	try {
-	  const json = JSON.parse(this.ace_editor.getValue())
-	  this.setValue(convertToFrontendFormat(json))
-	  this.hideEditJSON()
-	  this.onChange(true)
-	  } catch (e) {
-		console.log(e)
-	  window.alert('invalid JSON')
-	  throw e
+	saveJSON () {
+		if (!this.editjson_holder) return	
+		try {
+		const json = JSON.parse(this.ace_editor.getValue())
+		this.setValue(convertToFrontendFormat(json))
+		this.hideEditJSON()
+		this.onChange(true)
+		} catch (e) {
+			console.log(e)
+		window.alert('invalid JSON')
+		throw e
+		}
+	}
+
+	hideEditJSON () {
+		if (!this.editjson_holder) return
+		if (!this.editing_json) return
+
+		this.editjson_holder.style.display = 'none'
+		this.enable()
+		this.editing_json = false
+
+		undo_button.disabled = undoDisabled;
+		redo_button.disabled = redoDisabled;
+		save_button.disabled = saveDisabled;
+
+		mainCardHolder.firstElementChild.style.display = '';
 	}
 }
 
-JSONEditor.defaults.editors.object.prototype.hideEditJSON = function () {
-    if (!this.editjson_holder) return
-    if (!this.editing_json) return
-
-    this.editjson_holder.style.display = 'none'
-    this.enable()
-    this.editing_json = false
-
-	undo_button.disabled = undoDisabled;
-	redo_button.disabled = redoDisabled;
-	save_button.disabled = saveDisabled;
-
-	mainCardHolder.firstElementChild.style.display = '';
-}
+JSONEditor.defaults.editors.topLevelObject = TopLevelObjectEditor;
 
 function aceDragMouseMove (e) {
 	// editor height
-	var eheight = e.pageY - draggingEditorTopOffset;
+	const eheight = e.pageY - draggingEditorTopOffset;
 	// Set aceEditorWrapper height
 	aceEditor.style.height = `${eheight}px`;
 

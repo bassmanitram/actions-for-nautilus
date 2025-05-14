@@ -29288,7 +29288,7 @@ function overwriteExistingProperties(obj1, obj2) {
   return obj1;
 }
 function checkBooleanOption(local, global, dflt) {
-  return typeof local === 'boolean' ? local : global === 'boolean' ? global : dflt;
+  return typeof local === 'boolean' ? local : typeof global === 'boolean' ? global : dflt;
 }
 
 /***/ }),

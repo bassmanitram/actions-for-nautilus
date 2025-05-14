@@ -41,14 +41,14 @@ function saveConfig(e) {
 	e.preventDefault();
 	editor.disable();
 	save_button.disabled = true;
-	var errors = editor.validate();
+	const errors = editor.validate();
 	if (errors.length > 0) {
 		alert("There are validation errors in the data");
 		return;
 	}
 //	console.log(JSON.stringify(convertToBackendFormat(config),null,4));
-//	var data = JSON.stringify(editor.getValue());
-	var data = JSON.stringify(convertToBackendFormat(editor.getValue()));
+//	const data = JSON.stringify(editor.getValue());
+	const data = JSON.stringify(convertToBackendFormat(editor.getValue()));
 	//console.log(data);
 $.ajax({
 		url: '/config',
@@ -97,7 +97,7 @@ function finalizeEditorConfig(e) {
 	saved_value = JSON.stringify(editor.getValue());
 	previous_values[0] = saved_value;
 
-	var button_holder = editor.root.theme.getHeaderButtonHolder();
+	const button_holder = editor.root.theme.getHeaderButtonHolder();
 	editor.root.header.parentNode.insertBefore(button_holder, editor.root.header.nextSibling);
 
 	/*
@@ -185,7 +185,7 @@ JSONEditor.defaults.custom_validators.push((schema, value, path) => {
 	 * editor_ready flag is set to true.
 	 */
 	if (!editor_ready) return [];
-	var myValue = value;
+	let myValue = value;
 	const errors = [];
 	if (schema.format === "pattern") {
 		if (myValue.startsWith("!")) {
@@ -209,7 +209,7 @@ JSONEditor.defaults.custom_validators.push((schema, value, path) => {
 					message: 'Regular expression cannot be empty'
 				});
 			} else {
-				var reError = null;
+				let reError;
 				try {
 					/*
 					 * Python REs and JS REs are both based on Perl REs, meaning that for
@@ -231,7 +231,7 @@ JSONEditor.defaults.custom_validators.push((schema, value, path) => {
 				}
 			}
 		} else {
-			var globError = null;
+			let globError;
 			try {
 				/*
 				 * Python fnmatch is basically the same as the -wholename parameter of the UNIX find
@@ -287,12 +287,11 @@ JSONEditor.defaults.custom_validators.push((schema, value, path) => {
 	return errors;
 });
 
-function typeChangeListener(parm) {
+function typeChangeListener() {
 	if (this.tab) {
 		const element = this.tab;
 		const actionType = this.editors[this.type].editors.Basic.editors.type.getValue();
 		const disabled = this.editors[this.type].editors.Basic.editors.disabled.getValue();
-		console.log("CHANGE", actionType, disabled)
 		element.classList.remove("action-command");
 		element.classList.remove("action-menu");
 		element.firstChild.classList.remove(iconNames["command"])

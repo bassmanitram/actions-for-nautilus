@@ -232,6 +232,7 @@
 				"debug"
 			],
 			"options": {
+				"a4nEditor": "topLevelObject",
 				"disable_properties": true,
 				"disable_edit_json": false
 			},
