@@ -33,7 +33,7 @@ class a4nbootstrap4Theme extends JSONEditor.defaults.themes.bootstrap4 {
 	 */
 	getInfoButton(text) {
 		const info = text.startsWith("#") ? (infoText[text] ? infoText[text] : { text }) : { text };
-		var button = super.getInfoButton(info.text);
+		const button = super.getInfoButton(info.text);
 		button.addEventListener('click', this.openHelp, false);
 		if (info.help_label) {
 			button.setAttribute('data-help-label', info.help_label);
@@ -47,16 +47,12 @@ class a4nbootstrap4Theme extends JSONEditor.defaults.themes.bootstrap4 {
 	 * view
 	 */
 	getTab(text, id) {
-		var element = super.getTab(text, id);
-		var myEditor = this.jsoneditor.getEditor(id);
+		const element = super.getTab(text, id);
 		if (/\.actions\.[0-9]+$/.test(id)) {
-			var actionType = myEditor.value.Basic.type;
-			var ite = document.createElement('i');
+			const ite = document.createElement('i');
 			ite.classList.add("fas")
 			element.insertBefore(ite, element.firstChild);
-			element.classList.add("action-" + actionType);
-			element.firstChild.classList.add(iconNames[actionType]);
-			myEditor.a4nActionType = actionType;
+			element.classList.add("action-command");
 		}
 		return element;
 	}

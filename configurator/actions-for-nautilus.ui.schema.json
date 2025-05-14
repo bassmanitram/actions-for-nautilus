@@ -22,7 +22,6 @@
 					"title": "Mimetypes",
 					"options": {
 						"infoText": "#command:mimetypes",
-						"enable_array_copy": false,
 						"disable_array_delete_last_row": true,
 						"grid_columns": 9
 					}
@@ -64,7 +63,6 @@
 					"title": "Path patterns",
 					"options": {
 						"infoText": "#command:path_patterns",
-						"enable_array_copy": false,
 						"disable_array_delete_last_row": true,
 						"grid_columns": 9
 					}
@@ -157,7 +155,6 @@
 					"options": {
 						"infoText": "#command:file_types",
 						"grid_columns": 9,
-						"enable_array_copy": false,
 						"disable_array_delete_last_row": true
 					}
 				},
@@ -207,7 +204,10 @@
 					},
 					"title": "Main Menu",
 					"options": {
-						"infoText": "#root:actions"
+						"infoText": "#root:actions",
+						"a4nEditor": "actions",
+						"on_copy_item_label_path": "Basic.label",
+						"enable_array_copy": true
 					}
 				},
 				"sort": {
@@ -297,7 +297,10 @@
 					},
 					"title": "Submenu Actions",
 					"options": {
-						"infoText": "#submenu:actions"
+						"infoText": "#submenu:actions",
+						"a4nEditor": "actions",
+						"on_copy_item_label_path": "Basic.label",
+						"enable_array_copy": true
 					}
 				}
 			},
@@ -308,7 +311,10 @@
 			"title": "Submenu",
 			"options": {
 				"infoText": "#submenu",
-				"disable_properties": true
+				"disable_properties": true,
+				"containerAttributes": {
+					"class": "a4n-submenu-container"
+				}
 			}
 		},
 		"Command": {
@@ -367,7 +373,8 @@
 							"title": "Command line to execute",
 							"options": {
 								"infoText": "#command:command_line",
-								"grid_columns": 12
+								"grid_columns": 12,
+								"a4nEditor": "commandLine"
 							}
 						},
 						"show_if_true": {
@@ -463,7 +470,10 @@
 			],
 			"title": "Command",
 			"options": {
-				"infoText": "#command"
+				"infoText": "#command",
+				"containerAttributes": {
+					"class": "a4n-command-container"
+				}
 			}
 		}
 	}
