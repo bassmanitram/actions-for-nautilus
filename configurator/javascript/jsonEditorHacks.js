@@ -4,6 +4,10 @@ const primitives = [
 	'string'
 ]
 
+const basicIgnoreKeys = {
+	uuid: true
+}
+
 const basicDefaults = {
 	show_if_true: "",
 	cwd: "",
@@ -20,9 +24,11 @@ const basicDefaults = {
  */
 function basicToBackend(target, source) {
 	for (const [key, value] of Object.entries(source)) {
-		let dflt = basicDefaults[key]
-		if (dflt == undefined || dflt != value) {
-			target[key] = value;
+		if (!basicIgnoreKeys[key]) {
+			let dflt = basicDefaults[key]
+			if (dflt == undefined || dflt != value) {
+				target[key] = value;
+			}
 		}
 	}
 	if (target.type == "command") {
