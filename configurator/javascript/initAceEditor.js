@@ -20,7 +20,6 @@ class TopLevelObjectEditor extends JSONEditor.defaults.editors.object {
 		if (!this.editjson_holder) return
 		this.hideAddProperty()
 
-
 		/* Start the textarea with the current value */
 		this.ace_editor.setValue(JSON.stringify(convertToBackendFormat(this.getValue()), null, 4));
 

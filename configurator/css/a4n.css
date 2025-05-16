@@ -276,3 +276,10 @@
 		.json-editor-btntype-deleteall {
 			display: inline-block !important;
 		}
+
+		/*
+		 * Unneeded artifact in JSON editor
+		 */
+		textarea.je-edit-json--textarea {
+			display: none !important;
+		}
