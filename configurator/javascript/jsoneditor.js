@@ -10397,6 +10397,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _editor_js__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! ../editor.js */ "./src/editor.js");
 /* harmony import */ var _utilities_js__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! ../utilities.js */ "./src/utilities.js");
 /* harmony import */ var _array_css_js__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(/*! ./array.css.js */ "./src/editors/array.css.js");
+function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstructorReturn(t, _isNativeReflectConstruct() ? Reflect.construct(o, e || [], _getPrototypeOf(t).constructor) : o.apply(t, e)); }
+function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
+function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
+function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
+function _superPropGet(t, o, e, r) { var p = _get(_getPrototypeOf(1 & r ? t.prototype : t), o, e); return 2 & r && "function" == typeof p ? function (t) { return p.apply(e, t); } : p; }
+function _get() { return _get = "undefined" != typeof Reflect && Reflect.get ? Reflect.get.bind() : function (e, t, r) { var p = _superPropBase(e, t); if (p) { var n = Object.getOwnPropertyDescriptor(p, t); return n.get ? n.get.call(arguments.length < 3 ? e : r) : n.value; } }, _get.apply(null, arguments); }
+function _superPropBase(t, o) { for (; !{}.hasOwnProperty.call(t, o) && null !== (t = _getPrototypeOf(t));); return t; }
+function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
+function _inherits(t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function"); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), Object.defineProperty(t, "prototype", { writable: !1 }), e && _setPrototypeOf(t, e); }
+function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) { return t.__proto__ = e, t; }, _setPrototypeOf(t, e); }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 
 
@@ -10434,19 +10444,58 @@ function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = 
 function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _callSuper(t, o, e) { return o = _getPrototypeOf(o), _possibleConstructorReturn(t, _isNativeReflectConstruct() ? Reflect.construct(o, e || [], _getPrototypeOf(t).constructor) : o.apply(t, e)); }
-function _possibleConstructorReturn(t, e) { if (e && ("object" == _typeof(e) || "function" == typeof e)) return e; if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined"); return _assertThisInitialized(t); }
-function _assertThisInitialized(e) { if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); return e; }
-function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
-function _superPropGet(t, o, e, r) { var p = _get(_getPrototypeOf(1 & r ? t.prototype : t), o, e); return 2 & r && "function" == typeof p ? function (t) { return p.apply(e, t); } : p; }
-function _get() { return _get = "undefined" != typeof Reflect && Reflect.get ? Reflect.get.bind() : function (e, t, r) { var p = _superPropBase(e, t); if (p) { var n = Object.getOwnPropertyDescriptor(p, t); return n.get ? n.get.call(arguments.length < 3 ? e : r) : n.value; } }, _get.apply(null, arguments); }
-function _superPropBase(t, o) { for (; !{}.hasOwnProperty.call(t, o) && null !== (t = _getPrototypeOf(t));); return t; }
-function _getPrototypeOf(t) { return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) { return t.__proto__ || Object.getPrototypeOf(t); }, _getPrototypeOf(t); }
-function _inherits(t, e) { if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function"); t.prototype = Object.create(e && e.prototype, { constructor: { value: t, writable: !0, configurable: !0 } }), Object.defineProperty(t, "prototype", { writable: !1 }), e && _setPrototypeOf(t, e); }
-function _setPrototypeOf(t, e) { return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) { return t.__proto__ = e, t; }, _setPrototypeOf(t, e); }
 
 
 
+
+/*
+ * Objectifying the row cache may help the gateway to get better
+ * array performance in subclasses
+ */
+var SimpleRowCache = /*#__PURE__*/function () {
+  function SimpleRowCache() {
+    _classCallCheck(this, SimpleRowCache);
+    this.cache = [];
+  }
+  return _createClass(SimpleRowCache, [{
+    key: "replaceAll",
+    value: function replaceAll(rows) {
+      var _this = this;
+      if (Array.isArray(rows)) {
+        rows.forEach(function (row, i) {
+          _this.cache[i] = row;
+        });
+      }
+    }
+  }, {
+    key: "addItem",
+    value: function addItem(row) {
+      this.cache[row.arrayItemIndex] = row;
+    }
+  }, {
+    key: "removeItem",
+    value: function removeItem(id) {
+      this.cache[id] = null;
+    }
+  }, {
+    key: "getItemById",
+    value: function getItemById(id) {
+      return this.cache[id];
+    }
+  }, {
+    key: "getItemByIndexOrValue",
+    value: function getItemByIndexOrValue(index, _value) {
+      return this.cache[index];
+    }
+
+    /* removes and returns excess items */
+  }, {
+    key: "trimItems",
+    value: function trimItems(max) {
+      return this.cache.splice(max);
+    }
+  }]);
+}();
 var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   function ArrayEditor() {
     _classCallCheck(this, ArrayEditor);
@@ -10454,6 +10503,11 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }
   _inherits(ArrayEditor, _AbstractEditor);
   return _createClass(ArrayEditor, [{
+    key: "createRowCache",
+    value: function createRowCache() {
+      return new SimpleRowCache();
+    }
+  }, {
     key: "askConfirmation",
     value: function askConfirmation() {
       if (this.jsoneditor.options.prompt_before_delete === true) {
@@ -10496,13 +10550,13 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "enable",
     value: function enable() {
-      var _this = this;
+      var _this2 = this;
       if (!this.always_disabled) {
         this.setAvailability(this, false);
         if (this.rows) {
           this.rows.forEach(function (row) {
             row.enable();
-            _this.setAvailability(row, false);
+            _this2.setAvailability(row, false);
           });
         }
         _superPropGet(ArrayEditor, "enable", this, 3)([]);
@@ -10511,13 +10565,13 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "disable",
     value: function disable(alwaysDisabled) {
-      var _this2 = this;
+      var _this3 = this;
       if (alwaysDisabled) this.always_disabled = true;
       this.setAvailability(this, true);
       if (this.rows) {
         this.rows.forEach(function (row) {
           row.disable(alwaysDisabled);
-          _this2.setAvailability(row, true);
+          _this3.setAvailability(row, true);
         });
       }
       _superPropGet(ArrayEditor, "disable", this, 3)([]);
@@ -10538,7 +10592,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
     value: function preBuild() {
       _superPropGet(ArrayEditor, "preBuild", this, 3)([]);
       this.rows = [];
-      this.row_cache = [];
+      this.row_cache = this.createRowCache();
       this.hide_delete_buttons = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.checkBooleanOption)(this.options.disable_array_delete, this.jsoneditor.options.disable_array_delete, false);
       this.hide_delete_all_rows_buttons = this.hide_delete_buttons || (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.checkBooleanOption)(this.options.disable_array_delete_all_rows, this.jsoneditor.options.disable_array_delete_all_rows, false);
       this.hide_delete_last_row_buttons = this.hide_delete_buttons || (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.checkBooleanOption)(this.options.disable_array_delete_last_row, this.jsoneditor.options.disable_array_delete_last_row, false);
@@ -10680,12 +10734,18 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
       return this.item_info[stringified];
     }
   }, {
+    key: "getEditorId",
+    value: function getEditorId(i) {
+      return i;
+    }
+  }, {
     key: "getElementEditor",
     value: function getElementEditor(i) {
       var itemInfo = this.getItemInfo(i);
+      var editorId = this.getEditorId(i);
       var schema = this.getItemSchema(i);
       schema = this.jsoneditor.expandRefs(schema);
-      schema.title = "".concat(itemInfo.title, " ").concat(i + 1);
+      schema.title = "".concat(itemInfo.title, " ").concat(editorId + 1);
       var editor = this.jsoneditor.getEditorClass(schema);
       var holder;
       if (this.tabs_holder) {
@@ -10694,7 +10754,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
         } else {
           holder = this.theme.getTabContent();
         }
-        holder.id = "".concat(this.path, ".").concat(i);
+        holder.id = "".concat(this.path, ".").concat(editorId);
       } else if (itemInfo.child_editors) {
         holder = this.theme.getChildEditorHolder();
       } else {
@@ -10705,10 +10765,12 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
         jsoneditor: this.jsoneditor,
         schema: schema,
         container: holder,
-        path: "".concat(this.path, ".").concat(i),
+        path: "".concat(this.path, ".").concat(editorId),
         parent: this,
         required: true
       });
+      ret.arrayItemId = editorId;
+      ret.arrayItemIndex = i;
       ret.preBuild();
       ret.build();
       ret.postBuild();
@@ -10738,24 +10800,23 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "empty",
     value: function empty(hard) {
-      var _this3 = this;
+      var _this4 = this;
       if (this.rows === null) return;
       this.rows.forEach(function (row, i) {
         if (hard) {
-          if (_this3.checkParent(row.tab)) row.tab.parentNode.removeChild(row.tab);
-          _this3.destroyRow(row, true);
-          _this3.row_cache[i] = null;
+          if (_this4.checkParent(row.tab)) row.tab.parentNode.removeChild(row.tab);
+          _this4.row_cache.removeItem(row.arrayItemId);
+          _this4.destroyRow(row, true);
         }
-        _this3.rows[i] = null;
+        _this4.rows[i] = null;
       });
       if (hard) {
-        for (var j = this.rows.length; j < this.row_cache.length; j++) {
-          this.destroyRow(this.row_cache[j], true);
-          this.row_cache[j] = null;
-        }
+        this.row_cache.trimItems(this.rows.length).forEach(function (cachedRow) {
+          if (cachedRow) _this4.destroyRow(cachedRow, true);
+        });
       }
       this.rows = [];
-      if (hard) this.row_cache = [];
+      if (hard) this.row_cache = this.createRowCache();
     }
   }, {
     key: "destroyRow",
@@ -10782,15 +10843,15 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "refreshTabs",
     value: function refreshTabs(refreshHeaders) {
-      var _this4 = this;
+      var _this5 = this;
       this.rows.forEach(function (row) {
         if (!row.tab) return;
         if (refreshHeaders) {
           row.tab_text.textContent = row.getHeaderText();
-        } else if (row.tab === _this4.active_tab) {
-          _this4.theme.markTabActive(row);
+        } else if (row.tab === _this5.active_tab) {
+          _this5.theme.markTabActive(row);
         } else {
-          _this4.theme.markTabInactive(row);
+          _this5.theme.markTabInactive(row);
         }
       });
     }
@@ -10810,9 +10871,27 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
       return value;
     }
   }, {
+    key: "setRowValue",
+    value: function setRowValue(val, i, initial) {
+      var cached_row = this.row_cache.getItemByIndexOrValue(i, val);
+      if (this.rows[i]) {
+        /* TODO: don't set the row's value if it hasn't changed */
+        this.rows[i].setValue(val, initial);
+      } else if (cached_row) {
+        this.rows[i] = cached_row;
+        this.rows[i].setValue(val, initial);
+        this.rows[i].container.style.display = '';
+        if (this.rows[i].tab) this.rows[i].tab.style.display = '';
+        this.rows[i].register();
+        this.jsoneditor.trigger('addRow', this.rows[i]);
+      } else {
+        this.jsoneditor.trigger('addRow', this.addRow(val, initial));
+      }
+    }
+  }, {
     key: "setValue",
     value: function setValue() {
-      var _this5 = this;
+      var _this6 = this;
       var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
       var initial = arguments.length > 1 ? arguments[1] : undefined;
       value = this.applyConstFilter(value);
@@ -10826,20 +10905,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
         return;
       }
       value.forEach(function (val, i) {
-        if (_this5.rows[i]) {
-          /* TODO: don't set the row's value if it hasn't changed */
-          _this5.rows[i].setValue(val, initial);
-        } else if (_this5.row_cache[i]) {
-          _this5.rows[i] = _this5.row_cache[i];
-          _this5.rows[i].setValue(val, initial);
-          _this5.rows[i].container.style.display = '';
-          if (_this5.rows[i].tab) _this5.rows[i].tab.style.display = '';
-          _this5.rows[i].register();
-          _this5.jsoneditor.trigger('addRow', _this5.rows[i]);
-        } else {
-          var editor = _this5.addRow(val, initial);
-          _this5.jsoneditor.trigger('addRow', editor);
-        }
+        return _this6.setRowValue(val, i, initial);
       });
       for (var j = value.length; j < this.rows.length; j++) {
         this.destroyRow(this.rows[j]);
@@ -10849,7 +10915,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
 
       /* Set the active tab */
       var row = this.rows.find(function (row) {
-        return row.tab === _this5.active_tab;
+        return row.tab === _this6.active_tab;
       });
       var newActiveTab = typeof row !== 'undefined' ? row.tab : null;
       if (!newActiveTab && this.rows.length) newActiveTab = this.rows[0].tab;
@@ -10910,7 +10976,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "refreshValue",
     value: function refreshValue(force) {
-      var _this6 = this;
+      var _this7 = this;
       var oldi = this.value ? this.value.length : 0;
       /* Get the value for this editor */
       this.value = this.rows.map(function (editor) {
@@ -10920,19 +10986,20 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
         /* If we currently have minItems items in the array */
         var minItems = this.schema.minItems && this.schema.minItems >= this.rows.length;
         this.rows.forEach(function (editor, i) {
+          editor.arrayItemIndex = i;
           /* Hide the move down button for the last row */
           if (editor.movedown_button) {
-            var display = i !== _this6.rows.length - 1;
-            _this6.setButtonState(editor.movedown_button, display);
+            var display = i !== _this7.rows.length - 1;
+            _this7.setButtonState(editor.movedown_button, display);
           }
 
           /* Hide the delete button if we have minItems items */
           if (editor.delete_button) {
-            _this6.setButtonState(editor.delete_button, !minItems);
+            _this7.setButtonState(editor.delete_button, !minItems);
           }
 
           /* Get the value for this editor */
-          _this6.value[i] = editor.getValue();
+          _this7.value[i] = editor.getValue();
         });
         if (this.setupButtons(minItems) && !this.collapsed) {
           this.controls.style.display = 'inline-block';
@@ -10943,12 +11010,37 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
       this.serialized = JSON.stringify(this.value);
     }
   }, {
+    key: "addRowViaCache",
+    value: function addRowViaCache() {
+      var i = this.rows.length;
+      var editor;
+      var cachedRow = this.row_cache.getItemByIndexOrValue(i);
+      if (cachedRow) {
+        editor = this.rows[i] = cachedRow;
+        this.rows[i].setValue(this.rows[i].getDefault(), true);
+        // override cached value, so optional properties are not checked.
+        if (typeof this.rows[i].deactivateNonRequiredProperties === 'function') {
+          this.rows[i].deactivateNonRequiredProperties(true);
+        }
+        this.rows[i].container.style.display = '';
+        if (this.rows[i].tab) this.rows[i].tab.style.display = '';
+        this.rows[i].register();
+      } else {
+        editor = this.addRow();
+      }
+      return editor;
+    }
+  }, {
+    key: "changeActiveTab",
+    value: function changeActiveTab(tab) {
+      this.active_tab = tab;
+    }
+  }, {
     key: "addRow",
     value: function addRow(value, initial) {
-      var _this7 = this;
+      var _this8 = this;
       var i = this.rows.length;
       this.rows[i] = this.getElementEditor(i);
-      this.row_cache[i] = this.rows[i];
       if (this.tabs_holder) {
         this.rows[i].tab_text = document.createElement('span');
         this.rows[i].tab_text.textContent = this.rows[i].getHeaderText();
@@ -10960,10 +11052,10 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
           this.theme.addTab(this.tabs_holder, this.rows[i].tab);
         }
         this.rows[i].tab.addEventListener('click', function (e) {
-          _this7.active_tab = _this7.rows[i].tab;
-          _this7.refreshTabs();
           e.preventDefault();
           e.stopPropagation();
+          _this8.changeActiveTab(e.currentTarget);
+          _this8.refreshTabs();
         });
         this._supportDragDrop(this.rows[i].tab);
       } else {
@@ -10988,40 +11080,42 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
       }
       if (typeof value !== 'undefined') this.rows[i].setValue(value, initial);
       this.refreshTabs();
+      this.row_cache.addItem(this.rows[i]);
       return this.rows[i];
     }
   }, {
     key: "_createDeleteButton",
     value: function _createDeleteButton(i, holder) {
-      var _this8 = this;
+      var _this9 = this;
       var button = this.getButton(this.getItemTitle(), 'delete', 'button_delete_row_title', [this.getItemTitle()]);
       button.classList.add('delete', 'json-editor-btntype-delete');
-      button.setAttribute('data-i', i);
       button.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        if (!_this8.askConfirmation()) {
+        if (!_this9.active_tab) return;
+        var i = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.findIndexInParent)(_this9.active_tab);
+        if (i < 0) return;
+        if (!_this9.askConfirmation()) {
           return false;
         }
-        var i = e.currentTarget.getAttribute('data-i') * 1;
-        var newval = _this8.getValue().filter(function (row, j) {
+        var newval = _this9.getValue().filter(function (row, j) {
           return j !== i;
         });
         var newActiveTab = null;
-        var editor = _this8.rows[i];
+        var editor = _this9.rows[i];
         var editorValue = editor.getValue();
-        _this8.setValue(newval);
-        if (_this8.rows[i]) {
-          newActiveTab = _this8.rows[i].tab;
-        } else if (_this8.rows[i - 1]) {
-          newActiveTab = _this8.rows[i - 1].tab;
+        _this9.setValue(newval);
+        if (_this9.rows[i]) {
+          newActiveTab = _this9.rows[i].tab;
+        } else if (_this9.rows[i - 1]) {
+          newActiveTab = _this9.rows[i - 1].tab;
         }
         if (newActiveTab) {
-          _this8.active_tab = newActiveTab;
-          _this8.refreshTabs();
+          _this9.active_tab = newActiveTab;
+          _this9.refreshTabs();
         }
-        _this8.onChange(true);
-        _this8.jsoneditor.trigger('deleteRow', editorValue);
+        _this9.onChange(true);
+        _this9.jsoneditor.trigger('deleteRow', editorValue);
       });
       if (holder) {
         holder.appendChild(button);
@@ -11029,101 +11123,117 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
       return button;
     }
   }, {
+    key: "copyRow",
+    value: function copyRow(from, to) {
+      var schema = this.schema;
+      var arrayItems = this.getValue();
+      var newValue = arrayItems[from];
+      /* Force generation of new UUID if the item has been cloned. */
+      if (schema.items.type === 'string' && schema.items.format === 'uuid') {
+        newValue = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.generateUUID)();
+      } else if (schema.items.type === 'object' && schema.items.properties) {
+        for (var _i = 0, _Object$keys = Object.keys(newValue); _i < _Object$keys.length; _i++) {
+          var key = _Object$keys[_i];
+          if (schema.items.properties && schema.items.properties[key] && schema.items.properties[key].format === 'uuid') {
+            // If we have more than one uuid, then we replace the value twice - no biggy
+            // It DOESN'T handle deeply embedded UUIDs - biggy
+            newValue = Object.assign({}, newValue);
+            newValue[key] = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.generateUUID)();
+          }
+        }
+      }
+      arrayItems.splice(to, 0, newValue);
+      this.setValue(arrayItems);
+    }
+  }, {
     key: "_createCopyButton",
     value: function _createCopyButton(i, holder) {
-      var _this9 = this;
+      var _this0 = this;
       var button = this.getButton(this.getItemTitle(), 'copy', 'button_copy_row_title', [this.getItemTitle()]);
       var schema = this.schema;
       button.classList.add('copy', 'json-editor-btntype-copy');
-      button.setAttribute('data-i', i);
       button.addEventListener('click', function (e) {
-        var value = _this9.getValue();
         e.preventDefault();
         e.stopPropagation();
-        var i = e.currentTarget.getAttribute('data-i') * 1;
-        var newValue = value[i];
-        /* Force generation of new UUID if the item has been cloned. */
-        if (schema.items.type === 'string' && schema.items.format === 'uuid') {
-          newValue = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.generateUUID)();
-        } else if (schema.items.type === 'object' && schema.items.properties) {
-          for (var _i = 0, _Object$keys = Object.keys(newValue); _i < _Object$keys.length; _i++) {
-            var key = _Object$keys[_i];
-            if (schema.items.properties && schema.items.properties[key] && schema.items.properties[key].format === 'uuid') {
-              newValue = Object.assign({}, newValue); // If we have more than one uuid, then we replace the value twice - no biggy
-              newValue[key] = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.generateUUID)();
-            }
-          }
-        }
-        var newItemIndex;
-        if (_this9.copy_in_place) {
-          newItemIndex = i + 1;
-          value.splice(newItemIndex, 0, newValue);
-        } else {
-          newItemIndex = value.length;
-          value.push(newValue);
-        }
-        _this9.setValue(value);
-        _this9.refreshValue(true);
-        _this9.onChange(true);
+        if (!_this0.active_tab) return;
+        var i = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.findIndexInParent)(_this0.active_tab);
+        if (i < 0) return;
+        var newItemIndex = _this0.copy_in_place ? i + 1 : _this0.rows.length;
+        _this0.copyRow(i, newItemIndex);
+        _this0.refreshValue(true);
+        _this0.onChange(true);
         if (schema.options.on_copy_item_label_path) {
-          var labelEditor = _this9.jsoneditor.getEditor("".concat(_this9.options.path, ".").concat(newItemIndex, ".").concat(schema.options.on_copy_item_label_path));
+          var rowPath = _this0.rows[newItemIndex].path;
+          var labelEditor = _this0.jsoneditor.getEditor("".concat(rowPath, ".").concat(schema.options.on_copy_item_label_path));
           if (labelEditor.schema.type === 'string') {
             labelEditor.setValue(labelEditor.value + ' Copy');
           }
         }
-        _this9.jsoneditor.trigger('copyRow', _this9.rows[newItemIndex]);
+        _this0.jsoneditor.trigger('copyRow', _this0.rows[newItemIndex]);
       });
       holder.appendChild(button);
       return button;
     }
   }, {
+    key: "moveRowUp",
+    value: function moveRowUp(i) {
+      if (i <= 0) return;
+      var arrayItems = this.getValue();
+      var tmp = arrayItems[i - 1];
+      arrayItems[i - 1] = arrayItems[i];
+      arrayItems[i] = tmp;
+      this.setValue(arrayItems);
+    }
+  }, {
     key: "_createMoveUpButton",
     value: function _createMoveUpButton(i, holder) {
-      var _this0 = this;
+      var _this1 = this;
       var button = this.getButton('', this.schema.format === 'tabs-top' ? 'moveleft' : 'moveup', 'button_move_up_title');
       button.classList.add('moveup', 'json-editor-btntype-move');
-      button.setAttribute('data-i', i);
       button.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        var i = e.currentTarget.getAttribute('data-i') * 1;
-        if (i <= 0) return;
-        var rows = _this0.getValue();
-        var tmp = rows[i - 1];
-        rows[i - 1] = rows[i];
-        rows[i] = tmp;
-        _this0.setValue(rows);
-        _this0.active_tab = _this0.rows[i - 1].tab;
-        _this0.refreshTabs();
-        _this0.onChange(true);
-        _this0.jsoneditor.trigger('moveRow', _this0.rows[i - 1]);
+        if (!_this1.active_tab) return;
+        var i = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.findIndexInParent)(_this1.active_tab);
+        if (i < 0) return;
+        _this1.moveRowUp(i);
+        _this1.active_tab = _this1.rows[i - 1].tab;
+        _this1.refreshTabs(true);
+        _this1.onChange(true);
+        _this1.jsoneditor.trigger('moveRow', _this1.rows[i - 1]);
       });
       if (holder) {
         holder.appendChild(button);
       }
       return button;
+    }
+  }, {
+    key: "moveRowDown",
+    value: function moveRowDown(i) {
+      var arrayItems = this.getValue();
+      if (i >= arrayItems.length - 1) return;
+      var tmp = arrayItems[i + 1];
+      arrayItems[i + 1] = arrayItems[i];
+      arrayItems[i] = tmp;
+      this.setValue(arrayItems);
     }
   }, {
     key: "_createMoveDownButton",
     value: function _createMoveDownButton(i, holder) {
-      var _this1 = this;
+      var _this10 = this;
       var button = this.getButton('', this.schema.format === 'tabs-top' ? 'moveright' : 'movedown', 'button_move_down_title');
       button.classList.add('movedown', 'json-editor-btntype-move');
-      button.setAttribute('data-i', i);
       button.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        var i = e.currentTarget.getAttribute('data-i') * 1;
-        var rows = _this1.getValue();
-        if (i >= rows.length - 1) return;
-        var tmp = rows[i + 1];
-        rows[i + 1] = rows[i];
-        rows[i] = tmp;
-        _this1.setValue(rows);
-        _this1.active_tab = _this1.rows[i + 1].tab;
-        _this1.refreshTabs();
-        _this1.onChange(true);
-        _this1.jsoneditor.trigger('moveRow', _this1.rows[i + 1]);
+        if (!_this10.active_tab) return;
+        var i = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.findIndexInParent)(_this10.active_tab);
+        if (i < 0) return;
+        _this10.moveRowDown(i);
+        _this10.active_tab = _this10.rows[i + 1].tab;
+        _this10.refreshTabs();
+        _this10.onChange(true);
+        _this10.jsoneditor.trigger('moveRow', _this10.rows[i + 1]);
       });
       if (holder) {
         holder.appendChild(button);
@@ -11131,19 +11241,24 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
       return button;
     }
   }, {
+    key: "dropRow",
+    value: function dropRow(from, to) {
+      var arrayItems = this.getValue();
+      var tmp = arrayItems[from];
+      arrayItems.splice(from, 1);
+      arrayItems.splice(to, 0, tmp);
+      this.setValue(arrayItems);
+    }
+  }, {
     key: "_supportDragDrop",
     value: function _supportDragDrop(tab, useTrigger) {
-      var _this10 = this;
+      var _this11 = this;
       supportDragDrop(tab, function (i, j) {
-        var rows = _this10.getValue();
-        var tmp = rows[i];
-        rows.splice(i, 1);
-        rows.splice(j, 0, tmp);
-        _this10.setValue(rows);
-        _this10.active_tab = _this10.rows[j].tab;
-        _this10.refreshTabs();
-        _this10.onChange(true);
-        _this10.jsoneditor.trigger('moveRow', _this10.rows[j]);
+        _this11.dropRow(i, j);
+        _this11.active_tab = _this11.rows[j].tab;
+        _this11.refreshTabs(true);
+        _this11.onChange(true);
+        _this11.jsoneditor.trigger('moveRow', _this11.rows[j]);
       }, {
         useTrigger: useTrigger
       });
@@ -11179,7 +11294,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "_createToggleButton",
     value: function _createToggleButton() {
-      var _this11 = this;
+      var _this12 = this;
       var button = this.getButton('', 'collapse', 'button_collapse');
       button.classList.add('json-editor-btntype-toggle');
       this.title.insertBefore(button, this.title.childNodes[0]);
@@ -11188,18 +11303,18 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
       button.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        if (_this11.panel) _this11.setButtonState(_this11.panel, _this11.collapsed);
-        if (_this11.tabs_holder) _this11.setButtonState(_this11.tabs_holder, _this11.collapsed);
-        if (_this11.collapsed) {
-          _this11.collapsed = false;
-          _this11.row_holder.style.display = rowHolderDisplay;
-          _this11.controls.style.display = controlsDisplay;
-          _this11.setButtonText(e.currentTarget, '', 'collapse', 'button_collapse');
+        if (_this12.panel) _this12.setButtonState(_this12.panel, _this12.collapsed);
+        if (_this12.tabs_holder) _this12.setButtonState(_this12.tabs_holder, _this12.collapsed);
+        if (_this12.collapsed) {
+          _this12.collapsed = false;
+          _this12.row_holder.style.display = rowHolderDisplay;
+          _this12.controls.style.display = controlsDisplay;
+          _this12.setButtonText(e.currentTarget, '', 'collapse', 'button_collapse');
         } else {
-          _this11.collapsed = true;
-          _this11.row_holder.style.display = 'none';
-          _this11.controls.style.display = 'none';
-          _this11.setButtonText(e.currentTarget, '', 'expand', 'button_expand');
+          _this12.collapsed = true;
+          _this12.row_holder.style.display = 'none';
+          _this12.controls.style.display = 'none';
+          _this12.setButtonText(e.currentTarget, '', 'expand', 'button_expand');
         }
       });
       return button;
@@ -11207,32 +11322,19 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "_createAddRowButton",
     value: function _createAddRowButton() {
-      var _this12 = this;
+      var _this13 = this;
       var button = this.getButton(this.getItemTitle(), 'add', 'button_add_row_title', [this.getItemTitle()]);
       button.classList.add('json-editor-btntype-add');
       button.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        var i = _this12.rows.length;
-        var editor;
-        if (_this12.row_cache[i]) {
-          editor = _this12.rows[i] = _this12.row_cache[i];
-          _this12.rows[i].setValue(_this12.rows[i].getDefault(), true);
-          // override cached value, so optional properties are not checked.
-          if (typeof _this12.rows[i].deactivateNonRequiredProperties === 'function') {
-            _this12.rows[i].deactivateNonRequiredProperties(true);
-          }
-          _this12.rows[i].container.style.display = '';
-          if (_this12.rows[i].tab) _this12.rows[i].tab.style.display = '';
-          _this12.rows[i].register();
-        } else {
-          editor = _this12.addRow();
-        }
-        _this12.active_tab = _this12.rows[i].tab;
-        _this12.refreshTabs();
-        _this12.refreshValue();
-        _this12.onChange(true);
-        _this12.jsoneditor.trigger('addRow', editor);
+        var i = _this13.rows.length;
+        var editor = _this13.addRowViaCache();
+        _this13.active_tab = _this13.rows[i].tab;
+        _this13.refreshTabs();
+        _this13.refreshValue();
+        _this13.onChange(true);
+        _this13.jsoneditor.trigger('addRow', editor);
       });
       this.controls.appendChild(button);
       return button;
@@ -11240,28 +11342,28 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "_createDeleteLastRowButton",
     value: function _createDeleteLastRowButton() {
-      var _this13 = this;
+      var _this14 = this;
       var button = this.getButton('button_delete_last', 'subtract', 'button_delete_last_title', [this.getItemTitle()]);
       button.classList.add('json-editor-btntype-deletelast');
       button.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        if (!_this13.askConfirmation()) {
+        if (!_this14.askConfirmation()) {
           return false;
         }
-        var rows = _this13.getValue();
+        var rows = _this14.getValue();
         var newActiveTab = null;
         var editorValue = rows.pop();
-        _this13.setValue(rows);
-        if (_this13.rows[_this13.rows.length - 1]) {
-          newActiveTab = _this13.rows[_this13.rows.length - 1].tab;
+        _this14.setValue(rows);
+        if (_this14.rows[_this14.rows.length - 1]) {
+          newActiveTab = _this14.rows[_this14.rows.length - 1].tab;
         }
         if (newActiveTab) {
-          _this13.active_tab = newActiveTab;
-          _this13.refreshTabs();
+          _this14.active_tab = newActiveTab;
+          _this14.refreshTabs();
         }
-        _this13.onChange(true);
-        _this13.jsoneditor.trigger('deleteRow', editorValue);
+        _this14.onChange(true);
+        _this14.jsoneditor.trigger('deleteRow', editorValue);
       });
       this.controls.appendChild(button);
       return button;
@@ -11269,20 +11371,20 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "_createRemoveAllRowsButton",
     value: function _createRemoveAllRowsButton() {
-      var _this14 = this;
+      var _this15 = this;
       var button = this.getButton('button_delete_all', 'delete', 'button_delete_all_title');
       button.classList.add('json-editor-btntype-deleteall');
       button.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        if (!_this14.askConfirmation()) {
+        if (!_this15.askConfirmation()) {
           return false;
         }
-        var values = _this14.getValue();
-        _this14.empty(true);
-        _this14.setValue([]);
-        _this14.onChange(true);
-        _this14.jsoneditor.trigger('deleteAllRows', values);
+        var values = _this15.getValue();
+        _this15.empty(true);
+        _this15.setValue([]);
+        _this15.onChange(true);
+        _this15.jsoneditor.trigger('deleteAllRows', values);
       });
       this.controls.appendChild(button);
       return button;
@@ -11290,12 +11392,12 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "showValidationErrors",
     value: function showValidationErrors(errors) {
-      var _this15 = this;
+      var _this16 = this;
       /* Get all the errors that pertain to this editor */
       var myErrors = [];
       var otherErrors = [];
       errors.forEach(function (error) {
-        if (error.path === _this15.path) {
+        if (error.path === _this16.path) {
           myErrors.push(error);
         } else {
           otherErrors.push(error);
@@ -11308,7 +11410,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
           this.error_holder.innerHTML = '';
           this.error_holder.style.display = '';
           myErrors.forEach(function (error) {
-            _this15.error_holder.appendChild(_this15.theme.getErrorMessage(error.message));
+            _this16.error_holder.appendChild(_this16.theme.getErrorMessage(error.message));
           });
           /* Hide error area */
         } else {
@@ -15227,6 +15329,10 @@ var MultipleEditor = /*#__PURE__*/function (_AbstractEditor) {
       this.keep_values = true;
       if (typeof this.jsoneditor.options.keep_oneof_values !== 'undefined') this.keep_values = this.jsoneditor.options.keep_oneof_values;
       if (typeof this.options.keep_oneof_values !== 'undefined') this.keep_values = this.options.keep_oneof_values;
+      if (this.options.type_path !== 'undefined' && Array.isArray(this.options.type_values)) {
+        this.type_path = this.options.type_path;
+        this.type_values = this.options.type_values;
+      }
       this.keep_only_existing_values = false;
       if (typeof this.jsoneditor.options.keep_only_existing_values !== 'undefined') this.keep_only_existing_values = this.jsoneditor.options.keep_only_existing_values;
       if (typeof this.options.keep_only_existing_values !== 'undefined') this.keep_only_existing_values = this.options.keep_only_existing_values;
@@ -15380,6 +15486,17 @@ var MultipleEditor = /*#__PURE__*/function (_AbstractEditor) {
       return errors.length === 0 ? 0 : 1;
     }
   }, {
+    key: "getDeclaredType",
+    value: function getDeclaredType(value) {
+      if (this.type_path) {
+        var val = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_34__.getValueByPath)(value, this.type_path);
+        if (val !== undefined) {
+          return this.type_values.indexOf(val);
+        }
+      }
+      return -1;
+    }
+  }, {
     key: "setValue",
     value: function setValue(val, initial) {
       var _this4 = this;
@@ -15388,55 +15505,64 @@ var MultipleEditor = /*#__PURE__*/function (_AbstractEditor) {
       /* Determine type by getting the first one that validates */
 
       var prevType = this.type;
-      /* find the best match one */
-      var fitTestVal = {
-        match: 0,
-        extra: 0,
-        i: this.type
-      };
-      var validVal = {
-        match: 0,
-        i: null
-      };
-      this.validators.forEach(function (validator, i) {
-        var fitTestResult = null;
-        if (typeof _this4.anyOf !== 'undefined' && _this4.anyOf) {
-          fitTestResult = validator.fitTest(val);
-          if (fitTestVal.match < fitTestResult.match) {
-            fitTestVal = fitTestResult;
-            fitTestVal.i = i;
-          } else if (fitTestVal.match === fitTestResult.match) {
-            if (fitTestVal.extra > fitTestResult.extra) {
+      var thisType = this.getDeclaredType(val);
+      if (thisType < 0) {
+        /*
+         * No valid type could be determined from the schema options alone, so
+         * we have to do a "best fit" search
+         */
+        var validVal = {
+          match: 0,
+          i: null
+        };
+        /* find the best match one */
+        var fitTestVal = {
+          match: 0,
+          extra: 0,
+          i: this.type
+        };
+        this.validators.forEach(function (validator, i) {
+          var fitTestResult = null;
+          if (typeof _this4.anyOf !== 'undefined' && _this4.anyOf) {
+            fitTestResult = validator.fitTest(val);
+            if (fitTestVal.match < fitTestResult.match) {
               fitTestVal = fitTestResult;
               fitTestVal.i = i;
+            } else if (fitTestVal.match === fitTestResult.match) {
+              if (fitTestVal.extra > fitTestResult.extra) {
+                fitTestVal = fitTestResult;
+                fitTestVal.i = i;
+              }
             }
           }
-        }
-        if (!validator.validate(val).length && validVal.i === null) {
-          validVal.i = i;
-          if (fitTestResult !== null) {
-            validVal.match = fitTestResult.match;
+          if (!validator.validate(val).length && validVal.i === null) {
+            validVal.i = i;
+            if (fitTestResult !== null) {
+              validVal.match = fitTestResult.match;
+            }
+          } else {
+            fitTestVal = validVal;
           }
-        } else {
-          fitTestVal = validVal;
+        });
+        var finalI = validVal.i;
+
+        /* if the best fit schema has more match properties, then use the best fit schema. */
+        /* usually the value could be */
+        if (typeof this.anyOf !== 'undefined' && this.anyOf) {
+          if (validVal.match < fitTestVal.match) {
+            finalI = fitTestVal.i;
+          }
         }
-      });
-      var finalI = validVal.i;
-      /* if the best fit schema has more match properties, then use the best fit schema. */
-      /* usually the value could be */
-      if (typeof this.anyOf !== 'undefined' && this.anyOf) {
-        if (validVal.match < fitTestVal.match) {
-          finalI = fitTestVal.i;
+        if (this["if"]) {
+          finalI = this.getIfType(val);
         }
+        if (finalI === null) {
+          finalI = this.type;
+        }
+        thisType = finalI;
       }
-      if (this["if"]) {
-        finalI = this.getIfType(val);
-      }
-      if (finalI === null) {
-        finalI = this.type;
-      }
-      this.type = finalI;
-      this.switcher.value = this.display_text[finalI];
+      this.type = thisType;
+      this.switcher.value = this.display_text[thisType];
       var typeChanged = this.type !== prevType;
       if (typeChanged) {
         this.switchEditor(this.type);
@@ -16680,7 +16806,10 @@ var ObjectEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "preBuild",
     value: function preBuild() {
-      var _this4 = this;
+      var _this4 = this,
+        _this$schema$options,
+        _this$schema$options2,
+        _this$schema$options3;
       _superPropGet(ObjectEditor, "preBuild", this, 3)([]);
       this.editors = {};
       this.cached_editors = {};
@@ -16753,6 +16882,11 @@ var ObjectEditor = /*#__PURE__*/function (_AbstractEditor) {
         if (typeof orderb !== 'number') orderb = 1000;
         return ordera - orderb;
       });
+
+      /* options */
+      this.disable_collapse = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_42__.checkBooleanOption)(this.disable_collapse, (0,_utilities_js__WEBPACK_IMPORTED_MODULE_42__.checkBooleanOption)((_this$schema$options = this.schema.options) === null || _this$schema$options === void 0 ? void 0 : _this$schema$options.disable_collapse, this.jsoneditor.options.disable_collapse));
+      this.disable_properties = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_42__.checkBooleanOption)(this.disable_properties, (0,_utilities_js__WEBPACK_IMPORTED_MODULE_42__.checkBooleanOption)((_this$schema$options2 = this.schema.options) === null || _this$schema$options2 === void 0 ? void 0 : _this$schema$options2.disable_properties, this.jsoneditor.options.disable_properties));
+      this.disable_edit_json = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_42__.checkBooleanOption)(this.disable_edit_json, (0,_utilities_js__WEBPACK_IMPORTED_MODULE_42__.checkBooleanOption)((_this$schema$options3 = this.schema.options) === null || _this$schema$options3 === void 0 ? void 0 : _this$schema$options3.disable_edit_json, this.jsoneditor.options.disable_edit_json));
     }
 
     /* "Borrow" from arrays code */
@@ -16880,107 +17014,110 @@ var ObjectEditor = /*#__PURE__*/function (_AbstractEditor) {
         this.container.appendChild(this.title);
         this.container.appendChild(this.controls);
         this.container.classList.add('je-object__container');
-
-        /* Edit JSON modal */
-        this.editjson_holder = this.theme.getModal();
-        this.editjson_textarea_label = this.theme.getHiddenLabel(this.translate('button_edit_json'));
-        this.editjson_textarea_label.setAttribute('for', this.path + '-' + 'edit-json-textarea');
-        this.editjson_textarea = this.theme.getTextareaInput();
-        this.editjson_textarea.setAttribute('id', this.path + '-' + 'edit-json-textarea');
-        this.editjson_textarea.setAttribute('aria-labelledby', this.path + '-' + 'edit-json-textarea');
-        this.editjson_textarea.classList.add('je-edit-json--textarea');
-        this.editjson_save = this.getButton('button_save', 'save', 'button_save');
-        this.editjson_save.classList.add('json-editor-btntype-save');
-        this.editjson_save.addEventListener('click', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          _this7.saveJSON();
-        });
-        this.editjson_copy = this.getButton('button_copy', 'copy', 'button_copy');
-        this.editjson_copy.classList.add('json-editor-btntype-copy');
-        this.editjson_copy.addEventListener('click', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          _this7.copyJSON();
-        });
-        this.editjson_cancel = this.getButton('button_cancel', 'cancel', 'button_cancel');
-        this.editjson_cancel.classList.add('json-editor-btntype-cancel');
-        this.editjson_cancel.addEventListener('click', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          _this7.hideEditJSON();
-        });
-        this.editjson_holder.appendChild(this.editjson_textarea_label);
-        this.editjson_holder.appendChild(this.editjson_textarea);
-        this.editjson_holder.appendChild(this.editjson_save);
-        this.editjson_holder.appendChild(this.editjson_copy);
-        this.editjson_holder.appendChild(this.editjson_cancel);
+        if (!this.disable_edit_json) {
+          /* Edit JSON modal */
+          this.editjson_holder = this.theme.getModal();
+          this.editjson_textarea_label = this.theme.getHiddenLabel(this.translate('button_edit_json'));
+          this.editjson_textarea_label.setAttribute('for', this.path + '-' + 'edit-json-textarea');
+          this.editjson_textarea = this.theme.getTextareaInput();
+          this.editjson_textarea.setAttribute('id', this.path + '-' + 'edit-json-textarea');
+          this.editjson_textarea.setAttribute('aria-labelledby', this.path + '-' + 'edit-json-textarea');
+          this.editjson_textarea.classList.add('je-edit-json--textarea');
+          this.editjson_save = this.getButton('button_save', 'save', 'button_save');
+          this.editjson_save.classList.add('json-editor-btntype-save');
+          this.editjson_save.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            _this7.saveJSON();
+          });
+          this.editjson_copy = this.getButton('button_copy', 'copy', 'button_copy');
+          this.editjson_copy.classList.add('json-editor-btntype-copy');
+          this.editjson_copy.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            _this7.copyJSON();
+          });
+          this.editjson_cancel = this.getButton('button_cancel', 'cancel', 'button_cancel');
+          this.editjson_cancel.classList.add('json-editor-btntype-cancel');
+          this.editjson_cancel.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            _this7.hideEditJSON();
+          });
+          this.editjson_holder.appendChild(this.editjson_textarea_label);
+          this.editjson_holder.appendChild(this.editjson_textarea);
+          this.editjson_holder.appendChild(this.editjson_save);
+          this.editjson_holder.appendChild(this.editjson_copy);
+          this.editjson_holder.appendChild(this.editjson_cancel);
+        }
 
         /* Manage Properties modal */
-        this.addproperty_holder = this.theme.getModal();
-        this.addproperty_list = document.createElement('div');
-        this.addproperty_list.classList.add('property-selector');
-        this.addproperty_add = this.getButton('button_add', 'add', 'button_add');
-        this.addproperty_add.classList.add('json-editor-btntype-add');
-        this.addproperty_input = this.theme.getFormInputField('text');
-        this.addproperty_input.setAttribute('placeholder', 'Property name...');
-        this.addproperty_input_label = this.theme.getHiddenLabel(this.translate('button_properties'));
-        this.addproperty_input_label.setAttribute('for', this.path + '-' + 'property-selector');
-        this.addproperty_input.classList.add('property-selector-input');
-        this.addproperty_input.setAttribute('id', this.path + '-' + 'property-selector');
-        this.addproperty_input.setAttribute('aria-labelledby', this.path + '-' + 'property-selector');
-        this.addproperty_add.addEventListener('click', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          if (_this7.addproperty_input.value) {
-            if (_this7.editors[_this7.addproperty_input.value]) {
-              window.alert('there is already a property with that name');
-              return;
-            }
-            _this7.addObjectProperty(_this7.addproperty_input.value);
-            if (_this7.editors[_this7.addproperty_input.value]) {
-              _this7.editors[_this7.addproperty_input.value].disable();
-            }
-            var key = _this7.editors[_this7.addproperty_input.value].key;
-            var type = _this7.editors[_this7.addproperty_input.value].type;
-            var path = _this7.editors[_this7.addproperty_input.value].path;
-            _this7.onChange(true, false, {
-              event: 'add',
-              data: {
-                key: key,
-                type: type,
-                path: path
+        if (!this.disable_properties) {
+          this.addproperty_holder = this.theme.getModal();
+          this.addproperty_list = document.createElement('div');
+          this.addproperty_list.classList.add('property-selector');
+          this.addproperty_add = this.getButton('button_add', 'add', 'button_add');
+          this.addproperty_add.classList.add('json-editor-btntype-add');
+          this.addproperty_input = this.theme.getFormInputField('text');
+          this.addproperty_input.setAttribute('placeholder', 'Property name...');
+          this.addproperty_input_label = this.theme.getHiddenLabel(this.translate('button_properties'));
+          this.addproperty_input_label.setAttribute('for', this.path + '-' + 'property-selector');
+          this.addproperty_input.classList.add('property-selector-input');
+          this.addproperty_input.setAttribute('id', this.path + '-' + 'property-selector');
+          this.addproperty_input.setAttribute('aria-labelledby', this.path + '-' + 'property-selector');
+          this.addproperty_add.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (_this7.addproperty_input.value) {
+              if (_this7.editors[_this7.addproperty_input.value]) {
+                window.alert('there is already a property with that name');
+                return;
               }
-            });
-          }
-        });
-        this.addproperty_input.addEventListener('input', function (e) {
-          e.target.previousSibling.previousSibling.childNodes.forEach(function (value) {
-            var searchTerm = value.innerText;
-            var propertyTitle = e.target.value;
-            var caseSensitivePropertySearch = _this7.options.case_sensitive_property_search || _this7.jsoneditor.options.case_sensitive_property_search;
-            if (!caseSensitivePropertySearch) {
-              searchTerm = searchTerm.toLowerCase();
-              propertyTitle = propertyTitle.toLowerCase();
-            }
-            if (searchTerm.includes(propertyTitle)) {
-              value.style.display = '';
-            } else {
-              value.style.display = 'none';
+              _this7.addObjectProperty(_this7.addproperty_input.value);
+              if (_this7.editors[_this7.addproperty_input.value]) {
+                _this7.editors[_this7.addproperty_input.value].disable();
+              }
+              var key = _this7.editors[_this7.addproperty_input.value].key;
+              var type = _this7.editors[_this7.addproperty_input.value].type;
+              var path = _this7.editors[_this7.addproperty_input.value].path;
+              _this7.onChange(true, false, {
+                event: 'add',
+                data: {
+                  key: key,
+                  type: type,
+                  path: path
+                }
+              });
             }
           });
-        });
-        this.addproperty_holder.appendChild(this.addproperty_list);
-        this.addproperty_holder.appendChild(this.addproperty_input_label);
-        this.addproperty_holder.appendChild(this.addproperty_input);
-        this.addproperty_holder.appendChild(this.addproperty_add);
-        var spacer = document.createElement('div');
-        spacer.style.clear = 'both';
-        this.addproperty_holder.appendChild(spacer);
+          this.addproperty_input.addEventListener('input', function (e) {
+            e.target.previousSibling.previousSibling.childNodes.forEach(function (value) {
+              var searchTerm = value.innerText;
+              var propertyTitle = e.target.value;
+              var caseSensitivePropertySearch = _this7.options.case_sensitive_property_search || _this7.jsoneditor.options.case_sensitive_property_search;
+              if (!caseSensitivePropertySearch) {
+                searchTerm = searchTerm.toLowerCase();
+                propertyTitle = propertyTitle.toLowerCase();
+              }
+              if (searchTerm.includes(propertyTitle)) {
+                value.style.display = '';
+              } else {
+                value.style.display = 'none';
+              }
+            });
+          });
+          this.addproperty_holder.appendChild(this.addproperty_list);
+          this.addproperty_holder.appendChild(this.addproperty_input_label);
+          this.addproperty_holder.appendChild(this.addproperty_input);
+          this.addproperty_holder.appendChild(this.addproperty_add);
+          var spacer = document.createElement('div');
+          spacer.style.clear = 'both';
+          this.addproperty_holder.appendChild(spacer);
 
-        /* Close properties modal if clicked outside modal */
-        this.onOutsideModalClickListener = this.onOutsideModalClick.bind(this);
-        document.addEventListener('click', this.onOutsideModalClickListener, true);
+          /* Close properties modal if clicked outside modal */
+          this.onOutsideModalClickListener = this.onOutsideModalClick.bind(this);
+          document.addEventListener('click', this.onOutsideModalClickListener, true);
+        }
 
         /* Description */
         if (this.schema.description) {
@@ -17070,41 +17207,36 @@ var ObjectEditor = /*#__PURE__*/function (_AbstractEditor) {
         }
 
         /* Collapse button disabled */
-        if (this.schema.options && typeof this.schema.options.disable_collapse !== 'undefined') {
-          if (this.schema.options.disable_collapse) this.collapse_control.style.display = 'none';
-        } else if (this.jsoneditor.options.disable_collapse) {
+        if (this.disable_collapse) {
           this.collapse_control.style.display = 'none';
         }
 
         /* Edit JSON Button */
-        this.editjson_control = this.getButton('JSON', 'edit', 'button_edit_json');
-        this.editjson_control.classList.add('json-editor-btntype-editjson');
-        this.editjson_control.addEventListener('click', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          _this7.toggleEditJSON();
-        });
-        this.controls.appendChild(this.editjson_control);
-        this.controls.insertBefore(this.editjson_holder, this.controls.childNodes[0]);
-
-        /* Edit JSON Buttton disabled */
-        if (this.schema.options && typeof this.schema.options.disable_edit_json !== 'undefined') {
-          if (this.schema.options.disable_edit_json) this.editjson_control.style.display = 'none';
-        } else if (this.jsoneditor.options.disable_edit_json) {
-          this.editjson_control.style.display = 'none';
+        if (!this.disable_edit_json) {
+          this.editjson_control = this.getButton('JSON', 'edit', 'button_edit_json');
+          this.editjson_control.classList.add('json-editor-btntype-editjson');
+          this.editjson_control.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            _this7.toggleEditJSON();
+          });
+          this.controls.appendChild(this.editjson_control);
+          this.controls.insertBefore(this.editjson_holder, this.controls.childNodes[0]);
         }
 
         /* Object Properties Button */
-        this.addproperty_button = this.getButton('properties', 'edit_properties', 'button_object_properties');
-        this.addproperty_button.classList.add('json-editor-btntype-properties');
-        this.addproperty_button.addEventListener('click', function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-          _this7.toggleAddProperty();
-        });
-        this.controls.appendChild(this.addproperty_button);
-        this.controls.insertBefore(this.addproperty_holder, this.controls.childNodes[1]);
-        this.refreshAddProperties();
+        if (!this.disable_properties) {
+          this.addproperty_button = this.getButton('properties', 'edit_properties', 'button_object_properties');
+          this.addproperty_button.classList.add('json-editor-btntype-properties');
+          this.addproperty_button.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            _this7.toggleAddProperty();
+          });
+          this.controls.appendChild(this.addproperty_button);
+          this.controls.insertBefore(this.addproperty_holder, this.controls.childNodes[1]);
+          this.refreshAddProperties();
+        }
 
         /* non required properties start deactivated */
         this.deactivateNonRequiredProperties(false);
@@ -17517,8 +17649,10 @@ var ObjectEditor = /*#__PURE__*/function (_AbstractEditor) {
     key: "refreshAddProperties",
     value: function refreshAddProperties() {
       var _this10 = this;
-      if (this.options.disable_properties || this.options.disable_properties !== false && this.jsoneditor.options.disable_properties) {
-        this.addproperty_button.style.display = 'none';
+      if (this.disable_properties) {
+        if (this.addproperty_button) {
+          this.addproperty_button.style.display = 'none';
+        }
         return;
       }
       var canAdd = false;
@@ -29070,8 +29204,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   checkBooleanOption: () => (/* binding */ checkBooleanOption),
 /* harmony export */   deepCopy: () => (/* binding */ deepCopy),
 /* harmony export */   extend: () => (/* binding */ extend),
+/* harmony export */   findIndexInParent: () => (/* binding */ findIndexInParent),
 /* harmony export */   generateUUID: () => (/* binding */ generateUUID),
 /* harmony export */   getShadowParent: () => (/* binding */ getShadowParent),
+/* harmony export */   getValueByPath: () => (/* binding */ getValueByPath),
 /* harmony export */   hasOwnProperty: () => (/* binding */ hasOwnProperty),
 /* harmony export */   isInteger: () => (/* binding */ isInteger),
 /* harmony export */   isNumber: () => (/* binding */ isNumber),
@@ -29093,47 +29229,59 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es_array_concat_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_concat_js__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var core_js_modules_es_array_for_each_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es.array.for-each.js */ "./node_modules/core-js/modules/es.array.for-each.js");
 /* harmony import */ var core_js_modules_es_array_for_each_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_for_each_js__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var core_js_modules_es_array_is_array_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! core-js/modules/es.array.is-array.js */ "./node_modules/core-js/modules/es.array.is-array.js");
-/* harmony import */ var core_js_modules_es_array_is_array_js__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_is_array_js__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var core_js_modules_es_array_iterator_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! core-js/modules/es.array.iterator.js */ "./node_modules/core-js/modules/es.array.iterator.js");
-/* harmony import */ var core_js_modules_es_array_iterator_js__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_iterator_js__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var core_js_modules_es_array_map_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! core-js/modules/es.array.map.js */ "./node_modules/core-js/modules/es.array.map.js");
-/* harmony import */ var core_js_modules_es_array_map_js__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_map_js__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var core_js_modules_es_date_to_primitive_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! core-js/modules/es.date.to-primitive.js */ "./node_modules/core-js/modules/es.date.to-primitive.js");
-/* harmony import */ var core_js_modules_es_date_to_primitive_js__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_date_to_primitive_js__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var core_js_modules_es_date_to_string_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! core-js/modules/es.date.to-string.js */ "./node_modules/core-js/modules/es.date.to-string.js");
-/* harmony import */ var core_js_modules_es_date_to_string_js__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_date_to_string_js__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var core_js_modules_es_number_constructor_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! core-js/modules/es.number.constructor.js */ "./node_modules/core-js/modules/es.number.constructor.js");
-/* harmony import */ var core_js_modules_es_number_constructor_js__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_number_constructor_js__WEBPACK_IMPORTED_MODULE_11__);
-/* harmony import */ var core_js_modules_es_object_assign_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! core-js/modules/es.object.assign.js */ "./node_modules/core-js/modules/es.object.assign.js");
-/* harmony import */ var core_js_modules_es_object_assign_js__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_assign_js__WEBPACK_IMPORTED_MODULE_12__);
-/* harmony import */ var core_js_modules_es_object_define_property_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! core-js/modules/es.object.define-property.js */ "./node_modules/core-js/modules/es.object.define-property.js");
-/* harmony import */ var core_js_modules_es_object_define_property_js__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_define_property_js__WEBPACK_IMPORTED_MODULE_13__);
-/* harmony import */ var core_js_modules_es_object_keys_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! core-js/modules/es.object.keys.js */ "./node_modules/core-js/modules/es.object.keys.js");
-/* harmony import */ var core_js_modules_es_object_keys_js__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_keys_js__WEBPACK_IMPORTED_MODULE_14__);
-/* harmony import */ var core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! core-js/modules/es.object.to-string.js */ "./node_modules/core-js/modules/es.object.to-string.js");
-/* harmony import */ var core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_15__);
-/* harmony import */ var core_js_modules_es_parse_float_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! core-js/modules/es.parse-float.js */ "./node_modules/core-js/modules/es.parse-float.js");
-/* harmony import */ var core_js_modules_es_parse_float_js__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_parse_float_js__WEBPACK_IMPORTED_MODULE_16__);
-/* harmony import */ var core_js_modules_es_parse_int_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! core-js/modules/es.parse-int.js */ "./node_modules/core-js/modules/es.parse-int.js");
-/* harmony import */ var core_js_modules_es_parse_int_js__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_parse_int_js__WEBPACK_IMPORTED_MODULE_17__);
-/* harmony import */ var core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! core-js/modules/es.regexp.exec.js */ "./node_modules/core-js/modules/es.regexp.exec.js");
-/* harmony import */ var core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_18___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_18__);
-/* harmony import */ var core_js_modules_es_regexp_to_string_js__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! core-js/modules/es.regexp.to-string.js */ "./node_modules/core-js/modules/es.regexp.to-string.js");
-/* harmony import */ var core_js_modules_es_regexp_to_string_js__WEBPACK_IMPORTED_MODULE_19___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_regexp_to_string_js__WEBPACK_IMPORTED_MODULE_19__);
-/* harmony import */ var core_js_modules_es_string_iterator_js__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! core-js/modules/es.string.iterator.js */ "./node_modules/core-js/modules/es.string.iterator.js");
-/* harmony import */ var core_js_modules_es_string_iterator_js__WEBPACK_IMPORTED_MODULE_20___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_iterator_js__WEBPACK_IMPORTED_MODULE_20__);
-/* harmony import */ var core_js_modules_es_string_match_js__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! core-js/modules/es.string.match.js */ "./node_modules/core-js/modules/es.string.match.js");
-/* harmony import */ var core_js_modules_es_string_match_js__WEBPACK_IMPORTED_MODULE_21___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_match_js__WEBPACK_IMPORTED_MODULE_21__);
-/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
-/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_22___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_22__);
-/* harmony import */ var core_js_modules_web_dom_collections_for_each_js__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! core-js/modules/web.dom-collections.for-each.js */ "./node_modules/core-js/modules/web.dom-collections.for-each.js");
-/* harmony import */ var core_js_modules_web_dom_collections_for_each_js__WEBPACK_IMPORTED_MODULE_23___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_for_each_js__WEBPACK_IMPORTED_MODULE_23__);
-/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! core-js/modules/web.dom-collections.iterator.js */ "./node_modules/core-js/modules/web.dom-collections.iterator.js");
-/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_24___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_24__);
+/* harmony import */ var core_js_modules_es_array_from_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! core-js/modules/es.array.from.js */ "./node_modules/core-js/modules/es.array.from.js");
+/* harmony import */ var core_js_modules_es_array_from_js__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_from_js__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var core_js_modules_es_array_is_array_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! core-js/modules/es.array.is-array.js */ "./node_modules/core-js/modules/es.array.is-array.js");
+/* harmony import */ var core_js_modules_es_array_is_array_js__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_is_array_js__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var core_js_modules_es_array_iterator_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! core-js/modules/es.array.iterator.js */ "./node_modules/core-js/modules/es.array.iterator.js");
+/* harmony import */ var core_js_modules_es_array_iterator_js__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_iterator_js__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var core_js_modules_es_array_map_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! core-js/modules/es.array.map.js */ "./node_modules/core-js/modules/es.array.map.js");
+/* harmony import */ var core_js_modules_es_array_map_js__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_map_js__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var core_js_modules_es_array_slice_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! core-js/modules/es.array.slice.js */ "./node_modules/core-js/modules/es.array.slice.js");
+/* harmony import */ var core_js_modules_es_array_slice_js__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_slice_js__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var core_js_modules_es_date_to_primitive_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! core-js/modules/es.date.to-primitive.js */ "./node_modules/core-js/modules/es.date.to-primitive.js");
+/* harmony import */ var core_js_modules_es_date_to_primitive_js__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_date_to_primitive_js__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var core_js_modules_es_date_to_string_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! core-js/modules/es.date.to-string.js */ "./node_modules/core-js/modules/es.date.to-string.js");
+/* harmony import */ var core_js_modules_es_date_to_string_js__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_date_to_string_js__WEBPACK_IMPORTED_MODULE_12__);
+/* harmony import */ var core_js_modules_es_function_name_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! core-js/modules/es.function.name.js */ "./node_modules/core-js/modules/es.function.name.js");
+/* harmony import */ var core_js_modules_es_function_name_js__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_function_name_js__WEBPACK_IMPORTED_MODULE_13__);
+/* harmony import */ var core_js_modules_es_number_constructor_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! core-js/modules/es.number.constructor.js */ "./node_modules/core-js/modules/es.number.constructor.js");
+/* harmony import */ var core_js_modules_es_number_constructor_js__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_number_constructor_js__WEBPACK_IMPORTED_MODULE_14__);
+/* harmony import */ var core_js_modules_es_object_assign_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! core-js/modules/es.object.assign.js */ "./node_modules/core-js/modules/es.object.assign.js");
+/* harmony import */ var core_js_modules_es_object_assign_js__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_assign_js__WEBPACK_IMPORTED_MODULE_15__);
+/* harmony import */ var core_js_modules_es_object_define_property_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! core-js/modules/es.object.define-property.js */ "./node_modules/core-js/modules/es.object.define-property.js");
+/* harmony import */ var core_js_modules_es_object_define_property_js__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_define_property_js__WEBPACK_IMPORTED_MODULE_16__);
+/* harmony import */ var core_js_modules_es_object_keys_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! core-js/modules/es.object.keys.js */ "./node_modules/core-js/modules/es.object.keys.js");
+/* harmony import */ var core_js_modules_es_object_keys_js__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_keys_js__WEBPACK_IMPORTED_MODULE_17__);
+/* harmony import */ var core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! core-js/modules/es.object.to-string.js */ "./node_modules/core-js/modules/es.object.to-string.js");
+/* harmony import */ var core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_18___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_18__);
+/* harmony import */ var core_js_modules_es_parse_float_js__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! core-js/modules/es.parse-float.js */ "./node_modules/core-js/modules/es.parse-float.js");
+/* harmony import */ var core_js_modules_es_parse_float_js__WEBPACK_IMPORTED_MODULE_19___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_parse_float_js__WEBPACK_IMPORTED_MODULE_19__);
+/* harmony import */ var core_js_modules_es_parse_int_js__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! core-js/modules/es.parse-int.js */ "./node_modules/core-js/modules/es.parse-int.js");
+/* harmony import */ var core_js_modules_es_parse_int_js__WEBPACK_IMPORTED_MODULE_20___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_parse_int_js__WEBPACK_IMPORTED_MODULE_20__);
+/* harmony import */ var core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! core-js/modules/es.regexp.exec.js */ "./node_modules/core-js/modules/es.regexp.exec.js");
+/* harmony import */ var core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_21___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_21__);
+/* harmony import */ var core_js_modules_es_regexp_to_string_js__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! core-js/modules/es.regexp.to-string.js */ "./node_modules/core-js/modules/es.regexp.to-string.js");
+/* harmony import */ var core_js_modules_es_regexp_to_string_js__WEBPACK_IMPORTED_MODULE_22___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_regexp_to_string_js__WEBPACK_IMPORTED_MODULE_22__);
+/* harmony import */ var core_js_modules_es_string_iterator_js__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! core-js/modules/es.string.iterator.js */ "./node_modules/core-js/modules/es.string.iterator.js");
+/* harmony import */ var core_js_modules_es_string_iterator_js__WEBPACK_IMPORTED_MODULE_23___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_iterator_js__WEBPACK_IMPORTED_MODULE_23__);
+/* harmony import */ var core_js_modules_es_string_match_js__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! core-js/modules/es.string.match.js */ "./node_modules/core-js/modules/es.string.match.js");
+/* harmony import */ var core_js_modules_es_string_match_js__WEBPACK_IMPORTED_MODULE_24___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_match_js__WEBPACK_IMPORTED_MODULE_24__);
+/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
+/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_25___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_25__);
+/* harmony import */ var core_js_modules_web_dom_collections_for_each_js__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! core-js/modules/web.dom-collections.for-each.js */ "./node_modules/core-js/modules/web.dom-collections.for-each.js");
+/* harmony import */ var core_js_modules_web_dom_collections_for_each_js__WEBPACK_IMPORTED_MODULE_26___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_for_each_js__WEBPACK_IMPORTED_MODULE_26__);
+/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! core-js/modules/web.dom-collections.iterator.js */ "./node_modules/core-js/modules/web.dom-collections.iterator.js");
+/* harmony import */ var core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_27___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_iterator_js__WEBPACK_IMPORTED_MODULE_27__);
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+
+
+
 
 
 
@@ -29287,8 +29435,56 @@ function overwriteExistingProperties(obj1, obj2) {
   });
   return obj1;
 }
-function checkBooleanOption(local, global, dflt) {
+function checkBooleanOption(local, global) {
+  var dflt = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
   return typeof local === 'boolean' ? local : typeof global === 'boolean' ? global : dflt;
+}
+function getValueByPath(obj, path) {
+  var keys = path.split('.');
+  var current = obj;
+  var _iterator = _createForOfIteratorHelper(keys),
+    _step;
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var key = _step.value;
+      if (current === null || _typeof(current) !== 'object') {
+        return undefined; // Cannot navigate further
+      }
+
+      // Check if the key looks like an array index
+      var arrayIndexMatch = key.match(/^(\d+)$/);
+      if (arrayIndexMatch) {
+        var index = parseInt(arrayIndexMatch[1], 10);
+        if (Array.isArray(current) && index >= 0 && index < current.length) {
+          current = current[index];
+        } else {
+          return undefined; // Invalid array index
+        }
+      } else if (key in current) {
+        current = current[key];
+      } else {
+        return undefined; // Property not found
+      }
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+  return current;
+}
+function findIndexInParent(element) {
+  var siblings = element ? element.parentElement ? element.parentElement.children : undefined : undefined;
+  var index = -1;
+  if (siblings) {
+    for (var i = 0; i < siblings.length; i++) {
+      if (siblings[i] === element) {
+        index = i;
+        break;
+      }
+    }
+  }
+  return index;
 }
 
 /***/ }),
