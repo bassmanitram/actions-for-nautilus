@@ -46,7 +46,7 @@
 		 * Because this is a local UI tightly related to
 		 * backend server that it is using, unload should
 		 * stop that server :)
-		 */
+		 *
 		function onUnload(event) {
 			$.ajax({
 				url: '/terminate',
@@ -55,7 +55,7 @@
 			});
 		}
 		addEventListener("beforeunload", onUnload);
-
+		*/
 		let editor;
 
 		/*
@@ -78,25 +78,26 @@
 			/*
 			 * Editor options
 			 */
-			"array_controls_top": true,
-			"disable_array_delete_last_row": true,
-			"disable_collapse": true,
-			"disable_edit_json": true,
-			"iconlib": "fontawesome5",
-			"no_additional_properties": true,
-			"theme": "a4nbootstrap4",
-			"keep_oneof_values": false,
-			"display_required_only": false,
-			"use_default_values": true,
-			"disable_properties": true,
-			"show_opt_in": true,
+			array_controls_top: true,
+			enable_array_copy: true,
+			disable_array_delete_last_row: true,
+			disable_collapse: true,
+			disable_edit_json: true,
+			iconlib: "fontawesome5",
+			no_additional_properties: true,
+			theme: "a4nbootstrap4",
+			keep_oneof_values: false,
+			display_required_only: false,
+			use_default_values: true,
+			disable_properties: true,
+			show_opt_in: true,
 			/*
 			 * Bootstrap4 theme options
 			 */
-			"tooltip": "browser",
-			"object_indent": false,
-			"table_zebrastyle": false,
-			"table_border": false
+			tooltip: "browser",
+			object_indent: false,
+			table_zebrastyle: false,
+			table_border: false
 		}
 
 		/*
