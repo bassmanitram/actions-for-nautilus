@@ -302,67 +302,8 @@ function typeChangeListener() {
 	}
 }
 
-/*
- * Speed up array modifications - basically we make some compromises in 
- * relation to cache usage to make item ordering much faster than the ArrayEditor 
- * manages!
- */
-let nextEditorId = 0
-class FastModArrayEditor extends JSONEditor.defaults.editors.array {
-  build() {
-	super.build()
-	this.links_holder = this.tabs_holder.children[0].children[0]
-  }
 
-  getEditorId (i) {
-    return nextEditorId++
-  }
-
-  addRowViaCache () {
-	this.addRow()
-  }
-
-  moveRowUp(i) {
-	if (i < 1) return
-	this._moveRow(i, i-1)
-  }
-
-  moveRowDown(i) {
-	const from = i+1
-	if (from >= this.rows.length) return
-	this._moveRow(from, i)
-  }
-
-  dropRow(from, to) {
-	if (to === from) return
-	this._moveRow(from, to)
-  }
-
-  _moveRow (from, to) {
-	const down = to > from
-    const arrayItems = this.getValue()
-	const rows = this.rows
-    const item = arrayItems.splice(from, 1)[0]
-	const row = this.rows.splice(from, 1)[0]
-    
-    arrayItems.splice(to, 0, item)
-    rows.splice(to, 0, row)
-
-	const rowHolder = this.row_holder
-	const linkHolder = this.links_holder
-
-	const toNode = rowHolder.children[to]
-	const ui = rowHolder.children[from];
-	rowHolder.insertBefore(ui, toNode); 
-
-	const toLink = linkHolder.children[to]
-	const link = linkHolder.children[from];
-	linkHolder.insertBefore(link, toLink); 
-	this.refreshValue(true)
-  }
-}
-
-class ActionsEditor extends FastModArrayEditor {
+class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 	getElementEditor (i) {
 		const elementEditor = super.getElementEditor(i);
 		/*
