@@ -210,7 +210,7 @@
 					},
 					"title": "Main Menu",
 					"options": {
-						"infoText": "#root:actions",
+						"infoText": "#submenu:toolbar",
 						"a4nEditor": "actions",
 						"on_copy_item_label_path": "Basic.label",
 						"enable_array_copy": true,

@@ -40,6 +40,7 @@
 					<li><a href="#action-disable">Disabling an Action</a></li>
 				</ul>
 			</li>
+			<li><a href="#actions">Actions</a></li>
 			<li><a href="#menu-actions">Menu Actions</a></li>
 			<li><a href="#command-actions">Command Actions</a>
 				<ul>
@@ -178,22 +179,53 @@
 		<p>Both menu actions and command actions can be disabled by setting the <code>Disabled</code> property to
 			<code>true</code>
 		</p>
-		<p><img src="images/disabled.png" alt="Disabled"></p>
-		<p>When set to <code>true</code>, the corresponding action will not appear in the Gnome Files context menu. This
-			allows
-			the action to exist in the configuration, maybe as a template or a work-in-progress, but not actually be
-			used.</p>
-		<p>Note, however, that the action configuration must still be valid in order for you to be able to save the
-			configuration.</p>
-		<p>To help quickly identify disabled items, they appear on the left of the UI in grey rather than blue.</p>
+		<h1 id="actions">Actions</h1>
+		<p>Actions are what you configure to appear in the Gnome Files context menu. They can be <a href="#menu-actions">menus</a> or
+		<a href="#command-actions">commands</a>. Obviouisly menus contain commands - and other menus, though it is probably
+		inadvisable to create a menu structure that is more than a couple of levels deep.</p>
+		<p>Menus and commands have some global features in common:</p>
+		<ul>
+			<li>They both have a <code>Basic</code> tab in the righthand pane in which ... well, basic information is entered. In that tab; they share
+			the <code>Label</code> field, whose use is pretty obvious!</li>
+			<li><p id="action-disable">They can both be disabled!</p>
+				<p><img src="images/disabled.png" alt="Disabled"></p>
+				<p>When set to <code>true</code>, the corresponding action will not appear in the Gnome Files context menu. This
+				   allows the action to exist in the configuration, maybe as a template or a work-in-progress, but not actually be
+				   used.</p>
+				<p>Note, however, that the action configuration must still be valid in order for you to be able to save the configuration.</p>
+				<p>To help quickly identify disabled items, they appear on the left of the UI in grey rather than blue.</p>
+			</li>
+			<li>
+				<p>They can be added to, moved within, copied within, and deleted from their containing menus.</p>
+				<p id="menu-toolbar">At the top of the menu item list , there is a toolbar.</p>
+				<p><img src="images/menu-toolbar.png" alt="Menu toolbar"></p>
+				<ul>
+					<li><p>The <code>+</code> button adds an action to the menu</p></li>
+					<li><p>The paste button pastes an action from the internal clipboard into the menu (it will not be visible if there is no action in the clipboard)</p></li>
+					<li><p>The "bin all" button deletes all actions from the menu (after asking for confirmation, of course)</p></li>
+				</ul>
+				<p id="action-toolbar">At the top of the action detail pane, there is also a toolbar.</p>
+				<p><img src="images/action-toolbar.png" alt="Menu toolbar"></p>
+				<ul>
+					<li><p>The "bin" button removes the action from the menu (after asking for confirmation, of course)</p></li>
+					<li><p>The "copy" button (normally) adds a copy of the action to the menu, just below the copied action (and with a modified label)</p></li>
+					<li><p>The arrow buttons allow you to move the action up or down within its containing menu</p></li>
+				</ul>
+			</li>
+			<li><p>They can be drag/dropped to different positions within their containing menus (but not between menus).</p></li>
+			<li>
+				<p>Finally, they can be Copy/Pasted or Cut/Pasted <em>between</em> menus.</p>
+				<p>Pressing the <code>%3CCTRL%3E</code> button while clicking on the copy action button or the delete action button places the action into the 
+					internal clipboard.</p>
+				<p>This will then cause the paste buttons in the menu toolbars to become visible. You can then paste the action into a menu (at which point the paste
+					buttons will again be hidden)</p>
+			</li>
+		</ul>
 		<h1 id="menu-actions">Menu Actions</h1>
 		<p>To create a menu action, do the following:</p>
 		<ul>
 			<li>
-				<p>click on the <code>+ Action</code> button at the top of the
-					left-most column of the configurator
-					tool:</p>
-				<p><img src="images/add-menu-top.png" alt="Add a top-level menu"></p>
+				<p>click on the <code>+</code> button in the menu toolbar</p>
 			</li>
 			<li>
 				<p>In the newly-created action details area (to the right), click on the type indicator
@@ -214,7 +246,7 @@
 			in alphanumeric order (the default is that the order you specify is the one that is used).</p>
 		<p>To add actions to your new menu, click on the <strong>Submenu Actions</strong> tab to reveal a nested
 			panel that is similar to the top-level UI. Here you can, again, click on the
-			<code>+ Action</code> button to configure the actions that will appear
+			<code>+</code> button to configure the actions that will appear
 			in your newly created menu.
 		</p>
 		<p>That is all there is to menu creation.</p>
@@ -239,9 +271,7 @@
 		<p>You create a command action in the same way you create a menu action: </p>
 		<ul>
 			<li>
-				<p>click on the <code>+ Action</code> button at the top of the
-					left-most column
-					of the configurator tool</p>
+				<p>click on the <code>+</code> button in the menu toolbar</p>
 			</li>
 			<li>
 				<p>In the newly-created action details area (to the right), click on the type indicator

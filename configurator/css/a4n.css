@@ -31,7 +31,10 @@
 		 */
 		div[data-schemapath$=".actions"]>.h3>span,
 		.h3>span:first-of-type,
-		.json-editor-btntype-copy>span {
+		.json-editor-btntype-copy>span,
+		.json-editor-btntype-paste>span,
+		.json-editor-btntype-delete>span,
+		.json-editor-btntype-add>span {
 			display: none;
 		}
 
