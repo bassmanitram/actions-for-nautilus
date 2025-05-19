@@ -283,3 +283,10 @@
 		textarea.je-edit-json--textarea {
 			display: none !important;
 		}
+
+		/*
+		 * generat hide stuff
+		 */
+		.hide-me {
+			display: none !important;
+		}

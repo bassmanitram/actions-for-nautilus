@@ -6,6 +6,7 @@ let redo_button;
 let save_button;
 let editor_ready = false;
 let root_editor;
+let actions_clipboard;
 
 function setUndoRedoButtonStates() {
 	undo_button.disabled = (current_value_index == 0);
@@ -31,6 +32,14 @@ function redo(e) {
 	}
 }
 
+function hidePasteButtons(hide) {
+	document.getElementsByClassName("json-editor-btntype-paste")
+	let result = document.getElementsByClassName("json-editor-btntype-paste");
+	for (let i = 0; i < result.length; i++) {
+  		result[i].classList.toggle("hide-me", hide)
+	}
+}
+
 function toggleJSONEditor(e) {
 	e.preventDefault();
 	e.stopPropagation();
@@ -46,11 +55,11 @@ function saveConfig(e) {
 		alert("There are validation errors in the data");
 		return;
 	}
-//	console.log(JSON.stringify(convertToBackendFormat(config),null,4));
-//	const data = JSON.stringify(editor.getValue());
+	//	console.log(JSON.stringify(convertToBackendFormat(config),null,4));
+	//	const data = JSON.stringify(editor.getValue());
 	const data = JSON.stringify(convertToBackendFormat(editor.getValue()));
 	//console.log(data);
-$.ajax({
+	$.ajax({
 		url: '/config',
 		type: 'post',
 		data: data,
@@ -134,7 +143,7 @@ function finalizeEditorConfig(e) {
 	 */
 	json_button = editor.root.getButton('JSON', 'edit', 'JSON');
 	json_button.classList.add("a4n-edit-json");
-//	json_button.classList.add("json-editor-btntype-editjson")
+	//	json_button.classList.add("json-editor-btntype-editjson")
 	json_button.addEventListener('click', toggleJSONEditor, false);
 	button_holder.appendChild(json_button);
 
@@ -270,10 +279,10 @@ JSONEditor.defaults.custom_validators.push((schema, value, path) => {
 	const errors = [];
 
 	if (value.type == 'command'
-	&& typeof value.min_items == 'number'
-	&& typeof value.max_items == 'number'
-	&& value.max_items > 0
-	&& value.min_items > value.max_items) {
+		&& typeof value.min_items == 'number'
+		&& typeof value.max_items == 'number'
+		&& value.max_items > 0
+		&& value.min_items > value.max_items) {
 		//console.log(path, value);
 		/*
 		 * Report the error for min_items
@@ -302,9 +311,8 @@ function typeChangeListener() {
 	}
 }
 
-
 class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
-	getElementEditor (i) {
+	getElementEditor(i) {
 		const elementEditor = super.getElementEditor(i);
 		/*
 		 * THIS is the completed container that we need to swap around a bit
@@ -339,14 +347,85 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 		} else {
 			console.log("Unexpected container layout for " + elementEditor.path + " container", elementEditor.container);
 		}
-		this.jsoneditor.watch(elementEditor.path + '.Basic.type',typeChangeListener.bind(elementEditor));
-		this.jsoneditor.watch(elementEditor.path + '.Basic.disabled',typeChangeListener.bind(elementEditor));
+		this.jsoneditor.watch(elementEditor.path + '.Basic.type', typeChangeListener.bind(elementEditor));
+		this.jsoneditor.watch(elementEditor.path + '.Basic.disabled', typeChangeListener.bind(elementEditor));
 		return elementEditor;
+	}
+
+	/*
+	 * CTRL copy copies to the "clipboard"!
+	 */
+	copyRow(from, to, e) {
+		if (e.ctrlKey) {
+			const value = window.structuredClone(this.getValue()[from])
+			value.Basic.label += " Copy"
+			actions_clipboard = value
+			hidePasteButtons(false)
+		} else {
+			super.copyRow(from, to, e)
+		}
+	}
+
+	/*
+	 * CTRL delete deletes to the clipboard
+	 */
+	deleteRow(from, e) {
+		let value;
+		if (e.ctrlKey) {
+			value = window.structuredClone(this.getValue()[from])
+		}
+		super.deleteRow(from, e)
+		if (value) {
+			actions_clipboard = value
+			hidePasteButtons(false)
+		}
+	}
+
+	/*
+	 * Paste from the clipboard
+	 */
+	pasteRow() {
+		const value = actions_clipboard;
+		actions_clipboard = null;
+
+		if (value) {
+			this.addRow(value, 0)
+			this.refreshValue(true)
+			hidePasteButtons(true)
+		}
+	}
+
+	addControls() {
+		super.addControls()
+		this._createPasteRowButton()
+	}
+
+	postBuild () {
+    	super.postBuild();
+		hidePasteButtons(true)
+    }
+
+	_createPasteRowButton() {
+		const button = this.getButton(this.getItemTitle(), 'paste', 'button_paste_row_title', [this.getItemTitle()])
+		button.classList.add('json-editor-btntype-paste')
+		button.addEventListener('click', (e) => {
+			e.preventDefault()
+			e.stopPropagation()
+			const i = this.rows.length
+			const editor = this.pasteRow()
+			this.active_tab = this.rows[0].tab
+			this.refreshTabs()
+			this.refreshValue()
+			this.onChange(true)
+			this.jsoneditor.trigger('pasteRow', editor)
+		})
+		this.controls.insertBefore(button, this.controls.children[this.controls.children.length - 1])
+		return button
 	}
 }
 
 class CommandLineEditor extends JSONEditor.defaults.editors.string {
-	postBuild (value) {
+	postBuild(value) {
 		const rc = super.postBuild(value);
 		const form_group = this.container.children[0];
 		form_group.classList.add("a4n-command-line");
@@ -358,7 +437,7 @@ class CommandLineEditor extends JSONEditor.defaults.editors.string {
 				*/
 			const input_group = get_use_shell_button_template().content.cloneNode(true)
 			const shell_button = input_group.querySelector("button");
-			const use_shell_editor = editor.getEditor(this.path.replace("command_line","use_shell"))
+			const use_shell_editor = editor.getEditor(this.path.replace("command_line", "use_shell"))
 
 			input_group.children[0].appendChild(input);
 			form_group.appendChild(input_group);
@@ -366,14 +445,14 @@ class CommandLineEditor extends JSONEditor.defaults.editors.string {
 			use_shell_editor.visibleWidget = shell_button;
 
 			// Clicking the button sets the value
-			shell_button.onclick = function(){
+			shell_button.onclick = function () {
 				use_shell_editor.setValue(!this.classList.contains("boolean-true"));
-			};	
+			};
 
 			// Setting the value changes the style of the button
-			use_shell_editor.setValue = function(value, initial) {
+			use_shell_editor.setValue = function (value, initial) {
 				Object.getPrototypeOf(this).setValue.call(this, value, initial);
-				this.visibleWidget.classList.toggle("boolean-true",value);
+				this.visibleWidget.classList.toggle("boolean-true", value);
 			}
 		}
 		return rc
@@ -387,7 +466,7 @@ JSONEditor.defaults.editors.actions = ActionsEditor;
  * Add resolvers
  */
 JSONEditor.defaults.resolvers.unshift(schema => {
-	if(schema.options?.a4nEditor) {
+	if (schema.options?.a4nEditor) {
 		return schema.options.a4nEditor
 	}
 });
