@@ -1,3 +1,13 @@
+# Release 2.0.0
+* Updated JSON Editor to latest (and forked it to add fixes and enhancements of my own):
+  * Copy of an action to the same menu
+  * Copy/Paste and Cut/Paste of an action between different menus
+  * Drag/Drop of menu items in the same menus
+  * Greatly improved performance when manipulating menu order
+* UI enhancements
+* Enhanced interpolation of place holders (basically fixing escape issues)
+* Strict-match - see the doc
+
 # Release 1.7.1
 * Menu caching fixes
 
