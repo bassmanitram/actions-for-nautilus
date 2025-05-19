@@ -11666,6 +11666,14 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
       return this.rows[i];
     }
   }, {
+    key: "deleteRow",
+    value: function deleteRow(i, e) {
+      var newval = this.getValue().filter(function (row, j) {
+        return j !== i;
+      });
+      this.setValue(newval);
+    }
+  }, {
     key: "_createDeleteButton",
     value: function _createDeleteButton(i, holder) {
       var _this9 = this;
@@ -11680,13 +11688,9 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
         if (!_this9.askConfirmation()) {
           return false;
         }
-        var newval = _this9.getValue().filter(function (row, j) {
-          return j !== i;
-        });
-        var newActiveTab = null;
-        var editor = _this9.rows[i];
-        var editorValue = editor.getValue();
-        _this9.setValue(newval);
+        var editorValue = _this9.rows[i].getValue();
+        _this9.deleteRow(i, e);
+        var newActiveTab;
         if (_this9.rows[i]) {
           newActiveTab = _this9.rows[i].tab;
         } else if (_this9.rows[i - 1]) {
@@ -11706,7 +11710,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
     }
   }, {
     key: "copyRow",
-    value: function copyRow(from, to) {
+    value: function copyRow(from, to, e) {
       var schema = this.schema;
       var arrayItems = this.getValue();
       var newValue = arrayItems[from];
@@ -11741,7 +11745,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
         var i = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.findIndexInParent)(_this0.active_tab);
         if (i < 0) return;
         var newItemIndex = _this0.copy_in_place ? i + 1 : _this0.rows.length;
-        _this0.copyRow(i, newItemIndex);
+        _this0.copyRow(i, newItemIndex, e);
         _this0.refreshValue(true);
         _this0.onChange(true);
         if (schema.options.on_copy_item_label_path) {
@@ -11758,7 +11762,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
     }
   }, {
     key: "moveRowUp",
-    value: function moveRowUp(i) {
+    value: function moveRowUp(i, e) {
       if (i <= 0) return;
       var arrayItems = this.getValue();
       var tmp = arrayItems[i - 1];
@@ -11778,7 +11782,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
         if (!_this1.active_tab) return;
         var i = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.findIndexInParent)(_this1.active_tab);
         if (i < 0) return;
-        _this1.moveRowUp(i);
+        _this1.moveRowUp(i, e);
         _this1.active_tab = _this1.rows[i - 1].tab;
         _this1.refreshTabs(true);
         _this1.onChange(true);
@@ -11791,7 +11795,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
     }
   }, {
     key: "moveRowDown",
-    value: function moveRowDown(i) {
+    value: function moveRowDown(i, e) {
       var arrayItems = this.getValue();
       if (i >= arrayItems.length - 1) return;
       var tmp = arrayItems[i + 1];
@@ -11811,7 +11815,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
         if (!_this10.active_tab) return;
         var i = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.findIndexInParent)(_this10.active_tab);
         if (i < 0) return;
-        _this10.moveRowDown(i);
+        _this10.moveRowDown(i, e);
         _this10.active_tab = _this10.rows[i + 1].tab;
         _this10.refreshTabs();
         _this10.onChange(true);
@@ -14986,8 +14990,17 @@ var FastModArrayEditor = /*#__PURE__*/function (_ArrayEditor) {
       if (bottom) {
         this.refreshValue(true);
       } else {
-        this._moveRow(arrayItems.length - 1, to);
+        this._moveRow(this.getValue().length - 1, to);
       }
+    }
+  }, {
+    key: "deleteRow",
+    value: function deleteRow(i) {
+      this.getValue().splice(i, 1);
+      this.rows.splice(i, 1);
+      this.row_holder.removeChild(this.row_holder.children[i]);
+      this.links_holder.removeChild(this.links_holder.children[i]);
+      this.refreshValue(true);
     }
   }, {
     key: "_moveRow",
