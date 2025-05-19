@@ -155,7 +155,8 @@
 					"options": {
 						"infoText": "#command:file_types",
 						"grid_columns": 9,
-						"disable_array_delete_last_row": true
+						"disable_array_delete_last_row": true,
+						"array_copy_in_place": true
 					}
 				},
 				"filetypes_strict_match": {
@@ -212,7 +213,8 @@
 						"infoText": "#root:actions",
 						"a4nEditor": "actions",
 						"on_copy_item_label_path": "Basic.label",
-						"enable_array_copy": true
+						"enable_array_copy": true,
+						"array_copy_in_place": true
 					}
 				},
 				"sort": {
