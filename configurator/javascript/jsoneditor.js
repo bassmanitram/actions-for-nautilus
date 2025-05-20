@@ -11689,7 +11689,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
           return false;
         }
         var editorValue = _this9.rows[i].getValue();
-        _this9.deleteRow(i, e);
+        if (_this9.deleteRow(i, e) === true) return;
         var newActiveTab;
         if (_this9.rows[i]) {
           newActiveTab = _this9.rows[i].tab;
@@ -11709,27 +11709,37 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
       return button;
     }
   }, {
-    key: "copyRow",
-    value: function copyRow(from, to, e) {
+    key: "refreshUUIDs",
+    value: function refreshUUIDs(value) {
       var schema = this.schema;
-      var arrayItems = this.getValue();
-      var newValue = arrayItems[from];
       /* Force generation of new UUID if the item has been cloned. */
       if (schema.items.type === 'string' && schema.items.format === 'uuid') {
-        newValue = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.generateUUID)();
+        value = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.generateUUID)();
       } else if (schema.items.type === 'object' && schema.items.properties) {
-        for (var _i = 0, _Object$keys = Object.keys(newValue); _i < _Object$keys.length; _i++) {
+        for (var _i = 0, _Object$keys = Object.keys(value); _i < _Object$keys.length; _i++) {
           var key = _Object$keys[_i];
           if (schema.items.properties && schema.items.properties[key] && schema.items.properties[key].format === 'uuid') {
             // If we have more than one uuid, then we replace the value twice - no biggy
             // It DOESN'T handle deeply embedded UUIDs - biggy
-            newValue = Object.assign({}, newValue);
-            newValue[key] = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.generateUUID)();
+            value = Object.assign({}, value);
+            value[key] = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.generateUUID)();
           }
         }
       }
-      arrayItems.splice(to, 0, newValue);
-      this.setValue(arrayItems);
+      return value;
+    }
+  }, {
+    key: "copyRow",
+    value: function copyRow(from, to, e) {
+      var arrayItems = this.getValue();
+      var newValue = this.refreshUUIDs(arrayItems[from]);
+      if (newValue) {
+        arrayItems.splice(to, 0, newValue);
+        this.setValue(arrayItems);
+        return false;
+      } else {
+        return true;
+      }
     }
   }, {
     key: "_createCopyButton",
@@ -11745,7 +11755,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
         var i = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.findIndexInParent)(_this0.active_tab);
         if (i < 0) return;
         var newItemIndex = _this0.copy_in_place ? i + 1 : _this0.rows.length;
-        _this0.copyRow(i, newItemIndex, e);
+        if (_this0.copyRow(i, newItemIndex, e) === true) return;
         _this0.refreshValue(true);
         _this0.onChange(true);
         if (schema.options.on_copy_item_label_path) {
@@ -11782,7 +11792,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
         if (!_this1.active_tab) return;
         var i = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.findIndexInParent)(_this1.active_tab);
         if (i < 0) return;
-        _this1.moveRowUp(i, e);
+        if (_this1.moveRowUp(i, e) === true) return;
         _this1.active_tab = _this1.rows[i - 1].tab;
         _this1.refreshTabs(true);
         _this1.onChange(true);
@@ -11815,7 +11825,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
         if (!_this10.active_tab) return;
         var i = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.findIndexInParent)(_this10.active_tab);
         if (i < 0) return;
-        _this10.moveRowDown(i, e);
+        if (_this10.moveRowDown(i, e) === true) return;
         _this10.active_tab = _this10.rows[i + 1].tab;
         _this10.refreshTabs();
         _this10.onChange(true);
@@ -11840,7 +11850,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
     value: function _supportDragDrop(tab, useTrigger) {
       var _this11 = this;
       supportDragDrop(tab, function (i, j) {
-        _this11.dropRow(i, j);
+        if (_this11.dropRow(i, j) === true) return;
         _this11.active_tab = _this11.rows[j].tab;
         _this11.refreshTabs(true);
         _this11.onChange(true);
@@ -11916,11 +11926,13 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
         e.stopPropagation();
         var i = _this13.rows.length;
         var editor = _this13.addRowViaCache();
-        _this13.active_tab = _this13.rows[i].tab;
-        _this13.refreshTabs();
-        _this13.refreshValue();
-        _this13.onChange(true);
-        _this13.jsoneditor.trigger('addRow', editor);
+        if (editor) {
+          _this13.active_tab = _this13.rows[i].tab;
+          _this13.refreshTabs();
+          _this13.refreshValue();
+          _this13.onChange(true);
+          _this13.jsoneditor.trigger('addRow', editor);
+        }
       });
       this.controls.appendChild(button);
       return button;
@@ -11937,10 +11949,9 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
         if (!_this14.askConfirmation()) {
           return false;
         }
-        var rows = _this14.getValue();
-        var newActiveTab = null;
-        var editorValue = rows.pop();
-        _this14.setValue(rows);
+        var editorValue = _this14.rows[_this14.rows.length - 1];
+        if (_this14.deleteRow(_this14.rows.length - 1, e) === true) return;
+        var newActiveTab;
         if (_this14.rows[_this14.rows.length - 1]) {
           newActiveTab = _this14.rows[_this14.rows.length - 1].tab;
         }
@@ -11955,6 +11966,12 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
       return button;
     }
   }, {
+    key: "deleteAllRows",
+    value: function deleteAllRows(e) {
+      this.empty(true);
+      this.setValue([]);
+    }
+  }, {
     key: "_createRemoveAllRowsButton",
     value: function _createRemoveAllRowsButton() {
       var _this15 = this;
@@ -11967,8 +11984,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
           return false;
         }
         var values = _this15.getValue();
-        _this15.empty(true);
-        _this15.setValue([]);
+        if (_this15.deleteAllRows(e) === true) return;
         _this15.onChange(true);
         _this15.jsoneditor.trigger('deleteAllRows', values);
       });
@@ -14984,13 +15000,18 @@ var FastModArrayEditor = /*#__PURE__*/function (_ArrayEditor) {
     value: function copyRow(from, to) {
       var arrayItems = this.getValue();
       var bottom = to >= arrayItems.length;
-      var newValue = window.structuredClone(this.getValue()[from]);
-      arrayItems.splice(to, 0, newValue);
-      this.addRow(newValue, to);
-      if (bottom) {
-        this.refreshValue(true);
+      var newValue = this.refreshUUIDs(window.structuredClone(arrayItems[from]));
+      if (newValue) {
+        arrayItems.splice(to, 0, newValue);
+        this.addRow(newValue, to);
+        if (bottom) {
+          this.refreshValue(true);
+        } else {
+          this._moveRow(this.getValue().length - 1, to);
+        }
+        return false;
       } else {
-        this._moveRow(this.getValue().length - 1, to);
+        return true;
       }
     }
   }, {

@@ -353,7 +353,7 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 	}
 
 	/*
-	 * CTRL copy copies to the "clipboard"!
+	 * CTRL copy copies to the "clipboard" and we stop the event processor!
 	 */
 	copyRow(from, to, e) {
 		if (e.ctrlKey) {
@@ -361,8 +361,9 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 			value.Basic.label += " Copy"
 			actions_clipboard = value
 			hidePasteButtons(false)
+			return true
 		} else {
-			super.copyRow(from, to, e)
+			return super.copyRow(from, to, e)
 		}
 	}
 
@@ -374,11 +375,12 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 		if (e.ctrlKey) {
 			value = window.structuredClone(this.getValue()[from])
 		}
-		super.deleteRow(from, e)
+		const rc = super.deleteRow(from, e)
 		if (value) {
 			actions_clipboard = value
 			hidePasteButtons(false)
 		}
+		return rc
 	}
 
 	/*
