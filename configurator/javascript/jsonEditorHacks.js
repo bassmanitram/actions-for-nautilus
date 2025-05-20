@@ -33,7 +33,7 @@ function basicToBackend(target, source) {
 	}
 	if (target.type == "command") {
 		if (target.interpolation != "original") {
-			target.use_old_interpolation = false
+			target.use_v1_interpolation = false
 		}
 		delete target.interpolation
 	}
@@ -145,7 +145,7 @@ function convertActionToFrontendFormat(externlAction) {
 	for (const [key, value] of Object.entries(externlAction)) {
 		if ((!is_command) && key == "actions") {
 			internalAction.actions = value.map(convertActionToFrontendFormat);
-		} else if (is_command && key == "use_old_interpolation") {
+		} else if (is_command && key == "use_v1_interpolation") {
 			internalAction.Basic.interpolation = value ? "original" : "improved"
 		} else if (is_command && key.startsWith("mimetypes")) {
 			internalAction.MimeTypes[key] = value

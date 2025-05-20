@@ -208,7 +208,7 @@ def _check_command_action(idString, json_action):
         if type(json_action.get("use_shell")) == bool:
             action.use_shell = json_action["use_shell"]
  
-        if not json_action.get("use_old_interpolation", True):
+        if not json_action.get("use_v1_interpolation", True):
             action.command_line_parts = tokenize_for_shell(action.command_line) if action.use_shell else tokenize_for_native(action.command_line)
         
         action.mimetypes_strict_match = bool(json_action.get("mimetypes_strict_match", False))
