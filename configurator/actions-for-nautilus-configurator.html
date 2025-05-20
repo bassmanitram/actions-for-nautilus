@@ -12,7 +12,7 @@
 
 	<script src="/javascript/help.js"></script>
 	<script src="/javascript/a4nbootstrap4Theme.js"></script>
-	<script src="/javascript/jsonEditorHacks.js"></script>
+	<script src="/javascript/modelTransform.js"></script>
 	<script src="/javascript/jsonEditorHooks.js"></script>
 	<script src="/javascript/constants.js"></script>
 	<script src="/javascript/initAceEditor.js"></script>
@@ -41,6 +41,14 @@
 	<div id="ace-editor_dragbar" class="ace-editor_dragbar"></div>
 	
 	<script>
+
+		let use_shell_button_template;
+		function get_use_shell_button_template() {
+			if (!use_shell_button_template) { 
+				use_shell_button_template = document.querySelector("#use_shell_button")
+			}
+			return use_shell_button_template
+		}
 
 		/*
 		 * Because this is a local UI tightly related to

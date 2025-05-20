@@ -58,14 +58,6 @@ const ui_structs = {
 	"MimeTypes": { toBackend: nonBasicToBackend, info: { prefix: "mimetypes" } },
 }
 
-let use_shell_button_template;
-function get_use_shell_button_template() {
-	if (!use_shell_button_template) { 
-		use_shell_button_template = document.querySelector("#use_shell_button")
-	}
-	return use_shell_button_template
-}
-
 /*
  * These two are to do with the fact that a tab in JSON Editor cannot
  * be formatted nicely unless the property information is itself in objects.
