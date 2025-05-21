@@ -64,14 +64,14 @@ class TopLevelObjectEditor extends JSONEditor.defaults.editors.object {
 	saveJSON () {
 		if (!this.editjson_holder) return	
 		try {
-		const json = JSON.parse(this.ace_editor.getValue())
-		this.setValue(convertToFrontendFormat(json))
-		this.hideEditJSON()
-		this.onChange(true)
+			const json = JSON.parse(this.ace_editor.getValue())
+			this.setValue(convertToFrontendFormat(json))
+			this.hideEditJSON()
+			this.onChange(true)
 		} catch (e) {
 			console.log(e)
-		window.alert('invalid JSON')
-		throw e
+			window.alert('invalid JSON')
+			throw e
 		}
 	}
 
@@ -150,7 +150,8 @@ function initAceEditor(editor) {
 	aceEditorWrapper = editor.root.editjson_holder;
 	aceEditorWrapper.id = "ace-editor_wrapper"
 
-	aceEditorWrapper.childNodes[2].remove();
+	aceEditorWrapper.childNodes[3].remove();
+	aceEditorWrapper.childNodes[1].remove();
 	aceEditorWrapper.firstElementChild.remove();
 	aceEditorWrapper.append(aceEditor);
 	aceEditorWrapper.append(aceEditorResizeBar);

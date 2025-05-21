@@ -260,13 +260,6 @@
 		}
 
 		/*
-		 * Unneeded artifact in JSON editor
-		 */
-		textarea.je-edit-json--textarea {
-			display: none !important;
-		}
-
-		/*
 		 * generat hide stuff
 		 */
 		.hide-me {
