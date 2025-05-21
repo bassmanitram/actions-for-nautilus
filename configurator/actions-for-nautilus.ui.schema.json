@@ -23,6 +23,7 @@
 					"options": {
 						"infoText": "#command:mimetypes",
 						"disable_array_delete_last_row": true,
+						"enable_array_copy": false,
 						"grid_columns": 9
 					}
 				},
@@ -64,6 +65,7 @@
 					"options": {
 						"infoText": "#command:path_patterns",
 						"disable_array_delete_last_row": true,
+						"enable_array_copy": false,
 						"grid_columns": 9
 					}
 				},
@@ -153,10 +155,10 @@
 					},
 					"title": "File types",
 					"options": {
-						"infoText": "#command:file_types",
+						"infoText": "#command:filetypes",
 						"grid_columns": 9,
 						"disable_array_delete_last_row": true,
-						"array_copy_in_place": true
+						"enable_array_copy": false
 					}
 				},
 				"filetypes_strict_match": {

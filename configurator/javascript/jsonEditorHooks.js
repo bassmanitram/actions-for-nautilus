@@ -274,6 +274,13 @@ JSONEditor.defaults.custom_validators.push((schema, value, path) => {
  */
 JSONEditor.defaults.custom_validators.push((schema, value, path) => {
 	/*
+	 * We do this because validating during editor initialization can be a bad thing.
+	 * The main driver code reruns a validate after the editor is loaded and the 
+	 * editor_ready flag is set to true.
+	 */
+	if (!editor_ready) return [];
+
+	/*
 	 * We check the Basic block for min_items/max_items consistency
 	 */
 	const errors = [];
@@ -329,6 +336,7 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 		 *     LABEL
 		 *     SPAN
 		 *     SELECT
+		 *     BUTTON (a help button)
 		 *     DIV
 		 * 
 		 * And, while we are at it, we put an a4n-specific class on the selector
@@ -344,6 +352,9 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 			elementEditor.container.children[2].setAttribute("title", "Select the type of action");
 			elementEditor.container.children[2].classList.add("a4n-action-type-chooser");
 			elementEditor.container.insertBefore(elementEditor.container.children[4], elementEditor.container.children[2]);
+			const helpButton = this.theme.getInfoButton("#action")
+			elementEditor.container.insertBefore(helpButton, elementEditor.container.children[4]);
+
 		} else {
 			console.log("Unexpected container layout for " + elementEditor.path + " container", elementEditor.container);
 		}

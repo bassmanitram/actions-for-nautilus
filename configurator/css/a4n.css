@@ -33,8 +33,7 @@
 		.h3>span:first-of-type,
 		.json-editor-btntype-copy>span,
 		.json-editor-btntype-paste>span,
-		.json-editor-btntype-delete>span,
-		.json-editor-btntype-add>span {
+		.json-editor-btntype-delete>span {
 			display: none;
 		}
 
@@ -114,26 +113,6 @@
 			padding-left: 0.2rem !important;
 			vertical-align: middle;
 		}
-
-		/*
-		 * Opt-in toggles need a tooltip
-		 *
-		 * This is the interesting way to do it; but, in the end
-		 * we simply hack the function that creates the box in order
-		 * to add a title.
-		 *
-		input.json-editor-opt-in:hover::after {
-			content: "Enable/disable optional setting in the configuration.";
-			position: absolute;
-			font-size: initial;
-			left: 2em;
-			padding: 2px 5px;
-			min-width: 200px;
-			color: rgb(200,200,200);
-			background-color: rgb(64,64,64);
-			z-index: 1;
-		}
-		*/
 
 		/*
 		 * Command/Menu selector box is too narrow, too low

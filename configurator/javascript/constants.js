@@ -5,7 +5,7 @@ const iconNames = {
 
 const infoText = {
 	"#action:toolbar": { "text": "Manage the menu", "help_label": "action-toolbar" },
-	"#action": { "text": "An entry that will appear in the Nautilus context menu. Such an entry can be a Command or a nested Menu. Click for more info.", "help_label": "menu-actions" },
+	"#action": { "text": "An entry that will appear in the Nautilus context menu. Such an entry can be a Command or a nested Menu. Click for more info.", "help_label": "actions" },
 	"#command:command_line": { "text": "The command line to execute when the action is clicked on.  Click for more info.", "help_label": "commands" },
 	"#command:cwd": { "text": "The current working directory to set when executing the command. Placeholders are allowed. Click for more info.", "help_label": "cwd" },
 	"#command:disabled": { "text": "If the command is marked as disabled it will not appear in the Gnome Files context menu", "help_label": "action-disable" },
@@ -19,6 +19,7 @@ const infoText = {
 	"#command:mimetypes": { "text": "A list of standard mimetype specifications for which the action will be displayed, or not be displayed in the event of a '!' prefix. Click for more info.", "help_label": "mimetypes" },
 	"#command:path_pattern": { "text": "A path pattern for which the action will be displayed, or not be displayed in the event of a '!' prefix. Click for more info.", "help_label": "path-patterns" },
 	"#command:path_patterns": { "text": "A list of path patterns for which the action will be displayed, or not be displayed in the event of a '!' prefix. Click for more info.", "help_label": "path-patterns" },
+	"#command:show_if_true": { "text": "A command to execute to determine if the action should be displayed. Click for more info.", "help_label": "show-if-true" },
 	"#command:strict_match": { "text": "All selected files must match the same rule (which has different semantics depending on the rule type). Click for more info.", "help_label": "strict-match" },
 	"#command:use_shell": { "text": "Instead of directly executing the command, execute it using the default shell command. Click for more info.", "help_label": "use-shell" },
 	"#command": { "text": "An entry in the Nautilus context menu or sub menu that, when clicked on, results in a command being executed. Click for more info.", "help_label": "command-actions" },
