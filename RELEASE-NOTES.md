@@ -3,8 +3,8 @@
   * Copy of an action to the same menu
   * Copy/Paste and Cut/Paste of an action between different menus
   * Drag/Drop of menu items in the same menus
-  * Greatly improved performance when manipulating menu order
 * UI enhancements
+* Improved performance when manipulating menu order
 * Enhanced interpolation of place holders (basically fixing escape issues)
 * Strict-match - see the doc
 
@@ -15,7 +15,7 @@
 * Implement show-if-true - call a program to determine if an action is applicable to a selection (#46)
 * Implement ability to have items in the config that are ignored when building the 
   context menu (#57)
-* Make the save button clearer when there are changes that are needed (#60)
+* Make the save button clearer when there are changes (#60)
 
 # Release 1.6.1
 
