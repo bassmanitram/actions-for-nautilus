@@ -322,6 +322,7 @@
 			"options": {
 				"infoText": "#submenu",
 				"disable_properties": true,
+				"a4nEditor": "menu",
 				"containerAttributes": {
 					"class": "a4n-submenu-container"
 				}

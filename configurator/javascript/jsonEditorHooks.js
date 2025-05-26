@@ -347,22 +347,34 @@ const exampleAction =
 	}
 }
 
+class MenuEditor extends JSONEditor.defaults.editors.object {
+	tabClicked(idx, e) {
+		if (idx === 1) this.editors.actions?.resolvePending();
+		super.tabClicked(idx,e)
+	}
+}
+
 class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 
 	setValue(v = [],i) {
-		super.setValue(v,i)
-	}
-
-/*	setValue(v = [],i) {
 		if (v.length == 0 && this.path == "root.actions") {
-				v = [ structuredClone(exampleAction) ]
-		} else if (!editor_ready) {
+			v = [ structuredClone(exampleAction) ]
+		} 
+		
+		if (this.path != "root.actions") {
 			this.pending_actions = v
 			v = []
 		}
 		super.setValue(v, i)
 	}
-*/
+
+	resolvePending() {
+		if (this.pending_actions) {
+			super.setValue(this.pending_actions, true)
+			this.pending_actions = null;
+		}
+	}
+
 	getElementEditor(i) {
 		const elementEditor = super.getElementEditor(i);
 		/*
@@ -460,16 +472,15 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 	_adjustActionsMaxHeight() {
 		setTimeout(() => {
 			const holder = this.links_holder.parentNode;
-			const sibling = this.row_holder;
-			const editor_rect = document.getElementById("editor_holder").getBoundingClientRect()
 			const actions_rect_height = holder.getBoundingClientRect().height
-			const sibling_rect_height = sibling.getBoundingClientRect().height
-			const view_port_rect = document.getElementsByTagName("html")?.[0]?.getBoundingClientRect()
 			/*
 			 * and the hack :)
 			 */
 			if (actions_rect_height > 0) {
-				const overflow = editor_rect.bottom - (view_port_rect.height - 5)
+				const sibling_rect_height = this.row_holder.getBoundingClientRect().height
+				const editor_rect_bottom = document.getElementById("editor_holder").getBoundingClientRect().bottom
+				const view_port_rect_height = document.getElementsByTagName("html")?.[0]?.getBoundingClientRect().bottom
+				const overflow = editor_rect_bottom - (view_port_rect_height - 5)
 				const new_max = actions_rect_height - overflow;
 				holder.style.setProperty("min-height", sibling_rect_height + "px")
 				holder.style.setProperty("max-height",(new_max > sibling_rect_height ? new_max : sibling_rect_height) + "px")
@@ -552,6 +563,7 @@ class CommandLineEditor extends JSONEditor.defaults.editors.string {
 
 JSONEditor.defaults.editors.commandLine = CommandLineEditor;
 JSONEditor.defaults.editors.actions = ActionsEditor;
+JSONEditor.defaults.editors.menu = MenuEditor;
 
 /*
  * Add resolvers
