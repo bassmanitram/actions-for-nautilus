@@ -12,9 +12,7 @@
 		 * with some space at the top
 		 */
 		.container {
-			margin-top: 2rem;
-			left: 0;
-			right: 0;
+			padding-top: 2rem;
 		}
 
 		/*
@@ -262,6 +260,10 @@
 		}
 		.json-editor-btntype-deleteall {
 			display: inline-block !important;
+		}
+
+		.a4n-main-actions-list {
+			overflow-y: auto;
 		}
 
 		/*

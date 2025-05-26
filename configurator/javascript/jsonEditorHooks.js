@@ -318,7 +318,51 @@ function typeChangeListener() {
 	}
 }
 
+const exampleAction =
+{
+	PathPatterns: {
+		path_patterns_strict_match: false,
+		path_patterns: []
+	},
+	MimeTypes: {
+		mimetypes_strict_match: false,
+		mimetypes: []
+	},
+	FileTypes: {
+		filetypes_strict_match: false,
+		filetypes: []
+	},
+	Basic: {
+		label: "Example command - open xterm",
+		type: "command",
+		command_line: "xterm $HOME",
+		show_if_true: "",
+		cwd: "",
+		use_shell: true,
+		min_items: 1,
+		max_items: 0,
+		permissions: "any",
+		disabled: false,
+		interpolation: "enhanced"
+	}
+}
+
 class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
+
+	setValue(v = [],i) {
+		super.setValue(v,i)
+	}
+
+/*	setValue(v = [],i) {
+		if (v.length == 0 && this.path == "root.actions") {
+				v = [ structuredClone(exampleAction) ]
+		} else if (!editor_ready) {
+			this.pending_actions = v
+			v = []
+		}
+		super.setValue(v, i)
+	}
+*/
 	getElementEditor(i) {
 		const elementEditor = super.getElementEditor(i);
 		/*
@@ -413,8 +457,42 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 		this._createPasteRowButton()
 	}
 
+	_adjustActionsMaxHeight() {
+		setTimeout(() => {
+			const holder = this.links_holder.parentNode;
+			const sibling = this.row_holder;
+			const editor_rect = document.getElementById("editor_holder").getBoundingClientRect()
+			const actions_rect_height = holder.getBoundingClientRect().height
+			const sibling_rect_height = sibling.getBoundingClientRect().height
+			const view_port_rect = document.getElementsByTagName("html")?.[0]?.getBoundingClientRect()
+			/*
+			 * and the hack :)
+			 */
+			if (actions_rect_height > 0) {
+				const overflow = editor_rect.bottom - (view_port_rect.height - 5)
+				const new_max = actions_rect_height - overflow;
+				holder.style.setProperty("min-height", sibling_rect_height + "px")
+				holder.style.setProperty("max-height",(new_max > sibling_rect_height ? new_max : sibling_rect_height) + "px")
+			}				
+		}, 5);
+	}
+
 	postBuild () {
     	super.postBuild();
+		if (this.path == "root.actions") {
+			this.links_holder.parentNode.classList.add('a4n-main-actions-list')
+			const mObserver = new MutationObserver((list, observer) => {
+				this._adjustActionsMaxHeight()
+			})
+			window.addEventListener('resize', () => {
+				clearTimeout(this.resizeTimer); // Clear any previous timer
+				this.resizeTimer = setTimeout(() => {
+					this._adjustActionsMaxHeight(); // Execute only after resizing stops for 200ms
+				}, 200); // Adjust debounce delay as needed (e.g., 100ms, 250ms)
+			});
+			this._adjustActionsMaxHeight()
+			mObserver.observe(this.links_holder, { childList: true })
+		}
 		hidePasteButtons(true)
     }
 
