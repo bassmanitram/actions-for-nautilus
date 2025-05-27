@@ -3,7 +3,7 @@
   add fixes and enhancements of my own):
   * Copy of an action to the same menu
   * Copy/Paste and Cut/Paste of an action between different menus
-  * Drag/Drop of menu items in the same menus
+  * Drag/Drop of a menu item in the same menu
 * UI enhancements
 * Improved performance (especially for large configurations)
 * Enhanced interpolation of place holders (basically fixing escape issues)
