@@ -166,7 +166,7 @@ function finalizeEditorConfig(e) {
 	 */
 	editor.on('change', configChanged);
 	editor_ready = true;
-	editor.validate();
+//	editor.validate();
 
 	/*
 	 * Seriously hack the main object JSON editor
@@ -348,24 +348,36 @@ const exampleAction =
 }
 
 class MenuEditor extends JSONEditor.defaults.editors.object {
-	tabClicked(idx, e) {
-		if (idx === 1) this.editors.actions?.resolvePending();
-		super.tabClicked(idx,e)
-	}
+  onChildEditorChange (editor, eventData) {
+    if (editor_ready) this.onChange(true, false, eventData)
+  }
+  
+  setActiveTab(idx) {
+	if (idx === 1) this.editors.actions?.resolvePending();
+	super.setActiveTab(idx)
+  }
 }
 
 class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 
+    onChildEditorChange (editor, eventData) {
+      if (editor_ready) this.onChange(true, false, eventData)
+    }
+  
 	setValue(v = [],i) {
 		if (v.length == 0 && this.path == "root.actions") {
 			v = [ structuredClone(exampleAction) ]
 		} 
 		
-		if (this.path != "root.actions") {
+		if (this.path != "root.actions" && v.length > 0) {
 			this.pending_actions = v
 			v = []
 		}
 		super.setValue(v, i)
+	}
+
+	getValue() {
+		return this.pending_actions ?  this.pending_actions : super.getValue()
 	}
 
 	resolvePending() {

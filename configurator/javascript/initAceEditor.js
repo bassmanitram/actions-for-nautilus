@@ -16,6 +16,10 @@ let saveDisabled;
  * And the way we handle the JSON editor
  */
 class TopLevelObjectEditor extends JSONEditor.defaults.editors.object {
+    onChildEditorChange (editor, eventData) {
+      if (editor_ready) this.onChange(true, false, eventData)
+    }
+
 	showEditJSON () {
 		if (!this.editjson_holder) return
 		this.hideAddProperty()
