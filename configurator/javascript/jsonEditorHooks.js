@@ -349,7 +349,7 @@ const exampleAction =
 
 class MenuEditor extends JSONEditor.defaults.editors.object {
   onChildEditorChange (editor, eventData) {
-    if (editor_ready) this.onChange(true, false, eventData)
+      if (editor_ready) super.onChildEditorChange(editor, eventData)
   }
   
   setActiveTab(idx) {
@@ -361,7 +361,7 @@ class MenuEditor extends JSONEditor.defaults.editors.object {
 class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 
     onChildEditorChange (editor, eventData) {
-      if (editor_ready) this.onChange(true, false, eventData)
+      if (editor_ready) super.onChildEditorChange(editor, eventData)
     }
   
 	setValue(v = [],i) {
