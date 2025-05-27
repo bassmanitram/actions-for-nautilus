@@ -128,3 +128,4 @@ dmypy.json
 .pyre/
 configurator/test.html
 **/SAMPLE.*
+**/*.old.*

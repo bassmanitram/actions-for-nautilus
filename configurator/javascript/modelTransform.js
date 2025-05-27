@@ -137,7 +137,7 @@ function convertActionToFrontendFormat(externlAction) {
 	for (const [key, value] of Object.entries(externlAction)) {
 		if ((!is_command) && key == "actions") {
 			internalAction.actions = value.map(convertActionToFrontendFormat);
-		} else if (is_command && (key == "use_old_interpolation" || key == "use_vi_interpolation")) {
+		} else if (is_command && (key == "use_old_interpolation" || key == "use_v1_interpolation")) {
 			internalAction.Basic.interpolation = value ? "original" : "improved"
 		} else if (is_command && key.startsWith("mimetypes")) {
 			internalAction.MimeTypes[key] = value
