@@ -11172,8 +11172,8 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
       this.rows = [];
       this.row_cache = this.createRowCache();
       this.hide_delete_buttons = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.checkBooleanOption)(this.options.disable_array_delete, this.jsoneditor.options.disable_array_delete, false);
-      this.hide_delete_all_rows_buttons = this.hide_delete_buttons || (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.checkBooleanOption)(this.options.disable_array_delete_all_rows, this.jsoneditor.options.disable_array_delete_all_rows, false);
-      this.hide_delete_last_row_buttons = this.hide_delete_buttons || (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.checkBooleanOption)(this.options.disable_array_delete_last_row, this.jsoneditor.options.disable_array_delete_last_row, false);
+      this.hide_delete_all_rows_button = this.hide_delete_buttons || (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.checkBooleanOption)(this.options.disable_array_delete_all_rows, this.jsoneditor.options.disable_array_delete_all_rows, false);
+      this.hide_delete_last_row_button = this.hide_delete_buttons || (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.checkBooleanOption)(this.options.disable_array_delete_last_row, this.jsoneditor.options.disable_array_delete_last_row, false);
       this.hide_move_buttons = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.checkBooleanOption)(this.options.disable_array_reorder, this.jsoneditor.options.disable_array_reorder, false);
       this.hide_add_button = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.checkBooleanOption)(this.options.disable_array_add, this.jsoneditor.options.disable_array_add, false);
       this.show_copy_button = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.checkBooleanOption)(this.options.enable_array_copy, this.jsoneditor.options.enable_array_copy, false);
@@ -11419,6 +11419,14 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
       return this.schema.maxItems || Infinity;
     }
   }, {
+    key: "getMin",
+    value: function getMin() {
+      if (Array.isArray(this.schema.items) && this.schema.additionalItems === false) {
+        return Math.min(this.schema.items.length, this.schema.minItems || 0);
+      }
+      return this.schema.minItems || 0;
+    }
+  }, {
     key: "refreshTabs",
     value: function refreshTabs(refreshHeaders) {
       var _this5 = this;
@@ -11508,12 +11516,9 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
     }
   }, {
     key: "setButtonState",
-    value: function setButtonState(element, display) {
-      var buttonStateMode = this.options.button_state_mode || this.jsoneditor.options.button_state_mode;
+    value: function setButtonState(element, display, hide) {
+      var buttonStateMode = hide ? -1 : this.options.button_state_mode || this.jsoneditor.options.button_state_mode;
       switch (buttonStateMode) {
-        case 1:
-          element.style.display = display ? '' : 'none';
-          break;
         case 2:
           element.disabled = !display;
           break;
@@ -11526,71 +11531,76 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
     value: function setupButtons(minItems) {
       var controlsNeeded = [];
       if (!this.value.length) {
-        this.setButtonState(this.delete_last_row_button, false);
-        this.setButtonState(this.remove_all_rows_button, false);
+        this.setButtonState(this.delete_last_row_button, false, this.hide_delete_last_row_button);
+        this.setButtonState(this.remove_all_rows_button, false, this.hide_delete_all_rows_button);
       } else if (this.value.length === 1) {
-        this.setButtonState(this.remove_all_rows_button, false);
+        this.setButtonState(this.remove_all_rows_button, false, this.hide_delete_all_rows_button);
 
         /* If there are minItems items in the array, or configured to hide the delete_last_row button, hide the delete button beneath the rows */
-        var _display = !(minItems || this.hide_delete_last_row_buttons);
-        this.setButtonState(this.delete_last_row_button, _display);
+        var _display = !(minItems || this.hide_delete_last_row_button);
+        this.setButtonState(this.delete_last_row_button, _display, this.hide_delete_last_row_button);
         controlsNeeded.push(_display);
       } else {
-        var display1 = !(minItems || this.hide_delete_last_row_buttons);
-        this.setButtonState(this.delete_last_row_button, display1);
+        var display1 = !(minItems || this.hide_delete_last_row_button);
+        this.setButtonState(this.delete_last_row_button, display1, this.hide_delete_last_row_button);
         controlsNeeded.push(display1);
-        var display2 = !(minItems || this.hide_delete_all_rows_buttons);
-        this.setButtonState(this.remove_all_rows_button, display2);
+        var display2 = !(minItems || this.hide_delete_all_rows_button);
+        this.setButtonState(this.remove_all_rows_button, display2, this.hide_delete_all_rows_button);
         controlsNeeded.push(display2);
       }
 
       /* If there are maxItems in the array, hide the add button beneath the rows */
       var display = !(this.getMax() && this.getMax() <= this.rows.length || this.hide_add_button);
-      this.setButtonState(this.add_row_button, display);
+      this.setButtonState(this.add_row_button, display, this.hide_add_button);
       controlsNeeded.push(display);
       return controlsNeeded.some(function (e) {
         return e;
       });
     }
   }, {
+    key: "refreshRowButtons",
+    value: function refreshRowButtons() {
+      var _this7 = this;
+      /* If we currently have minItems items in the array */
+      var minItems = this.schema.minItems && this.schema.minItems >= this.rows.length;
+      this.rows.forEach(function (editor, i) {
+        editor.arrayItemIndex = i;
+        /* Hide the move down button for the last row */
+        if (editor.movedown_button) {
+          var display = i !== _this7.rows.length - 1;
+          _this7.setButtonState(editor.movedown_button, display);
+        }
+
+        /* Hide the move up button for the first row */
+        if (editor.moveup_button) {
+          var _display2 = i !== 0;
+          _this7.setButtonState(editor.moveup_button, _display2);
+        }
+
+        /* Hide the delete button if we have minItems items */
+        if (editor.delete_button) {
+          _this7.setButtonState(editor.delete_button, !minItems);
+        }
+
+        /* Get the value for this editor */
+        _this7.value[i] = editor.getValue();
+      });
+      if (this.setupButtons(minItems) && !this.collapsed) {
+        this.controls.style.display = 'inline-block';
+      } else {
+        this.controls.style.display = 'none';
+      }
+    }
+  }, {
     key: "refreshValue",
     value: function refreshValue(force) {
-      var _this7 = this;
       var oldi = this.value ? this.value.length : 0;
       /* Get the value for this editor */
       this.value = this.rows.map(function (editor) {
         return editor.getValue();
       });
       if (oldi !== this.value.length || force) {
-        /* If we currently have minItems items in the array */
-        var minItems = this.schema.minItems && this.schema.minItems >= this.rows.length;
-        this.rows.forEach(function (editor, i) {
-          editor.arrayItemIndex = i;
-          /* Hide the move down button for the last row */
-          if (editor.movedown_button) {
-            var display = i !== _this7.rows.length - 1;
-            _this7.setButtonState(editor.movedown_button, display);
-          }
-
-          /* Hide the move up button for the first row */
-          if (editor.moveup_button) {
-            var _display2 = i !== 0;
-            _this7.setButtonState(editor.moveup_button, _display2);
-          }
-
-          /* Hide the delete button if we have minItems items */
-          if (editor.delete_button) {
-            _this7.setButtonState(editor.delete_button, !minItems);
-          }
-
-          /* Get the value for this editor */
-          _this7.value[i] = editor.getValue();
-        });
-        if (this.setupButtons(minItems) && !this.collapsed) {
-          this.controls.style.display = 'inline-block';
-        } else {
-          this.controls.style.display = 'none';
-        }
+        this.refreshRowButtons();
       }
       this.serialized = JSON.stringify(this.value);
     }
@@ -11621,6 +11631,25 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
       this.active_tab = tab;
     }
   }, {
+    key: "addRowButtons",
+    value: function addRowButtons(i) {
+      var controlsHolder = this.rows[i].title_controls || this.rows[i].array_controls;
+
+      /* Buttons to delete row, move row up, and move row down */
+      if (!this.hide_delete_buttons) {
+        this.rows[i].delete_button = this._createDeleteButton(i, controlsHolder);
+      }
+
+      /* Button to copy an array element and add it as last element */
+      if (this.show_copy_button) {
+        this.rows[i].copy_button = this._createCopyButton(i, controlsHolder);
+      }
+      if (!this.hide_move_buttons) {
+        this.rows[i].moveup_button = this._createMoveUpButton(i, controlsHolder);
+        this.rows[i].movedown_button = this._createMoveDownButton(i, controlsHolder);
+      }
+    }
+  }, {
     key: "addRow",
     value: function addRow(value, initial) {
       var _this8 = this;
@@ -11646,21 +11675,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
       } else {
         this._supportDragDrop(this.rows[i].container, true);
       }
-      var controlsHolder = this.rows[i].title_controls || this.rows[i].array_controls;
-
-      /* Buttons to delete row, move row up, and move row down */
-      if (!this.hide_delete_buttons) {
-        this.rows[i].delete_button = this._createDeleteButton(i, controlsHolder);
-      }
-
-      /* Button to copy an array element and add it as last element */
-      if (this.show_copy_button) {
-        this.rows[i].copy_button = this._createCopyButton(i, controlsHolder);
-      }
-      if (!this.hide_move_buttons) {
-        this.rows[i].moveup_button = this._createMoveUpButton(i, controlsHolder);
-        this.rows[i].movedown_button = this._createMoveDownButton(i, controlsHolder);
-      }
+      this.addRowButtons(i);
       if (typeof value !== 'undefined') this.rows[i].setValue(value, initial);
       this.refreshTabs();
       this.row_cache.addItem(this.rows[i]);
@@ -11675,6 +11690,11 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
       this.setValue(newval);
     }
   }, {
+    key: "getActiveTabIndex",
+    value: function getActiveTabIndex() {
+      return (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.findIndexInParent)(this.active_tab);
+    }
+  }, {
     key: "_createDeleteButton",
     value: function _createDeleteButton(i, holder) {
       var _this9 = this;
@@ -11685,7 +11705,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
         e.preventDefault();
         e.stopPropagation();
         if (!_this9.active_tab) return;
-        var i = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.findIndexInParent)(_this9.active_tab);
+        var i = _this9.getActiveTabIndex();
         if (i < 0) return;
         if (!_this9.askConfirmation()) {
           return false;
@@ -11697,9 +11717,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
         _this9.onChange(true);
         _this9.jsoneditor.trigger('deleteRow', editorValue);
       });
-      if (holder) {
-        holder.appendChild(button);
-      }
+      if (holder) holder.appendChild(button);
       return button;
     }
   }, {
@@ -11746,7 +11764,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
         e.preventDefault();
         e.stopPropagation();
         if (!_this0.active_tab) return;
-        var i = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.findIndexInParent)(_this0.active_tab);
+        var i = _this0.getActiveTabIndex();
         if (i < 0) return;
         var newI = _this0.copy_in_place ? i + 1 : _this0.rows.length;
         if (_this0.copyRow(i, newI, e) === true) return;
@@ -11762,7 +11780,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
         }
         _this0.jsoneditor.trigger('copyRow', _this0.rows[newI]);
       });
-      holder.appendChild(button);
+      if (holder) holder.appendChild(button);
       return button;
     }
   }, {
@@ -11785,7 +11803,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
         e.preventDefault();
         e.stopPropagation();
         if (!_this1.active_tab) return;
-        var i = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.findIndexInParent)(_this1.active_tab);
+        var i = _this1.getActiveTabIndex();
         if (i < 0) return;
         if (_this1.moveRowUp(i, e) === true) return;
         _this1.active_tab = _this1.rows[i - 1].tab;
@@ -11793,9 +11811,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
         _this1.onChange(true);
         _this1.jsoneditor.trigger('moveRow', _this1.rows[i - 1]);
       });
-      if (holder) {
-        holder.appendChild(button);
-      }
+      if (holder) holder.appendChild(button);
       return button;
     }
   }, {
@@ -11818,7 +11834,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
         e.preventDefault();
         e.stopPropagation();
         if (!_this10.active_tab) return;
-        var i = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.findIndexInParent)(_this10.active_tab);
+        var i = _this10.getActiveTabIndex();
         if (i < 0) return;
         if (_this10.moveRowDown(i, e) === true) return;
         _this10.active_tab = _this10.rows[i + 1].tab;
@@ -11826,9 +11842,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
         _this10.onChange(true);
         _this10.jsoneditor.trigger('moveRow', _this10.rows[i + 1]);
       });
-      if (holder) {
-        holder.appendChild(button);
-      }
+      if (holder) holder.appendChild(button);
       return button;
     }
   }, {

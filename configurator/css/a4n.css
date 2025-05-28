@@ -27,8 +27,9 @@
 		/*
 		 * Submenu and section titles should not be displayed
 		 */
-		div[data-schemapath$=".actions"]>.h3>span,
+		div[data-schemapath$=".actions"]>.h3>span:first-of-type,
 		.h3>span:first-of-type,
+		.json-editor-btntype-add>span,
 		.json-editor-btntype-copy>span,
 		.json-editor-btntype-paste>span,
 		.json-editor-btntype-delete>span {
@@ -74,13 +75,6 @@
 			display: none;
 		}
 
-/* 		div[data-schemapath$=".path_patterns"]>h3>label,
-		div[data-schemapath$=".mimetypes"]>h3>label,
-		div[data-schemapath$=".filetypes"]>h3>label {
-			visibility: collapse;
-			font-size: 0;
-		}
- */
 		div[data-schemapath$=".path_patterns"]>h3>label>input,
 		div[data-schemapath$=".mimetypes"]>h3>label>input,
 		div[data-schemapath$=".filetypes"]>h3>label>input {
@@ -259,7 +253,7 @@
 			display: none !important;
 		}
 		.json-editor-btntype-deleteall {
-			display: inline-block !important;
+			display: none !important;
 		}
 
 		.a4n-main-actions-list {
@@ -267,8 +261,36 @@
 		}
 
 		/*
+		 * Tweak hiable button formatting
+		 */
+		.je-btn-visible-last {			
+			border-top-right-radius: var(--bs-border-radius)  !important;
+    		border-bottom-right-radius: var(--bs-border-radius)  !important;
+		}
+
+		.je-btn-visible-first {			
+			border-top-left-radius: var(--bs-border-radius)  !important;
+    		border-bottom-left-radius: var(--bs-border-radius)  !important;
+		}
+
+		/*
 		 * generat hide stuff
 		 */
 		.hide-me {
 			display: none !important;
+		}
+
+		/*
+		 * Active delete button turns red-ish on shift (i.e. delete all)
+		 */
+		button:not([disabled]).json-editor-btntype-delete.shift-pressed>i{
+			color: red;
+		}
+
+		/*
+		 * Active delete and copy buttons turn blue-ish on ctrl (i.e. cut/copy to clipboard)
+		 */
+		button:not([disabled]).json-editor-btntype-delete.ctrl-pressed>i,
+		button:not([disabled]).json-editor-btntype-copy.ctrl-pressed>i {
+			color: blue;
 		}

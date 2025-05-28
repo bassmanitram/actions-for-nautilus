@@ -32,14 +32,6 @@ function redo(e) {
 	}
 }
 
-function hidePasteButtons(hide) {
-	document.getElementsByClassName("json-editor-btntype-paste")
-	let result = document.getElementsByClassName("json-editor-btntype-paste");
-	for (let i = 0; i < result.length; i++) {
-  		result[i].classList.toggle("hide-me", hide)
-	}
-}
-
 function toggleJSONEditor(e) {
 	e.preventDefault();
 	e.stopPropagation();
@@ -439,7 +431,7 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 			const value = window.structuredClone(this.getValue()[from])
 			value.Basic.label += " Copy"
 			actions_clipboard = value
-			hidePasteButtons(false)
+			this.refreshRowButtons()
 			return true
 		} else {
 			return super.copyRow(from, to, e)
@@ -457,9 +449,25 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 		const rc = super.deleteRow(from, e)
 		if (value) {
 			actions_clipboard = value
-			hidePasteButtons(false)
+			this.refreshRowButtons()
 		}
 		return rc
+	}
+
+	refreshRowButtons() {
+		const active_index = this.getActiveTabIndex()
+		const has_active_tab = active_index >= 0 && active_index < this.rows.length
+
+		this.setButtonState(this.copy_row_button, has_active_tab && (this.rows.length < this.getMax()))
+		this.setButtonState(this.paste_row_button, has_active_tab && (actions_clipboard ? true : false))
+		this.setButtonState(this.delete_row_button, has_active_tab && (this.rows.length > this.getMin()))
+		this.setButtonState(this.move_row_up_button, has_active_tab && (active_index > 0))
+		this.setButtonState(this.move_row_down_button, has_active_tab && (active_index < this.rows.length - 1))
+	}
+
+	refreshTabs(i, j) {
+		super.refreshTabs(i,j)
+		this.refreshRowButtons()
 	}
 
 	/*
@@ -472,13 +480,7 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 		if (value) {
 			this.addRow(value, 0)
 			this.refreshValue(true)
-			hidePasteButtons(true)
 		}
-	}
-
-	addControls() {
-		super.addControls()
-		this._createPasteRowButton()
 	}
 
 	_adjustActionsMaxHeight() {
@@ -500,9 +502,13 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 		}, 5);
 	}
 
+	addRowButtons (i) {
+		return
+	}
+
 	postBuild () {
     	super.postBuild();
-		if (this.path == "root.actions") {
+		if (this.path == "root.actions" && this.links_holder) {
 			this.links_holder.parentNode.classList.add('a4n-main-actions-list')
 			const mObserver = new MutationObserver((list, observer) => {
 				this._adjustActionsMaxHeight()
@@ -516,8 +522,43 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 			this._adjustActionsMaxHeight()
 			mObserver.observe(this.links_holder, { childList: true })
 		}
-		hidePasteButtons(true)
     }
+
+	addControls() {
+		super.addControls()
+		this.copy_row_button = this._createCopyButton(-1)
+		this.paste_row_button = this._createPasteRowButton(-1)
+		this.delete_row_button = this._createDeleteButton(-1)
+		this.move_row_up_button = this._createMoveUpButton(-1)
+		this.move_row_down_button = this._createMoveDownButton(-1)
+
+		document.addEventListener('keydown', (event) => {
+			if (event.key === "Shift" && !event.ctrlKey) {
+        		this.delete_row_button.classList.toggle('shift-pressed', true);
+        		this.copy_row_button.classList.toggle('shift-pressed', true);
+    		} else if (event.key === "Control"  && !event.shiftKey) {
+        		this.delete_row_button.classList.toggle('ctrl-pressed', true);
+        		this.copy_row_button.classList.toggle('ctrl-pressed', true);
+    		}
+		});
+
+		document.addEventListener('keyup', (event) => {
+			if (event.key === "Shift") {
+        		this.delete_row_button.classList.toggle('shift-pressed', false);
+        		this.copy_row_button.classList.toggle('shift-pressed', false);
+    		}
+			else if (event.key === "Control") {
+        		this.delete_row_button.classList.toggle('ctrl-pressed', false);
+        		this.copy_row_button.classList.toggle('ctrl-pressed', false);
+    		}
+		});
+
+		this.controls.appendChild(this.copy_row_button)
+		this.controls.appendChild(this.paste_row_button)
+		this.controls.appendChild(this.move_row_up_button)
+		this.controls.appendChild(this.move_row_down_button)
+		this.controls.appendChild(this.delete_row_button)
+	}
 
 	_createPasteRowButton() {
 		const button = this.getButton(this.getItemTitle(), 'paste', 'button_paste_row_title', [this.getItemTitle()])
@@ -533,7 +574,6 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 			this.onChange(true)
 			this.jsoneditor.trigger('pasteRow', editor)
 		})
-		this.controls.insertBefore(button, this.controls.children[this.controls.children.length - 1])
 		return button
 	}
 }

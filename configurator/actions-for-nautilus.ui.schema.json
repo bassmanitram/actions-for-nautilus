@@ -216,7 +216,10 @@
 						"a4nEditor": "actions",
 						"on_copy_item_label_path": "Basic.label",
 						"enable_array_copy": true,
-						"array_copy_in_place": true
+						"array_copy_in_place": true,
+						"button_state_mode": 2,
+						"disable_array_delete_all_rows": true
+
 					}
 				},
 				"sort": {
@@ -310,7 +313,9 @@
 						"infoText": "#submenu:actions",
 						"a4nEditor": "actions",
 						"on_copy_item_label_path": "Basic.label",
-						"enable_array_copy": true
+						"enable_array_copy": true,
+						"button_state_mode": 2,
+						"disable_array_delete_all_rows": true
 					}
 				}
 			},
