@@ -8,7 +8,7 @@
 * Improved performance (especially for large configurations)
 * Enhanced interpolation of place holders (basically fixing escape issues)
 * Strict-match - see the doc
-* Negative permissions
+* Negative permissions - see the doc
 
 # Release 1.7.1
 * Menu caching fixes

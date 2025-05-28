@@ -8,7 +8,7 @@ actions-for-nautilus (2.0.0) stable; urgency=medium
   * Improved performance (especially for large configurations)
   * Enhanced interpolation of place holders (basically fixing escape issues)
   * Strict-match - see the doc
-  * Negative permissions
+  * Negative permissions - see the doc
 
  -- Martin Bartlett <martin.j.bartlett@gmail.com>  Wed, 09 Apr 2025 17:00:00 +0200
 
