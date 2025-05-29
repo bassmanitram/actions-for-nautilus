@@ -537,7 +537,8 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
         		this.delete_row_button.classList.toggle('shift-pressed', true);
         		this.copy_row_button.classList.toggle('shift-pressed', true);
     		} else if (event.key === "Control"  && !event.shiftKey) {
-        		this.delete_row_button.classList.toggle('ctrl-pressed', true);
+        		this.delete_row_button.children[0].classList.toggle('fa-trash', false);
+        		this.delete_row_button.children[0].classList.toggle('fa-cut', true);
         		this.copy_row_button.classList.toggle('ctrl-pressed', true);
     		}
 		});
@@ -548,8 +549,9 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
         		this.copy_row_button.classList.toggle('shift-pressed', false);
     		}
 			else if (event.key === "Control") {
-        		this.delete_row_button.classList.toggle('ctrl-pressed', false);
         		this.copy_row_button.classList.toggle('ctrl-pressed', false);
+        		this.delete_row_button.children[0].classList.toggle('fa-trash', true);
+        		this.delete_row_button.children[0].classList.toggle('fa-cut', false);
     		}
 		});
 

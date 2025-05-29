@@ -290,7 +290,7 @@
 		/*
 		 * Active delete and copy buttons turn blue-ish on ctrl (i.e. cut/copy to clipboard)
 		 */
-		button:not([disabled]).json-editor-btntype-delete.ctrl-pressed>i,
+		button:not([disabled]).json-editor-btntype-delete>i.fa-cut,
 		button:not([disabled]).json-editor-btntype-copy.ctrl-pressed>i {
 			color: blue;
 		}
