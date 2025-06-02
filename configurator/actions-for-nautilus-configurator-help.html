@@ -18,10 +18,10 @@
 			confusion) based upon the characteristics of the files and directories that you have
 			selected in the Nautilus window (simply called <em>files</em> from here-on).</p>
 		<p>Within the context of the extension, these menu items are called <em>actions</em>.</p>
-		<p>You can add two types of actions.</p>
+		<p>You can add two types of action:</p>
 		<ul>
 			<li>Commands - a command action allows you to execute an arbitrary command, passing
-				the selected files to the command as arguments.</li>
+				information pertaining to the the selected files to the command as arguments.</li>
 			<li>Menus - a menu action contains other actions, allowing you to structure your
 				configured commands into logical groups in any way you see fit.</li>
 		</ul>
@@ -86,7 +86,7 @@
 				<ul>
 					<li>see the actions already added to the main context menu, </li>
 					<li>easily identify any actions that have been disabled, </li>
-					<li>add new actions to that menu</li>
+					<li>add, copy, paste, reorder, and delete actions within that menu</li>
 					<li>select an existing action in order to edit its characteristics</li>
 					<li>remove all actions from the main menu (which, at the top level, removes all actions from the
 						entire configuration)</li>
@@ -107,18 +107,18 @@
 					<li>set the submenu items for a menu action</li>
 					<li>set the command string, current working directory, and filter rules that pertain to a command
 						action</li>
-					<li>reorder the action within its containing menu</li>
-					<li>delete the action</li>
 				</ul>
 			</li>
 		</ul>
 		<p>Of special note is the <strong>Submenu Actions</strong> tab for menu actions ... this presents the identical
-			UI
-			elements in a nested format - i.e. the creation and manipulation of submenu actions is exactly
+			UI elements in a nested format: </p>
+			<p><img src="images/submenu-details.png" alt="Submenu details panel"></p>
+			<p>i.e. the creation and manipulation of submenu actions is exactly
 			the same as for main menu actions, performed within the UI presented by the <strong>Submenu Actions</strong>
 			tab.</p>
-		<p>The instructions below are presented for main menu actions, but the same semantics apply to creating
+		<p>The documentation below is presented for main menu actions, but the same semantics apply to managing
 			actions in submenus.</p>
+
 		<h2 id="undo-redo-and-save">Undo, Redo, Save, and Help</h2>
 		<p>Under the title, you will see a row of buttons, the first three of which allow you to undo changes that
 			you have made, redo changes that you have undone, and save changes back to the configuration file:</p>
@@ -143,7 +143,7 @@
 		<h2 id="json-source-editor">The JSON Source Editor</h2>
 		<p>The configurator includes a syntax-checking JSON source editor which, unsurprisingly, is toggled using
 			the <code>JSON</code> button in the top button row. This tool is useful for making bulk changes to your
-			configuration, such as copy/pasting actions or adding examples from the <a
+			configuration, such as adding examples from the <a
 				href="https://github.com/bassmanitram/actions-for-nautilus/wiki/Configuration-Examples"
 				target="_blank">project wiki</a> into
 			your configuration.</p>
@@ -151,7 +151,7 @@
 			main configurator UI is hidden. Additionally, the top row <code>Undo</code>, <code>Redo</code>, and
 			<code>Save</code> buttons are disabled (though neither your changes nor your undo/redo history are lost).
 		</p>
-		<p>The view of the configuration that is presented is that of the internal schema, not the UI-specific schema,
+		<p>The view of the configuration that is presented in the source editor is that of the internal schema, not the UI-specific schema,
 			and so corresponds to what you would directly enter into the extension's configuration file should you manually
 			edit that file (which you are strongly advised not to do!).
 		</p>
@@ -167,7 +167,7 @@
 			click the top row <code>JSON</code> button again.</p>
 		<p>To save changes you make in the source editor (and close the editor), click on the embedded <code>Save</code>
 			button. If there are
-			any JSON syntax issues, you will not be able to save the data and the source editor will remain open. The
+			any JSON <emphasis>syntax</emphasis> issues, you will not be able to save the data and the source editor will remain open. The
 			source
 			editor itself should highlight the syntax issues.</p>
 		<p>Upon successful saving, the editor will close and the changes will be propagated to the main configurator
@@ -177,6 +177,8 @@
 			updates the main configurator UI with the modified configuration.</p>
 		<p>If, after saving, you need to reverse the changes that you made in the source editor, simply click the
 			top row <code>Undo</code> button</p>
+
+
 		<h1 id="actions">Actions</h1>
 		<p>Actions are what you configure to appear in the Gnome Files context menu. They can be <a href="#menu-actions">menus</a> or
 		<a href="#command-actions">commands</a>. Obviouisly menus contain commands - and other menus, though it is probably
@@ -194,36 +196,36 @@
 				<p>To help quickly identify disabled items, they appear on the left of the UI in grey rather than blue.</p>
 			</li>
 			<li>
-				<p>They can be added to, moved within, copied within, and deleted from their containing menus.</p>
-				<p id="menu-toolbar">At the top of the menu item list , there is a toolbar.</p>
+				<p id="menu-toolbar">They are affected by the buttons in the toolbar found at the top of the actions list in the left column of the UI:</p>
 				<p><img src="images/menu-toolbar.png" alt="Menu toolbar"></p>
 				<ul>
-					<li><p>The <code>+ Action</code> button adds an action to the menu</p></li>
-					<li><p>The paste button pastes an action from the internal clipboard into the menu (it will not be visible if there is no action in the clipboard)</p></li>
-					<li><p>The "bin all" button deletes all actions from the menu (after asking for confirmation, of course)</p></li>
+					<li><p><img src="images/add-button.png" alt="Add button">: adds an action to the menu.</p></li>
+					<li><p><img src="images/copy-button.png" alt="Copy button">: duplicates the currently selected action, adding <code> Copy</code> to the copy's label.</p></li>
+					<li><p><img src="images/paste-button.png" alt="Paste button">: pastes the action that is currently in the internal clipboard, below the currently selected action.
+						Note that the button is disabled if there is nothing in the clipboard, and that pasting will clear the clipboard.</p></li>
+					<li><p><img src="images/up-down-buttons.png" alt="Reorder buttons">: moves the currently selected action up/down within its containing menu.</p></li>
+					<li><p><img src="images/delete-button.png" alt="Delete button">: deletes the currently selected action from its containing menu, after asking for confirmation.</p></li>
 				</ul>
-				<p id="action-toolbar">At the top of the action detail pane, there is also a toolbar.</p>
-				<p><img src="images/action-toolbar.png" alt="Menu toolbar"></p>
+				<p>By holding down the <code>[CTRL]</code> key, the appearance of the toolbar changes:</p>
+				<p><img src="images/ctrl-toolbar.png" alt="Menu toolbar"></p>
 				<ul>
-					<li><p>The "bin" button removes the action from the menu (after asking for confirmation, of course)</p></li>
-					<li><p>The "copy" button (normally) adds a copy of the action to the menu, just below the copied action (and with a modified label)</p></li>
-					<li><p>The arrow buttons allow you to move the action up or down within its containing menu</p></li>
+					<li><p><img src="images/ctrl-copy-button.png" alt="CTRL-Copy button">: Copies the currently selected action to the internal clipboard. This enables all paste
+						buttons, allowing you to paste the action back into its source menu, or into any submenu that is found in your configuration.</p></li>
+					<li><p><img src="images/ctrl-delete-button.png" alt="CTRL-Delete button">: Cuts the currently selected action into the internal clipboard. This enables all paste
+						buttons, allowing you to paste the action back into its source menu, or into any submenu that is found in your configuration.</p></li>
+				</ul>
+				<p>By holding down the <code>[SHIFT]</code> key, the appearance of the delete button changes:</p>
+				<ul>
+					<li><p><img src="images/shift-delete-button.png" alt="SHIFT-Delete button">: Deletes <e>all</e> items from the menu - after asking for confirmation.</p></li>
 				</ul>
 			</li>
-			<li><p>They can be drag/dropped to different positions within their containing menus (but not between menus).</p></li>
-			<li>
-				<p>Finally, they can be Copy/Pasted or Cut/Pasted <em>between</em> menus.</p>
-				<p>Pressing the <code>[CTRL]</code> key while clicking on the copy action button or the delete action button places the action into the 
-					internal clipboard.</p>
-				<p>This will then cause the paste buttons in the menu toolbars to become visible. You can then paste the action into a menu (at which point the paste
-					buttons will again be hidden)</p>
-			</li>
+			<li><p> Actions can also be drag/dropped to different positions within their containing menus (but not between menus).</p></li>
 		</ul>
 		<h1 id="menu-actions">Menu Actions</h1>
 		<p>To create a menu action, do the following:</p>
 		<ul>
 			<li>
-				<p>click on the <code>+</code> button in the menu toolbar</p>
+				<p>click on the <img src="images/add-button.png" alt="Add button"> button in the menu toolbar</p>
 			</li>
 			<li>
 				<p>In the newly-created action details area (to the right), click on the type indicator
@@ -243,9 +245,9 @@
 		<p id="submenu-sort">You can also opt to have the extension sort the actions that will appear in this new menu
 			in alphanumeric order (the default is that the order you specify is the one that is used).</p>
 		<p>To add actions to your new menu, click on the <strong>Submenu Actions</strong> tab to reveal a nested
-			panel that is similar to the top-level UI. Here you can, again, click on the
-			<code>+</code> button to configure the actions that will appear
-			in your newly created menu.
+			panel that is similar to the top-level UI. Here you can, again, click on the submenu's own
+			<img src="images/add-button.png" alt="Add button"> button to configure the actions that will appear
+			in your newly created submenu.
 		</p>
 		<p>That is all there is to menu creation.</p>
 		<p>Note, however, that your menu will not appear in the Nautilus context menu until you add command actions to

@@ -7,7 +7,7 @@
 
 	<script src="/javascript/jquery.min.js"></script>
 	<script src="/javascript/bootstrap.min.js"></script>
-	<script src="/javascript/jsoneditor.min.js"></script>
+	<script src="/javascript/jsoneditor.js"></script>
 	<script src="/javascript/ace.js"></script>
 
 	<script src="/javascript/help.js"></script>
@@ -53,7 +53,6 @@
 		 * Because this is a local UI tightly related to
 		 * backend server that it is using, unload should
 		 * stop that server :)
-		 */
 		function onUnload(event) {
 			$.ajax({
 				url: '/terminate',
@@ -62,6 +61,7 @@
 			});
 		}
 		addEventListener("beforeunload", onUnload);
+		 */
 
 		let editor;
 
