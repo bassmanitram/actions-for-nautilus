@@ -120,6 +120,19 @@ function setCtrl(on) {
     });
 }
 
+function resetKeys(e) {
+	if (e && e.ctrlKey && !e.shiftKey) {
+		setCtrl(true)
+		setShift(false)
+	} else if (e && !e.ctrlKey && e.shiftKey) {
+		setCtrl(false)
+		setShift(true)
+	} else {
+		setCtrl(false)
+		setShift(false)
+	}
+}
+
 // The listener for config changes
 function configChanged(e) {
 	const new_value = JSON.stringify(editor.getValue());
@@ -506,7 +519,7 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 		} else {
 			rc = super.copyRow(from, to, e)
 		}
-		this.resetKeys(e)
+		resetKeys(e)
 		return rc
 	}
 
@@ -515,7 +528,7 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 	 */
 	deleteRowClicked(from,e) {
 		const rc = e.currentTarget.classList.contains('shift-pressed') ? super.deleteAllRowsClicked(e) : super.deleteRowClicked(from, e)
-		this.resetKeys(false)
+		resetKeys(false)
 		return rc
 	}
 

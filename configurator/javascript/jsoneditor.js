@@ -11700,7 +11700,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
       if (!this.askConfirmation(false)) {
         return false;
       }
-      var actionAborted = this.deleteRowClicked(i, e);
+      var actionAborted = this.deleteRow(i, e);
       if (!actionAborted) {
         var _this$rows$i, _this$rows;
         this.active_tab = ((_this$rows$i = this.rows[i]) === null || _this$rows$i === void 0 ? void 0 : _this$rows$i.tab) || ((_this$rows = this.rows[i - 1]) === null || _this$rows === void 0 ? void 0 : _this$rows.tab);
