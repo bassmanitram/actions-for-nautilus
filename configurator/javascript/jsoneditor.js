@@ -9705,6 +9705,10 @@ languages.en = {
   */
   button_delete_node_warning: 'Are you sure you want to remove this item?',
   /**
+  * Warning when deleting all nodes
+  */
+  button_delete_all_nodes_warning: 'Are you sure you want to remove all items?',
+  /**
    * Warning when deleting a node
    */
   table_controls: 'Controls',
@@ -11087,9 +11091,9 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
     }
   }, {
     key: "askConfirmation",
-    value: function askConfirmation() {
+    value: function askConfirmation(all) {
       if (this.jsoneditor.options.prompt_before_delete === true) {
-        if (window.confirm(this.translate('button_delete_node_warning')) === false) {
+        if (window.confirm(this.translate(all ? 'button_delete_all_nodes_warning' : 'button_delete_node_warning')) === false) {
           return false;
         }
       }
@@ -11690,6 +11694,22 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
       this.setValue(newval);
     }
   }, {
+    key: "deleteRowClicked",
+    value: function deleteRowClicked(i, e) {
+      var editorValue = this.rows[i].getValue();
+      if (!this.askConfirmation(false)) {
+        return false;
+      }
+      var actionAborted = this.deleteRowClicked(i, e);
+      if (!actionAborted) {
+        var _this$rows$i, _this$rows;
+        this.active_tab = ((_this$rows$i = this.rows[i]) === null || _this$rows$i === void 0 ? void 0 : _this$rows$i.tab) || ((_this$rows = this.rows[i - 1]) === null || _this$rows === void 0 ? void 0 : _this$rows.tab);
+        this.refreshTabs(true);
+        this.onChange(true);
+        this.jsoneditor.trigger('deleteRow', editorValue);
+      }
+    }
+  }, {
     key: "getActiveTabIndex",
     value: function getActiveTabIndex() {
       return (0,_utilities_js__WEBPACK_IMPORTED_MODULE_32__.findIndexInParent)(this.active_tab);
@@ -11701,21 +11721,12 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
       var button = this.getButton(this.getItemTitle(), 'delete', 'button_delete_row_title', [this.getItemTitle()]);
       button.classList.add('delete', 'json-editor-btntype-delete');
       button.addEventListener('click', function (e) {
-        var _this9$rows$i, _this9$rows;
         e.preventDefault();
         e.stopPropagation();
         if (!_this9.active_tab) return;
         var i = _this9.getActiveTabIndex();
         if (i < 0) return;
-        if (!_this9.askConfirmation()) {
-          return false;
-        }
-        var editorValue = _this9.rows[i].getValue();
-        if (_this9.deleteRow(i, e) === true) return;
-        _this9.active_tab = ((_this9$rows$i = _this9.rows[i]) === null || _this9$rows$i === void 0 ? void 0 : _this9$rows$i.tab) || ((_this9$rows = _this9.rows[i - 1]) === null || _this9$rows === void 0 ? void 0 : _this9$rows.tab);
-        _this9.refreshTabs(true);
-        _this9.onChange(true);
-        _this9.jsoneditor.trigger('deleteRow', editorValue);
+        _this9.deleteRowClicked(i, e);
       });
       if (holder) holder.appendChild(button);
       return button;
@@ -11955,7 +11966,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
       button.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        if (!_this14.askConfirmation()) {
+        if (!_this14.askConfirmation(false)) {
           return false;
         }
         var editorValue = _this14.rows[_this14.rows.length - 1];
@@ -11981,6 +11992,19 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
       this.setValue([]);
     }
   }, {
+    key: "deleteAllRowsClicked",
+    value: function deleteAllRowsClicked(e) {
+      var values = this.getValue();
+      if (!this.askConfirmation(true)) {
+        return false;
+      }
+      var actionAborted = this.deleteAllRows(e);
+      if (!actionAborted) {
+        this.onChange(true);
+        this.jsoneditor.trigger('deleteAllRows', values);
+      }
+    }
+  }, {
     key: "_createRemoveAllRowsButton",
     value: function _createRemoveAllRowsButton() {
       var _this15 = this;
@@ -11989,13 +12013,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
       button.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        if (!_this15.askConfirmation()) {
-          return false;
-        }
-        var values = _this15.getValue();
-        if (_this15.deleteAllRows(e) === true) return;
-        _this15.onChange(true);
-        _this15.jsoneditor.trigger('deleteAllRows', values);
+        _this15.deleteAllRowsClicked(e);
       });
       this.controls.appendChild(button);
       return button;

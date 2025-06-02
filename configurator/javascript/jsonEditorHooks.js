@@ -6,8 +6,35 @@ let redo_button;
 let save_button;
 let editor_ready = false;
 let root_editor;
-let actions_clipboard;
 
+// The actions clipboard
+class ActionsClipboard {
+	constructor() {
+		this.value = null
+	}
+	_togglePaste() {
+		const disabled = this.value ? false : true
+		document.querySelectorAll('.json-editor-btntype-paste').forEach(element => {
+			element.disabled = disabled
+        });
+	}
+	set(value) {
+		this.value = value
+		this._togglePaste()
+	}
+	take() {
+		const value = this.value
+		this.set(null)
+		return value
+	}
+	hasValue() {
+		return this.value ? true : false
+	}
+}
+
+const actions_clipboard = new ActionsClipboard()
+
+// The global toolbar buttons
 function setUndoRedoButtonStates() {
 	undo_button.disabled = (current_value_index == 0);
 	redo_button.disabled = (current_value_index == (previous_values.length - 1));
@@ -71,6 +98,29 @@ function saveConfig(e) {
 	});
 }
 
+// The action toolbar key key modifiers
+function setShift(on) {
+	document.querySelectorAll('.json-editor-btntype-delete').forEach(element => {
+		element.classList.toggle('shift-pressed', on);
+		element.setAttribute("title", on ? "Delete All Actions" : "Delete Action")
+    });
+}
+
+function setCtrl(on) {
+	document.querySelectorAll('.json-editor-btntype-delete').forEach(element => {
+		element.classList.toggle('ctrl-pressed', on);
+		element.children[0].classList.toggle('fa-trash', !on);
+		element.children[0].classList.toggle('fa-cut', on);
+		element.setAttribute("title", on ? "Cut Action (to clipboard)" : "Delete Action")
+    });
+	document.querySelectorAll('.json-editor-btntype-copy').forEach(element => {
+		element.classList.toggle('ctrl-pressed', on);
+		element.setAttribute("title", on ? "Copy Action (to clipboard)" : "Copy Action")
+
+    });
+}
+
+// The listener for config changes
 function configChanged(e) {
 	const new_value = JSON.stringify(editor.getValue());
 	if (previous_values[current_value_index] != new_value) {
@@ -94,6 +144,7 @@ function configChanged(e) {
 	}
 }
 
+// The "start it all"
 function finalizeEditorConfig(e) {
 	saved_value = JSON.stringify(editor.getValue());
 	previous_values[0] = saved_value;
@@ -169,6 +220,25 @@ function finalizeEditorConfig(e) {
 	let cardHolder = editor.root.container.getElementsByClassName('card-body')[0];
 	cardHolder.appendChild(editor.root.editjson_holder);
 	editor.root.editjson_holder.classList.add("a4n-editjson_holder");
+
+	// Hook up the key modifiers
+	document.addEventListener('keydown', (event) => {
+		if (event.key === "Shift" && !event.ctrlKey) {
+			setShift(true)
+		} else if (event.key === "Control"  && !event.shiftKey) {
+			setCtrl(true)
+		}
+	});
+
+	document.addEventListener('keyup', (event) => {
+		if (event.key === "Shift") {
+			setShift(false);
+		}
+		else if (event.key === "Control") {
+			setCtrl(false)
+		}
+	});
+
 
 	/*
 	 * And NOW replace the JSON editor text area with the ACE editor
@@ -427,15 +497,26 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 	 * CTRL copy copies to the "clipboard" and we stop the event processor!
 	 */
 	copyRow(from, to, e) {
-		if (e.ctrlKey) {
+		let rc =true
+		if (e.currentTarget.classList.contains('ctrl-pressed')) {
 			const value = window.structuredClone(this.getValue()[from])
 			value.Basic.label += " Copy"
-			actions_clipboard = value
+			actions_clipboard.set(value)
 			this.refreshRowButtons()
-			return true
 		} else {
-			return super.copyRow(from, to, e)
+			rc = super.copyRow(from, to, e)
 		}
+		this.resetKeys(e)
+		return rc
+	}
+
+	/*
+	 * Turns the delete row into a delete all rows if the shift button is pressed
+	 */
+	deleteRowClicked(from,e) {
+		const rc = e.currentTarget.classList.contains('shift-pressed') ? super.deleteAllRowsClicked(e) : super.deleteRowClicked(from, e)
+		this.resetKeys(false)
+		return rc
 	}
 
 	/*
@@ -443,23 +524,26 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 	 */
 	deleteRow(from, e) {
 		let value;
-		if (e.ctrlKey) {
+		if (e.currentTarget.classList.contains('ctrl-pressed')) {
 			value = window.structuredClone(this.getValue()[from])
 		}
+		
 		const rc = super.deleteRow(from, e)
 		if (value) {
-			actions_clipboard = value
+			actions_clipboard.set(value)
 			this.refreshRowButtons()
 		}
 		return rc
 	}
 
+	/*
+	 * Needs to handle buttons in ALL menus
+	 */
 	refreshRowButtons() {
 		const active_index = this.getActiveTabIndex()
 		const has_active_tab = active_index >= 0 && active_index < this.rows.length
 
 		this.setButtonState(this.copy_row_button, has_active_tab && (this.rows.length < this.getMax()))
-		this.setButtonState(this.paste_row_button, has_active_tab && (actions_clipboard ? true : false))
 		this.setButtonState(this.delete_row_button, has_active_tab && (this.rows.length > this.getMin()))
 		this.setButtonState(this.move_row_up_button, has_active_tab && (active_index > 0))
 		this.setButtonState(this.move_row_down_button, has_active_tab && (active_index < this.rows.length - 1))
@@ -474,11 +558,12 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 	 * Paste from the clipboard
 	 */
 	pasteRow() {
-		const value = actions_clipboard;
-		actions_clipboard = null;
-
+		const value = actions_clipboard.take();
 		if (value) {
-			this.addRow(value, 0)
+			const active_index = this.getActiveTabIndex()
+			const new_row_index = this.rows.length
+			this.addRow(value)
+			this._moveRow (new_row_index, active_index+1)
 			this.refreshValue(true)
 		}
 	}
@@ -524,6 +609,19 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 		}
     }
 
+	resetKeys(e) {
+		if (e && e.ctrlKey && !e.shiftKey) {
+			this.setCtrl(true)
+			this.setShift(false)
+		} else if (e && !e.ctrlKey && e.shiftKey) {
+			this.setCtrl(false)
+			this.setShift(true)
+		} else {
+			this.setCtrl(false)
+			this.setShift(false)
+		}
+	}
+
 	addControls() {
 		super.addControls()
 		this.copy_row_button = this._createCopyButton(-1)
@@ -531,29 +629,6 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 		this.delete_row_button = this._createDeleteButton(-1)
 		this.move_row_up_button = this._createMoveUpButton(-1)
 		this.move_row_down_button = this._createMoveDownButton(-1)
-
-		document.addEventListener('keydown', (event) => {
-			if (event.key === "Shift" && !event.ctrlKey) {
-        		this.delete_row_button.classList.toggle('shift-pressed', true);
-        		this.copy_row_button.classList.toggle('shift-pressed', true);
-    		} else if (event.key === "Control"  && !event.shiftKey) {
-        		this.delete_row_button.children[0].classList.toggle('fa-trash', false);
-        		this.delete_row_button.children[0].classList.toggle('fa-cut', true);
-        		this.copy_row_button.classList.toggle('ctrl-pressed', true);
-    		}
-		});
-
-		document.addEventListener('keyup', (event) => {
-			if (event.key === "Shift") {
-        		this.delete_row_button.classList.toggle('shift-pressed', false);
-        		this.copy_row_button.classList.toggle('shift-pressed', false);
-    		}
-			else if (event.key === "Control") {
-        		this.copy_row_button.classList.toggle('ctrl-pressed', false);
-        		this.delete_row_button.children[0].classList.toggle('fa-trash', true);
-        		this.delete_row_button.children[0].classList.toggle('fa-cut', false);
-    		}
-		});
 
 		this.controls.appendChild(this.copy_row_button)
 		this.controls.appendChild(this.paste_row_button)
@@ -563,8 +638,9 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 	}
 
 	_createPasteRowButton() {
-		const button = this.getButton(this.getItemTitle(), 'paste', 'button_paste_row_title', [this.getItemTitle()])
+		const button = this.getButton(this.getItemTitle(), 'paste', 'Paste Action', [this.getItemTitle()])
 		button.classList.add('json-editor-btntype-paste')
+		button.disabled = !actions_clipboard.hasValue()
 		button.addEventListener('click', (e) => {
 			e.preventDefault()
 			e.stopPropagation()
