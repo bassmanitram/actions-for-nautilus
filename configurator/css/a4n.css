@@ -1,296 +1,296 @@
-		/*
-		 * A readable base font!
-		 */
-		html, body {
-			font-size: 18px !important;
-			height: 100%;
-			width: 100%
-		}
+/*
+ * A readable base font!
+ */
+html,
+body {
+	font-size: 18px !important;
+	height: 100%;
+	width: 100%
+}
 
-		/*
-		 * The container in general needs to be centered
-		 * with some space at the top
-		 */
-		.container {
-			padding-top: 2rem;
-		}
+/*
+ * The container in general needs to be centered
+ * with some space at the top
+ */
+.container {
+	padding-top: 2rem;
+}
 
-		/*
-		 * The title needs to be centered with a bigger font
-		 */
-		.h3.level-1,  .h3.level-1>span {
-			display: block !important;
-			font-size: 2.3rem;
-			text-align: center;
-		}
+/*
+ * The title needs to be centered with a bigger font
+ */
+.h3.level-1,
+.h3.level-1>span {
+	display: block !important;
+	font-size: 2.3rem;
+	text-align: center;
+}
 
-		/*
-		 * Submenu and section titles should not be displayed
-		 */
-		div[data-schemapath$=".actions"]>.h3>span:first-of-type,
-		.h3>span:first-of-type,
-		.json-editor-btntype-add>span,
-		.json-editor-btntype-copy>span,
-		.json-editor-btntype-paste>span,
-		.json-editor-btntype-delete>span {
-			display: none;
-		}
+/*
+ * Submenu, section and toolbar button titles/names should not be displayed
+ */
+div[data-schemapath$=".actions"]>.h3>span:first-of-type,
+.h3>span:first-of-type {
+	display: none;
+}
 
-		/*
-		 * Nor does the action name
-		 */
-		div.tab-pane[role="tabpanel"]>b {
-			display: none;
-		}
+/*
+ * Nor does the action name
+ */
+div.tab-pane[role="tabpanel"]>b {
+	display: none;
+}
 
-		/*
-		 * Spread Basic tab property groups out a bit more
-		 */
-		.row>div>.form-group {
-			margin-top: 1rem;
-			margin-left: 0.5rem;
-			margin-right: 0.5rem;
-			margin-bottom: 0 !important;
-		}
+/*
+ * Spread Basic tab property groups out a bit more
+ */
+.row>div>.form-group {
+	margin-top: 1rem;
+	margin-left: 0.5rem;
+	margin-right: 0.5rem;
+	margin-bottom: 0 !important;
+}
 
-		label.form-label {
-			margin: 0;
-			padding: 0
-		}
+label.form-label {
+	margin: 0;
+	padding: 0
+}
 
-		/*
-		 * Mimetype, Filetype, and path_pattern row buttons are not central aligned,
-		 * And we really don't need the 'TH' or the repeat of the 
-		 * title in the array tab
-		 */
-		div[data-schemapath$=".path_patterns"] table tr td,
-		div[data-schemapath$=".mimetypes"] table tr td,
-		div[data-schemapath$=".filetypes"] table tr td {
-			vertical-align: text-top;
-		}
+/*
+ * Mimetype, Filetype, and path_pattern row buttons are not central aligned,
+ * And we really don't need the 'TH' or the repeat of the 
+ * title in the array tab
+ */
+div[data-schemapath$=".path_patterns"] table tr td,
+div[data-schemapath$=".mimetypes"] table tr td,
+div[data-schemapath$=".filetypes"] table tr td {
+	vertical-align: text-top;
+}
 
-		div[data-schemapath$=".path_patterns"] table tr th,
-		div[data-schemapath$=".mimetypes"] table tr th,
-		div[data-schemapath$=".filetypes"] table tr th {
-			display: none;
-		}
+div[data-schemapath$=".path_patterns"] table tr th,
+div[data-schemapath$=".mimetypes"] table tr th,
+div[data-schemapath$=".filetypes"] table tr th {
+	display: none;
+}
 
-		div[data-schemapath$=".path_patterns"]>h3>label>input,
-		div[data-schemapath$=".mimetypes"]>h3>label>input,
-		div[data-schemapath$=".filetypes"]>h3>label>input {
-			visibility: visible;
-			margin: 0 !important;
-		}
+div[data-schemapath$=".path_patterns"]>h3>label>input,
+div[data-schemapath$=".mimetypes"]>h3>label>input,
+div[data-schemapath$=".filetypes"]>h3>label>input {
+	visibility: visible;
+	margin: 0 !important;
+}
 
-		/*
-		 * Object titles and object controls need to be hidden
-		 */
-		.je-object__title,
-		span.je-object__controls.btn-group {
-			display: none !important;
-		}
-	
-		button[data-toggle="tooltip"] {
-			margin: 0 !important;
-		}
+/*
+ * Object titles and object controls need to be hidden
+ */
+.je-object__title,
+span.je-object__controls.btn-group {
+	display: none !important;
+}
 
-		/*
-		 * Remove margin from the placeholder help link and make its
-		 * div display inline (see javascript below for how we swap around
-		 * the div and give it a class).
-		 */
-		.placeholder-help {
-			padding-left: 1rem !important;
-			margin-bottom: 0px !important;
-		}
+button[data-toggle="tooltip"] {
+	margin: 0 !important;
+}
 
-		.placeholder-help-div {
-			display: inline;
-		}
+/*
+ * Remove margin from the placeholder help link and make its
+ * div display inline (see javascript below for how we swap around
+ * the div and give it a class).
+ */
+.placeholder-help {
+	padding-left: 1rem !important;
+	margin-bottom: 0px !important;
+}
 
-		/*
-		 * The info buttons need less space
-		 */
-		.jsoneditor-twbs5-text-button {
-			margin: 0 !important;
-			padding-left: 0.2rem !important;
-			vertical-align: middle;
-		}
+.placeholder-help-div {
+	display: inline;
+}
 
-		/*
-		 * Command/Menu selector box is too narrow, too low
-		 * and not centered
-		 */
-		.a4n-action-type-chooser {
-			width: 5.3rem !important;
-			height: 1.94rem !important;
-			vertical-align: middle !important;
-		}
+/*
+ * The info buttons need less space
+ */
+.jsoneditor-twbs5-text-button {
+	margin: 0 !important;
+	padding-left: 0.2rem !important;
+	vertical-align: middle;
+}
 
-		/*
-		 * Make the save button more obvious when enabled
-		 */
-		button.json-editor-btn-save:enabled {
-			background-color: #ffab5f;
-			border-color: #ffab5f;
-		}
+/*
+ * Command/Menu selector box is too narrow, too low
+ * and not centered
+ */
+.a4n-action-type-chooser {
+	width: 5.3rem !important;
+	height: 1.94rem !important;
+	vertical-align: middle !important;
+}
 
-		/*
-		 * Main title is too squashed
-		 */
-		.card-title.level-1 {
-			margin-bottom: 2rem;
-		}
+/*
+ * Make the save button more obvious when enabled
+ */
+button.json-editor-btn-save:enabled {
+	background-color: #ffab5f;
+	border-color: #ffab5f;
+}
+
+/*
+ * Main title is too squashed
+ */
+.card-title.level-1 {
+	margin-bottom: 2rem;
+}
 
 
-		/*
-		 * Nav labels have too greater distance between lines
-		 * Line breaks that look good with the icons
-		 */
-		.action-command,
-		.action-menu {
-			padding-top: 0.2rem;
-			padding-bottom: 0.2rem;
-			text-indent: -0.7rem;
-			padding-left: 1.7rem;
-			border: 0;
-			background: 0.0;
-			border-radius: 0.25rem;
-		}
+/*
+ * Nav labels have too greater distance between lines
+ * Line breaks that look good with the icons
+ */
+.action-command,
+.action-menu {
+	padding-top: 0.2rem;
+	padding-bottom: 0.2rem;
+	text-indent: -0.7rem;
+	padding-left: 1.7rem;
+	border: 0;
+	background: 0.0;
+	border-radius: 0.25rem;
+}
 
-		.action-command.active,
-		.action-menu.active {
-			color: #fff;
-			background-color: #0d6efd;
-		}
+.action-command.active,
+.action-menu.active {
+	color: #fff;
+	background-color: #0d6efd;
+}
 
-		/*
-		 * Add icons to the action selectors
-		 */
-		.action-command i::before {
-			content: "$\f054";
-			font-weight: 900;
-			padding-right: 0.25rem;
-		}
+/*
+ * Add icons to the action selectors
+ */
+.action-command i::before {
+	content: "$\f054";
+	font-weight: 900;
+	padding-right: 0.25rem;
+}
 
-		.action-menu i::before {
-			font-weight: 900;
-			padding-right: 0.5rem;
-		}
+.action-menu i::before {
+	font-weight: 900;
+	padding-right: 0.5rem;
+}
 
-		.action-menu i,
-		.action-command i {
-			font-size: 1rem;
-		}
+.action-menu i,
+.action-command i {
+	font-size: 1rem;
+}
 
-		.action-menu a,
-		.action-command a {
-			display: inline;
-			padding: 0;
-		}
+.action-menu a,
+.action-command a {
+	display: inline;
+	padding: 0;
+}
 
-		.action-command.disabled,
-		.action-menu.disabled,
-		.action-command.disabled .nav-link,
-		.action-menu.disabled .nav-link{
-			color: #a1aab8;
-		}
+.action-command.disabled,
+.action-menu.disabled,
+.action-command.disabled .nav-link,
+.action-menu.disabled .nav-link {
+	color: #a1aab8;
+}
 
-		.action-command.disabled.active,
-		.action-menu.disabled.active,
-		.action-command.disabled.active .nav-link,
-		.action-menu.disabled.active .nav-link {
-			color: #fff;
-			background-color: #a1aab8;
-		}
+.action-command.disabled.active,
+.action-menu.disabled.active,
+.action-command.disabled.active .nav-link,
+.action-menu.disabled.active .nav-link {
+	color: #fff;
+	background-color: #a1aab8;
+}
 
-		div[data-schemapath$=strict_match]>div {
-			margin-top:0 !important;
-			margin-bottom:0.5rem !important;
-		}
+div[data-schemapath$=strict_match]>div {
+	margin-top: 0 !important;
+	margin-bottom: 0.5rem !important;
+}
 
-		/*
-		 * Remove right-end indentation effect and too much extra space 
-		 * at the bottom
-		 */
-		.card-body {
-			margin-top: 0 !important;
-			padding-right: 0;
-			padding-bottom: 0;
-		}
+/*
+ * Remove right-end indentation effect and too much extra space 
+ * at the bottom
+ */
+.card-body {
+	margin-top: 0 !important;
+	padding-right: 0;
+	padding-bottom: 0;
+}
 
-		/*
-		 * Some shading adjustments
-		 */
-		.card-header {
-			background-color: rgba(0, 0, 0, .05);
-		}
+/*
+ * Some shading adjustments
+ */
+.card-header {
+	background-color: rgba(0, 0, 0, .05);
+}
 
-		.card-body.bg-light {
-			background-color: rgba(0, 0, 0, .04) !important;
-		}
+.card-body.bg-light {
+	background-color: rgba(0, 0, 0, .04) !important;
+}
 
-		/*
-		 * The use-shell option is now a button and needs some styling
-		 */
-		button.a4n-use-shell {
-			border: 1px solid #ced4da;
-			border-top-right-radius: 0;
-    		border-bottom-right-radius: 0;
-			text-decoration-line: line-through;
-		}
-		button.a4n-use-shell.boolean-true {
-			color: black;
-			background-color: #ffab5f;
-			border-color: #ffab5f;
-			text-decoration-line: none
-		}
+/*
+ * The use-shell option is now a button and needs some styling
+ */
+button.a4n-use-shell {
+	border: 1px solid #ced4da;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+	text-decoration-line: line-through;
+}
 
-		/*
-		 * The table editor is really screwed up!
-		 */
-		.json-editor-btntype-deletelast {
-			display: none !important;
-		}
-		.json-editor-btntype-deleteall {
-			display: none !important;
-		}
+button.a4n-use-shell.boolean-true {
+	color: black;
+	background-color: #ffab5f;
+	border-color: #ffab5f;
+	text-decoration-line: none
+}
 
-		.a4n-main-actions-list {
-			overflow-y: auto;
-		}
+/*
+ * The table editor is really screwed up!
+ */
+.json-editor-btntype-deletelast {
+	display: none !important;
+}
 
-		/*
-		 * Tweak hiable button formatting
-		 */
-		.je-btn-visible-last {			
-			border-top-right-radius: var(--bs-border-radius)  !important;
-    		border-bottom-right-radius: var(--bs-border-radius)  !important;
-		}
+.a4n-actions-toolbar .json-editor-btntype-deleteall {
+	display: none !important;
+}
 
-		.je-btn-visible-first {			
-			border-top-left-radius: var(--bs-border-radius)  !important;
-    		border-bottom-left-radius: var(--bs-border-radius)  !important;
-		}
+.a4n-main-actions-list {
+	overflow-y: auto;
+}
 
-		/*
-		 * generat hide stuff
-		 */
-		.hide-me {
-			display: none !important;
-		}
+/*
+ * Tweak hidable button formatting
+ */
+.je-btn-visible-last {
+	border-top-right-radius: var(--bs-border-radius) !important;
+	border-bottom-right-radius: var(--bs-border-radius) !important;
+}
 
-		/*
-		 * Active delete button turns red-ish on shift (i.e. delete all)
-		 */
-		button:not([disabled]).json-editor-btntype-delete.shift-pressed>i{
-			color: red;
-		}
+.je-btn-visible-first {
+	border-top-left-radius: var(--bs-border-radius) !important;
+	border-bottom-left-radius: var(--bs-border-radius) !important;
+}
 
-		/*
-		 * Active delete and copy buttons turn blue-ish on ctrl (i.e. cut/copy to clipboard)
-		 */
-		button:not([disabled]).json-editor-btntype-delete>i.fa-cut,
-		button:not([disabled]).json-editor-btntype-copy.ctrl-pressed>i {
-			color: blue;
-		}
+/*
+ * general hide stuff
+ */
+.hide-me {
+	display: none !important;
+}
+
+/*
+ * Active delete button turns red-ish on shift (i.e. delete all)
+ */
+button:not([disabled]).json-editor-btntype-delete.shift-pressed>i {
+	color: red;
+}
+
+/*
+ * Active delete and copy buttons turn blue-ish on ctrl (i.e. cut/copy to clipboard)
+ */
+button:not([disabled]).json-editor-btntype-delete>i.fa-cut,
+button:not([disabled]).json-editor-btntype-copy.ctrl-pressed>i {
+	color: blue;
+}

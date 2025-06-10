@@ -24,6 +24,7 @@
 						"infoText": "#command:mimetypes",
 						"disable_array_delete_last_row": true,
 						"enable_array_copy": false,
+						"button_state_mode": 2,
 						"grid_columns": 9
 					}
 				},
@@ -66,6 +67,7 @@
 						"infoText": "#command:path_patterns",
 						"disable_array_delete_last_row": true,
 						"enable_array_copy": false,
+						"button_state_mode": 2,
 						"grid_columns": 9
 					}
 				},
@@ -158,6 +160,7 @@
 						"infoText": "#command:filetypes",
 						"grid_columns": 9,
 						"disable_array_delete_last_row": true,
+						"button_state_mode": 2,
 						"enable_array_copy": false
 					}
 				},
@@ -218,8 +221,10 @@
 						"enable_array_copy": true,
 						"array_copy_in_place": true,
 						"button_state_mode": 2,
-						"disable_array_delete_all_rows": true
-
+						"disable_array_delete_all_rows": true,
+						"array_use_fast_mod": true,
+						"array_controls_top": true,
+						"remove_button_labels": true
 					}
 				},
 				"sort": {
@@ -315,7 +320,10 @@
 						"on_copy_item_label_path": "Basic.label",
 						"enable_array_copy": true,
 						"button_state_mode": 2,
-						"disable_array_delete_all_rows": true
+						"disable_array_delete_all_rows": true,
+						"array_use_fast_mod": true,
+						"array_controls_top": true,
+						"remove_button_labels": true
 					}
 				}
 			},

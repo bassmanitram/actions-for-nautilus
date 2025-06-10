@@ -428,7 +428,7 @@ class MenuEditor extends JSONEditor.defaults.editors.object {
   }
   
   setActiveTab(idx) {
-	if (idx === 1) this.editors.actions?.resolvePending();
+	if (idx === 1) this.editors.actions?.resolvePending && this.editors.actions.resolvePending();
 	super.setActiveTab(idx)
   }
 }
@@ -436,9 +436,13 @@ class MenuEditor extends JSONEditor.defaults.editors.object {
 class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 
     onChildEditorChange (editor, eventData) {
-      if (editor_ready) super.onChildEditorChange(editor, eventData)
+      if (this.path == "root.actions" || editor_ready) super.onChildEditorChange(editor, eventData)
     }
   
+	/*
+	 * Another speed inovation - don't set the value of SUBmenus until
+	 * they are visible
+	 */
 	setValue(v = [],i) {
 		if (v.length == 0 && this.path == "root.actions") {
 			v = [ structuredClone(exampleAction) ]
@@ -549,11 +553,8 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 		return rc
 	}
 
-	/*
-	 * Needs to handle buttons in ALL menus
-	 */
 	refreshRowButtons() {
-		const active_index = this.getActiveTabIndex()
+		const active_index = this.getValueIndex(this.active_tab)
 		const has_active_tab = active_index >= 0 && active_index < this.rows.length
 
 		this.setButtonState(this.copy_row_button, has_active_tab && (this.rows.length < this.getMax()))
@@ -572,15 +573,20 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 	 */
 	pasteRow() {
 		const value = actions_clipboard.take();
+		let editor
 		if (value) {
-			const active_index = this.getActiveTabIndex()
+			const active_index = this.getValueIndex()
 			const new_row_index = this.rows.length
-			this.addRow(value)
+			editor = this.addRow(value)
 			this._moveRow (new_row_index, active_index+1)
 			this.refreshValue(true)
 		}
+		return editor
 	}
 
+	//
+	// This is a royal pain - I can't make Bootstrap 5 do it because 'row' messes with something
+	//
 	_adjustActionsMaxHeight() {
 		setTimeout(() => {
 			const holder = this.links_holder.parentNode;
@@ -600,6 +606,7 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 		}, 5);
 	}
 
+	// We don't use row buttons
 	addRowButtons (i) {
 		return
 	}
@@ -643,6 +650,7 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 		this.move_row_up_button = this._createMoveUpButton(-1)
 		this.move_row_down_button = this._createMoveDownButton(-1)
 
+		this.controls.classList.add("a4n-actions-toolbar")
 		this.controls.appendChild(this.copy_row_button)
 		this.controls.appendChild(this.paste_row_button)
 		this.controls.appendChild(this.move_row_up_button)
@@ -657,11 +665,9 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 		button.addEventListener('click', (e) => {
 			e.preventDefault()
 			e.stopPropagation()
-			const i = this.rows.length
 			const editor = this.pasteRow()
-			this.active_tab = this.rows[0].tab
+			this.setActiveItem(0)
 			this.refreshTabs()
-			this.refreshValue()
 			this.onChange(true)
 			this.jsoneditor.trigger('pasteRow', editor)
 		})
@@ -712,7 +718,7 @@ JSONEditor.defaults.editors.menu = MenuEditor;
  * Add resolvers
  */
 JSONEditor.defaults.resolvers.unshift(schema => {
-	if (schema.options?.a4nEditor) {
+	if (schema.options?.a4nEditor && JSONEditor.defaults.editors[schema.options.a4nEditor]) {
 		return schema.options.a4nEditor
 	}
 });
