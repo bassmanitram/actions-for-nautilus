@@ -580,6 +580,7 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 			editor = this.addRow(value)
 			this._moveRow (new_row_index, active_index+1)
 			this.refreshValue(true)
+			this.setActiveItem(active_index+1)
 		}
 		return editor
 	}
@@ -666,8 +667,6 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 			e.preventDefault()
 			e.stopPropagation()
 			const editor = this.pasteRow()
-			this.setActiveItem(0)
-			this.refreshTabs()
 			this.onChange(true)
 			this.jsoneditor.trigger('pasteRow', editor)
 		})
