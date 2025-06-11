@@ -11234,28 +11234,21 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "enable",
     value: function enable() {
-      var _this2 = this;
       if (!this.always_disabled) {
-        this.setAvailability(this, false);
-        if (this.rows) {
-          this.rows.forEach(function (row) {
-            row.enable();
-            _this2.setAvailability(row, false);
-          });
-        }
+        this.refreshRowButtons();
         _superPropGet(ArrayEditor, "enable", this, 3)([]);
       }
     }
   }, {
     key: "disable",
     value: function disable(alwaysDisabled) {
-      var _this3 = this;
+      var _this2 = this;
       if (alwaysDisabled) this.always_disabled = true;
       this.setAvailability(this, true);
       if (this.rows) {
         this.rows.forEach(function (row) {
           row.disable(alwaysDisabled);
-          _this3.setAvailability(row, true);
+          _this2.setAvailability(row, true);
         });
       }
       _superPropGet(ArrayEditor, "disable", this, 3)([]);
@@ -11485,19 +11478,19 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "empty",
     value: function empty(hard) {
-      var _this4 = this;
+      var _this3 = this;
       if (this.rows === null) return;
       this.rows.forEach(function (row, i) {
         if (hard) {
-          if (_this4.checkParent(row.tab)) row.tab.parentNode.removeChild(row.tab);
-          _this4.row_cache.removeItem(row.arrayItemId);
-          _this4.destroyRow(row, true);
+          if (_this3.checkParent(row.tab)) row.tab.parentNode.removeChild(row.tab);
+          _this3.row_cache.removeItem(row.arrayItemId);
+          _this3.destroyRow(row, true);
         }
-        _this4.rows[i] = null;
+        _this3.rows[i] = null;
       });
       if (hard) {
         this.row_cache.trimItems(this.rows.length).forEach(function (cachedRow) {
-          if (cachedRow) _this4.destroyRow(cachedRow, true);
+          if (cachedRow) _this3.destroyRow(cachedRow, true);
         });
       }
       this.rows = [];
@@ -11539,16 +11532,16 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "refreshTabs",
     value: function refreshTabs(refreshHeaders) {
-      var _this5 = this;
+      var _this4 = this;
       this.rows.forEach(function (row) {
         if (!row.tab) return;
         if (refreshHeaders) {
           row.tab_text.textContent = row.getHeaderText();
         }
-        if (row.tab === _this5.active_tab) {
-          _this5.theme.markTabActive(row);
+        if (row.tab === _this4.active_tab) {
+          _this4.theme.markTabActive(row);
         } else {
-          _this5.theme.markTabInactive(row);
+          _this4.theme.markTabInactive(row);
         }
       });
     }
@@ -11586,7 +11579,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "setValue",
     value: function setValue() {
-      var _this6 = this;
+      var _this5 = this;
       var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
       var initial = arguments.length > 1 ? arguments[1] : undefined;
       value = this.applyConstFilter(value);
@@ -11600,21 +11593,18 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
         return;
       }
       value.forEach(function (val, i) {
-        return _this6.setRowValue(val, i, initial);
+        return _this5.setRowValue(val, i, initial);
       });
-      var numrowsChanged = false;
       for (var j = value.length; j < this.rows.length; j++) {
         this.destroyRow(this.rows[j]);
         this.rows[j] = null;
-        numrowsChanged = true;
       }
       this.rows = this.rows.slice(0, value.length);
-      this.refreshValue();
-      if (numrowsChanged || initial) this.refreshRowButtons();
+      this.refreshValue(initial);
       if (this.tabs) {
         /* Set the active tab */
         var currentActiveIndex = this.rows.findIndex(function (row) {
-          return row.tab === _this6.active_tab;
+          return row.tab === _this5.active_tab;
         });
         this.setActiveItem(currentActiveIndex < 0 ? 0 : currentActiveIndex);
       }
@@ -11625,6 +11615,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "setButtonState",
     value: function setButtonState(element, display, hide) {
+      if (!element) return;
       var buttonStateMode = hide ? -1 : this.options.button_state_mode || this.jsoneditor.options.button_state_mode;
       switch (buttonStateMode) {
         case 2:
@@ -11666,7 +11657,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "refreshRowButtons",
     value: function refreshRowButtons() {
-      var _this7 = this;
+      var _this6 = this;
       /* If we currently have minItems items in the array */
       var isMinItems = this.getMin() >= this.rows.length;
       /* If we currently have maxItems items in the array */
@@ -11676,31 +11667,32 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
         editor.arrayItemIndex = i;
         /* Hide the delete button if we have minItems items */
         if (editor.delete_button) {
-          _this7.setButtonState(editor.delete_button, !isMinItems);
+          _this6.setButtonState(editor.delete_button, !isMinItems);
           need = need || !isMinItems;
         }
 
         /* Hide the copy button if we have maxItems items */
         if (editor.copy_button) {
-          _this7.setButtonState(editor.copy_button, !isMaxItems);
+          _this6.setButtonState(editor.copy_button, !isMaxItems);
           need = need || !isMaxItems;
         }
 
         /* Hide the move up button for the first row */
         if (editor.moveup_button) {
           var display = i !== 0;
-          _this7.setButtonState(editor.moveup_button, display);
+          _this6.setButtonState(editor.moveup_button, display);
           need = need || display;
         }
 
         /* Hide the movedown button for the last row */
         if (editor.movedown_button) {
-          var _display2 = i !== _this7.rows.length - 1;
-          _this7.setButtonState(editor.movedown_button, _display2);
+          var _display2 = i !== _this6.rows.length - 1;
+          _this6.setButtonState(editor.movedown_button, _display2);
           need = need || _display2;
         }
       });
       need = this.refreshArrayButtons(isMinItems) || need;
+      this.refreshButtonContainers(need);
       return need;
     }
   }, {
@@ -11715,14 +11707,10 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "refreshValue",
     value: function refreshValue(force) {
-      var oldi = this.value ? this.value.length : 0;
-      /* Get the value for this editor */
       this.value = this.rows.map(function (editor) {
         return editor.getValue();
       });
-      if (oldi !== this.value.length || force) {
-        this.refreshRowButtons();
-      }
+      this.refreshRowButtons();
       this.serialized = JSON.stringify(this.value);
     }
   }, {
@@ -11778,7 +11766,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "addRow",
     value: function addRow(value, initial) {
-      var _this8 = this;
+      var _this7 = this;
       var i = this.rows.length;
       this.rows[i] = this.getElementEditor(i);
       if (this.tabs_holder) {
@@ -11794,7 +11782,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
         this.rows[i].tab.addEventListener('click', function (e) {
           e.preventDefault();
           e.stopPropagation();
-          _this8.itemLinkClicked(e);
+          _this7.itemLinkClicked(e);
         });
         this._supportDragDrop(this.rows[i].tab);
       } else {
@@ -11838,14 +11826,14 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "_createDeleteButton",
     value: function _createDeleteButton(i, holder) {
-      var _this9 = this;
+      var _this8 = this;
       var button = this.getButton(this.getItemTitle(), 'delete', 'button_delete_row_title', [this.getItemTitle()]);
       button.classList.add('delete', 'json-editor-btntype-delete');
       button.setAttribute('data-i', i);
       button.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        _this9.deleteRowButtonClicked(e);
+        _this8.deleteRowButtonClicked(e);
       });
       if (holder) holder.appendChild(button);
       return button;
@@ -11907,14 +11895,14 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "_createCopyButton",
     value: function _createCopyButton(i, holder) {
-      var _this0 = this;
+      var _this9 = this;
       var button = this.getButton(this.getItemTitle(), 'copy', 'button_copy_row_title', [this.getItemTitle()]);
       button.classList.add('copy', 'json-editor-btntype-copy');
       button.setAttribute('data-i', i);
       button.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        _this0.copyRowClicked(e);
+        _this9.copyRowClicked(e);
       });
       if (holder) holder.appendChild(button);
       return button;
@@ -11943,14 +11931,14 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "_createMoveUpButton",
     value: function _createMoveUpButton(i, holder) {
-      var _this1 = this;
+      var _this0 = this;
       var button = this.getButton('', this.schema.format === 'tabs-top' ? 'moveleft' : 'moveup', 'button_move_up_title');
       button.classList.add('moveup', 'json-editor-btntype-move');
       button.setAttribute('data-i', i);
       button.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        _this1.moveRowUpClicked(e);
+        _this0.moveRowUpClicked(e);
       });
       if (holder) holder.appendChild(button);
       return button;
@@ -11979,14 +11967,14 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "_createMoveDownButton",
     value: function _createMoveDownButton(i, holder) {
-      var _this10 = this;
+      var _this1 = this;
       var button = this.getButton('', this.schema.format === 'tabs-top' ? 'moveright' : 'movedown', 'button_move_down_title');
       button.classList.add('movedown', 'json-editor-btntype-move');
       button.setAttribute('data-i', i);
       button.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        _this10.moveRowDownClicked(e);
+        _this1.moveRowDownClicked(e);
       });
       if (holder) holder.appendChild(button);
       return button;
@@ -12003,13 +11991,13 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "_supportDragDrop",
     value: function _supportDragDrop(tab, useTrigger) {
-      var _this11 = this;
+      var _this10 = this;
       supportDragDrop(tab, function (i, j) {
-        var actionAborted = _this11.dropRow(i, j);
+        var actionAborted = _this10.dropRow(i, j);
         if (actionAborted === true) return;
-        _this11.setActiveItem(j);
-        _this11.onChange(true);
-        _this11.jsoneditor.trigger('moveRow', _this11.rows[j]);
+        _this10.setActiveItem(j);
+        _this10.onChange(true);
+        _this10.jsoneditor.trigger('moveRow', _this10.rows[j]);
       }, {
         useTrigger: useTrigger
       });
@@ -12065,14 +12053,14 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "_createToggleButton",
     value: function _createToggleButton() {
-      var _this12 = this;
+      var _this11 = this;
       var button = this.getButton('', 'collapse', 'button_collapse');
       button.classList.add('json-editor-btntype-toggle');
       this.title.insertBefore(button, this.title.childNodes[0]);
       button.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        _this12.toggleClicked(e);
+        _this11.toggleClicked(e);
       });
       return button;
     }
@@ -12092,13 +12080,13 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "_createAddRowButton",
     value: function _createAddRowButton() {
-      var _this13 = this;
+      var _this12 = this;
       var button = this.getButton(this.getItemTitle(), 'add', 'button_add_row_title', [this.getItemTitle()]);
       button.classList.add('json-editor-btntype-add');
       button.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        _this13.addRowClicked(e);
+        _this12.addRowClicked(e);
       });
       this.controls.appendChild(button);
       return button;
@@ -12120,13 +12108,13 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "_createDeleteLastRowButton",
     value: function _createDeleteLastRowButton() {
-      var _this14 = this;
+      var _this13 = this;
       var button = this.getButton('button_delete_last', 'subtract', 'button_delete_last_title', [this.getItemTitle()]);
       button.classList.add('json-editor-btntype-deletelast');
       button.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        _this14.deleteLastRowClicked(e);
+        _this13.deleteLastRowClicked(e);
       });
       this.controls.appendChild(button);
       return button;
@@ -12153,13 +12141,13 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "_createRemoveAllRowsButton",
     value: function _createRemoveAllRowsButton() {
-      var _this15 = this;
+      var _this14 = this;
       var button = this.getButton('button_delete_all', 'delete', 'button_delete_all_title');
       button.classList.add('json-editor-btntype-deleteall');
       button.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        _this15.deleteAllRowsClicked(e);
+        _this14.deleteAllRowsClicked(e);
       });
       this.controls.appendChild(button);
       return button;
@@ -12167,12 +12155,12 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "showValidationErrors",
     value: function showValidationErrors(errors) {
-      var _this16 = this;
+      var _this15 = this;
       /* Get all the errors that pertain to this editor */
       var myErrors = [];
       var otherErrors = [];
       errors.forEach(function (error) {
-        if (error.path === _this16.path) {
+        if (error.path === _this15.path) {
           myErrors.push(error);
         } else {
           otherErrors.push(error);
@@ -12185,7 +12173,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
           this.error_holder.innerHTML = '';
           this.error_holder.style.display = '';
           myErrors.forEach(function (error) {
-            _this16.error_holder.appendChild(_this16.theme.getErrorMessage(error.message));
+            _this15.error_holder.appendChild(_this15.theme.getErrorMessage(error.message));
           });
           /* Hide error area */
         } else {
@@ -21771,6 +21759,7 @@ var TableEditor = /*#__PURE__*/function (_ArrayEditor) {
   }, {
     key: "getElementEditor",
     value: function getElementEditor(i, ignore) {
+      var editorId = this.getEditorId(i);
       var schemaCopy = (0,_utilities_js__WEBPACK_IMPORTED_MODULE_21__.extend)({}, this.schema.items);
       var editor = this.jsoneditor.getEditorClass(schemaCopy, this.jsoneditor);
       var row = this.row_holder.appendChild(this.theme.getTableRow());
@@ -21783,11 +21772,13 @@ var TableEditor = /*#__PURE__*/function (_ArrayEditor) {
         jsoneditor: this.jsoneditor,
         schema: schemaCopy,
         container: holder,
-        path: "".concat(this.path, ".").concat(i),
+        path: "".concat(this.path, ".").concat(editorId),
         parent: this,
         compact: true,
         table_row: true
       });
+      ret.arrayItemId = editorId;
+      ret.arrayItemIndex = i;
       ret.preBuild();
       if (!ignore) {
         ret.build();
@@ -21805,6 +21796,12 @@ var TableEditor = /*#__PURE__*/function (_ArrayEditor) {
     key: "setActiveItem",
     value: function setActiveItem(i) {
       // We don't have the concept of an active item
+      this.refreshTabs(true);
+    }
+  }, {
+    key: "setValue",
+    value: function setValue(i, j) {
+      _superPropGet(TableEditor, "setValue", this, 3)([i, j]);
     }
   }, {
     key: "destroy",

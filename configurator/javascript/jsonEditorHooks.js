@@ -100,20 +100,20 @@ function saveConfig(e) {
 
 // The action toolbar key key modifiers
 function setShift(on) {
-	document.querySelectorAll('.json-editor-btntype-delete').forEach(element => {
+	document.querySelectorAll('.a4n-actions-toolbar>.json-editor-btntype-delete').forEach(element => {
 		element.classList.toggle('shift-pressed', on);
 		element.setAttribute("title", on ? "Delete All Actions" : "Delete Action")
     });
 }
 
 function setCtrl(on) {
-	document.querySelectorAll('.json-editor-btntype-delete').forEach(element => {
+	document.querySelectorAll('.a4n-actions-toolbar>.json-editor-btntype-delete').forEach(element => {
 		element.classList.toggle('ctrl-pressed', on);
 		element.children[0].classList.toggle('fa-trash', !on);
 		element.children[0].classList.toggle('fa-cut', on);
 		element.setAttribute("title", on ? "Cut Action (to clipboard)" : "Delete Action")
     });
-	document.querySelectorAll('.json-editor-btntype-copy').forEach(element => {
+	document.querySelectorAll('.a4n-actions-toolbar>.json-editor-btntype-copy').forEach(element => {
 		element.classList.toggle('ctrl-pressed', on);
 		element.setAttribute("title", on ? "Copy Action (to clipboard)" : "Copy Action")
 
