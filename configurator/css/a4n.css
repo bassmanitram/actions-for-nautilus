@@ -30,7 +30,8 @@ body {
  * Submenu, section and toolbar button titles/names should not be displayed
  */
 div[data-schemapath$=".actions"]>.h3>span:first-of-type,
-.h3>span:first-of-type {
+.h3>span:first-of-type,
+button.json-editor-btntype-delete>span {
 	display: none;
 }
 
@@ -120,8 +121,9 @@ button[data-toggle="tooltip"] {
  * and not centered
  */
 .a4n-action-type-chooser {
-	width: 5.3rem !important;
+	width: 6.5rem !important;
 	height: 1.94rem !important;
+	margin-bottom: 4px !important;
 	vertical-align: middle !important;
 }
 
