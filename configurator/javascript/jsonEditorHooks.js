@@ -132,6 +132,20 @@ function finalizeEditorConfig(e) {
 	button_holder.appendChild(save_button);
 
 	/*
+	 * Warn if exiting with unsaved changes
+	 */
+	window.addEventListener(
+    'beforeunload',
+    function (e) {
+      if (save_button.disabled) return;
+      e.preventDefault();
+      e.returnValue = 'You have unsaved changes!';
+			return true
+    },
+    true
+  );
+
+	/*
 	 * Create a edit JSON config button and disable it
 	 */
 	json_button = editor.root.getButton('JSON', 'edit', 'JSON');
