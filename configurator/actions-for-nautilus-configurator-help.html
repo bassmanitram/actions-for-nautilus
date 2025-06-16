@@ -185,9 +185,9 @@
 		inadvisable to create a menu structure that is more than a couple of levels deep.</p>
 		<p>Menus and commands have some global features in common:</p>
 		<ul>
-			<li>They both have a <code>Basic</code> tab in the righthand pane in which ... well, basic information is entered. In that tab; they share
+			<li>Both types of action have a <code>Basic</code> tab in the righthand pane in which ... well, basic information is entered. In that tab; they share
 			the <code>Label</code> field, whose use is pretty obvious!</li>
-			<li><p>They can both be disabled!</p>
+			<li><p>Both types of action can be disabled!</p>
 				<p id="action-disable"><img src="images/disabled.png" alt="Disabled"></p>
 				<p>When set to <code>true</code>, the corresponding action will not appear in the Gnome Files context menu. This
 				   allows the action to exist in the configuration, maybe as a template or a work-in-progress, but not actually be
@@ -195,34 +195,33 @@
 				<p>Note, however, that the action configuration must still be valid in order for you to be able to save the configuration.</p>
 				<p>To help quickly identify disabled items, they appear on the left of the UI in grey rather than blue.</p>
 			</li>
-			<li>
-				<p id="menu-toolbar">They are affected by the buttons in the toolbar found at the top of the actions list in the left column of the UI:</p>
-				<p><img src="images/menu-toolbar.png" alt="Menu toolbar"></p>
-				<ul>
-					<li><p><img src="images/add-button.png" alt="Add button">: adds an action to the menu.</p></li>
-					<li><p><img src="images/copy-button.png" alt="Copy button">: duplicates the currently selected action, adding <code> Copy</code> to the copy's label.</p></li>
-					<li><p><img src="images/paste-button.png" alt="Paste button">: pastes the action that is currently in the internal clipboard, below the currently selected action.
-						Note that the button is disabled if there is nothing in the clipboard, and that pasting will clear the clipboard.</p></li>
-					<li><p><img src="images/up-down-buttons.png" alt="Reorder buttons">: moves the currently selected action up/down within its containing menu.</p></li>
-					<li><p><img src="images/delete-button.png" alt="Delete button">: deletes the currently selected action from its containing menu, after asking for confirmation.</p></li>
-				</ul>
-				<p>By holding down the <code>[CTRL]</code> key, the appearance of the toolbar changes:</p>
-				<p><img src="images/ctrl-toolbar.png" alt="Menu toolbar"></p>
-				<ul>
-					<li><p><img src="images/ctrl-copy-button.png" alt="CTRL-Copy button">: Copies the currently selected action to the internal clipboard. This enables all paste
-						buttons, allowing you to paste the action back into its source menu, or into any submenu that is found in your configuration.</p></li>
-					<li><p><img src="images/ctrl-delete-button.png" alt="CTRL-Delete button">: Cuts the currently selected action into the internal clipboard. This enables all paste
-						buttons, allowing you to paste the action back into its source menu, or into any submenu that is found in your configuration.</p></li>
-				</ul>
-				<p>By holding down the <code>[SHIFT]</code> key, the appearance of the delete button changes:</p>
-				<ul>
-					<li><p><img src="images/shift-delete-button.png" alt="SHIFT-Delete button">: Deletes <e>all</e> items from the menu - after asking for confirmation.</p></li>
-				</ul>
-			</li>
-			<li><p> Actions can also be drag/dropped to different positions within their containing menus (but not between menus).</p></li>
+			<li><p>Both types of action can be drag/dropped to different positions within their containing menus (but not between menus).</p></li>
 		</ul>
 		<h1 id="menu-actions">Menu Actions</h1>
-		<p>To create a menu action, do the following:</p>
+		<p>Menu actions contain lists of other actions, allowing you to organize your actions into logical groups.</p>
+		<p id="menu-toolbar">The list of actions that are contained in a menu has, at the top of it, a toobar:</p>
+		<p><img src="images/menu-toolbar.png" alt="Menu toolbar"></p>
+		<ul>
+			<li><p><img src="images/add-button.png" alt="Add button">: adds an action to the menu.</p></li>
+			<li><p><img src="images/copy-button.png" alt="Copy button">: duplicates the currently selected action, adding <code> Copy</code> to the copy's label.</p></li>
+			<li><p><img src="images/paste-button.png" alt="Paste button">: pastes the action that is currently in the internal clipboard below the currently selected action.
+				Note that the button is disabled if there is nothing in the clipboard, and that pasting will clear the clipboard.</p></li>
+			<li><p><img src="images/up-down-buttons.png" alt="Reorder buttons">: move the currently selected action up/down within its containing menu.</p></li>
+			<li><p><img src="images/delete-button.png" alt="Delete button">: deletes the currently selected action from its containing menu, after asking for confirmation.</p></li>
+		</ul>
+		<p>By holding down the <code>[CTRL]</code> key, the appearance of the toolbar changes:</p>
+		<p><img src="images/ctrl-toolbar.png" alt="Menu toolbar"></p>
+		<ul>
+			<li><p><img src="images/ctrl-copy-button.png" alt="CTRL-Copy button">: Copies the currently selected action to the internal clipboard. This enables all paste
+				buttons, allowing you to paste the action back into its source menu, or into any menu that is found in your configuration.</p></li>
+			<li><p><img src="images/ctrl-delete-button.png" alt="CTRL-Delete button">: Cuts the currently selected action into the internal clipboard. This enables all paste
+				buttons, allowing you to paste the action back into its source menu, or into any menu that is found in your configuration.</p></li>
+		</ul>
+		<p>By holding down the <code>[SHIFT]</code> key, the appearance of the delete button changes:</p>
+		<ul>
+			<li><p><img src="images/shift-delete-button.png" alt="SHIFT-Delete button">: Deletes <e>all</e> items from the menu - after asking for confirmation.</p></li>
+		</ul>
+		<p>So, to create a menu action, do the following:</p>
 		<ul>
 			<li>
 				<p>click on the <img src="images/add-button.png" alt="Add button"> button in the menu toolbar</p>
