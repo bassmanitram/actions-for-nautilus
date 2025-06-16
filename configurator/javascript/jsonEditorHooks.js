@@ -42,7 +42,6 @@ function setUndoRedoButtonStates() {
 
 function setEditorValueFromPreviousValues(editor) {
 	editor.setValue(JSON.parse(previous_values[current_value_index]));
-	setUndoRedoButtonStates();
 }
 
 function undo(e) {
@@ -50,6 +49,7 @@ function undo(e) {
 		current_value_index--;
 		setEditorValueFromPreviousValues(editor);
 	}
+	setUndoRedoButtonStates();
 }
 
 function redo(e) {
@@ -57,6 +57,7 @@ function redo(e) {
 		current_value_index++;
 		setEditorValueFromPreviousValues(editor);
 	}
+	setUndoRedoButtonStates();
 }
 
 function toggleJSONEditor(e) {
@@ -142,7 +143,7 @@ function configChanged(e) {
 		 * Everything after the current index is lost
 		 * then this change is pushed.
 		 */
-		previous_values = previous_values.slice(0, current_value_index + 1);
+		previous_values.splice(current_value_index + 1);
 		current_value_index = previous_values.push(new_value) - 1;
 		setUndoRedoButtonStates();
 	} else {
@@ -448,7 +449,7 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 			v = [ structuredClone(exampleAction) ]
 		} 
 		
-		if (this.path != "root.actions" && v.length > 0) {
+		if (!editor_ready && this.path != "root.actions" && v.length > 0) {
 			this.pending_actions = v
 			v = []
 		}
@@ -710,7 +711,7 @@ class CommandLineEditor extends JSONEditor.defaults.editors.string {
 }
 
 JSONEditor.defaults.editors.commandLine = CommandLineEditor;
-JSONEditor.defaults.editors.actions = ActionsEditor;
+//JSONEditor.defaults.editors.actions = ActionsEditor;
 JSONEditor.defaults.editors.menu = MenuEditor;
 
 /*
