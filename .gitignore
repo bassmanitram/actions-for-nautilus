@@ -129,3 +129,4 @@ dmypy.json
 configurator/test.html
 **/SAMPLE.*
 **/*.old.*
+use-sample.sh

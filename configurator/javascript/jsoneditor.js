@@ -11675,10 +11675,12 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "refreshButtonContainers",
     value: function refreshButtonContainers(need) {
-      if (need && !this.collapsed) {
-        this.controls.style.display = 'inline-block';
-      } else {
-        this.controls.style.display = 'none';
+      if (this.controls) {
+        if (need && !this.collapsed) {
+          this.controls.style.display = 'inline-block';
+        } else {
+          this.controls.style.display = 'none';
+        }
       }
     }
   }, {
@@ -12166,12 +12168,20 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
           this.error_holder.style.display = 'none';
         }
       }
-
+      var has_errors = myErrors.length > 0;
       /* Show errors for child editors */
       this.rows.forEach(function (row) {
-        return row.showValidationErrors(otherErrors);
+        row.showValidationErrors(otherErrors);
+        _this15.theme.markTabError(row);
+        if (row.has_errors) {
+          has_errors = true;
+        }
       });
+      this.has_errors = has_errors;
     }
+  }, {
+    key: "markRowInError",
+    value: function markRowInError(row) {}
   }]);
 }(_editor_js__WEBPACK_IMPORTED_MODULE_28__.AbstractEditor);
 ArrayEditor.rules = _array_css_js__WEBPACK_IMPORTED_MODULE_30__["default"];
@@ -13693,6 +13703,14 @@ var CheckboxEditor = /*#__PURE__*/function (_AbstractEditor) {
     key: "showValidationErrors",
     value: function showValidationErrors(errors) {
       var _this2 = this;
+      var addMessage = function addMessage(messages, error) {
+        if (error.path === _this2.path) {
+          messages.push(error.message);
+        }
+        return messages;
+      };
+      var messages = errors.reduce(addMessage, []);
+      this.has_errors = messages.length > 0;
       var showErrors = this.jsoneditor.options.show_errors;
       var changeOrInteraction = showErrors === 'change' || showErrors === 'interaction';
       var never = showErrors === 'never';
@@ -13702,13 +13720,6 @@ var CheckboxEditor = /*#__PURE__*/function (_AbstractEditor) {
       if (changeOrInteraction && !this.is_dirty) {
         return;
       }
-      var addMessage = function addMessage(messages, error) {
-        if (error.path === _this2.path) {
-          messages.push(error.message);
-        }
-        return messages;
-      };
-      var messages = errors.reduce(addMessage, []);
       this.input.controlgroup = this.control;
       if (messages.length) {
         this.theme.addInputError(this.input, "".concat(messages.join('. '), "."));
@@ -14642,10 +14653,14 @@ var DescribedByEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "showValidationErrors",
     value: function showValidationErrors(errors) {
+      var has_errors = false;
       this.editors.forEach(function (editor) {
+        var _editor$has_errors;
         if (!editor) return;
         editor.showValidationErrors(errors);
+        has_errors = has_errors || ((_editor$has_errors = editor.has_errors) !== null && _editor$has_errors !== void 0 ? _editor$has_errors : false);
       });
+      this.has_errors = has_errors;
     }
   }]);
 }(_editor_js__WEBPACK_IMPORTED_MODULE_22__.AbstractEditor);
@@ -16641,14 +16656,11 @@ var MultipleEditor = /*#__PURE__*/function (_AbstractEditor) {
       return -1;
     }
   }, {
-    key: "setValue",
-    value: function setValue(val, initial) {
+    key: "getType",
+    value: function getType(val) {
       var _this4 = this;
-      val = this.applyConstFilter(val);
-
       /* Determine type by getting the first one that validates */
 
-      var prevType = this.type;
       var thisType = this.getDeclaredType(val);
       if (thisType < 0) {
         /*
@@ -16705,12 +16717,19 @@ var MultipleEditor = /*#__PURE__*/function (_AbstractEditor) {
         }
         thisType = finalI;
       }
+      return thisType;
+    }
+  }, {
+    key: "setValue",
+    value: function setValue(val, initial) {
+      val = this.applyConstFilter(val);
+      var prevType = this.type;
+      var thisType = this.getType(val);
       this.type = thisType;
       this.switcher.value = this.display_text[thisType];
       var typeChanged = this.type !== prevType;
       if (typeChanged) {
         this.switchEditor(this.type);
-        this.editors[this.type].setValue(val, initial);
       }
       if (typeof val !== 'undefined') {
         this.editors[this.type].setValue(val, initial);
@@ -16733,6 +16752,7 @@ var MultipleEditor = /*#__PURE__*/function (_AbstractEditor) {
     value: function showValidationErrors(errors) {
       var _this5 = this;
       /* oneOf and anyOf error paths need to remove the oneOf[i] part before passing to child editors */
+      var has_errors = false;
       if (this.oneOf || this.anyOf) {
         var checkPart = this.oneOf ? 'oneOf' : 'anyOf';
         this.editors.forEach(function (editor, i) {
@@ -16749,13 +16769,20 @@ var MultipleEditor = /*#__PURE__*/function (_AbstractEditor) {
             return newErrors;
           };
           editor.showValidationErrors(errors.reduce(filterError, []));
+          if (i === _this5.type && editor.has_errors) {
+            has_errors = true;
+          }
         });
       } else {
-        this.editors.forEach(function (editor) {
+        this.editors.forEach(function (editor, i) {
           if (!editor) return;
           editor.showValidationErrors(errors);
+          if (i === _this5.type && editor.has_errors) {
+            has_errors = true;
+          }
         });
       }
+      this.has_errors = has_errors;
     }
   }, {
     key: "addLinks",
@@ -17144,6 +17171,7 @@ var MultiSelectEditor = /*#__PURE__*/function (_AbstractEditor) {
         return messages;
       };
       var messages = errors.reduce(addMessage, []);
+      this.has_errors = messages.length > 0;
       if (messages.length) {
         this.theme.addInputError(this.input || this.inputs, "".concat(messages.join('. '), "."));
       } else {
@@ -18965,10 +18993,13 @@ var ObjectEditor = /*#__PURE__*/function (_AbstractEditor) {
           this.theme.removeTableRowError(this.container);
         }
       }
+      this.has_errors = myErrors.length > 0;
 
       /* Show errors for child editors */
       Object.values(this.editors).forEach(function (editor) {
+        var _editor$has_errors;
         editor.showValidationErrors(otherErrors);
+        _this12.has_errors = _this12.has_errors || ((_editor$has_errors = editor.has_errors) !== null && _editor$has_errors !== void 0 ? _editor$has_errors : false);
       });
     }
   }]);
@@ -19858,12 +19889,6 @@ var SelectEditor = /*#__PURE__*/function (_AbstractEditor) {
       var showErrors = this.jsoneditor.options.show_errors;
       var changeOrInteraction = showErrors === 'change' || showErrors === 'interaction';
       var never = showErrors === 'never';
-      if (never && !this.is_dirty) {
-        return;
-      }
-      if (changeOrInteraction && !this.is_dirty) {
-        return;
-      }
       var addMessage = function addMessage(messages, error) {
         if (error.path === _this3.path) {
           messages.push(error.message);
@@ -19871,6 +19896,13 @@ var SelectEditor = /*#__PURE__*/function (_AbstractEditor) {
         return messages;
       };
       var messages = errors.reduce(addMessage, []);
+      this.has_errors = messages.length > 0;
+      if (never && !this.is_dirty) {
+        return;
+      }
+      if (changeOrInteraction && !this.is_dirty) {
+        return;
+      }
       if (messages.length) {
         this.theme.addInputError(this.input, "".concat(messages.join('. '), "."));
       } else {
@@ -21602,8 +21634,6 @@ var StringEditor = /*#__PURE__*/function (_AbstractEditor) {
     key: "showValidationErrors",
     value: function showValidationErrors(errors) {
       var _this3 = this;
-      if (this.jsoneditor.options.show_errors === 'always') {} else if (!this.is_dirty && this.previous_error_setting === this.jsoneditor.options.show_errors) return;
-      this.previous_error_setting = this.jsoneditor.options.show_errors;
       var addMessage = function addMessage(messages, error) {
         if (error.path === _this3.path) {
           messages.push(error.message);
@@ -21611,6 +21641,9 @@ var StringEditor = /*#__PURE__*/function (_AbstractEditor) {
         return messages;
       };
       var messages = errors.reduce(addMessage, []);
+      this.has_errors = messages.length > 0;
+      if (this.jsoneditor.options.show_errors === 'always') {} else if (!this.is_dirty && this.previous_error_setting === this.jsoneditor.options.show_errors) return;
+      this.previous_error_setting = this.jsoneditor.options.show_errors;
       if (messages.length) {
         this.theme.addInputError(this.input, "".concat(messages.join('. '), "."));
       } else {
@@ -25743,6 +25776,9 @@ var AbstractTheme = /*#__PURE__*/function () {
         row.container.style.display = '';
       }
     }
+  }, {
+    key: "markTabError",
+    value: function markTabError(_row) {}
   }, {
     key: "markTabInactive",
     value: function markTabInactive(row) {
@@ -32252,12 +32288,16 @@ var JSONEditor = /*#__PURE__*/function () {
     key: "showValidationErrors",
     value: function showValidationErrors(errorList) {
       var errors = errorList !== null && errorList !== void 0 ? errorList : this.validate();
+      var has_errors = false;
       Object.values(this.editors).forEach(function (editor) {
         if (editor) {
+          var _editor$has_errors;
           editor.is_dirty = true;
           editor.showValidationErrors(errors);
+          has_errors = has_errors || ((_editor$has_errors = editor.has_errors) !== null && _editor$has_errors !== void 0 ? _editor$has_errors : false);
         }
       });
+      this.has_errors = has_errors;
     }
   }]);
 }();

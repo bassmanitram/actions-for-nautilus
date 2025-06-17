@@ -711,11 +711,11 @@ class CommandLineEditor extends JSONEditor.defaults.editors.string {
 }
 
 JSONEditor.defaults.editors.commandLine = CommandLineEditor;
-JSONEditor.defaults.editors.actions = ActionsEditor;
+//JSONEditor.defaults.editors.actions = ActionsEditor;
 JSONEditor.defaults.editors.menu = MenuEditor;
 
 /*
- * Add resolvers
+ * Select custom editors
  */
 JSONEditor.defaults.resolvers.unshift(schema => {
 	if (schema.options?.a4nEditor && JSONEditor.defaults.editors[schema.options.a4nEditor]) {

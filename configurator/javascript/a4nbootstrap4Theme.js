@@ -94,4 +94,30 @@ class a4nbootstrap4Theme extends JSONEditor.defaults.themes.bootstrap5 {
 			row.container.classList.remove('active');
 		}
 	}
+
+	markTabError(row) {
+		if (!row.tab) return
+		if (row.tab.classList.contains("action-command") || row.tab.classList.contains("action-menu")) {
+			row.tab.firstChild.nextSibling.classList.toggle('error', row.has_errors);
+			row.tab.classList.toggle('error', row.has_errors);
+		} else {
+			row.tab.firstChild.classList.toggle('error', row.has_errors);
+		}
+
+		if (typeof row.rowPane !== 'undefined') {
+			row.rowPane.classList.toggle('error', row.has_errors);
+		} else {
+			row.container.classList.toggle('error', row.has_errors);
+		}	
+	}
+
+	/*
+	 * BS 5 show error can called before the control group is assigned
+	 */
+	addInputError(input, text) {
+		if (!input.controlgroup) {
+			input.controlgroup = this.closest(input, '.form-group')
+		}
+		super.addInputError(input, text)
+	}
 }

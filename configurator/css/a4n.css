@@ -296,3 +296,19 @@ button:not([disabled]).json-editor-btntype-delete>i.fa-cut,
 button:not([disabled]).json-editor-btntype-copy.ctrl-pressed>i {
 	color: blue;
 }
+
+.action-command.error,
+.action-menu.error,
+.action-command.error .nav-link,
+.action-menu.error .nav-link {
+	background-color: #f8d7da;
+	color: #58151c;
+}
+
+.action-command.error.active,
+.action-menu.error.active,
+.action-command.error.active .nav-link,
+.action-menu.error.active .nav-link {
+	color: #f8d7da;
+	background-color: #58151c;
+}
