@@ -711,7 +711,7 @@ class CommandLineEditor extends JSONEditor.defaults.editors.string {
 }
 
 JSONEditor.defaults.editors.commandLine = CommandLineEditor;
-//JSONEditor.defaults.editors.actions = ActionsEditor;
+JSONEditor.defaults.editors.actions = ActionsEditor;
 JSONEditor.defaults.editors.menu = MenuEditor;
 
 /*
