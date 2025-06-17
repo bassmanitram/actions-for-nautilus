@@ -4,13 +4,13 @@ actions-for-nautilus (2.0.0) stable; urgency=medium
   * Copy of an action to the same menu
   * Copy/Paste and Cut/Paste of an action between different menus
   * Drag/Drop of an action within the same menu
-  * UI enhancements
+  * Many UI enhancements
   * Improved performance (especially for large configurations)
   * Enhanced interpolation of place holders (basically fixing escape issues)
   * Strict-match - see the doc
   * Negative permissions - see the doc
 
- -- Martin Bartlett <martin.j.bartlett@gmail.com>  Wed, 09 Apr 2025 17:00:00 +0200
+ -- Martin Bartlett <martin.j.bartlett@gmail.com>  Wed, 09 Jul 2025 17:00:00 +0200
 
 actions-for-nautilus (1.7.1) stable; urgency=high
   * Fix menu caching bug that was causing the wrong menu to be used

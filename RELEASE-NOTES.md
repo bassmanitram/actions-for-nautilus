@@ -4,7 +4,7 @@
 * Copy of an action to the same menu
 * Copy/Paste and Cut/Paste of an action between different menus
 * Drag/Drop of an action within the same menu
-* UI enhancements
+* Many UI enhancements
 * Improved performance (especially for large configurations)
 * Enhanced interpolation of place holders (basically fixing escape issues)
 * Strict-match - see the doc
