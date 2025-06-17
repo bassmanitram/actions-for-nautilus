@@ -95,6 +95,12 @@
 					set the debug
 					output option if you need to resolve problems with your configuration.
 				</p>
+				<p>The menu item links on the left will be colored with different palettes depending on the item status:</p>
+				<ul>
+					<li>If the action is enabled and contains no validation errors, the menu item link will use a blue palette.</li>
+					<li>If the action is <e>disabled</e> and contains no validation errors, the menu item link will use a grey palette.</li>
+					<li>If the action contains validation errors, the menu item link will use a red palette.</li>
+				</ul>
 			</li>
 			<li>
 				<p>The right column shows the details and characteristics of the currently selected main menu action
@@ -108,6 +114,8 @@
 					<li>set the command string, current working directory, and filter rules that pertain to a command
 						action</li>
 				</ul>
+				<p>If any field in the action has a validation error, that field will display an error message below it, while the
+					action as a whole may have other messages to help correct errors.</p>
 			</li>
 		</ul>
 		<p>Of special note is the <strong>Submenu Actions</strong> tab for menu actions ... this presents the identical
