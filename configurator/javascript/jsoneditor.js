@@ -11220,6 +11220,11 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
     key: "enable",
     value: function enable() {
       if (!this.always_disabled) {
+        if (this.rows) {
+          this.rows.forEach(function (row) {
+            row.enable();
+          });
+        }
         this.refreshRowButtons();
         _superPropGet(ArrayEditor, "enable", this, 3)([]);
       }
