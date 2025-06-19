@@ -15247,6 +15247,7 @@ var FastModArrayEditor = /*#__PURE__*/function (_ArrayEditor) {
             return error;
           }
           var row = _this.rows[schemaIndex];
+          if (!row) return error;
           var fakeIndex = (_row$arrayItemId = row.arrayItemId) !== null && _row$arrayItemId !== void 0 ? _row$arrayItemId : NaN;
           if (isNaN(fakeIndex)) {
             // eslint-disable-next-line no-console
