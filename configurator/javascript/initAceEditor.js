@@ -7,6 +7,7 @@ let aceEditorResizeBar;
 let aceEditorWrapper;
 let aceEditor;
 let mainCardHolder;
+let topLevelObjectEditor
 
 let undoDisabled;
 let redoDisabled;
@@ -16,6 +17,12 @@ let saveDisabled;
  * And the way we handle the JSON editor
  */
 class TopLevelObjectEditor extends JSONEditor.defaults.editors.object {
+
+	constructor (options, defaults, depth) {
+	    super(options, defaults, depth)
+		topLevelObjectEditor  = this
+  	}
+
     onChildEditorChange (editor, eventData) {
       if (editor_ready) super.onChildEditorChange(editor, eventData)
     }

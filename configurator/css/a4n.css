@@ -312,3 +312,25 @@ button:not([disabled]).json-editor-btntype-copy.ctrl-pressed>i {
 	color: #f8d7da;
 	background-color: #58151c;
 }
+
+/*
+ * Disabling during undo/redo - that can take a while with a big config
+ */
+.a4n-disable {
+	display: none; /* Hidden by default */
+	position: fixed; /* Stays in place even if the page scrolls */
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(255,255,255,0.7); /* White with some transparency */
+	z-index: 9999; /* High z-index to be on top of everything */
+	cursor: wait; /* Busy cursor */
+}
+
+/* Styles for the busy cursor on the body */
+body.busy-cursor {
+	cursor: wait;
+}

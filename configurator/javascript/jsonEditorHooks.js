@@ -6,6 +6,7 @@ let redo_button;
 let save_button;
 let editor_ready = false;
 let root_editor;
+let disable_overlay;
 
 // The actions clipboard
 class ActionsClipboard {
@@ -40,24 +41,27 @@ function setUndoRedoButtonStates() {
 	redo_button.disabled = (current_value_index == (previous_values.length - 1));
 }
 
-function setEditorValueFromPreviousValues(editor) {
-	editor.setValue(JSON.parse(previous_values[current_value_index]));
+function setEditorValueFromPreviousValues() {
+	disable_overlay.style.display = 'block';
+    setTimeout(() => {
+		topLevelObjectEditor.setValue(JSON.parse(previous_values[current_value_index]));
+		disable_overlay.style.display = 'none';
+		setUndoRedoButtonStates();
+	}, 50)
 }
 
 function undo(e) {
 	if (current_value_index > 0) {
 		current_value_index--;
-		setEditorValueFromPreviousValues(editor);
+		setEditorValueFromPreviousValues();
 	}
-	setUndoRedoButtonStates();
 }
 
 function redo(e) {
 	if (current_value_index < (previous_values.length - 1)) {
 		current_value_index++;
-		setEditorValueFromPreviousValues(editor);
+		setEditorValueFromPreviousValues();
 	}
-	setUndoRedoButtonStates();
 }
 
 function toggleJSONEditor(e) {
@@ -77,7 +81,8 @@ function saveConfig(e) {
 	}
 	//	console.log(JSON.stringify(convertToBackendFormat(config),null,4));
 	//	const data = JSON.stringify(editor.getValue());
-	const data = JSON.stringify(convertToBackendFormat(editor.getValue()));
+	const editor_value = editor.getValue()
+	const data = JSON.stringify(convertToBackendFormat(editor_value));
 	//console.log(data);
 	$.ajax({
 		url: '/config',
@@ -93,7 +98,7 @@ function saveConfig(e) {
 			alert("An error ocurred when trying to save the configuration");
 		},
 		success: function (response) {
-			saved_value = data;
+			saved_value = JSON.sortify(editor_value)
 			editor.enable();
 		}
 	});
@@ -136,7 +141,7 @@ function resetKeys(e) {
 
 // The listener for config changes
 function configChanged(e) {
-	const new_value = JSON.stringify(editor.getValue());
+	const new_value = JSON.sortify(editor.getValue());
 	if (previous_values[current_value_index] != new_value) {
 		/*
 		 * The editor changed outside of undo-redo
@@ -146,8 +151,10 @@ function configChanged(e) {
 		previous_values.splice(current_value_index + 1);
 		current_value_index = previous_values.push(new_value) - 1;
 		setUndoRedoButtonStates();
+		console.log("current index after onChange:", current_value_index)
+		console.log("Previous values after onChange", previous_values)
 	} else {
-		//console.log("Editor didn't really change!")
+		console.log("Editor didn't really change!")
 	}
 	if (editor.validation_results.length > 0) {
 		console.log(editor.validation_results);
@@ -160,7 +167,7 @@ function configChanged(e) {
 
 // The "start it all"
 function finalizeEditorConfig(e) {
-	saved_value = JSON.stringify(editor.getValue());
+	saved_value = JSON.sortify(editor.getValue());
 	previous_values[0] = saved_value;
 
 	const button_holder = editor.root.theme.getHeaderButtonHolder();
@@ -217,6 +224,8 @@ function finalizeEditorConfig(e) {
 		button_holder.appendChild(help_button);
 		setHelpButton(help_button);
 	}
+
+	disable_overlay = document.getElementById('a4n-disable')
 
 	/*
 	 * Wire up the change watcher
@@ -452,6 +461,8 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 		if (!editor_ready && this.path != "root.actions" && v.length > 0) {
 			this.pending_actions = v
 			v = []
+		} else {
+			this.pending_actions = null
 		}
 		super.setValue(v, i)
 	}
