@@ -151,10 +151,8 @@ function configChanged(e) {
 		previous_values.splice(current_value_index + 1);
 		current_value_index = previous_values.push(new_value) - 1;
 		setUndoRedoButtonStates();
-		console.log("current index after onChange:", current_value_index)
-		console.log("Previous values after onChange", previous_values)
 	} else {
-		console.log("Editor didn't really change!")
+		//console.log("Editor didn't really change!")
 	}
 	if (editor.validation_results.length > 0) {
 		console.log(editor.validation_results);
@@ -261,7 +259,6 @@ function finalizeEditorConfig(e) {
 			setCtrl(false)
 		}
 	});
-
 
 	/*
 	 * And NOW replace the JSON editor text area with the ACE editor
@@ -458,13 +455,20 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 			v = [ structuredClone(exampleAction) ]
 		} 
 		
-		if (!editor_ready && this.path != "root.actions" && v.length > 0) {
+		/* If we aren't yet visible (and this isn't the main menu) then delay submenu initialization */
+		if (this.path != "root.actions" && !this.row_holder?.offsetParent && v.length > 0) {
+			//console.log("Pending value for ", this.path)
 			this.pending_actions = v
 			v = []
 		} else {
 			this.pending_actions = null
 		}
-		super.setValue(v, i)
+		const v_string = JSON.sortify(v)
+		if (v_string != this.serialized) {
+			super.setValue(v, i)
+		} else {
+			//console.log("No value set for ", this.path)
+		}
 	}
 
 	getValue() {
@@ -473,6 +477,7 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 
 	resolvePending() {
 		if (this.pending_actions) {
+			//console.log("Resolving pending value for ", this.path)
 			super.setValue(this.pending_actions, true)
 			this.pending_actions = null;
 		}
