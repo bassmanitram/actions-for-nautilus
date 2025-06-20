@@ -44,6 +44,8 @@
 	
 	<script>
 
+		const KILL_ON_UNLOAD = true
+
 		let use_shell_button_template;
 		function get_use_shell_button_template() {
 			if (!use_shell_button_template) { 
@@ -56,6 +58,7 @@
 		 * Because this is a local UI tightly related to
 		 * backend server that it is using, unload should
 		 * stop that server :)
+		 */
 		function onUnload(event) {
 			$.ajax({
 				url: '/terminate',
@@ -63,8 +66,8 @@
 				data: ""
 			});
 		}
-		addEventListener("beforeunload", onUnload);
-		 */
+		if (KILL_ON_UNLOAD) addEventListener("beforeunload", onUnload);
+
 
 		let editor;
 
