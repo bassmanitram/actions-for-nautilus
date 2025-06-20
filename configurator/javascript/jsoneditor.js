@@ -11489,14 +11489,13 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "destroyRow",
     value: function destroyRow(row, hard) {
-      var holder = row.container;
       if (hard) {
+        var _row$container$parent;
         row.destroy();
-        if (holder.parentNode) holder.parentNode.removeChild(holder);
+        (_row$container$parent = row.container.parentNode) === null || _row$container$parent === void 0 || _row$container$parent.removeChild(row.container);
         if (this.checkParent(row.tab)) row.tab.parentNode.removeChild(row.tab);
       } else {
-        if (row.tab) row.tab.style.display = 'none';
-        holder.style.display = 'none';
+        this.removeRowFromUI(row);
         row.unregister();
       }
     }
@@ -11552,19 +11551,34 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
   }, {
     key: "setRowValue",
     value: function setRowValue(val, i, initial) {
-      var cached_row = this.row_cache.getItemByIndexOrValue(i, val);
       if (this.rows[i]) {
-        /* TODO: don't set the row's value if it hasn't changed */
         this.rows[i].setValue(val, initial);
-      } else if (cached_row) {
-        this.rows[i] = cached_row;
-        this.rows[i].setValue(val, initial);
-        this.rows[i].container.style.display = '';
-        if (this.rows[i].tab) this.rows[i].tab.style.display = '';
-        this.rows[i].register();
       } else {
-        this.addRow(val, initial);
+        // VERY important - for some caching strategies (e.g. fmarray) it is vital
+        // that the cached value is only retrieved if it will definitiely be used
+        var cached_row = this.row_cache.getItemByIndexOrValue(i, val);
+        if (cached_row) {
+          cached_row.arrayItemIndex = i;
+          this.rows[i] = cached_row;
+          this.rows[i].setValue(val, initial);
+          this.addRowToUI(this.rows[i]);
+          this.rows[i].register();
+        } else {
+          this.addRow(val, initial);
+        }
       }
+    }
+  }, {
+    key: "removeRowFromUI",
+    value: function removeRowFromUI(row) {
+      if (row.tab) row.tab.style.display = 'none';
+      row.container.style.display = 'none';
+    }
+  }, {
+    key: "addRowToUI",
+    value: function addRowToUI(row) {
+      row.container.style.display = '';
+      if (row.tab) row.tab.style.display = '';
     }
   }, {
     key: "setValue",
@@ -11711,8 +11725,7 @@ var ArrayEditor = /*#__PURE__*/function (_AbstractEditor) {
         if (typeof this.rows[i].deactivateNonRequiredProperties === 'function') {
           this.rows[i].deactivateNonRequiredProperties(true);
         }
-        this.rows[i].container.style.display = '';
-        if (this.rows[i].tab) this.rows[i].tab.style.display = '';
+        this.addRowToUI(this.rows[i]);
         this.rows[i].register();
       } else {
         editor = this.addRow();
@@ -15133,30 +15146,45 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
  */
 
 /*
- * The cost of doing business - we disable the cache (for now)
+ * The cache is a stack cache that bears no relation to the order of items in the array
+ * (unlike that of the superclass)
  */
-var NullRowCache = /*#__PURE__*/function () {
-  function NullRowCache() {
-    _classCallCheck(this, NullRowCache);
+var StackRowCache = /*#__PURE__*/function () {
+  function StackRowCache() {
+    _classCallCheck(this, StackRowCache);
+    this.stack = [];
   }
-  return _createClass(NullRowCache, [{
+  return _createClass(StackRowCache, [{
     key: "replaceAll",
     value: function replaceAll(rows) {}
+
+    // We use the cache differently
   }, {
     key: "addItem",
     value: function addItem(row) {}
+  }, {
+    key: "pushItem",
+    value: function pushItem(row) {
+      this.stack.push(row);
+      // eslint-disable-next-line no-console
+      console.log('Stack size: ', this.stack.length);
+    }
   }, {
     key: "removeItem",
     value: function removeItem(id) {}
   }, {
     key: "getItemById",
     value: function getItemById(id) {
-      return undefined;
+      // eslint-disable-next-line no-console
+      console.log('Stack size: ', this.stack.length);
+      return this.stack.pop();
     }
   }, {
     key: "getItemByIndexOrValue",
     value: function getItemByIndexOrValue(index, _value) {
-      return undefined;
+      // eslint-disable-next-line no-console
+      console.log('Stack size: ', this.stack.length);
+      return this.stack.pop();
     }
   }, {
     key: "trimItems",
@@ -15174,7 +15202,7 @@ var FastModArrayEditor = /*#__PURE__*/function (_ArrayEditor) {
   return _createClass(FastModArrayEditor, [{
     key: "createRowCache",
     value: function createRowCache() {
-      return new NullRowCache();
+      return new StackRowCache();
     }
   }, {
     key: "preBuild",
@@ -15281,15 +15309,27 @@ var FastModArrayEditor = /*#__PURE__*/function (_ArrayEditor) {
         return true;
       }
     }
-
-    //
-    // Because of how we handle index discovery,
-    // we have to hard-destroy rows always.
-    //
   }, {
     key: "destroyRow",
-    value: function destroyRow(row, _) {
-      _superPropGet(FastModArrayEditor, "destroyRow", this, 3)([row, true]);
+    value: function destroyRow(row, hard) {
+      _superPropGet(FastModArrayEditor, "destroyRow", this, 3)([row, hard]);
+      if (!hard) {
+        this.row_cache.pushItem(row);
+      }
+    }
+  }, {
+    key: "removeRowFromUI",
+    value: function removeRowFromUI(row) {
+      this.row_holder.removeChild(row.container);
+      this.links_holder.removeChild(row.tab);
+    }
+  }, {
+    key: "addRowToUI",
+    value: function addRowToUI(row) {
+      var beforeRow = this.row_holder.children[row.arrayItemIndex];
+      var beforeLink = this.links_holder.children[row.arrayItemIndex];
+      this.row_holder.insertBefore(row.container, beforeRow);
+      this.links_holder.insertBefore(row.tab, beforeLink);
     }
   }, {
     key: "deleteRow",
@@ -15299,7 +15339,7 @@ var FastModArrayEditor = /*#__PURE__*/function (_ArrayEditor) {
       var _this$rows$splice = this.rows.splice(i, 1),
         _this$rows$splice2 = _slicedToArray(_this$rows$splice, 1),
         row = _this$rows$splice2[0];
-      this.destroyRow(row);
+      this.destroyRow(row, false);
       this.refreshValue(true);
     }
 
