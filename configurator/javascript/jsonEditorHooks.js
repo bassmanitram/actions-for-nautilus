@@ -400,42 +400,33 @@ function typeChangeListener() {
 	}
 }
 
-const exampleAction =
-{
-	PathPatterns: {
-		path_patterns_strict_match: false,
-		path_patterns: []
-	},
-	MimeTypes: {
-		mimetypes_strict_match: false,
-		mimetypes: []
-	},
-	FileTypes: {
-		filetypes_strict_match: false,
-		filetypes: []
-	},
-	Basic: {
-		label: "Example command - open xterm",
-		type: "command",
-		command_line: "xterm $HOME",
-		show_if_true: "",
-		cwd: "",
-		use_shell: true,
-		min_items: 1,
-		max_items: 0,
-		permissions: "any",
-		disabled: false,
-		interpolation: "enhanced"
-	}
-}
-
-class MenuEditor extends JSONEditor.defaults.editors.object {
+class ActionEditor extends JSONEditor.defaults.editors.object {
   onChildEditorChange (editor, eventData) {
       if (editor_ready) super.onChildEditorChange(editor, eventData)
   }
   
   setActiveTab(idx) {
-	if (idx === 1) this.editors.actions?.resolvePending && this.editors.actions.resolvePending();
+	if (idx === 1) this.editors.actions?.resolvePending && this.editors.actions.resolvePending()
+	super.setActiveTab(idx)
+  }
+
+  refreshValue(i) {
+	super.refreshValue()
+	this.value_string = JSON.stringify(this.getValue())
+  }
+
+  setValue(v,i) {
+	const v_string = JSON.stringify(v)
+	if (v_string == this.value_string) {
+		return
+	}
+	super.setValue(v,i)
+  }
+}
+
+class MenuEditor extends ActionEditor {
+  setActiveTab(idx) {
+	if (idx === 1) this.editors.actions?.resolvePending && this.editors.actions.resolvePending()
 	super.setActiveTab(idx)
   }
 }
@@ -451,10 +442,6 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 	 * they are visible
 	 */
 	setValue(v = [],i) {
-		if (v.length == 0 && this.path == "root.actions") {
-			v = [ structuredClone(exampleAction) ]
-		} 
-		
 		/* If we aren't yet visible (and this isn't the main menu) then delay submenu initialization */
 		if (this.path != "root.actions" && !this.row_holder?.offsetParent && v.length > 0) {
 			//console.log("Pending value for ", this.path)
@@ -728,6 +715,7 @@ class CommandLineEditor extends JSONEditor.defaults.editors.string {
 
 JSONEditor.defaults.editors.commandLine = CommandLineEditor;
 JSONEditor.defaults.editors.actions = ActionsEditor;
+JSONEditor.defaults.editors.action = ActionEditor;
 JSONEditor.defaults.editors.menu = MenuEditor;
 
 /*

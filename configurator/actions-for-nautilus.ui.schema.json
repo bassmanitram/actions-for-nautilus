@@ -319,6 +319,7 @@
 			"title": "Command",
 			"options": {
 				"infoText": "#command",
+				"a4nEditor": "action",
 				"containerAttributes": {
 					"class": "a4n-command-container"
 				}
