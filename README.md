@@ -4,11 +4,9 @@
 
 It appears to be functioning very well but it would be helpful to have people test it and feed back via issues.
 
-The version is in the [feature/strict-match](https://github.com/bassmanitram/actions-for-nautilus/tree/feature/strict-match) branch.
-follow the installation instructions (no DEB installer yet).
+The version is in the [v2](https://github.com/bassmanitram/actions-for-nautilus/tree/v2) branch.
 
-The documentation is still being tweaked, but all major feature updates are explained and should be linkable from the
-configurator.
+All major feature updates are explained in the doc and are linkable from the configurator.
 
 Thank you
 
