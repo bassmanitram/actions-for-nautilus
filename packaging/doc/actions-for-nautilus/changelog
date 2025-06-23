@@ -1,4 +1,4 @@
-actions-for-nautilus (2.0.0) stable; urgency=medium
+actions-for-nautilus (2.0.0~pre1-1) stable; urgency=medium
   * Updated JSON Editor, Bootstrap, JQuery, and Ace (and forked JSON Editor to 
     add fixes and enhancements of my own)
   * Copy of an action to the same menu
