@@ -15166,8 +15166,6 @@ var StackRowCache = /*#__PURE__*/function () {
     key: "pushItem",
     value: function pushItem(row) {
       this.stack.push(row);
-      // eslint-disable-next-line no-console
-      console.log('Stack size: ', this.stack.length);
     }
   }, {
     key: "removeItem",
@@ -15175,15 +15173,11 @@ var StackRowCache = /*#__PURE__*/function () {
   }, {
     key: "getItemById",
     value: function getItemById(id) {
-      // eslint-disable-next-line no-console
-      console.log('Stack size: ', this.stack.length);
       return this.stack.pop();
     }
   }, {
     key: "getItemByIndexOrValue",
     value: function getItemByIndexOrValue(index, _value) {
-      // eslint-disable-next-line no-console
-      console.log('Stack size: ', this.stack.length);
       return this.stack.pop();
     }
   }, {
