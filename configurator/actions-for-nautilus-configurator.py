@@ -5,10 +5,12 @@ import sys
 import os
 import shutil
 import datetime
+import threading
 
 PORT = 8000
 HOME = os.environ.get('HOME')
 JQUERY = os.environ.get('JQUERY')
+KEEP_ALIVE_TIMEOUT_S = 10
 
 # config_html = "./actions-for-nautilus-configurator.html"
 # cmdline_help = "./command-line-help.html"
@@ -146,10 +148,22 @@ def restart_nautilus(self):
     return
 
 
-def terminate_server(self):
-    self.send_error(204, "terminated")
+keep_alive_timer = None
+
+def restart_dead_interval(server):
+    global keep_alive_timer
+
+    if keep_alive_timer is not None:
+        keep_alive_timer.cancel()
+
+    keep_alive_timer = threading.Timer(KEEP_ALIVE_TIMEOUT_S, server.shutdown)
+    keep_alive_timer.start()
+
+def keep_alive_server(self):
+    restart_dead_interval(self.server)
+
+    self.send_response(200, "OK")
     self.end_headers()
-    self.server.shutdown()
     return
 
 
@@ -197,7 +211,7 @@ def forbidden(self):
 
 actions = {
     "/restart": restart_nautilus,
-    "/terminate": terminate_server,
+    "/keep-alive": keep_alive_server,
     "/config": save_config
 }
 
@@ -226,6 +240,7 @@ with http.server.ThreadingHTTPServer(("127.0.0.1", PORT), handler) as httpd:
     print("localhost:" + str(httpd.server_address[1]))
     try:
         httpd.serve_forever()
+        restart_dead_interval(httpd)
     except KeyboardInterrupt:
         httpd.shutdown()
     print("terminating")
