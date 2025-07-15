@@ -154,7 +154,7 @@ def _expand_percent_M_array(files, cache, index = None):
 
 def _expand_percent_U_array(files, cache, index = None):
     if cache.U is None:
-        cache.U = [file["uri"] for file in files]
+        cache.U = [file["uri"].geturl() for file in files]
     return cache.U if index is None else [cache.U[index]]
 
 def _expand_percent_W_array(files, cache, index = None):
