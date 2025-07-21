@@ -561,6 +561,7 @@ class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
 		const active_index = this.getValueIndex(this.active_tab)
 		const has_active_tab = active_index >= 0 && active_index < this.rows.length
 
+		this.setButtonState(this.add_row_button, this.rows.length < this.getMax())
 		this.setButtonState(this.copy_row_button, has_active_tab && (this.rows.length < this.getMax()))
 		this.setButtonState(this.delete_row_button, has_active_tab && (this.rows.length > this.getMin()))
 		this.setButtonState(this.move_row_up_button, has_active_tab && (active_index > 0))
