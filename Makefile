@@ -2,7 +2,7 @@ SHELL=/bin/bash
 nautilus_path=`which nautilus`
 GLOBALLOC=/usr/share
 LOCALLOC=~/.local/share
-VERSION=2.0.0~pre1-1
+VERSION=2.0.0~pre2-1
 
 install:
 	mkdir -p $(LOCALLOC)/nautilus-python/extensions/actions-for-nautilus
