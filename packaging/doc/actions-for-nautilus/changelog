@@ -1,3 +1,9 @@
+actions-for-nautilus (2.0.0~pre2-1) stable; urgency=medium
+  * Fixes to some placeholder interpolations
+  * Fix to button reactivation bug
+
+ -- Martin Bartlett <martin.j.bartlett@gmail.com>  Mon, 21 Jul 2025 15:45:00 +0200
+
 actions-for-nautilus (2.0.0~pre1-1) stable; urgency=medium
   * Updated JSON Editor, Bootstrap, JQuery, and Ace (and forked JSON Editor to 
     add fixes and enhancements of my own)
