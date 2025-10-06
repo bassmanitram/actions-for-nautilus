@@ -9,6 +9,7 @@ class PluralCache():
         self.D = None
         self.F = None
         self.M = None
+        # DO NOT CHANGE:
         self.O = None
         self.U = None
         self.W = None
