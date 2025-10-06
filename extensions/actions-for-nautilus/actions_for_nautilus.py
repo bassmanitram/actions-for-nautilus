@@ -104,7 +104,7 @@ def _run_command(menu, action, files):
 
         if len(action.command_line_parts) < 1:
             # Old command line interpolation
-            afn_config.debug_print("Original parsing")
+            logger.debug(f"Using original parsing for action {action.idString}")
             (final_command_line, context) = afn_shell_tools.resolve(
                 action.command_line, i, files, True, context
             )
@@ -122,7 +122,7 @@ def _run_command(menu, action, files):
                 ))
         else:
             # New command line interpolation
-            afn_config.debug_print("Improved parsing")
+            logger.debug(f"Using improved parsing for action {action.idString}")
             (final_command_line, context) = afn_shell_tools.resolve2(
                 action.command_line_parts, i, files, 
                 True if use_shell else False, context

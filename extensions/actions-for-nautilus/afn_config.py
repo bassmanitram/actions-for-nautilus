@@ -8,7 +8,11 @@ import os
 import re
 import time
 
-from afn_shell_tools import tokenize_for_native, tokenize_for_shell, is_command_plural
+from afn_shell_tools import (
+	tokenize_for_native,
+	tokenize_for_shell,
+	is_command_plural
+)
 from gi.repository import Gio, GLib
 
 # Set up logging
@@ -43,9 +47,6 @@ _permissions = {
 }
 
 debug = False
-
-def debug_print(str):
-    logger.debug(str)
 
 def update_logging_level():
     """Update logging level based on current debug flag"""
@@ -129,7 +130,7 @@ class ActionsForNautilusConfig():
                         my_actions = []
                     self.actions = my_actions
             else:
-                logger.warning("Config file " + _config_path + " does not exist")
+                logger.warning(f"Config file {_config_path} does not exist. Extension will not display any menu items until a config file is created.")
         except Exception as e:
             logger.error("Config file " + _config_path + " load failed", exc_info=e)
 
@@ -159,7 +160,7 @@ def _check_config_change(config_object):
         logger.debug("WATCHER THREAD: resetting config")
         config_object.reset_config()
     else:
-        debug_print("WATCHER THREAD: config not changed")
+        logger.debug("WATCHER THREAD: config not changed")
     return True
 
 #
@@ -189,14 +190,14 @@ def _check_action(idString, json_action):
     elif config_type == "command":
         return _check_command_action(idString, json_action)
 
-    logger.warning("Ignoring action: missing/invalid type property", extra={"json_action": json_action})
+    logger.warning("Ignoring action: missing or invalid 'type' property (must be 'command' or 'menu')", extra={"json_action": json_action})
 
 #
 # Normalize a menu action
 #
 def _check_menu_action(idString, json_action):
     if json_action.get("disabled", False):
-        debug_print("Ignoring menu action: disabled; {json_action}")
+        logger.debug("Ignoring menu action: disabled; {json_action}")
         return
     action = MenuAction()
     action.label = json_action["label"].strip() if type(json_action.get("label", "")) == str else ""
@@ -221,14 +222,14 @@ def _check_menu_action(idString, json_action):
         logger.warning("Ignoring action menu: no valid sub actions", extra={"json_action": json_action})
         return None
 
-    logger.warning("Ignoring menu action: missing properties", extra={"json_action": json_action})
+    logger.warning("Ignoring menu action: missing required properties (needs 'label' and 'actions' array)", extra={"json_action": json_action})
 
 #
 # Normalize a command action
 #
 def _check_command_action(idString, json_action):
     if "disabled" in json_action and json_action["disabled"]:
-        debug_print(f"Ignoring command action: disabled; {json_action}")
+        logger.debug(f"Ignoring command action: disabled; {json_action}")
         return
     action = CommandAction()
     action.label = json_action["label"].strip() if "label" in json_action and isinstance(json_action["label"], str) else ""
@@ -295,7 +296,7 @@ def _check_command_action(idString, json_action):
 
         return action
 
-    logger.warning("Ignoring command action: missing properties", extra={"json_action": json_action})
+    logger.warning("Ignoring command action: missing required properties (needs 'label' and 'command_line')", extra={"json_action": json_action})
 
 #
 # Generates an object that facilitates fast mimetype checks
@@ -307,7 +308,7 @@ def _gen_mimetype(mimetype):
             mimetype = mimetype[1: ]
         return {"comparator": "startswith", "mimetype": mimetype[: len(mimetype)-1], "comparison": comparison} if mimetype.endswith("/*") else {"comparator": "__eq__", "mimetype": mimetype, "comparison": comparison}
 
-    logger.warning("Ignoring mimetype: invalid format", extra={"mimetype": mimetype})
+    logger.warning("Ignoring mimetype: invalid format (must be like 'text/plain' or 'image/*')", extra={"mimetype": mimetype})
 
 def _gen_filetype(filetype):
     if isinstance(filetype, str) and len(filetype := filetype.lower().strip()) > 3:
@@ -316,7 +317,7 @@ def _gen_filetype(filetype):
             filetype = filetype[1: ]
         return list(map(lambda gio_filetype: {"filetype": gio_filetype, "comparison": comparison}, _filetypes.get(filetype, [])))
 
-    logger.warning("Ignoring filetype: unrecognized", extra={"filetype": filetype})
+    logger.warning("Ignoring filetype: unrecognized (valid types: file, directory, symbolic-link, special, shortcut, mountable, standard)", extra={"filetype": filetype})
 
 def _gen_pattern(pattern):
     if isinstance(pattern, str) and len(pattern := pattern.strip()) > 0:
@@ -329,19 +330,19 @@ def _gen_pattern(pattern):
             method = getattr(patternRE, "search" if re else "fullmatch")
             return {"re": patternRE, "comparator": method, "path_pattern": pattern, "comparison": comparison}
 
-    logger.warning("Ignoring pattern: unrecognized", extra={"pattern": pattern})
+    logger.warning("Ignoring pattern: unrecognized (patterns can be glob-style like '*.txt' or regex-style like 're:.*\\.py$')", extra={"pattern": pattern})
 
 def _gen_pattern_re_from_re(pattern, comparison):
     try:
         return re.compile(pattern[3: ])
     except Exception as e:
-        logger.error("Failed regular expression compilation", exc_info=e)
+        logger.error(f"Failed regular expression compilation for pattern '{pattern[3:]}' (original: '{pattern}')", exc_info=e)
 
 def _gen_pattern_re_from_glob(pattern, comparison):
     try:
         return re.compile(fnmatch.translate(pattern))
     except Exception as e:
-        logger.error("Failed glob compilation", exc_info=e)
+        logger.error(f"Failed glob pattern compilation for pattern '{pattern}' (translated to: '{fnmatch.translate(pattern)}')", exc_info=e)
 
 
 def _flatten_list(lst):

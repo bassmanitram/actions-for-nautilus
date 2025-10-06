@@ -1,6 +1,9 @@
 #
 # Create context menu items
 #
+import logging
+import os
+import traceback
 import subprocess
 from urllib.parse import urlparse
 from gi.repository import Nautilus
@@ -145,7 +148,7 @@ def _is_command_true(cmd):
             return True
 
     except Exception as e:
-        logger.error(f"show_if_true_command {cmd} failed: {e}")
+        logger.error(f"show_if_true_command failed: {cmd}", exc_info=e)
 
     return False
 #
