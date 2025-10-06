@@ -119,8 +119,12 @@ class ActionsForNautilusConfig():
 
                     self.sort = file_config.get("sort", "manual") == "auto"
                     json_actions = file_config.get("actions", [])
-                    if type(json_actions) == list:
-                        my_actions = list(filter(None, map(lambda action: _check_action(str(action[0]), action[1]), enumerate(json_actions))))
+                    if isinstance(json_actions, list):
+                        my_actions = list(filter(
+                            None,
+                            map(lambda action: _check_action(str(action[0]), action[1]),
+                                enumerate(json_actions))
+                        ))
                     else:
                         my_actions = []
                     self.actions = my_actions
@@ -199,8 +203,17 @@ def _check_menu_action(idString, json_action):
     action.sort = json_action.get("sort", "manual") == "auto"
     if (len(action.label) > 0 and
     "actions" in json_action and
-    type(json_action["actions"]) == list):
-        action.actions = list(filter(None, map(lambda sub_action: _check_action(idString + "_" + str(sub_action[0]), sub_action[1]), enumerate(json_action["actions"]))))
+    isinstance(json_action["actions"], list)):
+        action.actions = list(filter(
+            None,
+            map(
+                lambda sub_action: _check_action(
+                    idString + "_" + str(sub_action[0]),
+                    sub_action[1]
+                ),
+                enumerate(json_action["actions"])
+            )
+        ))
         action.idString = idString
         if len(action.actions) > 0:
             return action
@@ -218,8 +231,8 @@ def _check_command_action(idString, json_action):
         debug_print(f"Ignoring command action: disabled; {json_action}")
         return
     action = CommandAction()
-    action.label = json_action["label"].strip() if "label" in json_action and type(json_action["label"]) == str else ""
-    action.command_line = json_action["command_line"].strip() if "command_line" in json_action and type(json_action["command_line"]) == str else ""
+    action.label = json_action["label"].strip() if "label" in json_action and isinstance(json_action["label"], str) else ""
+    action.command_line = json_action["command_line"].strip() if "command_line" in json_action and isinstance(json_action["command_line"], str) else ""
 
     if (len(action.label) > 0 and
     len(action.command_line) > 0):
@@ -288,7 +301,7 @@ def _check_command_action(idString, json_action):
 # Generates an object that facilitates fast mimetype checks
 #
 def _gen_mimetype(mimetype):
-    if type(mimetype) == str and len(mimetype := mimetype.lower().strip()) > 3 and mimetype.find("/") > 0:
+    if isinstance(mimetype, str) and len(mimetype := mimetype.lower().strip()) > 3 and mimetype.find("/") > 0:
         comparison = not mimetype.startswith("!")
         if not comparison:
             mimetype = mimetype[1: ]
@@ -297,7 +310,7 @@ def _gen_mimetype(mimetype):
     logger.warning("Ignoring mimetype: invalid format", extra={"mimetype": mimetype})
 
 def _gen_filetype(filetype):
-    if type(filetype) == str and len(filetype := filetype.lower().strip()) > 3:
+    if isinstance(filetype, str) and len(filetype := filetype.lower().strip()) > 3:
         comparison = not filetype.startswith("!")
         if not comparison:
             filetype = filetype[1: ]
@@ -306,7 +319,7 @@ def _gen_filetype(filetype):
     logger.warning("Ignoring filetype: unrecognized", extra={"filetype": filetype})
 
 def _gen_pattern(pattern):
-    if type(pattern) == str and len(pattern := pattern.strip()) > 0:
+    if isinstance(pattern, str) and len(pattern := pattern.strip()) > 0:
         comparison = not pattern.startswith("!")
         if not comparison:
             pattern = pattern[1: ]
