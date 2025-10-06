@@ -157,14 +157,24 @@ def _is_command_true(cmd):
 def _create_command_menu_item(action, files, group, activate_function):
     #
     # Eliminate all other conditions before the very expensive "call a program" option
-    #
+    # Optimized short-circuit evaluation: cheapest checks first, most expensive last
+    files_count = len(files)
     if not (
-        (action.max_items == 0 or action.max_items >= len(files)) and
-        (action.min_items <= len(files)) and
-        (action.permissions == "" or _applicable_to_permissions(action, files)) and
-        _applicable_to_mimetype(action, files) and
+        # Phase 1: Fastest - Simple integer comparisons (cost: ~1-2 operations)
+        action.min_items <= files_count and
+        (action.max_items == 0 or action.max_items >= files_count) and
+        
+        # Phase 2: Fast - Enum comparisons (cost: ~2-5 operations per file)
         _applicable_to_filetype(action, files) and
-        _applicable_to_path_patterns(action, files)
+        
+        # Phase 3: Medium - String operations (cost: ~5-15 operations per file)
+        _applicable_to_mimetype(action, files) and
+        
+        # Phase 4: Expensive - Regex operations (cost: ~10-30 operations per file)
+        _applicable_to_path_patterns(action, files) and
+        
+        # Phase 5: Most Expensive - Filesystem calls (cost: ~50-200 operations per file)
+        (action.permissions == "" or _applicable_to_permissions(action, files))
     ):
         return None
 
