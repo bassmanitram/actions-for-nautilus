@@ -1,7 +1,6 @@
 #
 # Create context menu items
 #
-import os, afn_config, traceback, logging
 import subprocess
 from urllib.parse import urlparse
 from gi.repository import Nautilus
@@ -22,11 +21,11 @@ class MenuCache:
 	def __init__(self):
 		self.cache = deque([])
 
-	def get_menu(self, group,path, mtime, ctime):
+	def get_menu(self, group, path, mtime, ctime):
 		return next((item.menu for item in reversed(self.cache) if item.group == group and item.path == path and item.mtime == mtime and item.ctime == ctime), None)
 
 	def put_menu(self, group, path, mtime, ctime, menu):
-		exists = next((index for (index,item) in enumerate(self.cache) if item.group == group and item.path == path), len(self.cache))
+		exists = next((index for (index, item) in enumerate(self.cache) if item.group == group and item.path == path), len(self.cache))
 		if exists < len(self.cache):
 			self.cache[exists].mtime = mtime
 			self.cache[exists].ctime = ctime
@@ -80,7 +79,7 @@ def create_menu_items(config, files, group, act_function):
 		# 	logger.debug(f"  {loc.get_path()}")
 		# 	logger.debug(f"  {loc.get_uri()}")
 		# 	logger.debug(f"  {loc.get_uri_scheme()}")
-		
+
 		my_files = list(filter(None, map(lambda file: {
 				"mimetype": file.get_mime_type(),
 				"filetype": file.get_file_type(),
@@ -96,13 +95,13 @@ def create_menu_items(config, files, group, act_function):
 		# For single files cache the menu
 		if single_file_path is not None:
 			menu_cache.put_menu(group, single_file_path, mtime, ctime, menu)
-		
+
 		return menu
 
 	except Exception as e:
 		logger.error(f"Error constructing menu items - Group: {group}, Files: {files}, Exception: {e}\nTraceback: {traceback.format_exc()}")
 		return []
-	
+
 #
 # Triage the menu item creation based on type
 #
@@ -124,11 +123,11 @@ def _create_submenu_menu_item(action, files, group, act_function):
 	if len(actions) > 0:
 		menu = Nautilus.Menu()
 		menu_item = Nautilus.MenuItem(
-			name="Actions4Nautilus::Menu" + action.idString + group,
+			name="Actions4Nautilus: :Menu" + action.idString + group,
 			label=action.label,
 		)
 		menu_item.set_submenu(menu)
-		for menu_sub_item in (sorted(actions,key=lambda element: element.props.label) if action.sort else actions):
+		for menu_sub_item in (sorted(actions, key=lambda element: element.props.label) if action.sort else actions):
 			menu.append_item(menu_sub_item)
 		return menu_item
 
@@ -144,10 +143,10 @@ def _is_command_true(cmd):
 		logger.debug(f"show_if_true_command {cmd} returned: stdout={process.stdout}, stderr={process.stderr}")
 		if process.stdout.rstrip() == "true":
 			return True
-		
+
 	except Exception as e:
 		logger.error(f"show_if_true_command {cmd} failed: {e}")
-	
+
 	return False
 #
 # Generate a command item that is connected to the activate signal
@@ -165,11 +164,11 @@ def _create_command_menu_item(action, files, group, activate_function):
 	    _applicable_to_path_patterns(action, files)
 	):
 		return None
-	
+
 	if len(action.show_if_true) > 0:
 		cmd = action.show_if_true
 		if '%F' in cmd:
-			cmd = cmd.replace('%F', ' '.join(f"'{f['filepath']}'" for f in files)) 
+			cmd = cmd.replace('%F', ' '.join(f"'{f['filepath']}'" for f in files))
 		if '%f' in cmd:
 			for file in files:
 				if not _is_command_true(cmd.replace('%f', f"'{file['filepath']}'")):
@@ -178,19 +177,19 @@ def _create_command_menu_item(action, files, group, activate_function):
 			if not _is_command_true(cmd):
 				return None
 
-	name = "Actions4Nautilus::Item" + action.idString + group
+	name = "Actions4Nautilus: :Item" + action.idString + group
 	label = action.label
 	logger.debug(f"Attaching menu item: file={files[0]} name={name}, label={label}")
 	menu_item = Nautilus.MenuItem(name=name, label=label)
 	menu_item.connect("activate", activate_function, action, files)
 	return menu_item
 
-###
-### In the following, the relevant attributes of the selected files
-### are compared to the "p_rules" (positive rules) and "n_rules"(negative rules) of
-### each class of attribute. At least one p_rule must match while no n_rules must 
-### match, for all files in the selection
-###
+#
+#  In the following, the relevant attributes of the selected files
+#  are compared to the "p_rules" (positive rules) and "n_rules"(negative rules) of
+#  each class of attribute. At least one p_rule must match while no n_rules must
+#  match, for all files in the selection
+#
 
 #
 # Compares each file mimetype to the action mimetypes
@@ -202,14 +201,14 @@ def _applicable_to_mimetype(action, files):
 		# then all other files must have the same type as the first file
 		file_0_type = files[0]["mimetype"]
 		return (_all_applicable_to_mimetype(action, [files[0]])
-		and all(file_0_type == file["mimetype"] for file in files[1:]))
+		and all(file_0_type == file["mimetype"] for file in files[1: ]))
 
 	return _all_applicable_to_mimetype(action, files)
 
 def _all_applicable_to_mimetype(action, files):
 	return True if action.all_mimetypes else (all(map(lambda file: (
-		(len(action.mimetypes["p_rules"]) == 0 or any(getattr(file["mimetype"],p_rule["comparator"])(p_rule["mimetype"]) for p_rule in action.mimetypes["p_rules"])) and
-		not any(getattr(file["mimetype"],n_rule["comparator"])(n_rule["mimetype"]) for n_rule in action.mimetypes["n_rules"])), files)))
+		(len(action.mimetypes["p_rules"]) == 0 or any(getattr(file["mimetype"], p_rule["comparator"])(p_rule["mimetype"]) for p_rule in action.mimetypes["p_rules"])) and
+		not any(getattr(file["mimetype"], n_rule["comparator"])(n_rule["mimetype"]) for n_rule in action.mimetypes["n_rules"])), files)))
 
 #
 # Compares each file type to the action filetypes
@@ -221,8 +220,8 @@ def _applicable_to_filetype(action, files):
 		# then all other files must have the same type as the first file
 		file_0_type = files[0]["filetype"]
 		return (_all_applicable_to_filetype(action, [files[0]])
-		and all(file_0_type == file["filetype"] for file in files[1:]))
-	
+		and all(file_0_type == file["filetype"] for file in files[1: ]))
+
 	return _all_applicable_to_filetype(action, files)
 
 def _all_applicable_to_filetype(action, files):
@@ -248,13 +247,13 @@ def _all_applicable_to_filetype(action, files):
 def _applicable_to_path_patterns(action, files):
 	if action.all_path_patterns:
 		return True
-	if not (len(action.path_patterns["n_rules"]) == 0 or 
-		all(all((_test_rule(n_rule,file["filepath"]) is None) for n_rule in action.path_patterns["n_rules"]) for file in files)):
+	if not (len(action.path_patterns["n_rules"]) == 0 or
+		all(all((_test_rule(n_rule, file["filepath"]) is None) for n_rule in action.path_patterns["n_rules"]) for file in files)):
 		return False
-	
+
 	if len(action.path_patterns["p_rules"]) == 0:
 		return True
-	
+
 	# everything passes the n_rules and there are p_rules to use.
 	# for the p_rules, we pick the rule set to compare against - if it's
 	# a case where strict match doesn't apply (only one file, or flag is off) we apply
@@ -265,16 +264,16 @@ def _applicable_to_path_patterns(action, files):
 	# logic becomes incomprehensible!
 	#
 	if len(files) < 2 or not action.path_patterns_strict_match:
-		p_rules = action.path_patterns["p_rules"] 
+		p_rules = action.path_patterns["p_rules"]
 		p_files = files
 	else:
-		p_files = files[1:]
-		p_rule = next((p_rule for p_rule in action.path_patterns["p_rules"] if _test_rule(p_rule,files[0]["filepath"])), None)
+		p_files = files[1: ]
+		p_rule = next((p_rule for p_rule in action.path_patterns["p_rules"] if _test_rule(p_rule, files[0]["filepath"])), None)
 		if p_rule is None:
 			return False
 		p_rules = [p_rule]
-		
-	return len(p_rules) > 0 and all(any(_test_rule(p_rule,file["filepath"]) is not None for p_rule in p_rules) for file in p_files)
+
+	return len(p_rules) > 0 and all(any(_test_rule(p_rule, file["filepath"]) is not None for p_rule in p_rules) for file in p_files)
 
 def _test_rule(rule, string):
 	return rule["comparator"](string)
@@ -294,6 +293,6 @@ def _test_rule(rule, string):
 #
 def _applicable_to_permissions(action, files):
 	if action.permissions_not:
-		return all(map(lambda file: (os.access(file["filepath"], os.R_OK) and not os.access(file["filepath"],action.permissions)), files))
+		return all(map(lambda file: (os.access(file["filepath"], os.R_OK) and not os.access(file["filepath"], action.permissions)), files))
 	else:
 		return all(map(lambda file: os.access(file["filepath"], action.permissions), files))

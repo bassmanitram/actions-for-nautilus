@@ -1,25 +1,30 @@
-import subprocess, shlex, logging
-from gi.repository import Nautilus, GObject
-import afn_shell_tools, afn_config, afn_menu
+import logging
+import shlex
+import subprocess
+from gi.repository import GObject
+from gi.repository import Nautilus
+import afn_config
+import afn_menu
+import afn_shell_tools
 
 # Set up logging configuration
 def setup_logging():
     """Setup logging configuration for the extension"""
     # Create logger
     logger = logging.getLogger('actions_for_nautilus')
-    
+
     # Avoid duplicate handlers
     if not logger.handlers:
         # Create console handler
         handler = logging.StreamHandler()
-        
+
         # Create formatter
         formatter = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
         handler.setFormatter(formatter)
-        
+
         # Add handler to logger
         logger.addHandler(handler)
-    
+
     return logger
 
 def update_logging_level(debug_enabled):
@@ -33,16 +38,16 @@ def update_logging_level(debug_enabled):
 # Initialize logging
 logger = setup_logging()
 
-###
-### A multi-version alternative to require_version
-###
+#
+#  A multi-version alternative to require_version
+#
 if not (Nautilus._version.startswith("3.") or Nautilus._version.startswith("4.")):
     raise ValueError('Namespace %s not available for versions %s' %
                          ("Nautilus", "3 or 4"))
 
-###
-### The MenuProvider implementation
-###
+#
+#  The MenuProvider implementation
+#
 class ActionsForNautilus(Nautilus.MenuProvider, GObject.GObject):
 
     def __init__(self):
@@ -53,7 +58,7 @@ class ActionsForNautilus(Nautilus.MenuProvider, GObject.GObject):
 #
     def get_file_items(self, *args):
         files = args[-1]
-        
+
         if len(files) < 1:
             logger.debug("NO FILE")
             return None
@@ -74,7 +79,7 @@ class ActionsForNautilus(Nautilus.MenuProvider, GObject.GObject):
 # Command execution
 #
 def _run_command(menu, action, files):
-    
+
     logger.debug(f"Command execution - Menu: {menu}, Action: {action}, Files: {files}")
 
     use_shell = action.use_shell
@@ -94,11 +99,11 @@ def _run_command(menu, action, files):
                 #
                 # Split into args and lose any shell escapes
                 #
-                final_command_line = list(map(lambda arg: arg.replace("\\\\","!§ESCBACKSLASH§µ").replace("\\", "").replace("!§ESCBACKSLASH§µ","\\"),shlex.split(final_command_line)))
+                final_command_line = list(map(lambda arg: arg.replace("\\\\", "!§ESCBACKSLASH§µ").replace("\\", "").replace("!§ESCBACKSLASH§µ", "\\"), shlex.split(final_command_line)))
         else:
             # New command line interpolation
             afn_config.debug_print("Improved parsing")
-            (final_command_line, context) = afn_shell_tools.resolve2(action.command_line_parts, i, files, True if use_shell else False, context)                
+            (final_command_line, context) = afn_shell_tools.resolve2(action.command_line_parts, i, files, True if use_shell else False, context)
             if use_shell:
                 #
                 # Join the arguments

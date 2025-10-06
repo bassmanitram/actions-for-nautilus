@@ -1,7 +1,13 @@
 #
 # Config management
 #
-import os, json, time, fnmatch, re, inspect, logging
+import fnmatch
+import json
+import logging
+import os
+import re
+import time
+
 from afn_shell_tools import tokenize_for_native, tokenize_for_shell, is_command_plural
 from gi.repository import Gio, GLib
 
@@ -16,14 +22,14 @@ def _dump_dict(o) -> str:
     return '\n'.join("%s: %s" % item for item in sorted(attrs.items(), key=lambda i: i[0]))
 
 _filetypes = {
-    "unknown":       [Gio.FileType(0)],
-    "file":          [Gio.FileType(1)],
-    "directory":     [Gio.FileType(2)],
+    "unknown": [Gio.FileType(0)],
+    "file": [Gio.FileType(1)],
+    "directory": [Gio.FileType(2)],
     "symbolic-link": [Gio.FileType(3)],
-    "special":       [Gio.FileType(4)],
-    "shortcut":      [Gio.FileType(5)],
-    "mountable":     [Gio.FileType(6)],
-    "standard":      [Gio.FileType(1), Gio.FileType(2), Gio.FileType(3)]
+    "special": [Gio.FileType(4)],
+    "shortcut": [Gio.FileType(5)],
+    "mountable": [Gio.FileType(6)],
+    "standard": [Gio.FileType(1), Gio.FileType(2), Gio.FileType(3)]
 }
 
 _permissions = {
@@ -82,14 +88,14 @@ class MenuAction():
 
     def __repr__(self) -> str:
         return _dump_dict(self)
-        
+
 class ActionsForNautilusConfig():
 
     def __init__(self):
         self.reset_config()
         self.update_config()
         GLib.timeout_add_seconds(30, _check_config_change, self)
-#        threading.Thread(target=_watch_config_change, args=(self,), daemon=True).start()
+#        threading.Thread(target=_watch_config_change, args=(self, ), daemon=True).start()
         logger.debug("Config initialized")
 
     def get_mtime(self):
@@ -106,15 +112,15 @@ class ActionsForNautilusConfig():
                     global debug
                     old_debug = debug
                     debug = file_config.get("debug", False)
-                    
+
                     # Update logging level if debug flag changed
                     if old_debug != debug:
                         update_logging_level()
-                    
+
                     self.sort = file_config.get("sort", "manual") == "auto"
                     json_actions = file_config.get("actions", [])
                     if type(json_actions) == list:
-                        my_actions = list(filter(None, map(lambda action: _check_action(str(action[0]), action[1]), enumerate(json_actions))))    
+                        my_actions = list(filter(None, map(lambda action: _check_action(str(action[0]), action[1]), enumerate(json_actions))))
                     else:
                         my_actions = []
                     self.actions = my_actions
@@ -122,7 +128,7 @@ class ActionsForNautilusConfig():
                 logger.warning("Config file " + _config_path + " does not exist")
         except Exception as e:
             logger.error("Config file " + _config_path + " load failed", exc_info=e)
-    
+
         logger.debug(_dump_dict(self))
 
     def reset_config(self):
@@ -130,15 +136,15 @@ class ActionsForNautilusConfig():
         self.sort = False
         self.mtime = None
 
-###
-### fix non-JSON-able objects
-###
+#
+#  fix non-JSON-able objects
+#
 def _fix_json(value):
     return "not-serializable"
 
-###
-### Private functions and values
-###
+#
+#  Private functions and values
+#
 def _check_config_change(config_object):
     last_mtime = config_object.get_mtime()
     this_mtime = os.path.getmtime(_config_path) if os.path.exists(_config_path) else None
@@ -189,10 +195,10 @@ def _check_menu_action(idString, json_action):
         debug_print("Ignoring menu action: disabled; {json_action}")
         return
     action = MenuAction()
-    action.label = json_action["label"].strip() if type(json_action.get("label","")) == str else ""
+    action.label = json_action["label"].strip() if type(json_action.get("label", "")) == str else ""
     action.sort = json_action.get("sort", "manual") == "auto"
     if (len(action.label) > 0 and
-    "actions" in json_action and 
+    "actions" in json_action and
     type(json_action["actions"]) == list):
         action.actions = list(filter(None, map(lambda sub_action: _check_action(idString + "_" + str(sub_action[0]), sub_action[1]), enumerate(json_action["actions"]))))
         action.idString = idString
@@ -217,13 +223,13 @@ def _check_command_action(idString, json_action):
 
     if (len(action.label) > 0 and
     len(action.command_line) > 0):
-        
+
         if type(json_action.get("use_shell")) == bool:
             action.use_shell = json_action["use_shell"]
- 
+
         if not json_action.get("use_v1_interpolation", True):
             action.command_line_parts = tokenize_for_shell(action.command_line) if action.use_shell else tokenize_for_native(action.command_line)
-        
+
         action.mimetypes_strict_match = bool(json_action.get("mimetypes_strict_match", False))
         action.filetypes_strict_match = bool(json_action.get("filetypes_strict_match", False))
         action.path_patterns_strict_match = bool(json_action.get("path_patterns_strict_match", False))
@@ -231,15 +237,15 @@ def _check_command_action(idString, json_action):
         if type(json_action.get("mimetypes")) == list:
             action.all_mimetypes = ( "*/*" in json_action["mimetypes"] or "*" in json_action["mimetypes"])
             if not action.all_mimetypes:
-                action.mimetypes = _split_rules(_remove_duplicates_by_key(list(filter(None, map(_gen_mimetype, json_action["mimetypes"]))),"mimetype"))
+                action.mimetypes = _split_rules(_remove_duplicates_by_key(list(filter(None, map(_gen_mimetype, json_action["mimetypes"]))), "mimetype"))
                 action.all_mimetypes = len(action.mimetypes["n_rules"]) + len(action.mimetypes["p_rules"]) < 1
 
         if type(json_action.get("filetypes")) == list:
-            action.filetypes = _split_rules(_remove_duplicates_by_key(_flatten_list(list(filter(None, map(_gen_filetype, json_action["filetypes"])))),"filetype"))
+            action.filetypes = _split_rules(_remove_duplicates_by_key(_flatten_list(list(filter(None, map(_gen_filetype, json_action["filetypes"])))), "filetype"))
             action.all_filetypes = len(action.filetypes["n_rules"]) + len(action.filetypes["p_rules"]) < 1
 
         if type(json_action.get("path_patterns")) == list:
-            action.path_patterns = _split_rules(_remove_duplicates_by_key(_flatten_list(list(filter(None, map(_gen_pattern, json_action["path_patterns"])))),"path_pattern"))
+            action.path_patterns = _split_rules(_remove_duplicates_by_key(_flatten_list(list(filter(None, map(_gen_pattern, json_action["path_patterns"])))), "path_pattern"))
             action.all_path_patterns = len(action.path_patterns["n_rules"]) + len(action.path_patterns["p_rules"]) < 1
 
         if type(json_action.get("permissions")) == str:
@@ -247,19 +253,19 @@ def _check_command_action(idString, json_action):
             _not = perm.startswith("!")
             action.permissions = _permissions[perm] if perm in _permissions else ""
             action.permissions_not = _not
- 
+
         if type(json_action.get("show_if_true")) == str:
             action.show_if_true = json_action["show_if_true"].strip()
- 
+
         action.cwd = None if type(json_action.get("cwd")) != str or len(json_action["cwd"].strip()) == 0 else json_action["cwd"].strip()
- 
+
         action.idString = idString
         action.cmd_is_plural = is_command_plural(action.command_line)
 
         #
         # Checking max_items and min_items
         #
-        #    * max_items = 0 means unlimited, otherwise it must be greater than 0 - forced to 0 otherwise 
+        #    * max_items = 0 means unlimited, otherwise it must be greater than 0 - forced to 0 otherwise
         #    * min_items must be greater than 0 - forced to 1 otherwise
         #    * min_items must be less than or equal to max_items if max_items is greater than 1 - force to equal if otherwise
         #
@@ -285,8 +291,8 @@ def _gen_mimetype(mimetype):
     if type(mimetype) == str and len(mimetype := mimetype.lower().strip()) > 3 and mimetype.find("/") > 0:
         comparison = not mimetype.startswith("!")
         if not comparison:
-            mimetype = mimetype[1:]
-        return {"comparator": "startswith", "mimetype": mimetype[:len(mimetype)-1], "comparison": comparison} if mimetype.endswith("/*") else {"comparator":"__eq__", "mimetype":mimetype, "comparison": comparison}
+            mimetype = mimetype[1: ]
+        return {"comparator": "startswith", "mimetype": mimetype[: len(mimetype)-1], "comparison": comparison} if mimetype.endswith("/*") else {"comparator": "__eq__", "mimetype": mimetype, "comparison": comparison}
 
     logger.warning("Ignoring mimetype: invalid format", extra={"mimetype": mimetype})
 
@@ -294,7 +300,7 @@ def _gen_filetype(filetype):
     if type(filetype) == str and len(filetype := filetype.lower().strip()) > 3:
         comparison = not filetype.startswith("!")
         if not comparison:
-            filetype = filetype[1:]
+            filetype = filetype[1: ]
         return list(map(lambda gio_filetype: {"filetype": gio_filetype, "comparison": comparison}, _filetypes.get(filetype, [])))
 
     logger.warning("Ignoring filetype: unrecognized", extra={"filetype": filetype})
@@ -303,8 +309,8 @@ def _gen_pattern(pattern):
     if type(pattern) == str and len(pattern := pattern.strip()) > 0:
         comparison = not pattern.startswith("!")
         if not comparison:
-            pattern = pattern[1:]
-        re = (pattern.startswith("re:"))
+            pattern = pattern[1: ]
+        re = (pattern.startswith("re: "))
         patternRE = _gen_pattern_re_from_re(pattern, comparison) if re else _gen_pattern_re_from_glob(pattern, comparison)
         if patternRE is not None:
             method = getattr(patternRE, "search" if re else "fullmatch")
@@ -314,7 +320,7 @@ def _gen_pattern(pattern):
 
 def _gen_pattern_re_from_re(pattern, comparison):
     try:
-        return re.compile(pattern[3:])
+        return re.compile(pattern[3: ])
     except Exception as e:
         logger.error("Failed regular expression compilation", exc_info=e)
 
@@ -331,10 +337,10 @@ def _flatten_list(lst):
         lst1.append(i) if type(i) is not list else lst1.extend(_flatten_list(i))
     return lst1
 
-def _remove_duplicates_by_key(lst,key):
+def _remove_duplicates_by_key(lst, key):
     memo = set()
-    return list(filter(None,map(lambda element: None if element[key] in memo else _add_to_set(memo, element, key), lst)))
- 
+    return list(filter(None, map(lambda element: None if element[key] in memo else _add_to_set(memo, element, key), lst)))
+
 def _add_to_set(set, element, key):
     set.add(element[key])
     return element

@@ -1,9 +1,19 @@
 #
 # Shlex - but telling us how each token is delimited
 #
-import shlex, re, logging
+import logging
+import re
+import shlex
+
 from enum import Enum
-from afn_place_holders import has_place_holders, has_plural_place_holders, expand, PluralCache, get_behavior, PLURAL
+from afn_place_holders import (
+    has_place_holders,
+    has_plural_place_holders,
+    expand,
+    PluralCache,
+    get_behavior,
+    PLURAL
+)
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -24,7 +34,7 @@ def resolve(string, file_index, files, escape, cache) -> tuple[str, PluralCache]
         cache = PluralCache()
 
     def _original_escape(str):
-        return str.replace(" ","\\ ")
+        return str.replace(" ", "\\ ")
 
     output = " ".join(expand(string, file_index, None, files, _original_escape if escape else None, cache))
 
@@ -45,23 +55,23 @@ RAW_ESCAPE_RE = re.compile(r'([ \t\n;;&()<>|*?\[\]$\'`"\\{!}])')
 def resolve2(array, file_index, files, escape, cache) -> tuple[str, PluralCache]:
     if cache is None:
         cache = PluralCache()
-        
+
     command_array = []
     escape_re = None
 
     def _improved_escape(str):
-        return escape_re.sub(r'\\\1',str) if escape_re else str
+        return escape_re.sub(r'\\\1', str) if escape_re else str
 
     for token, handle in array:
         escape_re = ESCAPE_RES.get(token[0], RAW_ESCAPE_RE)
         if handle is Handle.PLURAL:
-            for plural_index,_ in enumerate(files):
+            for plural_index, _ in enumerate(files):
                 command_array += expand(token, file_index, plural_index, files, _improved_escape if escape else None, cache)
         elif handle is Handle.SINGULAR:
             command_array += expand(token, file_index, None, files, _improved_escape if escape else None, cache)
         else:
             command_array.append(token)
-    
+
     return (command_array, cache)
 
 def _get_token_type(str):
@@ -87,12 +97,12 @@ def tokenize_for_shell(input_string):
     i = 0
     string_length = len(input_string)
 
-    def append_token(token,type):
+    def append_token(token, type):
         if len(token) > 0:
             if len(tokens) > 0 and type is Handle.NO_HANDLE and tokens[-1][1] is Handle.NO_HANDLE:
                 tokens[-1] = (tokens[-1][0] + token, Handle.NO_HANDLE)
             else:
-                tokens.append((token,type))
+                tokens.append((token, type))
 
     while i < string_length:
         char = input_string[i]
@@ -179,10 +189,10 @@ def main(argv):
         "a<b",
         "a>b",
         "a||b",  # Test consecutive special characters
-        "a&&&b", # Test more consecutive special characters
+        "a&&&b",  # Test more consecutive special characters
         "a;;;b",
         "a<<<<<b",
-        #Now onto what we are REALLY interested in
+        # Now onto what we are REALLY interested in
         "ls -l \"%f\" | grep \"pattern$\"  ; echo 'Hello'",
         "ls -l '%F' | grep \"pattern$\"  ; echo 'Hello'",
         "ls -l %F\ %B | grep \"pattern$\"  ; echo 'Hello'",
@@ -205,31 +215,31 @@ def main(argv):
     test_files = [
         {
             "basename": "file-1",
-            "folder":   "/home/use/dir1",
+            "folder": "/home/use/dir1",
             "filepath": "/home/use/dir1/file-1",
-            "uri":      "file:///home/use/dir1/file-1",
-            "mimetype": "test/file-1" 
+            "uri": "file:///home/use/dir1/file-1",
+            "mimetype": "test/file-1"
         },
         {
             "basename": "file-2",
-            "folder":   "/home/use/dir2",
+            "folder": "/home/use/dir2",
             "filepath": "/home/use/dir2/file-2",
-            "uri":      "file:///home/use/dir2/file-2",
-            "mimetype": "test/file-2" 
+            "uri": "file:///home/use/dir2/file-2",
+            "mimetype": "test/file-2"
         },
         {
             "basename": "file 3",
-            "folder":   "/home/use/dir 3",
+            "folder": "/home/use/dir 3",
             "filepath": "/home/use/dir 3/file 3",
-            "uri":      "file:///home/use/dir+3/file+3",
-            "mimetype": "test/file-3" 
+            "uri": "file:///home/use/dir+3/file+3",
+            "mimetype": "test/file-3"
         },
         {
             "basename": "4`th file has a $ sign and a \\ too",
-            "folder":   "/home/use/dir 4",
+            "folder": "/home/use/dir 4",
             "filepath": "/home/use/dir 4/4`th file has a $ sign and a \\ too",
-            "uri":      "file:///home/use/dir+4/4%60th%20file%20has%20a%20%24%20sign%20and%20a%20%5C%20too",
-            "mimetype": "test/file-4" 
+            "uri": "file:///home/use/dir+4/4%60th%20file%20has%20a%20%24%20sign%20and%20a%20%5C%20too",
+            "mimetype": "test/file-4"
         },
     ]
 
@@ -252,7 +262,7 @@ def main(argv):
         else:
             cache = None
             cache2 = None
-            for i,_ in enumerate(test_files):
+            for i, _ in enumerate(test_files):
                 (final, _) = resolve(line, i, test_files, True, cache)
                 logger.debug(f'Original: {final}')
                 (final, _) = resolve2(native_parts, i, test_files, False, cache2)

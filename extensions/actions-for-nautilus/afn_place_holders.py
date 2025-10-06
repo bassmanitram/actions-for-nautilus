@@ -1,6 +1,6 @@
-###
-### Place holder replacement functions
-###
+#
+#  Place holder replacement functions
+#
 import re
 
 class PluralCache():
@@ -14,9 +14,9 @@ class PluralCache():
         self.W = None
         self.X = None
 
-###
-### Exported functions and values
-###
+#
+#  Exported functions and values
+#
 PLURAL = 0
 SINGULAR = 1
 
@@ -24,10 +24,10 @@ def get_behavior(string):
     behavior = -1
     next_index = 0
     while behavior == -1 and next_index < len(string):
-        match = _place_holder_keys_re.search(string[next_index:])
+        match = _place_holder_keys_re.search(string[next_index: ])
         if match is None:
             break
-        behavior = _cmdline_place_holders[match.group()[1:]]["behavior"]
+        behavior = _cmdline_place_holders[match.group()[1: ]]["behavior"]
         next_index += match.span()[1]
     return behavior if behavior > -1 else PLURAL
 
@@ -42,14 +42,14 @@ def has_place_holders(string):
 
 def expand(string, file_index, plural_index, files, escape_function, cache):
     def match_replace(m):
-        return _cmdline_place_holders[m.group()[1:]]["f"](file_index, plural_index, files, escape_function if escape_function else None, cache)
-    
+        return _cmdline_place_holders[m.group()[1: ]]["f"](file_index, plural_index, files, escape_function if escape_function else None, cache)
+
     expanded = _place_holder_keys_re.sub(match_replace, string)
     return expanded.split("\r")
 
-###
-### Private functions and values
-###
+#
+#  Private functions and values
+#
 
 def _expand_percent_c(index, _, files, escape, cache):
     return str(len(files))
@@ -106,25 +106,25 @@ def _expand_percent_x(index, _, files, escape, cache):
 # PLURAL (all)
 #
 def _expand_percent_B(_, index, files, escape, cache):
-    return " ".join(map(lambda file: (escape)(file) if escape else file, _expand_percent_B_array(files,cache,index)))
+    return " ".join(map(lambda file: (escape)(file) if escape else file, _expand_percent_B_array(files, cache, index)))
 
 def _expand_percent_D(_, index, files, escape, cache):
-    return " ".join(map(lambda file: (escape)(file) if escape else file, _expand_percent_D_array(files,cache,index)))
+    return " ".join(map(lambda file: (escape)(file) if escape else file, _expand_percent_D_array(files, cache, index)))
 
 def _expand_percent_F(_, index, files, escape, cache):
-    return " ".join(map(lambda file: (escape)(file) if escape else file, _expand_percent_F_array(files,cache,index)))
+    return " ".join(map(lambda file: (escape)(file) if escape else file, _expand_percent_F_array(files, cache, index)))
 
 def _expand_percent_M(_, index, files, escape, cache):
-    return " ".join(map(lambda file: (escape)(file) if escape else file, _expand_percent_M_array(files,cache,index)))
+    return " ".join(map(lambda file: (escape)(file) if escape else file, _expand_percent_M_array(files, cache, index)))
 
 def _expand_percent_U(_, index, files, escape, cache):
-    return " ".join(map(lambda file: (escape)(file) if escape else file, _expand_percent_U_array(files,cache,index)))
+    return " ".join(map(lambda file: (escape)(file) if escape else file, _expand_percent_U_array(files, cache, index)))
 
 def _expand_percent_W(_, index, files, escape, cache):
-    return " ".join(map(lambda file: (escape)(file) if escape else file, _expand_percent_W_array(files,cache,index)))
+    return " ".join(map(lambda file: (escape)(file) if escape else file, _expand_percent_W_array(files, cache, index)))
 
 def _expand_percent_X(_, index, files, escape, cache):
-    return " ".join(map(lambda file: (escape)(file) if escape else file, _expand_percent_X_array(files,cache,index)))
+    return " ".join(map(lambda file: (escape)(file) if escape else file, _expand_percent_X_array(files, cache, index)))
 
 def _expand_percent_O(_, index, files, escape, cache):
     return ""
@@ -194,7 +194,7 @@ _cmdline_place_holders = {
     "x": { "f": _expand_percent_x, "behavior": SINGULAR},
     "X": { "f": _expand_percent_X, "behavior": PLURAL},
     "_": { "f": _expand_percent_US, "behavior": -1},
-    "%": { "f": _expand_percent_percent,"behavior": -1}
+    "%": { "f": _expand_percent_percent, "behavior": -1}
 }
 
 _place_holder_keys = "".join(_cmdline_place_holders.keys())
