@@ -1,6 +1,37 @@
-import subprocess, shlex
+import subprocess, shlex, logging
 from gi.repository import Nautilus, GObject
 import afn_shell_tools, afn_config, afn_menu
+
+# Set up logging configuration
+def setup_logging():
+    """Setup logging configuration for the extension"""
+    # Create logger
+    logger = logging.getLogger('actions_for_nautilus')
+    
+    # Avoid duplicate handlers
+    if not logger.handlers:
+        # Create console handler
+        handler = logging.StreamHandler()
+        
+        # Create formatter
+        formatter = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
+        handler.setFormatter(formatter)
+        
+        # Add handler to logger
+        logger.addHandler(handler)
+    
+    return logger
+
+def update_logging_level(debug_enabled):
+    """Update the logging level based on config debug flag"""
+    logger = logging.getLogger('actions_for_nautilus')
+    level = logging.DEBUG if debug_enabled else logging.WARNING
+    logger.setLevel(level)
+    for handler in logger.handlers:
+        handler.setLevel(level)
+
+# Initialize logging
+logger = setup_logging()
 
 ###
 ### A multi-version alternative to require_version
@@ -22,26 +53,21 @@ class ActionsForNautilus(Nautilus.MenuProvider, GObject.GObject):
 #
     def get_file_items(self, *args):
         files = args[-1]
-        if afn_config.debug:
-            print(f'GET FILES: {" ".join(f.get_location().get_path() for f in files)}')
-
+        
         if len(files) < 1:
-            if afn_config.debug:
-                print("NO FILE")
+            logger.debug("NO FILE")
             return None
 
+        logger.debug(f'GET FILES: {" ".join(f.get_location().get_path() for f in files)}')
         menu = afn_menu.create_menu_items(self.config, files, "File", _run_command)
-        if afn_config.debug:
-            print(f"END GET FILES")
+        logger.debug("END GET FILES")
         return menu
 
     def get_background_items(self, *args):
         file = args[-1]
-        if afn_config.debug:
-            print(f'GET BACKGROUND: {file.get_location().get_path()}')
+        logger.debug(f'GET BACKGROUND: {file.get_location().get_path()}')
         menu = afn_menu.create_menu_items(self.config, [file], "Background", _run_command)
-        if afn_config.debug:
-            print(f"END BACKGROUND")
+        logger.debug("END BACKGROUND")
         return menu
 
 #
@@ -49,10 +75,7 @@ class ActionsForNautilus(Nautilus.MenuProvider, GObject.GObject):
 #
 def _run_command(menu, action, files):
     
-    if afn_config.debug:
-        print(menu)
-        print(action)
-        print(files)
+    logger.debug(f"Command execution - Menu: {menu}, Action: {action}, Files: {files}")
 
     use_shell = action.use_shell
     count = 1 if action.cmd_is_plural else len(files)
@@ -60,8 +83,7 @@ def _run_command(menu, action, files):
     context = None
     for i in range(count):
         cwd = None if action.cwd is None else afn_shell_tools.resolve(action.cwd, 0, [files[i]], False, None)[0]
-        if afn_config.debug: 
-            print(f'cwd: {cwd}')
+        logger.debug(f'Working directory: {cwd}')
 
         if len(action.command_line_parts) < 1:
             # Old command line interpolation
@@ -83,9 +105,6 @@ def _run_command(menu, action, files):
                 #
                 final_command_line = "".join(final_command_line)
 
-#        if afn_config.debug:
-        print(f"COMMAND {str(i)}: {final_command_line}")
-        print(f'Cwd: {cwd}')
-        print(f'Use shell: {use_shell}')
+        logger.debug(f"Executing COMMAND {i}: {final_command_line} | Cwd: {cwd} | Use shell: {use_shell}")
 
         subprocess.Popen(final_command_line, cwd=cwd, shell=use_shell)

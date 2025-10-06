@@ -1,9 +1,12 @@
 #
 # Shlex - but telling us how each token is delimited
 #
-import shlex, re
+import shlex, re, logging
 from enum import Enum
 from afn_place_holders import has_place_holders, has_plural_place_holders, expand, PluralCache, get_behavior, PLURAL
+
+# Set up logging
+logger = logging.getLogger(__name__)
 
 class Handle(Enum):
     NO_HANDLE = 0
@@ -188,16 +191,16 @@ def main(argv):
     ]
 
     for s in test_strings:
-        print(f"\nInput String: '{s}'")
+        logger.debug(f"\nInput String: '{s}'")
         tokens = tokenize_for_native(s)
-        print(f"NATIVE:")
+        logger.debug(f"NATIVE:")
         for spec in tokens:
-            print(f"  {spec}")
+            logger.debug(f"  {spec}")
 
         tokens = tokenize_for_shell(s)
-        print(f"SHELL:")
+        logger.debug(f"SHELL:")
         for spec in tokens:
-            print(f"  {spec}")
+            logger.debug(f"  {spec}")
 
     test_files = [
         {
@@ -232,7 +235,7 @@ def main(argv):
 
     if len(argv) > 1:
         line = argv[1]
-        print(line)
+        logger.debug(line)
 
         b = get_behavior(line)
 
@@ -241,21 +244,21 @@ def main(argv):
 
         if b == 0:
             (final, _) = resolve(line, 0, test_files, True, None)
-            print(f'Original: {final}')
+            logger.debug(f'Original: {final}')
             (final, _) = resolve2(native_parts, 0, test_files, False, None)
-            print(f'Improved (raw): {final}')
+            logger.debug(f'Improved (raw): {final}')
             (final, _) = resolve2(shell_parts, 0, test_files, True, None)
-            print(f'Improved (shell): { "".join(final)}')
+            logger.debug(f'Improved (shell): { "".join(final)}')
         else:
             cache = None
             cache2 = None
             for i,_ in enumerate(test_files):
                 (final, _) = resolve(line, i, test_files, True, cache)
-                print(f'Original: {final}')
+                logger.debug(f'Original: {final}')
                 (final, _) = resolve2(native_parts, i, test_files, False, cache2)
-                print(f'Improved (raw): {final}')
+                logger.debug(f'Improved (raw): {final}')
                 (final, _) = resolve2(shell_parts, i, test_files, True, cache2)
-                print(f'Improved (shell): {"".join(final)}')
+                logger.debug(f'Improved (shell): {"".join(final)}')
 
 if __name__ == "__main__":
     import sys

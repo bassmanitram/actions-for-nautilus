@@ -1,9 +1,12 @@
 #
 # Config management
 #
-import os, json, time, fnmatch, re, inspect
+import os, json, time, fnmatch, re, inspect, logging
 from afn_shell_tools import tokenize_for_native, tokenize_for_shell, is_command_plural
 from gi.repository import Gio, GLib
+
+# Set up logging
+logger = logging.getLogger('actions_for_nautilus')
 
 HOME = os.environ.get('HOME')
 _config_path = HOME + "/.local/share/actions-for-nautilus/config.json"
@@ -34,9 +37,14 @@ _permissions = {
 }
 
 debug = False
+
 def debug_print(str):
-    if debug:
-        print(str)
+    logger.debug(str)
+
+def update_logging_level():
+    """Update logging level based on current debug flag"""
+    from actions_for_nautilus import update_logging_level
+    update_logging_level(debug)
 
 class CommandAction():
     def __init__(self):
@@ -82,8 +90,7 @@ class ActionsForNautilusConfig():
         self.update_config()
         GLib.timeout_add_seconds(30, _check_config_change, self)
 #        threading.Thread(target=_watch_config_change, args=(self,), daemon=True).start()
-        if debug:
-            print("Initialized")
+        logger.debug("Config initialized")
 
     def get_mtime(self):
         return self.mtime
@@ -97,7 +104,13 @@ class ActionsForNautilusConfig():
                 with open(_config_path) as json_file:
                     file_config = json.load(json_file)
                     global debug
+                    old_debug = debug
                     debug = file_config.get("debug", False)
+                    
+                    # Update logging level if debug flag changed
+                    if old_debug != debug:
+                        update_logging_level()
+                    
                     self.sort = file_config.get("sort", "manual") == "auto"
                     json_actions = file_config.get("actions", [])
                     if type(json_actions) == list:
@@ -106,17 +119,17 @@ class ActionsForNautilusConfig():
                         my_actions = []
                     self.actions = my_actions
             else:
-                print("Config file " + _config_path + " does not exist")
+                logger.warning("Config file " + _config_path + " does not exist")
         except Exception as e:
-            print("Config file " + _config_path + " load failed", e)
+            logger.error("Config file " + _config_path + " load failed", exc_info=e)
     
-        if debug:
-            print(_dump_dict(self))
+        logger.debug(_dump_dict(self))
 
     def reset_config(self):
         self.actions = []
         self.sort = False
         self.mtime = None
+
 ###
 ### fix non-JSON-able objects
 ###
@@ -130,10 +143,10 @@ def _check_config_change(config_object):
     last_mtime = config_object.get_mtime()
     this_mtime = os.path.getmtime(_config_path) if os.path.exists(_config_path) else None
     if last_mtime is not None and (last_mtime is None or last_mtime != this_mtime):
-        print("WATCHER THREAD: updating config")
+        logger.debug("WATCHER THREAD: updating config")
         config_object.update_config()
     elif this_mtime is None and last_mtime is not None:
-        print("WATCHER THREAD: resetting config")
+        logger.debug("WATCHER THREAD: resetting config")
         config_object.reset_config()
     else:
         debug_print("WATCHER THREAD: config not changed")
@@ -145,13 +158,13 @@ def _check_config_change(config_object):
 # NOT USED - GLib timers work better
 #
 def _watch_config_change(config_object):
-    print("WATCHER THREAD: starting watch loop")
+    logger.info("WATCHER THREAD: starting watch loop")
     while True:
         sleep_time = int(time.time())
         _check_config_change(config_object)
-        print("WATCHER THREAD: sleeping at", sleep_time)
+        logger.debug("WATCHER THREAD: sleeping at", sleep_time)
         time.sleep(30)
-        print("WATCHER THREAD: slept time", int(time.time()) - sleep_time)
+        logger.debug("WATCHER THREAD: slept time", int(time.time()) - sleep_time)
 
 #
 # Update the config from the config file
@@ -166,7 +179,7 @@ def _check_action(idString, json_action):
     elif config_type == "command":
         return _check_command_action(idString, json_action)
 
-    print("Ignoring action: missing/invalid type property", json_action)
+    logger.warning("Ignoring action: missing/invalid type property", extra={"json_action": json_action})
 
 #
 # Normalize a menu action
@@ -186,10 +199,10 @@ def _check_menu_action(idString, json_action):
         if len(action.actions) > 0:
             return action
 
-        print("Ignoring action menu: no valid sub actions", json_action)
+        logger.warning("Ignoring action menu: no valid sub actions", extra={"json_action": json_action})
         return None
 
-    print("Ignoring menu action: missing properties", json_action)
+    logger.warning("Ignoring menu action: missing properties", extra={"json_action": json_action})
 
 #
 # Normalize a command action
@@ -263,7 +276,7 @@ def _check_command_action(idString, json_action):
 
         return action
 
-    print("Ignoring command action: missing properties", json_action)
+    logger.warning("Ignoring command action: missing properties", extra={"json_action": json_action})
 
 #
 # Generates an object that facilitates fast mimetype checks
@@ -275,7 +288,7 @@ def _gen_mimetype(mimetype):
             mimetype = mimetype[1:]
         return {"comparator": "startswith", "mimetype": mimetype[:len(mimetype)-1], "comparison": comparison} if mimetype.endswith("/*") else {"comparator":"__eq__", "mimetype":mimetype, "comparison": comparison}
 
-    print("Ignoring mimetype: invalid format", mimetype)
+    logger.warning("Ignoring mimetype: invalid format", extra={"mimetype": mimetype})
 
 def _gen_filetype(filetype):
     if type(filetype) == str and len(filetype := filetype.lower().strip()) > 3:
@@ -284,7 +297,7 @@ def _gen_filetype(filetype):
             filetype = filetype[1:]
         return list(map(lambda gio_filetype: {"filetype": gio_filetype, "comparison": comparison}, _filetypes.get(filetype, [])))
 
-    print("Ignoring filetype: unrecognized", filetype)
+    logger.warning("Ignoring filetype: unrecognized", extra={"filetype": filetype})
 
 def _gen_pattern(pattern):
     if type(pattern) == str and len(pattern := pattern.strip()) > 0:
@@ -297,19 +310,19 @@ def _gen_pattern(pattern):
             method = getattr(patternRE, "search" if re else "fullmatch")
             return {"re": patternRE, "comparator": method, "path_pattern": pattern, "comparison": comparison}
 
-    print("Ignoring pattern: unrecognized", pattern)
+    logger.warning("Ignoring pattern: unrecognized", extra={"pattern": pattern})
 
 def _gen_pattern_re_from_re(pattern, comparison):
     try:
         return re.compile(pattern[3:])
     except Exception as e:
-        print("Failed regular expression compilation", e)
+        logger.error("Failed regular expression compilation", exc_info=e)
 
 def _gen_pattern_re_from_glob(pattern, comparison):
     try:
         return re.compile(fnmatch.translate(pattern))
     except Exception as e:
-        print("Failed glob compilation", e)
+        logger.error("Failed glob compilation", exc_info=e)
 
 
 def _flatten_list(lst):
@@ -331,6 +344,5 @@ def _split_rules(lst):
         "p_rules": list(filter(lambda element: element["comparison"], lst)),
         "n_rules": list(filter(lambda element: not element["comparison"], lst))
     }
-    if debug:
-        print(rc)
+    logger.debug("Split rules result", extra={"rules": rc})
     return rc

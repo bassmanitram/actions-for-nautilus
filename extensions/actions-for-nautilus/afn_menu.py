@@ -1,11 +1,14 @@
 #
 # Create context menu items
 #
-import os, afn_config, traceback
+import os, afn_config, traceback, logging
 import subprocess
 from urllib.parse import urlparse
 from gi.repository import Nautilus
 from collections import deque
+
+# Set up logging
+logger = logging.getLogger('actions_for_nautilus')
 
 class MenuCacheItem:
 	def __init__(self, group, path, mtime, ctime, menu):
@@ -64,20 +67,19 @@ def create_menu_items(config, files, group, act_function):
 			ctime = stat.st_ctime
 			cached_menu = menu_cache.get_menu(group, single_file_path, mtime, ctime)
 			if cached_menu is not None:
-				if afn_config.debug:
-					print(f"RETURNING CACHED MENU FOR {single_file_path}: {cached_menu}")
+				logger.debug(f"RETURNING CACHED MENU FOR {single_file_path}: {cached_menu}")
 				return cached_menu
 		# for f in files:
-		# 	print(f.get_uri())
+		# 	logger.debug(f.get_uri())
 		# 	loc = f.get_location()
-		# 	print(f"  {f.get_file_type()}")
-		# 	print(f"  {f.get_mime_type()}")
-		# 	print(f"  {loc.get_basename()}")
-		# 	print(f"  {loc.get_parent()}")
-		# 	print(f"  {loc.get_parse_name()}")
-		# 	print(f"  {loc.get_path()}")
-		# 	print(f"  {loc.get_uri()}")
-		# 	print(f"  {loc.get_uri_scheme()}")
+		# 	logger.debug(f"  {f.get_file_type()}")
+		# 	logger.debug(f"  {f.get_mime_type()}")
+		# 	logger.debug(f"  {loc.get_basename()}")
+		# 	logger.debug(f"  {loc.get_parent()}")
+		# 	logger.debug(f"  {loc.get_parse_name()}")
+		# 	logger.debug(f"  {loc.get_path()}")
+		# 	logger.debug(f"  {loc.get_uri()}")
+		# 	logger.debug(f"  {loc.get_uri_scheme()}")
 		
 		my_files = list(filter(None, map(lambda file: {
 				"mimetype": file.get_mime_type(),
@@ -98,11 +100,7 @@ def create_menu_items(config, files, group, act_function):
 		return menu
 
 	except Exception as e:
-		print("Error constructing menu items")
-		print(group)
-		print(files)
-		print(e)
-		print(traceback.format_exc())
+		logger.error(f"Error constructing menu items - Group: {group}, Files: {files}, Exception: {e}\nTraceback: {traceback.format_exc()}")
 		return []
 	
 #
@@ -136,21 +134,19 @@ def _create_submenu_menu_item(action, files, group, act_function):
 
 def _is_command_true(cmd):
 	try:
-		if afn_config.debug:
-			print(f"Running show_if_true command <{cmd}>")
+		logger.debug(f"Running show_if_true command <{cmd}>")
 		process = subprocess.run(
 			cmd,
 			shell=True,
 			capture_output=True,
 			text=True
 		)
-		if afn_config.debug:
-			print(f"show_if_true_command {cmd} returned: stdout={process.stdout}, stderr={process.stderr}")
+		logger.debug(f"show_if_true_command {cmd} returned: stdout={process.stdout}, stderr={process.stderr}")
 		if process.stdout.rstrip() == "true":
 			return True
 		
 	except Exception as e:
-		print(f"show_if_true_command {cmd} failed: {e}")
+		logger.error(f"show_if_true_command {cmd} failed: {e}")
 	
 	return False
 #
@@ -184,8 +180,7 @@ def _create_command_menu_item(action, files, group, activate_function):
 
 	name = "Actions4Nautilus::Item" + action.idString + group
 	label = action.label
-	if afn_config.debug:
-		print(f"Attaching menu item: file={files[0]} name={name}, label={label}")
+	logger.debug(f"Attaching menu item: file={files[0]} name={name}, label={label}")
 	menu_item = Nautilus.MenuItem(name=name, label=label)
 	menu_item.connect("activate", activate_function, action, files)
 	return menu_item
@@ -285,9 +280,9 @@ def _test_rule(rule, string):
 	return rule["comparator"](string)
 
 # def _test_rule(rule, string):
-# 	print(rule, string)
+# 	logger.debug(rule, string)
 # 	result = rule["comparator"](string)
-# 	print(result)
+# 	logger.debug(result)
 # 	return result
 
 #
