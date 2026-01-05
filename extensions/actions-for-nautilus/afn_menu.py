@@ -46,6 +46,31 @@ menu_cache = MenuCache()
 last_config_time = None
 
 #
+
+# Smart lazy permission cache - only caches when permissions are actually checked
+_permission_cache = {}
+_cache_timestamp = 0
+
+def _check_permission_lazy(filepath, permission_flags):
+    """Lazy permission checking with caching - only cache when actually needed"""
+    global _permission_cache, _cache_timestamp
+    import time
+    
+    current_time = time.time()
+    # Expire cache every 5 seconds to handle file changes
+    if current_time - _cache_timestamp > 5:
+        _permission_cache.clear()
+        _cache_timestamp = current_time
+    
+    cache_key = f"{filepath}:{permission_flags}"
+    
+    if cache_key in _permission_cache:
+        return _permission_cache[cache_key]
+    
+    # Only make filesystem call when actually needed
+    result = os.access(filepath, permission_flags)
+    _permission_cache[cache_key] = result
+    return result
 # Consolidate background and selection calls to create menus
 #
 # files is a list of __gi__.NautilusVFSFile instances
@@ -91,6 +116,7 @@ def create_menu_items(config, files, group, act_function):
                 "folder": os.path.dirname(file.get_location().get_path()),
                 "uri": urlparse(file.get_uri())
             } if file.get_location().get_path() is not None else None, files)))
+
 
         actions = list(filter(None, map(lambda action: _create_menu_item(action, my_files, group, act_function), config.actions)))
         menu = sorted(actions, key=lambda element: element.props.label) if config.sort else actions
@@ -303,9 +329,16 @@ def _test_rule(rule, string):
 # Returns True if OK for every one, otherwise False
 #
 # Note that the user must always have read access if permissions are being checked
-#
 def _applicable_to_permissions(action, files):
+    """Smart lazy permission checking - only makes filesystem calls when actually needed"""
     if action.permissions_not:
-        return all(map(lambda file: (os.access(file["filepath"], os.R_OK) and not os.access(file["filepath"], action.permissions)), files))
+        return all(
+            _check_permission_lazy(file["filepath"], os.R_OK) and 
+            not _check_permission_lazy(file["filepath"], action.permissions)
+            for file in files
+        )
     else:
-        return all(map(lambda file: os.access(file["filepath"], action.permissions), files))
+        return all(
+            _check_permission_lazy(file["filepath"], action.permissions)
+            for file in files
+        )

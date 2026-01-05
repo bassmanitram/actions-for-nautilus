@@ -1,0 +1,101 @@
+name: Build and Release Debian Package
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-nautilus python3-gi procps libjs-jquery xdg-utils lintian fakeroot
+          
+      - name: Extract version from tag
+        id: get_version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+          
+      - name: Verify Makefile version matches tag
+        run: |
+          MAKEFILE_VERSION=$(grep '^VERSION=' Makefile | cut -d'=' -f2)
+          TAG_VERSION="${{ steps.get_version.outputs.VERSION }}"
+          echo "Makefile version: $MAKEFILE_VERSION"
+          echo "Tag version: $TAG_VERSION"
+          if [ "$MAKEFILE_VERSION" != "$TAG_VERSION" ]; then
+            echo "ERROR: Version mismatch!"
+            echo "Makefile has VERSION=$MAKEFILE_VERSION but tag is v$TAG_VERSION"
+            exit 1
+          fi
+          
+      - name: Build Debian package
+        run: |
+          make deb
+          
+      - name: Verify package was created
+        run: |
+          VERSION="${{ steps.get_version.outputs.VERSION }}"
+          PACKAGE_FILE="dist/actions-for-nautilus_${VERSION}_all.deb"
+          if [ ! -f "$PACKAGE_FILE" ]; then
+            echo "ERROR: Package file not found: $PACKAGE_FILE"
+            ls -la dist/
+            exit 1
+          fi
+          echo "Package created successfully: $PACKAGE_FILE"
+          
+      - name: Run lintian on package
+        run: |
+          VERSION="${{ steps.get_version.outputs.VERSION }}"
+          PACKAGE_FILE="dist/actions-for-nautilus_${VERSION}_all.deb"
+          lintian "$PACKAGE_FILE" || true
+          
+      - name: Extract release notes
+        id: release_notes
+        run: |
+          VERSION="${{ steps.get_version.outputs.VERSION }}"
+          # Extract the section for this version from RELEASE-NOTES.md
+          # Look for "# Release X.Y.Z" and extract until next "# Release"
+          awk "/# Release ${VERSION}/,/# Release [0-9]/" RELEASE-NOTES.md | head -n -1 > /tmp/release_notes.txt
+          # If that's empty, try without patch version (e.g., 2.0.0 -> 2.0)
+          if [ ! -s /tmp/release_notes.txt ]; then
+            SHORT_VERSION=$(echo $VERSION | cut -d'.' -f1-2)
+            awk "/# Release ${SHORT_VERSION}/,/# Release [0-9]/" RELEASE-NOTES.md | head -n -1 > /tmp/release_notes.txt
+          fi
+          # If still empty, use a default message
+          if [ ! -s /tmp/release_notes.txt ]; then
+            echo "Release ${VERSION}" > /tmp/release_notes.txt
+            echo "" >> /tmp/release_notes.txt
+            echo "See [RELEASE-NOTES.md](RELEASE-NOTES.md) for details." >> /tmp/release_notes.txt
+          fi
+          cat /tmp/release_notes.txt
+          
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/actions-for-nautilus_${{ steps.get_version.outputs.VERSION }}_all.deb
+          body_path: /tmp/release_notes.txt
+          draft: false
+          prerelease: ${{ contains(steps.get_version.outputs.VERSION, 'pre') || contains(steps.get_version.outputs.VERSION, 'rc') || contains(steps.get_version.outputs.VERSION, 'alpha') || contains(steps.get_version.outputs.VERSION, 'beta') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Upload package as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: debian-package
+          path: dist/actions-for-nautilus_${{ steps.get_version.outputs.VERSION }}_all.deb
+          retention-days: 90
