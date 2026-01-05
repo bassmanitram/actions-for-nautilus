@@ -29,8 +29,16 @@ def setup_logging():
 
     return logger
 
+# Global flag to avoid isEnabledFor() calls
+_debug_enabled = False
+
+
+
 def update_logging_level(debug_enabled):
     """Update the logging level based on config debug flag"""
+    global _debug_enabled
+    _debug_enabled = debug_enabled
+    
     logger = logging.getLogger('actions_for_nautilus')
     level = logging.DEBUG if debug_enabled else logging.WARNING
     logger.setLevel(level)
@@ -39,6 +47,9 @@ def update_logging_level(debug_enabled):
 
 # Initialize logging
 logger = setup_logging()
+
+#
+import time
 
 #
 #  A multi-version alternative to require_version
@@ -77,14 +88,20 @@ class ActionsForNautilus(Nautilus.MenuProvider, GObject.GObject):
 
     def get_background_items(self, *args):
         file = args[-1]
-        logger.debug(f'GET BACKGROUND: {file.get_location().get_path()}')
+        path = file.get_location().get_path()
+        
+        if _debug_enabled:
+            logger.debug(f'GET BACKGROUND: {path}')
+        
         menu = afn_menu.create_menu_items(
             self.config, [file], "Background", _run_command
         )
-        logger.debug("END BACKGROUND")
+        
+        if _debug_enabled:
+            logger.debug("END BACKGROUND")
+        
         return menu
 
-#
 # Command execution
 #
 def _run_command(menu, action, files):

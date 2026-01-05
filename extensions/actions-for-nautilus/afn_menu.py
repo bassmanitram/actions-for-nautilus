@@ -21,26 +21,44 @@ class MenuCacheItem:
         self.menu = menu
 
 class MenuCache:
+    """Optimized menu cache using dict for O(1) lookup instead of O(n) deque scan"""
+    
     def __init__(self):
-        self.cache = deque([])
+        self.cache = {}  # key = (group, path), value = MenuCacheItem
+        self.order = deque()  # Track insertion order for LRU eviction
+        self.max_size = 5
 
     def get_menu(self, group, path, mtime, ctime):
-        return next((item.menu for item in reversed(self.cache) if item.group == group and item.path == path and item.mtime == mtime and item.ctime == ctime), None)
+        """Get cached menu if it exists and timestamps match - O(1) operation"""
+        key = (group, path)
+        if key in self.cache:
+            cached = self.cache[key]
+            if cached.mtime == mtime and cached.ctime == ctime:
+                return cached.menu
+        return None
 
     def put_menu(self, group, path, mtime, ctime, menu):
-        exists = next((index for (index, item) in enumerate(self.cache) if item.group == group and item.path == path), len(self.cache))
-        if exists < len(self.cache):
-            self.cache[exists].mtime = mtime
-            self.cache[exists].ctime = ctime
-            self.cache[exists].menu = menu
-        else:
-            self.cache.append(MenuCacheItem(group, path, mtime, ctime, menu))
-
-        while len(self.cache) > 5:
-            self.cache.popleft()
+        """Store menu in cache with LRU eviction - O(1) amortized"""
+        key = (group, path)
+        
+        # Update or create cache entry
+        self.cache[key] = MenuCacheItem(group, path, mtime, ctime, menu)
+        
+        # Update LRU order
+        if key in self.order:
+            self.order.remove(key)  # O(n) but n<=5, so effectively O(1)
+        self.order.append(key)
+        
+        # Evict oldest entries if over limit
+        while len(self.order) > self.max_size:
+            old_key = self.order.popleft()
+            if old_key in self.cache:
+                del self.cache[old_key]
 
     def clear(self):
-        self.cache = deque([])
+        """Clear all cached menus"""
+        self.cache = {}
+        self.order = deque()
 
 menu_cache = MenuCache()
 last_config_time = None

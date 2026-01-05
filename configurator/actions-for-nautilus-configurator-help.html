@@ -75,6 +75,7 @@
 					</li>
 				</ul>
 			</li>
+			<li><a href="#diagnostics">Diagnostics and Debug Mode</a></li>
 		</ul>
 		<h1 id="configurator-layout">Configurator Layout</h1>
 		<p>The configurator UI is basically laid out in two columns:</p>
@@ -92,8 +93,7 @@
 						entire configuration)</li>
 				</ul>
 				<p id="root-sort-debug">It also allows you to set the ordering options for the main menu actions, and to
-					set the debug
-					output option if you need to resolve problems with your configuration.
+					set the <a href="#diagnostics">debug output option</a> if you need to resolve problems with your configuration.
 				</p>
 				<p>The menu item links on the left will be colored with different palettes depending on the item status:</p>
 				<ul>
@@ -1064,6 +1064,102 @@ audio/*</pre>
 				basenames. As the command is only run once, the <code>%b</code> is substituted only once
 				with the (first) basename.</p>
 		</blockquote>
+
+		<h1 id="diagnostics">Diagnostics and Debug Mode</h1>
+		<p>When troubleshooting issues with your configuration or understanding how the extension is processing your actions, 
+			you can enable debug mode to see detailed logging information.</p>
+
+		<h2>Enabling Debug Mode</h2>
+		<p>In the configurator, at the top level configuration (when no action is selected), you can enable the 
+			<strong>Debug</strong> option. When set to <code>true</code>, the extension will output detailed 
+			diagnostic information including:</p>
+		<ul>
+			<li>Configuration file loading and validation messages</li>
+			<li>Action filtering decisions (which actions are shown/hidden and why)</li>
+			<li>Placeholder expansion details</li>
+			<li>Command execution information (what commands are run, with what arguments)</li>
+			<li>Permission checks and file property extraction</li>
+		</ul>
+
+		<h2>Viewing Debug Output</h2>
+		<p><strong>Important:</strong> Debug output is written to Nautilus's standard output (<code>stdout</code>) and 
+			standard error (<code>stderr</code>) streams. In normal operation, Nautilus runs as a background process and 
+			these streams are not visible.</p>
+
+		<p>To see the debug output, you need to start Nautilus in a special way from a terminal emulator 
+			(such as <code>gnome-terminal</code>):</p>
+
+		<h3>Step-by-Step Instructions</h3>
+		<ol>
+			<li><p>Enable debug mode in your configuration and save the changes</p></li>
+			<li><p>Open a terminal emulator (e.g., <code>gnome-terminal</code>)</p></li>
+			<li><p>Stop the currently running Nautilus instance:</p>
+				<pre><code>nautilus -q</code></pre>
+			</li>
+			<li><p>Restart Nautilus with output directed to the terminal:</p>
+				<pre><code>nautilus --no-desktop</code></pre>
+			</li>
+			<li><p>Use Nautilus normally - right-click files, activate actions, etc.</p></li>
+			<li><p>Watch the terminal window for debug output</p></li>
+		</ol>
+
+		<h3>What You'll See</h3>
+		<p>With debug mode enabled, you'll see output like:</p>
+		<pre><code>actions_for_nautilus - DEBUG - Config initialized
+actions_for_nautilus - DEBUG - GET FILES: /home/user/file1.txt /home/user/file2.txt
+actions_for_nautilus - DEBUG - Executing command: echo %B
+actions_for_nautilus - DEBUG - Files: ['/home/user/file1.txt', '/home/user/file2.txt']
+actions_for_nautilus - DEBUG - Count: 1, Behavior: 0
+actions_for_nautilus - DEBUG - Final command 0: echo file1.txt file2.txt
+actions_for_nautilus - DEBUG - END GET FILES</code></pre>
+
+		<h3>Stopping Debug Mode</h3>
+		<p>To stop viewing debug output:</p>
+		<ol>
+			<li>Close the terminal window where Nautilus is running, <strong>or</strong></li>
+			<li>Open another terminal and run: <code>nautilus -q</code></li>
+		</ol>
+		<p>Nautilus will automatically restart in normal mode (without terminal output).</p>
+
+		<h3>Tips for Debugging</h3>
+		<ul>
+			<li><strong>Start simple:</strong> Enable debug mode, open the terminal, and right-click a single file to see 
+				the basic flow</li>
+			<li><strong>Check filtering:</strong> If an action doesn't appear, debug output will show which filter rule 
+				excluded it</li>
+			<li><strong>Verify placeholders:</strong> Debug output shows the final expanded command line before execution</li>
+			<li><strong>Test show-if-true:</strong> Debug output shows the result of external validation commands</li>
+			<li><strong>Performance issues:</strong> Debug output includes timing information for slow operations</li>
+		</ul>
+
+		<h3>Common Debug Scenarios</h3>
+		<p><strong>Action doesn't appear for certain files:</strong></p>
+		<ul>
+			<li>Enable debug mode</li>
+			<li>Run <code>nautilus --no-desktop</code></li>
+			<li>Right-click the files</li>
+			<li>Look for filter evaluation messages showing which rule failed</li>
+		</ul>
+
+		<p><strong>Command executes wrong number of times:</strong></p>
+		<ul>
+			<li>Enable debug mode</li>
+			<li>Look for "Count: X, Behavior: Y" message</li>
+			<li>Verify the first placeholder in your command is the correct type (SINGULAR vs PLURAL)</li>
+		</ul>
+
+		<p><strong>Command fails or produces wrong results:</strong></p>
+		<ul>
+			<li>Enable debug mode</li>
+			<li>Look for "Final command X:" messages</li>
+			<li>Verify the expanded command line is what you expected</li>
+			<li>Check for escaping issues in file names with special characters</li>
+		</ul>
+
+		<h3>Disabling Debug Mode</h3>
+		<p>Once you've resolved your issues, remember to disable debug mode in the configurator to avoid 
+			unnecessary logging overhead.</p>
+
 	</div>
 </body>
 
