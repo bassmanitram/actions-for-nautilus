@@ -7,17 +7,17 @@
 
 	<script src="/javascript/jquery.min.js"></script>
 	<script src="/javascript/bootstrap.min.js"></script>
-	<script src="/javascript/jsoneditor.js"></script>
+	<script src="/javascript/jsoneditor.min.js"></script>
 	<script src="/javascript/ace.js"></script>
+	<script src="/javascript/JSON.sortify.js"></script>
 
 	<script src="/javascript/help.js"></script>
 	<script src="/javascript/a4nbootstrap4Theme.js"></script>
-	<script src="/javascript/jsonEditorHacks.js"></script>
+	<script src="/javascript/modelTransform.js"></script>
 	<script src="/javascript/jsonEditorHooks.js"></script>
 	<script src="/javascript/constants.js"></script>
 	<script src="/javascript/initAceEditor.js"></script>
 
-	<link rel="stylesheet" href="/css/jsoneditor.min.css">
 	<link rel="stylesheet" href="/css/bootstrap.min.css">
 	<link rel="stylesheet" href="/css/fontawesome.css">
 	<link rel="stylesheet" href="/css/a4n.css">
@@ -25,15 +25,34 @@
 </head>
 
 <body>
+	<template id="use_shell_button">
+		<div class="input-group">
+			<div class="input-group-prepend">
+				<button class="btn btn-outline-secondary a4n-use-shell">/bin/sh</button>
+			</div>
+		</div>
+	</template>
 
 	<div class='container col-md-12'>
 		<div id='editor_holder'></div>
 	</div>
+	<div id="a4n-disable" class="a4n-disable"></div>
+
 
 	<div id="ace-editor" class="ace-editor"></div>
 	<div id="ace-editor_dragbar" class="ace-editor_dragbar"></div>
 	
 	<script>
+
+		const KILL_ON_UNLOAD = true
+
+		let use_shell_button_template;
+		function get_use_shell_button_template() {
+			if (!use_shell_button_template) { 
+				use_shell_button_template = document.querySelector("#use_shell_button")
+			}
+			return use_shell_button_template
+		}
 
 		/*
 		 * Because this is a local UI tightly related to
@@ -47,7 +66,8 @@
 				data: ""
 			});
 		}
-		addEventListener("beforeunload", onUnload);
+		if (KILL_ON_UNLOAD) addEventListener("beforeunload", onUnload);
+
 
 		let editor;
 
@@ -71,25 +91,27 @@
 			/*
 			 * Editor options
 			 */
-			"array_controls_top": true,
-			"disable_array_delete_last_row": true,
-			"disable_collapse": true,
-			"disable_edit_json": true,
-			"iconlib": "fontawesome5",
-			"no_additional_properties": true,
-			"theme": "a4nbootstrap4",
-			"keep_oneof_values": false,
-			"display_required_only": false,
-			"use_default_values": true,
-			"disable_properties": true,
-			"show_opt_in": true,
+			show_errors: 'always',
+			array_controls_top: true,
+			enable_array_copy: true,
+			disable_array_delete_last_row: true,
+			disable_collapse: true,
+			disable_edit_json: true,
+			iconlib: "fontawesome5",
+			no_additional_properties: true,
+			theme: "a4nbootstrap4",
+			keep_oneof_values: false,
+			display_required_only: false,
+			use_default_values: true,
+			disable_properties: true,
+			show_opt_in: true,
 			/*
 			 * Bootstrap4 theme options
 			 */
-			"tooltip": "browser",
-			"object_indent": false,
-			"table_zebrastyle": false,
-			"table_border": false
+			tooltip: "browser",
+			object_indent: false,
+			table_zebrastyle: false,
+			table_border: false
 		}
 
 		/*
@@ -100,10 +122,9 @@
 				return response.json()
 			})
 			.then(config => {
-//				console.log(JSON.stringify(convertToFrontendFormat(config),null,4));
-//				editorConfig.startval = config;
+				config.debug && console.log(JSON.stringify(convertToFrontendFormat(config),null,4));
 				editorConfig.startval = convertToFrontendFormat(config);
-//				console.log(JSON.stringify(editorConfig.startval,null,4));
+				config.debug && console.log(JSON.stringify(editorConfig.startval,null,4));
 				return fetch("/schema");
 			})
 			.then(response => {

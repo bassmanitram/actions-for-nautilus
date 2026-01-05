@@ -2,82 +2,6 @@
 	"$schema": "http://json-schema.org/draft-06/schema#",
 	"$ref": "#/$defs/ActionsForNautilus",
 	"$defs": {
-		"MimeType": {
-			"type": "string",
-			"pattern": "^(!?[A-Za-z0-9-]+\\/(([A-Za-z0-9-]+)|\\*))|(\\*)|(\\*\\/\\*)$",
-			"title": "Mimetype"
-		},
-		"PathPattern": {
-			"type": "string",
-			"format": "pattern",
-			"title": "Path pattern",
-			"options": {
-				"infoText": "#command:path_pattern"
-			}
-		},
-		"SortStyles": {
-			"type": "string",
-			"enum": [
-				"manual",
-				"auto"
-			],
-			"default": "manual",
-			"title": "Menu sorting"
-		},
-		"Permissions": {
-			"type": "string",
-			"enum": [
-				"read",
-				"read-write",
-				"read-execute",
-				"read-write-execute"
-			],
-			"title": "Access permissions"
-		},
-		"FileType": {
-			"type": "string",
-			"enum": [
-				"unknown",
-				"file",
-				"directory",
-				"symbolic-link",
-				"special",
-				"shortcut",
-				"mountable",
-				"standard",
-				"!unknown",
-				"!file",
-				"!directory",
-				"!symbolic-link",
-				"!special",
-				"!shortcut",
-				"!mountable",
-				"!standard"
-			],
-			"title": "File type",
-			"options": {
-				"infoText": "#command:filetype"
-			}
-		},
-		"Action": {
-			"type": "object",
-			"format": "categories",
-			"headerTemplate": "{{ self.Basic.label }}",
-			"oneOf": [
-				{
-					"title": "Command",
-					"$ref": "#/$defs/Command"
-				},
-				{
-					"title": "Menu",
-					"$ref": "#/$defs/Menu"
-				}
-			],
-			"title": "Action",
-			"options": {
-				"infoText": "#action"
-			}
-		},
 		"ActionsForNautilus": {
 			"type": "object",
 			"additionalProperties": false,
@@ -91,7 +15,16 @@
 					},
 					"title": "Main Menu",
 					"options": {
-						"infoText": "#root:actions"
+						"infoText": "#submenu:toolbar",
+						"a4nEditor": "actions",
+						"on_copy_item_label_path": "Basic.label",
+						"enable_array_copy": true,
+						"array_copy_in_place": true,
+						"button_state_mode": 2,
+						"disable_array_delete_all_rows": true,
+						"array_use_fast_mod": true,
+						"array_controls_top": true,
+						"remove_button_labels": true
 					}
 				},
 				"sort": {
@@ -111,13 +44,40 @@
 				}
 			},
 			"required": [
-				"actions"
+				"actions",
+				"sort",
+				"debug"
 			],
 			"options": {
+				"a4nEditor": "topLevelObject",
 				"disable_properties": true,
 				"disable_edit_json": false
 			},
 			"title": "Actions For Nautilus configuration"
+		},
+		"Action": {
+			"type": "object",
+			"format": "categories",
+			"headerTemplate": "{{ self.Basic.label }}",
+			"oneOf": [
+				{
+					"title": "Command",
+					"$ref": "#/$defs/Command"
+				},
+				{
+					"title": "Menu",
+					"$ref": "#/$defs/Menu"
+				}
+			],
+			"title": "Action",
+			"options": {
+				"infoText": "#action",
+				"type_path": "Basic.type",
+				"type_values": [
+					"command",
+					"menu"
+				]
+			}
 		},
 		"Menu": {
 			"type": "object",
@@ -125,10 +85,13 @@
 			"properties": {
 				"Basic": {
 					"type": "object",
+					"additionalProperties": false,
 					"format": "grid-strict",
 					"required": [
 						"label",
-						"type"
+						"type",
+						"sort",
+						"disabled"
 					],
 					"properties": {
 						"type": {
@@ -176,7 +139,15 @@
 					},
 					"title": "Submenu Actions",
 					"options": {
-						"infoText": "#submenu:actions"
+						"infoText": "#submenu:actions",
+						"a4nEditor": "actions",
+						"on_copy_item_label_path": "Basic.label",
+						"enable_array_copy": true,
+						"button_state_mode": 2,
+						"disable_array_delete_all_rows": true,
+						"array_use_fast_mod": true,
+						"array_controls_top": true,
+						"remove_button_labels": true
 					}
 				}
 			},
@@ -187,7 +158,11 @@
 			"title": "Submenu",
 			"options": {
 				"infoText": "#submenu",
-				"disable_properties": true
+				"disable_properties": true,
+				"a4nEditor": "menu",
+				"containerAttributes": {
+					"class": "a4n-submenu-container"
+				}
 			}
 		},
 		"Command": {
@@ -196,6 +171,7 @@
 			"properties": {
 				"Basic": {
 					"type": "object",
+					"additionalProperties": false,
 					"format": "grid-strict",
 					"options": {
 						"disable_properties": true
@@ -203,7 +179,15 @@
 					"required": [
 						"label",
 						"type",
-						"command_line"
+						"command_line",
+						"show_if_true",
+						"cwd",
+						"use_shell",
+						"disabled",
+						"min_items",
+						"max_items",
+						"permissions",
+						"interpolation"
 					],
 					"properties": {
 						"type": {
@@ -225,6 +209,12 @@
 								"grid_break": true
 							}
 						},
+						"use_shell": {
+							"type": "boolean",
+							"options": {
+								"hidden": true
+							}
+						},
 						"command_line": {
 							"type": "string",
 							"minLength": 1,
@@ -232,12 +222,11 @@
 							"options": {
 								"infoText": "#command:command_line",
 								"grid_columns": 12,
-								"grid_break": true
+								"a4nEditor": "commandLine"
 							}
 						},
 						"show_if_true": {
 							"type": "string",
-							"minLength": 1,
 							"title": "Show if true",
 							"options": {
 								"infoText": "#command:show_if_true",
@@ -247,18 +236,17 @@
 						},
 						"cwd": {
 							"type": "string",
-							"minLength": 1,
 							"title": "Current working directory",
 							"options": {
 								"infoText": "#command:cwd",
 								"grid_columns": 6
 							}
 						},
-						"use_shell": {
-							"type": "boolean",
-							"title": "Use shell",
+						"interpolation": {
+							"$ref": "#/$defs/InterpolationStyles",
+							"title": "Interpolation",
 							"options": {
-								"infoText": "#command:use_shell",
+								"infoText": "#command:interpolation",
 								"grid_columns": 6,
 								"grid_break": true
 							}
@@ -303,6 +291,50 @@
 						}
 					}
 				},
+				"MimeTypes": {
+					"type": "object",
+					"format": "grid-strict",
+					"title": "Mimetypes",
+					"$ref": "#/$defs/MimeTypes"
+				},
+				"FileTypes": {
+					"type": "object",
+					"format": "grid-strict",
+					"title": "File types",
+					"$ref": "#/$defs/FileTypes"
+				},
+				"PathPatterns": {
+					"type": "object",
+					"format": "grid-strict",
+					"title": "Path patterns",
+					"$ref": "#/$defs/PathPatterns"
+				}
+			},
+			"required": [
+				"Basic",
+				"MimeTypes",
+				"FileTypes",
+				"PathPatterns"
+			],
+			"title": "Command",
+			"options": {
+				"infoText": "#command",
+				"a4nEditor": "action",
+				"containerAttributes": {
+					"class": "a4n-command-container"
+				}
+			}
+		},
+		"MimeType": {
+			"type": "string",
+			"pattern": "^(!?[A-Za-z0-9-]+\\/(([A-Za-z0-9-]+)|\\*))|(\\*)|(\\*\\/\\*)$",
+			"title": "Mimetype"
+		},
+		"MimeTypes": {
+			"type": "object",
+			"additionalProperties": false,
+			"format": "grid-strict",
+			"properties": {
 				"mimetypes": {
 					"type": "array",
 					"uniqueItems": true,
@@ -312,21 +344,40 @@
 					},
 					"title": "Mimetypes",
 					"options": {
-						"infoText": "#command:mimetypes"
+						"infoText": "#command:mimetypes",
+						"disable_array_delete_last_row": true,
+						"enable_array_copy": false,
+						"button_state_mode": 2,
+						"grid_columns": 9
 					}
 				},
-				"filetypes": {
-					"type": "array",
-					"uniqueItems": true,
-					"format": "table",
-					"items": {
-						"$ref": "#/$defs/FileType"
-					},
-					"title": "File types",
+				"mimetypes_strict_match": {
+					"type": "boolean",
+					"title": "Strict match",
 					"options": {
-						"infoText": "#command:filetypes"
+						"infoText": "#command:strict_match",
+						"grid_columns": 3
 					}
-				},
+				}
+			},
+			"required": [
+				"mimetypes",
+				"mimetypes_strict_match"
+			]
+		},
+		"PathPattern": {
+			"type": "string",
+			"format": "pattern",
+			"title": "Path pattern",
+			"options": {
+				"infoText": "#command:path_pattern"
+			}
+		},
+		"PathPatterns": {
+			"type": "object",
+			"additionalProperties": false,
+			"format": "grid-strict",
+			"properties": {
 				"path_patterns": {
 					"type": "array",
 					"uniqueItems": true,
@@ -336,17 +387,119 @@
 					},
 					"title": "Path patterns",
 					"options": {
-						"infoText": "#command:path_patterns"
+						"infoText": "#command:path_patterns",
+						"disable_array_delete_last_row": true,
+						"enable_array_copy": false,
+						"button_state_mode": 2,
+						"grid_columns": 9
+					}
+				},
+				"path_patterns_strict_match": {
+					"type": "boolean",
+					"title": "Strict match",
+					"options": {
+						"infoText": "#command:strict_match",
+						"grid_columns": 3
 					}
 				}
 			},
 			"required": [
-				"Basic"
+				"path_patterns",
+				"path_patterns_strict_match"
+			]
+		},
+		"SortStyles": {
+			"type": "string",
+			"enum": [
+				"manual",
+				"auto"
 			],
-			"title": "Command",
+			"default": "manual",
+			"title": "Menu sorting"
+		},
+		"InterpolationStyles": {
+			"type": "string",
+			"enum": [
+				"original",
+				"improved"
+			],
+			"default": "improved",
+			"title": "Interpolation"
+		},
+		"Permissions": {
+			"type": "string",
+			"enum": [
+				"any",
+				"read",
+				"read-write",
+				"read-execute",
+				"read-write-execute",
+				"!write",
+				"!execute",
+				"!write-execute"
+			],
+			"default": "any",
+			"title": "Access permissions"
+		},
+		"FileType": {
+			"type": "string",
+			"format": "select",
+			"enum": [
+				"unknown",
+				"file",
+				"directory",
+				"symbolic-link",
+				"special",
+				"shortcut",
+				"mountable",
+				"standard",
+				"!unknown",
+				"!file",
+				"!directory",
+				"!symbolic-link",
+				"!special",
+				"!shortcut",
+				"!mountable",
+				"!standard"
+			],
+			"title": "File type",
 			"options": {
-				"infoText": "#command"
+				"infoText": "#command:filetype"
 			}
+		},
+		"FileTypes": {
+			"type": "object",
+			"additionalProperties": false,
+			"format": "grid-strict",
+			"properties": {
+				"filetypes": {
+					"type": "array",
+					"format": "table",
+					"items": {
+						"$ref": "#/$defs/FileType"
+					},
+					"title": "File types",
+					"options": {
+						"infoText": "#command:filetypes",
+						"grid_columns": 9,
+						"disable_array_delete_last_row": true,
+						"button_state_mode": 2,
+						"enable_array_copy": false
+					}
+				},
+				"filetypes_strict_match": {
+					"type": "boolean",
+					"title": "Strict match",
+					"options": {
+						"infoText": "#command:strict_match",
+						"grid_columns": 3
+					}
+				}
+			},
+			"required": [
+				"filetypes",
+				"filetypes_strict_match"
+			]
 		}
 	}
 }

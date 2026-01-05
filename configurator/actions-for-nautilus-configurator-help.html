@@ -18,10 +18,10 @@
 			confusion) based upon the characteristics of the files and directories that you have
 			selected in the Nautilus window (simply called <em>files</em> from here-on).</p>
 		<p>Within the context of the extension, these menu items are called <em>actions</em>.</p>
-		<p>You can add two types of actions.</p>
+		<p>You can add two types of action:</p>
 		<ul>
 			<li>Commands - a command action allows you to execute an arbitrary command, passing
-				the selected files to the command as arguments.</li>
+				information pertaining to the the selected files to the command as arguments.</li>
 			<li>Menus - a menu action contains other actions, allowing you to structure your
 				configured commands into logical groups in any way you see fit.</li>
 		</ul>
@@ -37,10 +37,9 @@
 				<ul>
 					<li><a href="#undo-redo-and-save">Undo, Redo and Save</a></li>
 					<li><a href="#json-source-editor">The JSON Source Editor</a></li>
-					<li><a href="#optional-parameters">Optional Parameters</a></li>
-					<li><a href="#action-disable">Disabling an Action</a></li>
 				</ul>
 			</li>
+			<li><a href="#actions">Actions</a></li>
 			<li><a href="#menu-actions">Menu Actions</a></li>
 			<li><a href="#command-actions">Command Actions</a>
 				<ul>
@@ -53,18 +52,20 @@
 							<li><a href="#mimetypes">Mimetypes</a></li>
 							<li><a href="#file-types">File types</a></li>
 							<li><a href="#path-patterns">Path patterns</a></li>
+							<li><a href="#strict-match">Strict match</a></li>
 							<li><a href="#show-if-true">Show if true</a></li>
 						</ul>
 					</li>
 					<li><a href="#commands">Commands</a>
 						<ul>
-							<li><a href="#cwd">Current working directory</a></li>
-							<li><a href="#use-shell">Use shell</a>
+							<li><a href="#use-shell">Using a shell to execute the command</a>
 								<ul>
 									<li><a href="#shells">Shells</a></li>
 								</ul>
 							</li>
+							<li><a href="#cwd">Current working directory</a></li>
 							<li><a href="#command-line-placeholders">Command line placeholders</a></li>
+							<li><a href="#placeholder-interpolation">Placeholder interpolation</a></li>
 							<li><a href="#execution-behavior">Execution behavior</a>
 								<ul>
 									<li><a href="#an-example">An example</a></li>
@@ -74,6 +75,7 @@
 					</li>
 				</ul>
 			</li>
+			<li><a href="#diagnostics">Diagnostics and Debug Mode</a></li>
 		</ul>
 		<h1 id="configurator-layout">Configurator Layout</h1>
 		<p>The configurator UI is basically laid out in two columns:</p>
@@ -84,15 +86,21 @@
 				<p>This allows you to: </p>
 				<ul>
 					<li>see the actions already added to the main context menu, </li>
-					<li>add new actions to that menu</li>
+					<li>easily identify any actions that have been disabled, </li>
+					<li>add, copy, paste, reorder, and delete actions within that menu</li>
 					<li>select an existing action in order to edit its characteristics</li>
 					<li>remove all actions from the main menu (which, at the top level, removes all actions from the
 						entire configuration)</li>
 				</ul>
 				<p id="root-sort-debug">It also allows you to set the ordering options for the main menu actions, and to
-					set the debug
-					output option if you need to resolve problems with your configuration (not yet fully implemented).
+					set the <a href="#diagnostics">debug output option</a> if you need to resolve problems with your configuration.
 				</p>
+				<p>The menu item links on the left will be colored with different palettes depending on the item status:</p>
+				<ul>
+					<li>If the action is enabled and contains no validation errors, the menu item link will use a blue palette.</li>
+					<li>If the action is <e>disabled</e> and contains no validation errors, the menu item link will use a grey palette.</li>
+					<li>If the action contains validation errors, the menu item link will use a red palette.</li>
+				</ul>
 			</li>
 			<li>
 				<p>The right column shows the details and characteristics of the currently selected main menu action
@@ -105,18 +113,20 @@
 					<li>set the submenu items for a menu action</li>
 					<li>set the command string, current working directory, and filter rules that pertain to a command
 						action</li>
-					<li>reorder the action within its containing menu</li>
-					<li>delete the action</li>
 				</ul>
+				<p>If any field in the action has a validation error, that field will display an error message below it, while the
+					action as a whole may have other messages to help correct errors.</p>
 			</li>
 		</ul>
 		<p>Of special note is the <strong>Submenu Actions</strong> tab for menu actions ... this presents the identical
-			UI
-			elements in a nested format - i.e. the creation and manipulation of submenu actions is exactly
+			UI elements in a nested format: </p>
+			<p><img src="images/submenu-details.png" alt="Submenu details panel"></p>
+			<p>i.e. the creation and manipulation of submenu actions is exactly
 			the same as for main menu actions, performed within the UI presented by the <strong>Submenu Actions</strong>
 			tab.</p>
-		<p>The instructions below are presented for main menu actions, but the same semantics apply to creating
+		<p>The documentation below is presented for main menu actions, but the same semantics apply to managing
 			actions in submenus.</p>
+
 		<h2 id="undo-redo-and-save">Undo, Redo, Save, and Help</h2>
 		<p>Under the title, you will see a row of buttons, the first three of which allow you to undo changes that
 			you have made, redo changes that you have undone, and save changes back to the configuration file:</p>
@@ -141,69 +151,93 @@
 		<h2 id="json-source-editor">The JSON Source Editor</h2>
 		<p>The configurator includes a syntax-checking JSON source editor which, unsurprisingly, is toggled using
 			the <code>JSON</code> button in the top button row. This tool is useful for making bulk changes to your
-			configuration, such as copy/pasting actions or adding examples from the <a
-			href="https://github.com/bassmanitram/actions-for-nautilus/wiki/Configuration-Examples" target="_blank">project wiki</a> into 
+			configuration, such as adding examples from the <a
+				href="https://github.com/bassmanitram/actions-for-nautilus/wiki/Configuration-Examples"
+				target="_blank">project wiki</a> into
 			your configuration.</p>
 		<p>When this editor is active, the configuration JSON source can be directly manipulated and the
 			main configurator UI is hidden. Additionally, the top row <code>Undo</code>, <code>Redo</code>, and
-		    <code>Save</code> buttons are disabled (though neither your changes nor your undo/redo history are lost).</p>
-		<p>When opened, the source editor occupies the full vertical space available to it, though it can be resized vertically 
+			<code>Save</code> buttons are disabled (though neither your changes nor your undo/redo history are lost).
+		</p>
+		<p>The view of the configuration that is presented in the source editor is that of the internal schema, not the UI-specific schema,
+			and so corresponds to what you would directly enter into the extension's configuration file should you manually
+			edit that file (which you are strongly advised not to do!).
+		</p>
+		<p>When opened, the source editor occupies the full vertical space available to it, though it can be resized
+			vertically
 			by dragging the bottom border.</p>
-		<p>Text manipulation <em>within</em> the source editor uses the same semantics, keyboard shortcuts, and context menu
+		<p>Text manipulation <em>within</em> the source editor uses the same semantics, keyboard shortcuts, and context
+			menu
 			actions as are found in most web page text widgets.</p>
 		<p>JSON syntax errors are highlighted with a red <code>X</code> in the left margin of the editor, and explained
 			when you hover the mouse over the <code>X</code>.</p>
 		<p>To close the source editor without saving changes, either click its embedded <code>Cancel</code> button or
 			click the top row <code>JSON</code> button again.</p>
-		<p>To save changes you make in the source editor (and close the editor), click on the embedded <code>Save</code> button. If there are
-			any JSON syntax issues, you will not be able to save the data and the source editor will remain open. The source
+		<p>To save changes you make in the source editor (and close the editor), click on the embedded <code>Save</code>
+			button. If there are
+			any JSON <emphasis>syntax</emphasis> issues, you will not be able to save the data and the source editor will remain open. The
+			source
 			editor itself should highlight the syntax issues.</p>
 		<p>Upon successful saving, the editor will close and the changes will be propagated to the main configurator
 			UI with any format errors (as opposed to plain JSON syntax errors) notified to you in the normal way.</p>
-		<p>Note that saving within the source editor does <em>not</em> save the configuration file itself. Instead it simply
-		    updates the main configurator UI with the modified configuration.</p>
+		<p>Note that saving within the source editor does <em>not</em> save the configuration file itself. Instead it
+			simply
+			updates the main configurator UI with the modified configuration.</p>
 		<p>If, after saving, you need to reverse the changes that you made in the source editor, simply click the
-			top row <code>Undo</code>
-			button</p>
-		<h2 id="optional-parameters">Optional Parameters</h2>
-		<p>You will notice that optional parameters are not automatically enabled for modification. In order to
-			modify an optional parameter from its default value, you first need to enable the inclusion of the
-			optional parameter in the configuration by checking the check box associated with that parameter. E.g.:</p>
+			top row <code>Undo</code> button</p>
+
+
+		<h1 id="actions">Actions</h1>
+		<p>Actions are what you configure to appear in the Gnome Files context menu. They can be <a href="#menu-actions">menus</a> or
+		<a href="#command-actions">commands</a>. Obviouisly menus contain commands - and other menus, though it is probably
+		inadvisable to create a menu structure that is more than a couple of levels deep.</p>
+		<p>Menus and commands have some global features in common:</p>
 		<ul>
-			<li>
-				<p>disabled:</p>
-				<p><img src="images/disabled-optional-parameter.png" alt="Disabled optional parameter"></p>
+			<li>Both types of action have a <code>Basic</code> tab in the righthand pane in which ... well, basic information is entered. In that tab; they share
+			the <code>Label</code> field, whose use is pretty obvious!</li>
+			<li><p>Both types of action can be disabled!</p>
+				<p id="action-disable"><img src="images/disabled.png" alt="Disabled"></p>
+				<p>When set to <code>true</code>, the corresponding action will not appear in the Gnome Files context menu. This
+				   allows the action to exist in the configuration, maybe as a template or a work-in-progress, but not actually be
+				   used.</p>
+				<p>Note, however, that the action configuration must still be valid in order for you to be able to save the configuration.</p>
+				<p>To help quickly identify disabled items, they appear on the left of the UI in grey rather than blue.</p>
 			</li>
-			<li>
-				<p>enabled:</p>
-				<p><img src="images/enabled-optional-parameter.png" alt="Enabled optional parameter"></p>
-			</li>
+			<li><p>Both types of action can be drag/dropped to different positions within their containing menus (but not between menus).</p></li>
 		</ul>
-		<p>Note also that if you disable an optional parameter that you have previously enabled and modified, the
-			displayed value is <em>not</em> modified to the default value but retains the modified value you previously
-			set.</p>
-		<p>The saved configuration however will not contain the parameter which, therefore, will revert to its default
-			value.</p>
-		<h2 id="action-disable">Disabling an Action</h2>
-		<p>Both menu actions and command actions can be disabled by enabling the <code>Disabled</code> optional parameter and
-		   setting it to <code>true</code> </p>
-		   <p><img src="images/disabled.png" alt="Disabled"></p>
-		   <p>When set to <code>true</code>, the corresponding action will not appear in the Gnome Files context menu. This allows
-		   the action to exist in the configuration, maybe as a template or a work-in-progress, but not actually be used.</p>
-		   <p>Note, however, that the action configuration must still be valid in order for you to be able to save the configuration</p>.
-		   <p>To help quickly identify disabled items, they appear on the left of the UI in grey rather than blue.</p>
 		<h1 id="menu-actions">Menu Actions</h1>
-		<p>To create a menu action, then, do the following:</p>
+		<p>Menu actions contain lists of other actions, allowing you to organize your actions into logical groups.</p>
+		<p id="menu-toolbar">The list of actions that are contained in a menu has, at the top of it, a toobar:</p>
+		<p><img src="images/menu-toolbar.png" alt="Menu toolbar"></p>
+		<ul>
+			<li><p><img src="images/add-button.png" alt="Add button">: adds an action to the menu.</p></li>
+			<li><p><img src="images/copy-button.png" alt="Copy button">: duplicates the currently selected action, adding <code> Copy</code> to the copy's label.</p></li>
+			<li><p><img src="images/paste-button.png" alt="Paste button">: pastes the action that is currently in the internal clipboard below the currently selected action.
+				Note that the button is disabled if there is nothing in the clipboard, and that pasting will clear the clipboard.</p></li>
+			<li><p><img src="images/up-down-buttons.png" alt="Reorder buttons">: move the currently selected action up/down within its containing menu.</p></li>
+			<li><p><img src="images/delete-button.png" alt="Delete button">: deletes the currently selected action from its containing menu, after asking for confirmation.</p></li>
+		</ul>
+		<p>By holding down the <code>[CTRL]</code> key, the appearance of the toolbar changes:</p>
+		<p><img src="images/ctrl-toolbar.png" alt="Menu toolbar"></p>
+		<ul>
+			<li><p><img src="images/ctrl-copy-button.png" alt="CTRL-Copy button">: Copies the currently selected action to the internal clipboard. This enables all paste
+				buttons, allowing you to paste the action back into its source menu, or into any menu that is found in your configuration.</p></li>
+			<li><p><img src="images/ctrl-delete-button.png" alt="CTRL-Delete button">: Cuts the currently selected action into the internal clipboard. This enables all paste
+				buttons, allowing you to paste the action back into its source menu, or into any menu that is found in your configuration.</p></li>
+		</ul>
+		<p>By holding down the <code>[SHIFT]</code> key, the appearance of the delete button changes:</p>
+		<ul>
+			<li><p><img src="images/shift-delete-button.png" alt="SHIFT-Delete button">: Deletes <e>all</e> items from the menu - after asking for confirmation.</p></li>
+		</ul>
+		<p>So, to create a menu action, do the following:</p>
 		<ul>
 			<li>
-				<p>click on the <img src="images/add-action-button.png" alt="Add Action"> button at the top of the left-most column of the configurator
-					tool:</p>
-				<p><img src="images/add-menu-top.png" alt="Add a top-level menu"></p>
+				<p>click on the <img src="images/add-button.png" alt="Add button"> button in the menu toolbar</p>
 			</li>
 			<li>
 				<p>In the newly-created action details area (to the right), click on the type indicator
 					box and change its value to <em>Menu</em>:</p>
-				<p><img src="images/action-type-command.png" alt="Change type to menu"></p>
+				<p><img src="images/action-type-menu.png" alt="Change type to menu"></p>
 			</li>
 		</ul>
 		<p>You will now see the tabs that are relevant to menu actions:</p>
@@ -212,15 +246,15 @@
 		<p><img src="images/menu-icon.png" alt="Menu icon"> - the menu action icon - instead of <img
 				src="images/command-icon.png" alt="Command icon">,
 			the command action icon.</p>
-		<p id="submenu-label">You must now give your menu a label, which should be unique among all actions in the
+		<p id="submenu-label">You must now give your menu a label, which <em>need not be unique</em> among
+			other actions in the
 			parent menu to which you are adding the menu.</p>
 		<p id="submenu-sort">You can also opt to have the extension sort the actions that will appear in this new menu
 			in alphanumeric order (the default is that the order you specify is the one that is used).</p>
 		<p>To add actions to your new menu, click on the <strong>Submenu Actions</strong> tab to reveal a nested
-			panel that is similar to the top-level UI. Here you can, again, click on the
-			<img src="images/add-action-button.png" alt="Add Action"> button to configure the actions that will appear
-			in your
-			newly created menu.
+			panel that is similar to the top-level UI. Here you can, again, click on the submenu's own
+			<img src="images/add-button.png" alt="Add button"> button to configure the actions that will appear
+			in your newly created submenu.
 		</p>
 		<p>That is all there is to menu creation.</p>
 		<p>Note, however, that your menu will not appear in the Nautilus context menu until you add command actions to
@@ -237,16 +271,14 @@
 			<li>Executing an arbitrary command in a selected folder</li>
 			<li>...</li>
 		</ul>
-		<p>Using tools such as Zenity, XClip, Gnome Terminal, and others, you can construct complex
+		<p>Using tools such as Zenity, Yad, XClip, Gnome Terminal, and others, you can construct complex
 			scenarios and even pipelines that are then executed with a simple click on the Nautilus
 			context menu item.</p>
 		<h2 id="creating-a-command-action">Creating a Command Action</h2>
 		<p>You create a command action in the same way you create a menu action: </p>
 		<ul>
 			<li>
-				<p>click on the <img src="images/add-action-button.png" alt="Add Action"> button at the top of the
-					left-most column
-					of the configurator tool</p>
+				<p>click on the <code>+</code> button in the menu toolbar</p>
 			</li>
 			<li>
 				<p>In the newly-created action details area (to the right), click on the type indicator
@@ -256,8 +288,9 @@
 		<p>Upon creating the action, you will see the details that can be specified for the command:</p>
 		<p><img src="images/command-action-tabs.png" alt="Command action tabs"></p>
 		<p>(as well as a warning that minimal required information has not yet been provided).</p>
-		<p id="command-label">Firstly give your command a label, which should be unique within the menu/submenu to which
-			you are adding the command.</p>
+		<p id="command-label">Firstly give your command a label, which <em>need not be unique</em> within
+			the
+			menu/submenu to which you are adding the command.</p>
 		<p>And, evidently, you must provide a command line to execute when the action is clicked on.
 			We&#39;ll cover that <a href="#commands">below</a>.</p>
 		<p>Firstly, however, we&#39;ll cover the rules that dictate if a command action is applicable to the
@@ -265,18 +298,17 @@
 		<h2 id="filtering-rules">Filtering rules</h2>
 		<p>Actions For Nautilus can examine the Nautilus selection to decide if a specific command action
 			should be available to that selection.</p>
-		<p>This examination can apply four different criteria:</p>
+		<p>This examination can apply six different criteria:</p>
 		<ul>
 			<li>The number of files in the selection </li>
+			<li>The minimum access permissions that the user must have for the selected files</li>
 			<li>The mimetypes of the selected files</li>
 			<li>The basic filetypes of the selected files</li>
 			<li>The paths of the selected files</li>
+			<li>Arbitrary criteria based upon the result of an external command execution</li>
 		</ul>
 		<p>Firstly note that each of these is optional - if not used, the action applies to a selection
-			of any size, any file type, any mimetype, and any path.</p>
-		<p>As with other optional configuration items, in order to apply a filter, you must first activate
-			the filter by checking the checkbox situated next to the entry field.</p>
-		<p>After that, you can start adding filter rules.</p>
+			of any size, any file type, any mimetype, any path, and any permissions.</p>
 		<p>It is important to note that <em>all</em> files in the selection must pass the filtering rules in
 			order for the action to be shown in the Nautilus context menu.</p>
 		<p>It is also important to note that if none of the actions in a submenu are applicable to the
@@ -287,8 +319,7 @@
 			for the command action to be shown.</p>
 		<p>The default value of this property is <strong>1</strong>. This is likely to be the most common setting
 			that you will use. However for an action that, say, compares two or more files, you might want to specify a
-			value
-			of <strong>2</strong> here.
+			value of <strong>2</strong> here.
 		</p>
 		<p>As is evident, this property value and the <a href="#max-items">Max items</a> property value are
 			coupled.
@@ -319,39 +350,58 @@
 
 		<h3 id="permissions">Access permissions</h3>
 		<p><img src="images/permissions.png" alt="Access permissions"></p>
-		<p>The optional <strong>Access permissions</strong> rule is used to ensure that you (the user) have at least the indicated
-		access rights to the selected files.</p>
-		<p>There are four possible values presented as a selection list:</p>
+		<p>The optional <strong>Access permissions</strong> rule is used to ensure that you (the user) have at least the
+			indicated
+			access rights to the selected files.</p>
+		<p>There are eight possible values presented as a selection list:</p>
 		<ul>
+			<li><strong>any</strong>: the default; permissions are not checked</li>
 			<li><strong>read</strong>: you must have at least read permissions for the selected files.</li>
-			<li><strong>read-write</strong>: you must have at least read and write permissions for the selected files.</li>
-			<li><strong>read-execute</strong>: you must have at least read and execute permissions for selected files, or
-			read and navigation permissions for selected folders.</li>
-			<li><strong>read-write-execute</strong>: you must have full read, write and execute/navigation permissions for the selected files.</li>
+			<li><strong>read-write</strong>: you must have at least read and write permissions for the selected files.
+			</li>
+			<li><strong>read-execute</strong>: you must have at least read and execute permissions for selected files,
+				or
+				read and navigation permissions for selected folders.</li>
+			<li><strong>read-write-execute</strong>: you must have full read, write and execute/navigation permissions
+				for the selected files.</li>
+			<li><strong>!write</strong>: you must NOT have write permissions for the selected files.
+			</li>
+			<li><strong>!execute</strong>: you must NOT have and execute permissions for selected files,
+				or navigation permissions for selected folders.</li>
+			<li><strong>!write-execute</strong>: you must NOT have write and execute/navigation permissions
+				for the selected files.</li>
 		</ul>
-		<p>The default for this rule is that permissions are not checked, and in a majority of cases it can be left to that default.</p>
-		<p>But the rule <em>is</em> useful for avoiding actions that make no sense if you don't have the necessary 
+		<p>The rule is useful for avoiding actions that make no sense if you don't have the necessary
 			permissions for the selected file(s) in order for the associated command to successfully complete.</p>
-		<p>For example, if you have an action that <a href="https://github.com/bassmanitram/actions-for-nautilus/wiki/Configuration-Examples#a-less-annoying-new-document-action" target="_blank">
-			creates a new document in a folder</a>, it makes no sense to present that action in the context menu if you do not have 
+		<p>For example, if you have an action that <a
+				href="https://github.com/bassmanitram/actions-for-nautilus/wiki/Configuration-Examples#a-less-annoying-new-document-action"
+				target="_blank">
+				creates a new document in a folder</a>, it makes no sense to present that action in the context menu if
+			you do not have
 			permission to actually create files in (i.e. write to) the selected folder!</p>
 		</p>
-		<p>Or, if your action involves executing a selected file, it would certainly be cleaner to only present that action if
+		<p>Or, if your action involves executing a selected file, it would certainly be cleaner to only present that
+			action if
 			you actually had execution permissions for that file.</p>
+		</p>
+		<p>The "negative" settings are designed to allow you to present different actions depending on the permissions
+			for a selection. For example, presenting a <code>Script actions</code> submenu for non-executable scripts, but 
+			avoiding that menu when a script is executable (and thus may appear in a different menu) - you also must always
+			have read access when using the negative settings.
 		</p>
 
 		<h3 id="mimetypes">Mimetypes</h3>
 		<p>With the mimetypes list, entered in the <strong>Mimetypes</strong> tab, you can specify the IANA Media Types
 			to which your command action applies. E.g.</p>
 		<p><img src="images/mimetypes.png" alt="Mimetype"></p>
-		<p>In this example, the <strong>Run in node</strong> action only applies to files whose mimetype is
-			<strong>application/javascript</strong>.
+		<p>In this example, the <strong>Run in python3</strong> action only applies to files whose mimetype is
+			<strong>text/x-python</strong>.
 		</p>
 		<p>You can specify any number of mimetypes - the selected files must match one of these in order to pass the
 			mimetypes filter rule.</p>
 		<p>A mimetype can be declared in one of the ways standard to IANA Media Types:</p>
 		<ul>
-			<li><em>type/subtype</em> - a specific mimetype (e.g. <strong>application/javascript</strong> as in the
+			<li><em>type/subtype</em> - a specific mimetype (e.g. <strong>text/x-python</strong> as in the
 				above example)</li>
 			<li><em>type/*</em> - all subtypes of a specific type (e.g. <strong>audio/*</strong> for audio files of any
 				encoding)</li>
@@ -362,9 +412,8 @@
 		<p>You can make a mimetype <em>&quot;negative&quot;</em> by preceding it with an exclamation point to declare
 			that NONE of the selected files should be of the specified mimetype(s). E.g.</p>
 		<p><img src="images/negative-mimetypes.png" alt="Negative mimetypes"></p>
-		<p>In this example, the <strong>Edit with gvim</strong> action will not appear if any of the selected files is a
-			PDF, an
-			audio file, or an image file.</p>
+		<p>In this example, the <strong>Open in gedit</strong> action will not appear if any of the selected files is a
+			PDF, an audio file, or an image file.</p>
 		<p>You should probably avoid mixing standard (positive) rules with negative rules since the result could
 			be confusing, but the algorithm is fairly straightforward: All selected files must match one of the
 			&quot;positive&quot; rules, if any, and none of the &quot;negative rules&quot;.</p>
@@ -408,7 +457,7 @@
 		<p>With the path patterns list, entered in the <strong>Path patterns</strong> tab, you can state that the paths
 			of the files in the selection should match certain patterns. E.g.</p>
 		<p><img src="images/glob-path-pattern.png" alt="Glob path pattern"></p>
-		<p>In this example, the <strong>Edit with gvim</strong> action only applies to files that are in user jdoe&#39;s
+		<p>In this example, the <strong>Open in gedit</strong> action only applies to files that are in user jdoe&#39;s
 			home
 			directory.</p>
 		<p>Patterns can be entered as &quot;glob&quot; patterns or regular expressions.</p>
@@ -434,7 +483,8 @@
 				<p>Regular expressions allow for far more complex patterns to be expressed. It is beyond the
 					scope of this document to explain regular expressions, but the extension specifically supports
 					the regular expression syntax implemented by Python. Documentation of this syntax is available
-					<a href="https://docs.python.org/3/library/re.html#regular-expression-syntax" target="_blank">here</a>.
+					<a href="https://docs.python.org/3/library/re.html#regular-expression-syntax"
+						target="_blank">here</a>.
 				</p>
 				<p>To use a regular expression, precede the pattern with the tag <strong>re:</strong>. E.g.</p>
 				<p><img src="images/regex-path-pattern.png" alt="Regex path pattern"></p>
@@ -450,10 +500,59 @@
 			</li>
 		</ul>
 		<p>Again, you can prefix the entire pattern string with an exclamation point to specify a &quot;negative&quot;
-			path pattern - no file in the selection should have a path that matches that pattern - and again
+			path pattern - no file in the selection should have a path that matches such a pattern - and again
 			mixing standard and negative rules <em>may</em> be confusing, but may also be useful in breaking down
 			complex patterns into simpler components.</p>
 
+		<h3 id="strict-match">Strict match</h3>
+		<p><a href="mimetypes">Mimetypes</a>, <a href="file-types">File types</a>, and <a href="path-patterns">Path
+				patterns</a> have
+			an option named <code>Strict match</code>, whose default value is <code>false</code>.</p>
+
+		<p>Generally, when this is set to <code>true</code>, it causes the extension to apply "strict" matching to the
+			files in a
+			selection. So, if you select a set of files, while your action may accept multiple different criteria (say,
+			multiple
+			different file types), all the selected files must match the <em>same</em> criteria (e.g. must be of the
+			same filetype).</p>
+
+		<p>
+			Technically, this has a slightly different meaning depending on which of the above the option applys to:
+		<ul>
+			<li>In the case of file types it means that all selected files must have the same Gnome file type.</li>
+			<li>
+				<p>In the case of mimetypes, strict matching means that all selected files must have the same mimetype.
+				</p>
+				<p>In particular it does <em>not</em> mean that each file must match the same mimetype <em>rule</em>.
+					So for example, if you specify
+				<p>
+				<pre>
+image/*
+audio/*</pre>
+				</p>
+				as the mimetypes for an action, and then select an <code>image/jpeg</code> file and an
+				<code>image/png</code> file, without strict matching these files pass. With strict matching they will
+				not because,
+				although they pass the same mimetype rule, they are not of the exact same mimetype.</p>
+			</li>
+			<li>
+				<p>In the case of path patterns, strict matching means that all selected files must match <em>the same
+						positive path pattern rule</em>
+					as that which matched the first file in the selection list. Note also that it does <em>not</em> mean
+					that all files must match <em>a</em>
+					same rule. The first rule that is found to match the first file in the selection must match all
+					files.</p>
+				<p>Additionally, if there are any negative path pattern rules for the action, all files must still pass
+					all of those rules</p>
+			</li>
+		</ul>
+		</p>
+
+		<p>Note that with mimetypes and filetypes, you can specify an empty rule set and still set the
+			<code>strict match</code> to true in order to effect an
+			"accept all files with the same type, no matter what that type is" rule (this trick has no effect on path
+			pattern handling)
+		</p>
 
 		<h3 id="show-if-true">Show if true</h3>
 		<p>And, finally, the most flexible way of choosing whether a command action should be shown for a particular
@@ -461,35 +560,46 @@
 
 		<p><img src="images/show-if-true.png" alt="Show if true"></p>
 
-		<p>Simply put, this optional property allows you to specify a shell pipeline to execute to determine if the command
-			action is applicable to the current selection! In this example, we switch to the selected folder, search backwards 
-			for a file or folder named <code>.git</code> and, if one is found, print the line <code>true</code> (and nothing else)
-			on <code>stdout</code>. I.e. we show the action if the selection is within a GIT repository! 
+		<p>Simply put, this property allows you to specify a shell pipeline to execute to determine if the command
+			action is applicable to the current selection! In this example, we switch to the selected folder, search
+			backwards
+			for a file or folder named <code>.git</code> and, if one is found, print the line <code>true</code> (and
+			nothing else)
+			on <code>stdout</code>. I.e. we show the action if the selection is within a GIT repository!
 			(<code>find-up</code> is my own script for doing a backward find).
 		</p>
 
-		<p>The command is executed by the default system shell, so all shell capabilities are available to you. 
+		<p>The command is executed by the default system shell, so all shell capabilities are available to you.
 			You can use the <a href="#command-line-placeholders"><code>%F</code> and <code>%f</code> placeholders</a>.
-			If you use the <code>%F</code> placeholder then the paths of all selected files are passed on the command line with each one single-quoted. If you use the <code>%f</code>
-			placeholder, then the command is invoked for each file in the selection with <code>%f</code> replaced by the single-quoted full path of that file.
+			If you use the <code>%F</code> placeholder then the paths of all selected files are passed on the command
+			line with each one single-quoted. If you use the <code>%f</code>
+			placeholder, then the command is invoked for each file in the selection with <code>%f</code> replaced by the
+			single-quoted full path of that file.
 		</p>
 
-		<p>Upon return, if the command emits a single line <code>true</code> on <code>stdout</code> then the action is included in the Gnome Files menu. If not
-		(including any error in execution of the command, or anything else on <code>stdout</code>) then the action will not appear in the menu.</p>
+		<p>Upon return, if the command emits a single line <code>true</code> on <code>stdout</code> then the action is
+			included in the Gnome Files menu. If not
+			(including any error in execution of the command, or anything else on <code>stdout</code>) then the action
+			will not appear in the menu.</p>
 
-		<p>Firstly, obviously this is extremely powerful and can be "piggybacked" upon to produce all sorts of wonderous side effects in addition to its prime purpose.
-			But <emphasis>DON'T</emphasis>, and if you do, I take no responsibility for unexpected bad things happening!
-		</p>
-	
-		<p>Secondly, this can significantly impact performance if over used! Selections where you use the <code>%f</code> placeholder will result in the command being called
-			once for each item - so the larger the selection, the slower the rendering of the menu will be. To combat this, all other rules are examined before an
-			action's <code>Show-if-true</code> command is executed, so use those rules to eliminate the action for other reasons before resorting to the command execution.
+		<p>Firstly, obviously this is extremely powerful and can be "piggybacked" upon to produce all sorts of wonderous
+			side effects in addition to its prime purpose.
+			But <em>DON'T</em>, and if you do, I take no responsibility for unexpected bad things happening!
 		</p>
 
-		<p>For example, if you were to use the above example, and you keep all your GIT repositories in a specific directory tree, use path patterns to avoid the
+		<p>Secondly, this can significantly impact performance if over used! Selections where you use the
+			<code>%f</code> placeholder will result in the command being called
+			once for each item - so the larger the selection, the slower the rendering of the menu will be. To combat
+			this, all other rules are examined before an
+			action's <code>Show-if-true</code> command is executed, so use those rules to eliminate the action for other
+			reasons before resorting to the command execution.
+		</p>
+
+		<p>For example, if you were to use the above example, and you keep all your GIT repositories in a specific
+			directory tree, use path patterns to avoid the
 			command being unnecessarily executed for anything not in the GIT repository tree.
 		</p>
-	
+
 
 		<h2 id="commands">Commands</h2>
 		<p>And so to the most important part - the command that is executed when you click on an action
@@ -520,59 +630,53 @@
 			arrangements to stop the server when you are done with it.
 		</p>
 		<p>And that is an important point here - you get no feedback unless the command you execute
-			inherently opens its own user interface.</p>
-		<p>The command string is <em>mostly</em> devoid of characters with special meaning to the extension.
-			You can alter the space-delimited tokenization by using <code>\</code> characters to escape spaces or quotes
-			to include spaces in tokens - and <code>\</code> characters to escape quotes and backslashes. Here is the
-			full
-			example from the sample configuration, setting the terminal title to a value that includes spaces:</p>
-		<p><img src="images/full-command.png" alt="cwd"></p>
+			inherently provides its own feedback (such as a UI or pop-up, etc).</p>
+		<p>The command string is "completed" by expanding <a href="#command-line-placeholders">place holders that
+				represent different informational
+				strings associated with the selected files</a>. <em>How</em> it is completed is affected by the <a
+				href="#placeholder-interpolation">
+				interpolation option that you select for the action</a>.
+
 		<h3 id="cwd">Current working directory</h3>
-		<p>In the HTTP server example above, you may notice that we haven&#39;t specified which directory the HTTP server should
+		<p>In the HTTP server example above, you may notice that we haven&#39;t specified which directory the HTTP
+			server should
 			use as its document root.</p>
 		<p>For the python HTTP server, the default root directory is the &quot;current
 			working directory&quot; (or CWD) when the command is executed. Reliance upon the CWD is ubiquitous behavior
-			in Linux commands. You can specify the CWD for your commands by using the optional parameter
-			named <strong>Current working directory</strong>:</p>
+			in Linux commands. You can specify the CWD for your commands by using the property named <strong>Current
+				working directory</strong>:</p>
 		<p><img src="images/cwd.png" alt="cwd"></p>
 		<p>If you don&#39;t specify the CWD, the setting is &quot;undefined&quot; - i.e. the extension itself makes no
-			special
-			arrangements to use a default.</p>
+			special arrangements to use a default.</p>
 		<p>The glaring problem with this particular CWD is that, on the face of it, the setting - <code>%f</code> -
 			is <em>not</em> a valid directory. However, within the extension, it <em>is</em> valid. That particular
 			value is a <a href="#command-line-placeholders">placeholder</a> that tells
 			the extension to use the file path of the first file in the selection as the CWD ... and, because
 			this particular command action is configured only to be available when the selection size is 1 and the
 			selected file is a directory, we are guaranteed that <code>%f</code> will always resolve to a valid
-			directory from
-			which to serve content.</p>
-		<p>You&#39;ll also see that we used that same <a href="#command-line-placeholders">placeholder</a> in the
-			command line within the <code>--title</code>
-			<strong>gnome-terminal</strong> command option value, which allows the terminal title to include the root
-			directory path.
-		</p>
-		<p>In general, then, character pairs that start with <code>%</code> are placeholders for values that are drawn
-			from the details of the files in the selection. These are full explained <a
-				href="#command-line-placeholders">below</a>.</p>
-		<h3 id="use-shell">Use shell</h3>
+			directory from which to serve content.</p>
+
+		<h3 id="use-shell">Using a shell to execute the command</h3>
 		<p>Writing shell scripts to be executed by this extension is a prime use case, allowing you to
 			implement just about any scenario imaginable and having them available in the Nautilus context menu.</p>
-		<p>By default, the extension will attempt to directly execute the command via operating system APIs. </p>
+		<p>By default, the extension will attempt to directly execute an action's command via operating system APIs.
+		</p>
 		<p>This works when executing a shell script too if:</p>
 		<ul>
 			<li>The script file is marked as executable</li>
 			<li>The script itself informs the operating system what shell interpreter to use with a &quot;hash
 				bang&quot;
 				(<code>#!/path/to/shell</code>) stanza</li>
-			<li>The script is in a directory that is listed in the environment&#39;s PATH variable, or you
+			<li>The script is in a directory that is listed in the environment&#39;s <code>PATH</code> variable, or you
 				specify the full path to the script as the first token of your command string</li>
 		</ul>
-		<p>You <em>can</em> ask the extension to use the default system shell to execute the command by enabling
-			and setting to <code>true</code> this option:</p>
-		<p><img src="images/use-shell.png" alt="Use shell"></p>
-		<p>In effect, this is <em>similar</em> to prefixing the command string with <code>sh</code> - but it is not
-			exactly
-			the same, since the extension exploits the embedded python capability of executing commands in
+		<p>However, you can ask the extension to execute the command within a shell by clicking
+			on the <code><s>/bin/sh</s></code> button that sits at the left end of the command entry field. When the
+			button
+			is displayed in yellow with no strike-through applied to the text, the command will be executed using the
+			system shell.
+		<p>In effect, this is <em>similar</em> to prefixing the command string with <code>/bin/sh</code> - but it is not
+			exactly the same, since the extension exploits the embedded python capability of executing commands in
 			a shell and that is a lot more powerful than simply using a prefix.</p>
 		<p>Why would you want to do this? </p>
 		<p>Well, firstly, if the conditions above aren&#39;t satisfied, this is the easiest way to execute a shell
@@ -585,13 +689,13 @@
 			<li><code>echo</code>, to write the basenames of all the files in the selection to <code>stdout</code>
 				(again, <code>%B</code> is a
 				file detail <a href="#command-line-placeholders">placeholder</a>),</li>
-			<li><code>xclip</code> with parameters that tell it to <ul>
+			<li><code>xclip</code> with arguments that tell it to <ul>
 					<li>Read <code>stdin</code> (i.e. the <code>stdout</code> from the <code>echo</code> command)</li>
 					<li>Set the contents of the desktop <em>primary</em> clipboard to that</li>
 					<li>re-echo <code>stdin</code> to <code>stdout</code></li>
 				</ul>
 			</li>
-			<li><code>xclip</code> again, this time with parameters that tell it to <ul>
+			<li><code>xclip</code> again, this time with arguments that tell it to <ul>
 					<li>Read <code>stdin</code> (i.e. the <code>stdout</code> from the first <code>xclip</code> command)
 					</li>
 					<li>Set the contents of the desktop <em>default</em> clipboard to that</li>
@@ -603,10 +707,11 @@
 			of all the files that you selected. You can then paste them wherever you want.</p>
 		<p>Another really instructive example:</p>
 		<p><img src="images/env-var.png" alt="Environment variable"></p>
-		<p>(You really <em>have</em> to install Zenity!)</p>
+		<p>(You really do have to install Zenity!)</p>
 		<p>What does this do?</p>
 		<ul>
-			<li>echoes the value of the environment variable PWD (which contains the CWD path) to <code>stdout</code>
+			<li>echoes the value of the environment variable <code>PWD</code> (which contains the CWD path) to
+				<code>stdout</code>
 			</li>
 			<li>&quot;pipes&quot; that to the <code>zenity</code> command, telling <strong>Zenity</strong> to display a
 				window with the
@@ -619,8 +724,7 @@
 			a command action is if you don&#39;t specify it - no spoilers; try it!</p>
 		<p><em>Most</em> things that you can specify at a shell prompt can also be used in the <strong>Command
 				line</strong>
-			string when the <strong>Use shell</strong> option is set to <code>true</code>. Simply experiment to find the
-			limits!</p>
+			string with the <code>/bin/sh</code> button active. Simply experiment to find the limits!</p>
 		<h4 id="shells">Shells</h4>
 		<p>At this time there is no way within the extension to specify the default shell to use when the
 			<strong>Use shell</strong> option is activated. The extension uses whatever is bound to the system
@@ -630,7 +734,7 @@
 			you are executing a shell script, this particular shell implementation may not be adequate for your
 			needs (looking at you, <code>dash</code>, the default system shell in Ubuntu and some derivatives). </p>
 		<p>You can overcome this either by rebinding the <code>sh</code> command to the shell of your choice or by
-			<em>not</em> using the <strong>Use shell</strong> option and, instead, doing the following:
+			<em>not</em> enabling the <code>/bin/sh</code> button and, instead, doing the following:
 		</p>
 		<ul>
 			<li>
@@ -651,6 +755,7 @@
 				<strong>Command line</strong> string.
 			</li>
 		</ul>
+
 		<h3 id="command-line-placeholders">Command line placeholders</h3>
 		<p>The command line would be of limited use if it didn&#39;t have access to information about the files in the
 			Nautilus selection. As already hinted at, though, it does!</p>
@@ -681,7 +786,7 @@
 				</tr>
 				<tr>
 					<td><code>%B</code></td>
-					<td>space-separated list of the <code>%b</code> values of all selected items</td>
+					<td>a list of the <code>%b</code> values of all selected items</td>
 					<td>PLURAL</td>
 				</tr>
 				<tr>
@@ -698,7 +803,7 @@
 				</tr>
 				<tr>
 					<td><code>%D</code></td>
-					<td>space-separated list of the <code>%d</code> values of all selected items</td>
+					<td>a list of the <code>%d</code> values of all selected items</td>
 					<td>PLURAL</td>
 				</tr>
 				<tr>
@@ -710,7 +815,7 @@
 				</tr>
 				<tr>
 					<td><code>%F</code></td>
-					<td>space-separated list of the <code>%f</code> values of all selected items</td>
+					<td>a list of the <code>%f</code> values of all selected items</td>
 					<td>PLURAL</td>
 				</tr>
 				<tr>
@@ -725,7 +830,7 @@
 				</tr>
 				<tr>
 					<td><code>%M</code></td>
-					<td>space-separated list of the <code>%m</code> values of all selected items</td>
+					<td>a list of the <code>%m</code> values of all selected items</td>
 					<td>PLURAL</td>
 				</tr>
 				<tr>
@@ -762,7 +867,7 @@
 				</tr>
 				<tr>
 					<td><code>%U</code></td>
-					<td>space-separated list of the <code>%u</code> values of all selected items</td>
+					<td>a list of the <code>%u</code> values of all selected items</td>
 					<td>PLURAL</td>
 				</tr>
 				<tr>
@@ -773,7 +878,7 @@
 				</tr>
 				<tr>
 					<td><code>%W</code></td>
-					<td>space-separated list of the <code>%w</code> values of all selected items</td>
+					<td>a list of the <code>%w</code> values of all selected items</td>
 					<td>PLURAL</td>
 				</tr>
 				<tr>
@@ -783,7 +888,7 @@
 				</tr>
 				<tr>
 					<td><code>%X</code></td>
-					<td>space-separated list of the <code>%x</code> values of all selected items</td>
+					<td>a list of the <code>%x</code> values of all selected items</td>
 					<td>PLURAL</td>
 				</tr>
 				<tr>
@@ -791,19 +896,123 @@
 					<td>the <code>%</code> character</td>
 					<td>ANY</td>
 				</tr>
+				<tr>
+					<td><code>%_</code></td>
+					<td>causes a token to be split into two tokens at this point - roughly speaking a token is a command argument</td>
+					<td>ANY</td>
+				</tr>
 			</tbody>
 		</table>
-		<p>Any embedded spaces found in the individual values are &#39;escaped&#39; to ensure that
-			the shell or system recognizes each value as an independent and complete
-			argument to the command.</p>
-		<p>The meaning of the <code>Repetition</code> value is explained in the next section.</p>
+		<h3 id="placeholder-interpolation">Placeholder interpolation</h3>
+		<p>Previous versions of Actions For Nautilus had some deficiencies when it came to interpolating the 
+			above placeholders into command arguments, and in quoting arguments and escaping characters to
+			make the command execute as expected. The input command line was <em>mostly</em> devoid of characters with special
+			meaning to the extension and you could alter the space-delimited tokenization by using <code>\</code>
+			characters
+			to escape spaces or quotes to include spaces in tokens - and <code>\</code> characters to escape quotes and
+			backslashes.
+			Here is a full example from the sample configuration, setting the terminal title to a value that includes
+			spaces:</p>
+		<p><img src="images/full-command.png" alt="cwd"></p>
+
+		<p>This approach wasn't bad, per-sé, but it was incomplete, and
+		   lead to errors when file names contained special characters, or complex argument construction
+		   was desired (for example, appending a suffix to a file name).</p>
+		<p>Note also that such issues should only have affected commands that where executed by the shell. Those
+		   that are executed natively should not have experienced these problems, and yet, because of the way it
+		   was implemented, they also suffered.
+		</p>
+		<p>There is now a new way to perform interpolation that should eliminate most if not all of
+			the issues with the old way.</p>
+		<p>The problem is that this new way will undoubtedly play havoc with command lines that rely
+			upon the old way.</p>
+		<p>So, you have the option to stick with the old way, and, indeed, this is the <em>default</em> for existing
+			actions.</p>
+		<p><img src="images/original-interpolation.png" alt="Original interpolation"></p>
+		<p>The <em>new</em> way is designed to make it more intuitive to create a command line for an action while
+		   correctly handling the escaping of special characters that may appear in file names and paths. You simply enter
+		   the command line as you would at a shell prompt treating each token as a single argument. Use placeholders
+		   at will without worrying about any <em>internal</em> special characters that may need treating specially. Any
+		   <em>explicit</em> special characters you include in your command line should be appropriately escaped if
+		   needed, however.</p>
+		<p>Previously the command line was scanned for placeholders with every <code>PLURAL</code> placeholder
+		   (the ones that handle all the selections at once) expanded in place. That is no longer the case.</p>
+		<p>Instead, the command line is split into shell "tokens" similar to the <a href="https://docs.python.org/3/library/shlex.html">Python shlex</a> 
+			utility <em>before</em> any interpolation is performed, resulting in a list of tokens that each constitute an argument to
+			be passed to the action's command (the first such token being the target command itself).
+			Subsequently every token that contains at least one <code>PLURAL</code> placeholder is repeated for <em>each</em> additional item in 
+			the selection.</p>
+		<p>If the command is being prepared for "native" execution (without a shell) then each token is simply expanded
+			as-is according to the place holders within it, and the token list passed directly to the system for execution.
+		</p>
+		<p>If the command is being prepared for execution in the shell, each token is expanded as necessary according to the 
+			place holders within it, with any necessary characters in the file information approriately escaped. Finaly the 
+			tokens are assembled into a command string appropriate for passing to the system shell for execution.</p>
+		<p>Finally there is a new placeholder, <code>%_</code> that splits a single token found in the command line into two
+			arguments for the action's command. Note that, with complex quoting in your command line, the effect of this placeholder may
+			be different when using a shell from when not using a shell for your action.
+		</p>
+		<p>Confused? Well, without treading on the toes of the next section, here are some examples based on a
+			selection of two files named <code>no-spaces.png</code> and <code>one space.txt</code>:</p>
+		<table>
+			<thead>
+				<tr>
+					<th>Action Command Line</th>
+					<th>Result</th>
+					<th>Explanation</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><code>ls %B</code></td>
+					<td><code>ls no-spaces.png one\ space.txt</code></td>
+					<td>The command is passed two 'bare' arguments, with special characters in the interpolated file information properly escaped</td>
+				</tr>
+				<tr>
+					<td><code>ls "%B"</code></td>
+					<td><code>ls "no-spaces.png" "one space.txt"</code></td>
+					<td>The command is passed two double-quoted arguments, with <code>'</code>, <code>\</code>, <code>"</code>, and <code>$</code> characters in the interpolated file information escaped</td>
+				</tr>
+				<tr>
+					<td><code>ls %B %M</code></td>
+					<td><code>ls no-spaces.png one\ space.txt image/png text/plain</code></td>
+					<td>The command is passed four escaped arguments: the file basenames, followed by the file mimetypes</td>
+				</tr>
+				<tr>
+					<td><code>ls %B%_%M</code></td>
+					<td><code>ls no-spaces.png image/png one\ space.txt text/plain</code></td>
+					<td>Note the effect of <code>%_</code> - the command is passed four escaped arguments: the basename of the first selection, the mimetype of the first selection, the basename of the second selection, and the mimetype of the second selection</td>
+					</tr>
+				<tr>
+					<td><code>ls %B%_%B.backup</code></td>
+					<td><code>ls no-spaces.png no-spaces.png.backup one\ space.txt one\ space.txt.backup</code></td>
+					<td>The command is passed the basename followed by the <code>.backup</code> basename of each item in the selection</td>
+				</tr>
+				<tr>
+					<td><code>ls "\"%B\""%_%M</code> (not using shell)</td>
+					<td><code>ls "\"no-spaces.png\"" image/png "\"one space.txt\"" text/plain</code></td>
+					<td>Similar to the <code>ls %B%_%M</code> example above, except that the basenames have embedded quotes - this might be viewed as the <code>%_</code> placeholder behaving as expected.</td>
+				</tr>
+				<tr>
+					<td><code>ls "\"%B\""%_%M</code> (using a shell)</td>
+					<td><code>ls "\"no-spaces.png\"" "\"one space.txt\"" image/png text/plain</code></td>
+					<td>Similar to the <code>ls %B %M</code> example above, except that the basenames have embedded quotes - this might be viewed as the <code>%_</code> placeholder NOT behing as expected.
+					This is due to internal constraints when constructing a properly escaped command line for the shell. However, note that you would normally not need to resort to this kind of complex
+				    quoting because the extension now properly handles escaping of interpolated file information correctly for the context in which the placeholders are used.</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>The new method is the default for <em>new</em> actions:</p>
+		<p><img src="images/improved-interpolation.png" alt="Improved interpolation"></p>
+		<p>and, of course, can be activated for existing actions once you have made the appropriate adjustments to the command line</p>
+
 		<h3 id="execution-behavior">Execution behavior</h3>
 		<p>The <code>filemanager/nautilus-actions</code> project implemented a feature whereby a
 			configured command could be executed once only, regardless of the number items
 			in the selection, or once for each item in the selection.</p>
 		<p>This extension implements the same feature with the same semantics.</p>
 		<p>The decision as to which mode is desired is based upon the first placeholder
-			found in the <code>command_line</code> property value for the activated action:</p>
+			found in the command line for the activated action:</p>
 		<ul>
 			<li>If the placeholder has a <code>Repetition</code> property of <code>SINGULAR</code>, the command is
 				executed once for each item in the selection.</li>
@@ -855,6 +1064,102 @@
 				basenames. As the command is only run once, the <code>%b</code> is substituted only once
 				with the (first) basename.</p>
 		</blockquote>
+
+		<h1 id="diagnostics">Diagnostics and Debug Mode</h1>
+		<p>When troubleshooting issues with your configuration or understanding how the extension is processing your actions, 
+			you can enable debug mode to see detailed logging information.</p>
+
+		<h2>Enabling Debug Mode</h2>
+		<p>In the configurator, at the top level configuration (when no action is selected), you can enable the 
+			<strong>Debug</strong> option. When set to <code>true</code>, the extension will output detailed 
+			diagnostic information including:</p>
+		<ul>
+			<li>Configuration file loading and validation messages</li>
+			<li>Action filtering decisions (which actions are shown/hidden and why)</li>
+			<li>Placeholder expansion details</li>
+			<li>Command execution information (what commands are run, with what arguments)</li>
+			<li>Permission checks and file property extraction</li>
+		</ul>
+
+		<h2>Viewing Debug Output</h2>
+		<p><strong>Important:</strong> Debug output is written to Nautilus's standard output (<code>stdout</code>) and 
+			standard error (<code>stderr</code>) streams. In normal operation, Nautilus runs as a background process and 
+			these streams are not visible.</p>
+
+		<p>To see the debug output, you need to start Nautilus in a special way from a terminal emulator 
+			(such as <code>gnome-terminal</code>):</p>
+
+		<h3>Step-by-Step Instructions</h3>
+		<ol>
+			<li><p>Enable debug mode in your configuration and save the changes</p></li>
+			<li><p>Open a terminal emulator (e.g., <code>gnome-terminal</code>)</p></li>
+			<li><p>Stop the currently running Nautilus instance:</p>
+				<pre><code>nautilus -q</code></pre>
+			</li>
+			<li><p>Restart Nautilus with output directed to the terminal:</p>
+				<pre><code>nautilus --no-desktop</code></pre>
+			</li>
+			<li><p>Use Nautilus normally - right-click files, activate actions, etc.</p></li>
+			<li><p>Watch the terminal window for debug output</p></li>
+		</ol>
+
+		<h3>What You'll See</h3>
+		<p>With debug mode enabled, you'll see output like:</p>
+		<pre><code>actions_for_nautilus - DEBUG - Config initialized
+actions_for_nautilus - DEBUG - GET FILES: /home/user/file1.txt /home/user/file2.txt
+actions_for_nautilus - DEBUG - Executing command: echo %B
+actions_for_nautilus - DEBUG - Files: ['/home/user/file1.txt', '/home/user/file2.txt']
+actions_for_nautilus - DEBUG - Count: 1, Behavior: 0
+actions_for_nautilus - DEBUG - Final command 0: echo file1.txt file2.txt
+actions_for_nautilus - DEBUG - END GET FILES</code></pre>
+
+		<h3>Stopping Debug Mode</h3>
+		<p>To stop viewing debug output:</p>
+		<ol>
+			<li>Close the terminal window where Nautilus is running, <strong>or</strong></li>
+			<li>Open another terminal and run: <code>nautilus -q</code></li>
+		</ol>
+		<p>Nautilus will automatically restart in normal mode (without terminal output).</p>
+
+		<h3>Tips for Debugging</h3>
+		<ul>
+			<li><strong>Start simple:</strong> Enable debug mode, open the terminal, and right-click a single file to see 
+				the basic flow</li>
+			<li><strong>Check filtering:</strong> If an action doesn't appear, debug output will show which filter rule 
+				excluded it</li>
+			<li><strong>Verify placeholders:</strong> Debug output shows the final expanded command line before execution</li>
+			<li><strong>Test show-if-true:</strong> Debug output shows the result of external validation commands</li>
+			<li><strong>Performance issues:</strong> Debug output includes timing information for slow operations</li>
+		</ul>
+
+		<h3>Common Debug Scenarios</h3>
+		<p><strong>Action doesn't appear for certain files:</strong></p>
+		<ul>
+			<li>Enable debug mode</li>
+			<li>Run <code>nautilus --no-desktop</code></li>
+			<li>Right-click the files</li>
+			<li>Look for filter evaluation messages showing which rule failed</li>
+		</ul>
+
+		<p><strong>Command executes wrong number of times:</strong></p>
+		<ul>
+			<li>Enable debug mode</li>
+			<li>Look for "Count: X, Behavior: Y" message</li>
+			<li>Verify the first placeholder in your command is the correct type (SINGULAR vs PLURAL)</li>
+		</ul>
+
+		<p><strong>Command fails or produces wrong results:</strong></p>
+		<ul>
+			<li>Enable debug mode</li>
+			<li>Look for "Final command X:" messages</li>
+			<li>Verify the expanded command line is what you expected</li>
+			<li>Check for escaping issues in file names with special characters</li>
+		</ul>
+
+		<h3>Disabling Debug Mode</h3>
+		<p>Once you've resolved your issues, remember to disable debug mode in the configurator to avoid 
+			unnecessary logging overhead.</p>
+
 	</div>
 </body>
 

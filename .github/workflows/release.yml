@@ -1,0 +1,126 @@
+name: Build and Release Debian Package
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-nautilus python3-gi procps libjs-jquery xdg-utils lintian fakeroot
+          
+      - name: Extract version from tag
+        id: get_version
+        run: |
+          # Get version from tag (e.g., v2.0.0-pre2-1 -> 2.0.0-pre2-1)
+          TAG_VERSION=${GITHUB_REF#refs/tags/v}
+          echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_OUTPUT
+          
+          # Convert hyphens to tildes for Debian version (2.0.0-pre2-1 -> 2.0.0~pre2-1)
+          # This handles pre-release versions correctly for Debian packaging
+          DEBIAN_VERSION=$(echo "$TAG_VERSION" | sed 's/-pre/~pre/; s/-rc/~rc/; s/-alpha/~alpha/; s/-beta/~beta/')
+          echo "DEBIAN_VERSION=$DEBIAN_VERSION" >> $GITHUB_OUTPUT
+          
+          echo "Tag version: $TAG_VERSION"
+          echo "Debian version: $DEBIAN_VERSION"
+          
+      - name: Verify Makefile version matches tag
+        run: |
+          MAKEFILE_VERSION=$(grep '^VERSION=' Makefile | cut -d'=' -f2)
+          EXPECTED_VERSION="${{ steps.get_version.outputs.DEBIAN_VERSION }}"
+          
+          echo "Makefile version: $MAKEFILE_VERSION"
+          echo "Expected version: $EXPECTED_VERSION"
+          
+          if [ "$MAKEFILE_VERSION" != "$EXPECTED_VERSION" ]; then
+            echo "ERROR: Version mismatch!"
+            echo "Makefile has VERSION=$MAKEFILE_VERSION"
+            echo "But tag v${{ steps.get_version.outputs.TAG_VERSION }} expects $EXPECTED_VERSION"
+            echo ""
+            echo "Note: Git tags use hyphens (v2.0.0-pre1), Makefile uses tildes (2.0.0~pre1)"
+            exit 1
+          fi
+          
+          echo "✓ Version check passed"
+          
+      - name: Build Debian package
+        run: |
+          fakeroot make deb
+          
+      - name: Verify package was created
+        run: |
+          VERSION="${{ steps.get_version.outputs.DEBIAN_VERSION }}"
+          PACKAGE_FILE="dist/actions-for-nautilus_${VERSION}_all.deb"
+          if [ ! -f "$PACKAGE_FILE" ]; then
+            echo "ERROR: Package file not found: $PACKAGE_FILE"
+            ls -la dist/
+            exit 1
+          fi
+          echo "Package created successfully: $PACKAGE_FILE"
+          
+      - name: Run lintian on package
+        run: |
+          VERSION="${{ steps.get_version.outputs.DEBIAN_VERSION }}"
+          PACKAGE_FILE="dist/actions-for-nautilus_${VERSION}_all.deb"
+          lintian "$PACKAGE_FILE" || true
+          
+      - name: Extract release notes
+        id: release_notes
+        run: |
+          VERSION="${{ steps.get_version.outputs.DEBIAN_VERSION }}"
+          TAG_VERSION="${{ steps.get_version.outputs.TAG_VERSION }}"
+          
+          # Try with Debian version first (with tilde)
+          awk "/# Release ${VERSION}/,/# Release [0-9]/" RELEASE-NOTES.md | head -n -1 > /tmp/release_notes.txt
+          
+          # If empty, try with tag version (with hyphen)
+          if [ ! -s /tmp/release_notes.txt ]; then
+            awk "/# Release ${TAG_VERSION}/,/# Release [0-9]/" RELEASE-NOTES.md | head -n -1 > /tmp/release_notes.txt
+          fi
+          
+          # If still empty, try without pre-release suffix (e.g., 2.0.0)
+          if [ ! -s /tmp/release_notes.txt ]; then
+            SHORT_VERSION=$(echo $VERSION | grep -oE '^[0-9]+\.[0-9]+(\.[0-9]+)?')
+            awk "/# Release ${SHORT_VERSION}/,/# Release [0-9]/" RELEASE-NOTES.md | head -n -1 > /tmp/release_notes.txt
+          fi
+          
+          # If still empty, use a default message
+          if [ ! -s /tmp/release_notes.txt ]; then
+            echo "Release ${VERSION} (${TAG_VERSION})" > /tmp/release_notes.txt
+            echo "" >> /tmp/release_notes.txt
+            echo "See [RELEASE-NOTES.md](RELEASE-NOTES.md) for details." >> /tmp/release_notes.txt
+          fi
+          
+          echo "Release notes:"
+          cat /tmp/release_notes.txt
+          
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/actions-for-nautilus_${{ steps.get_version.outputs.DEBIAN_VERSION }}_all.deb
+          body_path: /tmp/release_notes.txt
+          draft: false
+          prerelease: ${{ contains(steps.get_version.outputs.TAG_VERSION, 'pre') || contains(steps.get_version.outputs.TAG_VERSION, 'rc') || contains(steps.get_version.outputs.TAG_VERSION, 'alpha') || contains(steps.get_version.outputs.TAG_VERSION, 'beta') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Upload package as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: debian-package
+          path: dist/actions-for-nautilus_${{ steps.get_version.outputs.DEBIAN_VERSION }}_all.deb
+          retention-days: 90

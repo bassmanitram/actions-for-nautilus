@@ -1,4 +1,3 @@
-
 let previous_values = [];
 let saved_value;
 let current_value_index = 0;
@@ -7,29 +6,61 @@ let redo_button;
 let save_button;
 let editor_ready = false;
 let root_editor;
+let disable_overlay;
 
+// The actions clipboard
+class ActionsClipboard {
+	constructor() {
+		this.value = null
+	}
+	_togglePaste() {
+		const disabled = this.value ? false : true
+		document.querySelectorAll('.json-editor-btntype-paste').forEach(element => {
+			element.disabled = disabled
+        });
+	}
+	set(value) {
+		this.value = value
+		this._togglePaste()
+	}
+	take() {
+		const value = this.value
+		this.set(null)
+		return value
+	}
+	hasValue() {
+		return this.value ? true : false
+	}
+}
 
+const actions_clipboard = new ActionsClipboard()
+
+// The global toolbar buttons
 function setUndoRedoButtonStates() {
 	undo_button.disabled = (current_value_index == 0);
 	redo_button.disabled = (current_value_index == (previous_values.length - 1));
 }
 
-function setEditorValueFromPreviousValues(editor) {
-	editor.setValue(JSON.parse(previous_values[current_value_index]));
-	setUndoRedoButtonStates();
+function setEditorValueFromPreviousValues() {
+	disable_overlay.style.display = 'block';
+    setTimeout(() => {
+		topLevelObjectEditor.setValue(JSON.parse(previous_values[current_value_index]));
+		disable_overlay.style.display = 'none';
+		setUndoRedoButtonStates();
+	}, 50)
 }
 
 function undo(e) {
 	if (current_value_index > 0) {
 		current_value_index--;
-		setEditorValueFromPreviousValues(editor);
+		setEditorValueFromPreviousValues();
 	}
 }
 
 function redo(e) {
 	if (current_value_index < (previous_values.length - 1)) {
 		current_value_index++;
-		setEditorValueFromPreviousValues(editor);
+		setEditorValueFromPreviousValues();
 	}
 }
 
@@ -43,16 +74,17 @@ function saveConfig(e) {
 	e.preventDefault();
 	editor.disable();
 	save_button.disabled = true;
-	var errors = editor.validate();
+	const errors = editor.validate();
 	if (errors.length > 0) {
 		alert("There are validation errors in the data");
 		return;
 	}
-//	console.log(JSON.stringify(convertToBackendFormat(config),null,4));
-//	var data = JSON.stringify(editor.getValue());
-	var data = JSON.stringify(convertToBackendFormat(editor.getValue()));
+	//	console.log(JSON.stringify(convertToBackendFormat(config),null,4));
+	//	const data = JSON.stringify(editor.getValue());
+	const editor_value = editor.getValue()
+	const data = JSON.stringify(convertToBackendFormat(editor_value));
 	//console.log(data);
-$.ajax({
+	$.ajax({
 		url: '/config',
 		type: 'post',
 		data: data,
@@ -66,21 +98,57 @@ $.ajax({
 			alert("An error ocurred when trying to save the configuration");
 		},
 		success: function (response) {
-			saved_value = data;
+			saved_value = JSON.sortify(editor_value)
 			editor.enable();
 		}
 	});
 }
 
+// The action toolbar key key modifiers
+function setShift(on) {
+	document.querySelectorAll('.a4n-actions-toolbar>.json-editor-btntype-delete').forEach(element => {
+		element.classList.toggle('shift-pressed', on);
+		element.setAttribute("title", on ? "Delete All Actions" : "Delete Action")
+    });
+}
+
+function setCtrl(on) {
+	document.querySelectorAll('.a4n-actions-toolbar>.json-editor-btntype-delete').forEach(element => {
+		element.classList.toggle('ctrl-pressed', on);
+		element.children[0].classList.toggle('fa-trash', !on);
+		element.children[0].classList.toggle('fa-cut', on);
+		element.setAttribute("title", on ? "Cut Action (to clipboard)" : "Delete Action")
+    });
+	document.querySelectorAll('.a4n-actions-toolbar>.json-editor-btntype-copy').forEach(element => {
+		element.classList.toggle('ctrl-pressed', on);
+		element.setAttribute("title", on ? "Copy Action (to clipboard)" : "Copy Action")
+
+    });
+}
+
+function resetKeys(e) {
+	if (e && e.ctrlKey && !e.shiftKey) {
+		setCtrl(true)
+		setShift(false)
+	} else if (e && !e.ctrlKey && e.shiftKey) {
+		setCtrl(false)
+		setShift(true)
+	} else {
+		setCtrl(false)
+		setShift(false)
+	}
+}
+
+// The listener for config changes
 function configChanged(e) {
-	new_value = JSON.stringify(editor.getValue());
+	const new_value = JSON.sortify(editor.getValue());
 	if (previous_values[current_value_index] != new_value) {
 		/*
 		 * The editor changed outside of undo-redo
 		 * Everything after the current index is lost
 		 * then this change is pushed.
 		 */
-		previous_values = previous_values.slice(0, current_value_index + 1);
+		previous_values.splice(current_value_index + 1);
 		current_value_index = previous_values.push(new_value) - 1;
 		setUndoRedoButtonStates();
 	} else {
@@ -95,11 +163,12 @@ function configChanged(e) {
 	}
 }
 
+// The "start it all"
 function finalizeEditorConfig(e) {
-	saved_value = JSON.stringify(editor.getValue());
+	saved_value = JSON.sortify(editor.getValue());
 	previous_values[0] = saved_value;
 
-	var button_holder = editor.root.theme.getHeaderButtonHolder();
+	const button_holder = editor.root.theme.getHeaderButtonHolder();
 	editor.root.header.parentNode.insertBefore(button_holder, editor.root.header.nextSibling);
 
 	/*
@@ -136,7 +205,7 @@ function finalizeEditorConfig(e) {
 	 */
 	json_button = editor.root.getButton('JSON', 'edit', 'JSON');
 	json_button.classList.add("a4n-edit-json");
-//	json_button.classList.add("json-editor-btntype-editjson")
+	//	json_button.classList.add("json-editor-btntype-editjson")
 	json_button.addEventListener('click', toggleJSONEditor, false);
 	button_holder.appendChild(json_button);
 
@@ -154,12 +223,14 @@ function finalizeEditorConfig(e) {
 		setHelpButton(help_button);
 	}
 
+	disable_overlay = document.getElementById('a4n-disable')
+
 	/*
 	 * Wire up the change watcher
 	 */
 	editor.on('change', configChanged);
 	editor_ready = true;
-	editor.validate();
+//	editor.validate();
 
 	/*
 	 * Seriously hack the main object JSON editor
@@ -171,8 +242,488 @@ function finalizeEditorConfig(e) {
 	cardHolder.appendChild(editor.root.editjson_holder);
 	editor.root.editjson_holder.classList.add("a4n-editjson_holder");
 
+	// Hook up the key modifiers
+	document.addEventListener('keydown', (event) => {
+		if (event.key === "Shift" && !event.ctrlKey) {
+			setShift(true)
+		} else if (event.key === "Control"  && !event.shiftKey) {
+			setCtrl(true)
+		}
+	});
+
+	document.addEventListener('keyup', (event) => {
+		if (event.key === "Shift") {
+			setShift(false);
+		}
+		else if (event.key === "Control") {
+			setCtrl(false)
+		}
+	});
+
 	/*
 	 * And NOW replace the JSON editor text area with the ACE editor
 	 */
 	initAceEditor(editor);
 }
+
+/* 
+ * Custom validator for glob and regular expression patterns. Must return an array of errors or an empty array if valid.
+ */
+JSONEditor.defaults.custom_validators.push((schema, value, path) => {
+	/*
+	 * We do this because validating during editor initialization can be a bad thing.
+	 * The main driver code reruns a validate after the editor is loaded and the 
+	 * editor_ready flag is set to true.
+	 */
+	if (!editor_ready) return [];
+	let myValue = value;
+	const errors = [];
+	if (schema.format === "pattern") {
+		if (myValue.startsWith("!")) {
+			/*
+			 * It's a negation pattern - remove for further checking
+			 */
+			myValue = myValue.substring(1);
+		}
+		if (myValue.trim().length < 1) {
+			errors.push({
+				path: path,
+				property: 'path_patterns',
+				message: 'Cannot be empty'
+			});
+		} else if (myValue.startsWith("re:")) {
+			myValue = myValue.substring(3);
+			if (myValue.trim().length < 1) {
+				errors.push({
+					path: path,
+					property: 'path_patterns',
+					message: 'Regular expression cannot be empty'
+				});
+			} else {
+				let reError;
+				try {
+					/*
+					 * Python REs and JS REs are both based on Perl REs, meaning that for
+					 * all but the most complex cases they should be equivalent - so a simple
+					 * "compile" here using JS RegExp should be enough to ensure that an RE
+					 * is usable in the implementation (which is in python)
+					 */
+					new RegExp(myValue);
+				} catch (e) {
+					reError = e;
+				}
+				if (reError) {
+					errors.push({
+						path: path,
+						property: 'path_patterns',
+						message: `Invalid regular expression pattern: ${reError.message}`
+					});
+
+				}
+			}
+		} else {
+			let globError;
+			try {
+				/*
+				 * Python fnmatch is basically the same as the -wholename parameter of the UNIX find
+				 * command ... and no library in JS is that simple! So we do our own home-baked conversion
+				 * to a regular expression, which is, effectively:
+				 * 
+				 *     - . becomes \.
+				 *     - * becomes .*
+				 *     - ? becomes .
+				 *     - [! becomes [^
+				 *     - everything else remains the same
+				 */
+				const globRE = new RegExp("^" + myValue.replaceAll(".", "\\.").replaceAll("*", ".*").replaceAll("?", ".").replace("[!", "[^") + "$");
+			} catch (e) {
+				globError = e;
+			}
+			if (globError) {
+				errors.push({
+					path: path,
+					property: 'path_patterns',
+					message: `Invalid glob expression pattern: ${globError.message}`
+				});
+			}
+		}
+	}
+	return errors;
+});
+
+/* 
+ * Custom validator for min_items and max_items. Must return an array of errors or an empty array if valid.
+ */
+JSONEditor.defaults.custom_validators.push((schema, value, path) => {
+	/*
+	 * We do this because validating during editor initialization can be a bad thing.
+	 * The main driver code reruns a validate after the editor is loaded and the 
+	 * editor_ready flag is set to true.
+	 */
+	if (!editor_ready) return [];
+
+	/*
+	 * We check the Basic block for min_items/max_items consistency
+	 */
+	const errors = [];
+
+	if (value.type == 'command'
+		&& typeof value.min_items == 'number'
+		&& typeof value.max_items == 'number'
+		&& value.max_items > 0
+		&& value.min_items > value.max_items) {
+		//console.log(path, value);
+		/*
+		 * Report the error for min_items
+		 */
+		errors.push({
+			path: path,
+			property: 'min_items',
+			message: `min_items must be less than or equal to max_items if max_items is greater than zero`
+		});
+	}
+	return errors;
+});
+
+function typeChangeListener() {
+	if (this.tab) {
+		const element = this.tab;
+		const actionType = this.editors[this.type].editors.Basic.editors.type.getValue();
+		const disabled = this.editors[this.type].editors.Basic.editors.disabled.getValue();
+		element.classList.remove("action-command");
+		element.classList.remove("action-menu");
+		element.firstChild.classList.remove(iconNames["command"])
+		element.firstChild.classList.remove(iconNames["menu"])
+		element.classList.add("action-" + actionType);
+		element.firstChild.classList.add(iconNames[actionType]);
+		element.classList.toggle("disabled", disabled)
+	}
+}
+
+class ActionEditor extends JSONEditor.defaults.editors.object {
+  onChildEditorChange (editor, eventData) {
+      if (editor_ready) super.onChildEditorChange(editor, eventData)
+  }
+  
+  setActiveTab(idx) {
+	if (idx === 1) this.editors.actions?.resolvePending && this.editors.actions.resolvePending()
+	super.setActiveTab(idx)
+  }
+
+  refreshValue(i) {
+	super.refreshValue()
+	this.value_string = JSON.stringify(this.getValue())
+  }
+
+  setValue(v,i) {
+	const v_string = JSON.stringify(v)
+	if (v_string == this.value_string) {
+		return
+	}
+	super.setValue(v,i)
+  }
+}
+
+class MenuEditor extends ActionEditor {
+  setActiveTab(idx) {
+	if (idx === 1) this.editors.actions?.resolvePending && this.editors.actions.resolvePending()
+	super.setActiveTab(idx)
+  }
+}
+
+class ActionsEditor extends JSONEditor.defaults.editors.fmarray {
+
+    onChildEditorChange (editor, eventData) {
+      if (this.path == "root.actions" || editor_ready) super.onChildEditorChange(editor, eventData)
+    }
+  
+	/*
+	 * Another speed inovation - don't set the value of SUBmenus until
+	 * they are visible
+	 */
+	setValue(v = [],i) {
+		/* If we aren't yet visible (and this isn't the main menu) then delay submenu initialization */
+		if (this.path != "root.actions" && !this.row_holder?.offsetParent && v.length > 0) {
+			//console.log("Pending value for ", this.path)
+			this.pending_actions = v
+			v = []
+		} else {
+			this.pending_actions = null
+		}
+		const v_string = JSON.sortify(v)
+		if (v_string != this.serialized) {
+			super.setValue(v, i)
+		} else {
+			//console.log("No value set for ", this.path)
+		}
+	}
+
+	getValue() {
+		return this.pending_actions ?  this.pending_actions : super.getValue()
+	}
+
+	resolvePending() {
+		if (this.pending_actions) {
+			//console.log("Resolving pending value for ", this.path)
+			super.setValue(this.pending_actions, true)
+			this.pending_actions = null;
+		}
+	}
+
+	getElementEditor(i) {
+		const elementEditor = super.getElementEditor(i);
+		/*
+		 * THIS is the completed container that we need to swap around a bit
+		 *
+		 * There should be four elements:
+		 *     B (CSS will hide this)
+		 *     LABEL (also hidden)
+		 *     SELECT (choice between menu and command
+		 *     DIV (the object editor for the  menu/command)
+		 *     SPAN (the buttons)
+		 * 
+		 * What we want is
+		 *     B
+		 *     LABEL
+		 *     SPAN
+		 *     SELECT
+		 *     BUTTON (a help button)
+		 *     DIV
+		 * 
+		 * And, while we are at it, we put an a4n-specific class on the selector
+		 * to make it easier to style, and add a tooltip
+		 */
+		if (elementEditor.container.children.length == 5
+			&& elementEditor.container.children[0].tagName == "B"
+			&& elementEditor.container.children[1].tagName == "LABEL"
+			&& elementEditor.container.children[2].tagName == "SELECT"
+			&& elementEditor.container.children[3].tagName == "DIV"
+			&& elementEditor.container.children[4].tagName == "SPAN"
+		) {
+			elementEditor.container.children[2].setAttribute("title", "Select the type of action");
+			elementEditor.container.children[2].classList.add("a4n-action-type-chooser");
+			elementEditor.container.insertBefore(elementEditor.container.children[4], elementEditor.container.children[2]);
+			const helpButton = this.theme.getInfoButton("#action")
+			elementEditor.container.insertBefore(helpButton, elementEditor.container.children[4]);
+
+		} else {
+			console.log("Unexpected container layout for " + elementEditor.path + " container", elementEditor.container);
+		}
+		this.jsoneditor.watch(elementEditor.path + '.Basic.type', typeChangeListener.bind(elementEditor));
+		this.jsoneditor.watch(elementEditor.path + '.Basic.disabled', typeChangeListener.bind(elementEditor));
+		return elementEditor;
+	}
+
+	/*
+	 * CTRL copy copies to the "clipboard" and we stop the event processor!
+	 */
+	copyRow(from, to, e) {
+		let rc =true
+		if (e.currentTarget.classList.contains('ctrl-pressed')) {
+			const value = window.structuredClone(this.getValue()[from])
+			value.Basic.label += " Copy"
+			actions_clipboard.set(value)
+			this.refreshRowButtons()
+		} else {
+			rc = super.copyRow(from, to, e)
+		}
+		resetKeys(e)
+		return rc
+	}
+
+	/*
+	 * Turns the delete row into a delete all rows if the shift button is pressed
+	 */
+	deleteRowClicked(from,e) {
+		const rc = e.currentTarget.classList.contains('shift-pressed') ? super.deleteAllRowsClicked(e) : super.deleteRowClicked(from, e)
+		resetKeys(false)
+		return rc
+	}
+
+	/*
+	 * CTRL delete deletes to the clipboard
+	 */
+	deleteRow(from, e) {
+		let value;
+		if (e.currentTarget.classList.contains('ctrl-pressed')) {
+			value = window.structuredClone(this.getValue()[from])
+		}
+		
+		const rc = super.deleteRow(from, e)
+		if (value) {
+			actions_clipboard.set(value)
+			this.refreshRowButtons()
+		}
+		return rc
+	}
+
+	refreshRowButtons() {
+		const active_index = this.getValueIndex(this.active_tab)
+		const has_active_tab = active_index >= 0 && active_index < this.rows.length
+
+		this.setButtonState(this.add_row_button, this.rows.length < this.getMax())
+		this.setButtonState(this.copy_row_button, has_active_tab && (this.rows.length < this.getMax()))
+		this.setButtonState(this.delete_row_button, has_active_tab && (this.rows.length > this.getMin()))
+		this.setButtonState(this.move_row_up_button, has_active_tab && (active_index > 0))
+		this.setButtonState(this.move_row_down_button, has_active_tab && (active_index < this.rows.length - 1))
+	}
+
+	refreshTabs(i, j) {
+		super.refreshTabs(i,j)
+		this.refreshRowButtons()
+	}
+
+	/*
+	 * Paste from the clipboard
+	 */
+	pasteRow() {
+		const value = actions_clipboard.take();
+		let editor
+		if (value) {
+			const active_index = this.getValueIndex()
+			const new_row_index = this.rows.length
+			editor = this.addRow(value)
+			this._moveRow (new_row_index, active_index+1)
+			this.refreshValue(true)
+			this.setActiveItem(active_index+1)
+		}
+		return editor
+	}
+
+	//
+	// This is a royal pain - I can't make Bootstrap 5 do it because 'row' messes with something
+	//
+	_adjustActionsMaxHeight() {
+		setTimeout(() => {
+			const holder = this.links_holder.parentNode;
+			const actions_rect_height = holder.getBoundingClientRect().height
+			/*
+			 * and the hack :)
+			 */
+			if (actions_rect_height > 0) {
+				const sibling_rect_height = this.row_holder.getBoundingClientRect().height
+				const editor_rect_bottom = document.getElementById("editor_holder").getBoundingClientRect().bottom
+				const view_port_rect_height = document.getElementsByTagName("html")?.[0]?.getBoundingClientRect().bottom
+				const overflow = editor_rect_bottom - (view_port_rect_height - 5)
+				const new_max = actions_rect_height - overflow;
+				holder.style.setProperty("min-height", sibling_rect_height + "px")
+				holder.style.setProperty("max-height",(new_max > sibling_rect_height ? new_max : sibling_rect_height) + "px")
+			}				
+		}, 5);
+	}
+
+	// We don't use row buttons
+	addRowButtons (i) {
+		return
+	}
+
+	postBuild () {
+    	super.postBuild();
+		if (this.path == "root.actions" && this.links_holder) {
+			this.links_holder.parentNode.classList.add('a4n-main-actions-list')
+			const mObserver = new MutationObserver((list, observer) => {
+				this._adjustActionsMaxHeight()
+			})
+			window.addEventListener('resize', () => {
+				clearTimeout(this.resizeTimer); // Clear any previous timer
+				this.resizeTimer = setTimeout(() => {
+					this._adjustActionsMaxHeight(); // Execute only after resizing stops for 200ms
+				}, 200); // Adjust debounce delay as needed (e.g., 100ms, 250ms)
+			});
+			this._adjustActionsMaxHeight()
+			mObserver.observe(this.links_holder, { childList: true })
+		}
+    }
+
+	resetKeys(e) {
+		if (e && e.ctrlKey && !e.shiftKey) {
+			this.setCtrl(true)
+			this.setShift(false)
+		} else if (e && !e.ctrlKey && e.shiftKey) {
+			this.setCtrl(false)
+			this.setShift(true)
+		} else {
+			this.setCtrl(false)
+			this.setShift(false)
+		}
+	}
+
+	addControls() {
+		super.addControls()
+		this.copy_row_button = this._createCopyButton(-1)
+		this.paste_row_button = this._createPasteRowButton(-1)
+		this.delete_row_button = this._createDeleteButton(-1)
+		this.move_row_up_button = this._createMoveUpButton(-1)
+		this.move_row_down_button = this._createMoveDownButton(-1)
+
+		this.controls.classList.add("a4n-actions-toolbar")
+		this.controls.appendChild(this.copy_row_button)
+		this.controls.appendChild(this.paste_row_button)
+		this.controls.appendChild(this.move_row_up_button)
+		this.controls.appendChild(this.move_row_down_button)
+		this.controls.appendChild(this.delete_row_button)
+	}
+
+	_createPasteRowButton() {
+		const button = this.getButton(this.getItemTitle(), 'paste', 'Paste Action', [this.getItemTitle()])
+		button.classList.add('json-editor-btntype-paste')
+		button.disabled = !actions_clipboard.hasValue()
+		button.addEventListener('click', (e) => {
+			e.preventDefault()
+			e.stopPropagation()
+			const editor = this.pasteRow()
+			this.onChange(true)
+			this.jsoneditor.trigger('pasteRow', editor)
+		})
+		return button
+	}
+}
+
+class CommandLineEditor extends JSONEditor.defaults.editors.string {
+	postBuild(value) {
+		const rc = super.postBuild(value);
+		const form_group = this.container.children[0];
+		form_group.classList.add("a4n-command-line");
+		const input = form_group.children[2];
+		if (input.tagName == "INPUT") {
+			/*
+				* Add the prepend button for the use_shell option
+				* and hook it up to the editor
+				*/
+			const input_group = get_use_shell_button_template().content.cloneNode(true)
+			const shell_button = input_group.querySelector("button");
+			const use_shell_editor = editor.getEditor(this.path.replace("command_line", "use_shell"))
+
+			input_group.children[0].appendChild(input);
+			form_group.appendChild(input_group);
+
+			use_shell_editor.visibleWidget = shell_button;
+
+			// Clicking the button sets the value
+			shell_button.onclick = function () {
+				use_shell_editor.setValue(!this.classList.contains("boolean-true"));
+			};
+
+			// Setting the value changes the style of the button
+			use_shell_editor.setValue = function (value, initial) {
+				Object.getPrototypeOf(this).setValue.call(this, value, initial);
+				this.visibleWidget.classList.toggle("boolean-true", value);
+			}
+		}
+		return rc
+	}
+}
+
+JSONEditor.defaults.editors.commandLine = CommandLineEditor;
+JSONEditor.defaults.editors.actions = ActionsEditor;
+JSONEditor.defaults.editors.action = ActionEditor;
+JSONEditor.defaults.editors.menu = MenuEditor;
+
+/*
+ * Select custom editors
+ */
+JSONEditor.defaults.resolvers.unshift(schema => {
+	if (schema.options?.a4nEditor && JSONEditor.defaults.editors[schema.options.a4nEditor]) {
+		return schema.options.a4nEditor
+	}
+});

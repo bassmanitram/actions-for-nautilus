@@ -7,12 +7,7 @@
 	min-height: inherit;
 }
 
-.json-editor-btn-save {
-	margin-left: -1px;
-}
-
 .json-editor-btn-save, .json-editor-btn-cancel {
-	margin-left: -1px;
 	--bs-btn-border-radius: 0;
 }
 

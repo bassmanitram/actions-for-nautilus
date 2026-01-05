@@ -8,7 +8,7 @@
  * *******************
  * *******************
  *********************/
-class a4nbootstrap4Theme extends JSONEditor.defaults.themes.bootstrap4 {
+class a4nbootstrap4Theme extends JSONEditor.defaults.themes.bootstrap5 {
 	constructor(jsoneditor) {
 		super(jsoneditor);
 		this.openHelp = function (event) {
@@ -20,10 +20,10 @@ class a4nbootstrap4Theme extends JSONEditor.defaults.themes.bootstrap4 {
 	/*
 	 * We want a 3/9 split instead of a 2/10 split used by the superclass
 	 */
-	getTabHolder(propertyName) {
+	getTabHolder (propertyName) {
 		const el = document.createElement('div')
 		const pName = (typeof propertyName === 'undefined') ? '' : propertyName
-		el.innerHTML = `<div class='col-md-3 tab-holder-left' ${pName ? ("data-property-name='" + pName + "'") : ""} id='${pName}'><ul class='nav flex-column nav-pills'></ul></div><div class='col-md-9 tab-holder-right' ${pName ? ("data-property-name='" + pName + "'") : ""}><div class='tab-content' id='${pName}'></div></div>`
+		el.innerHTML = `<div class='col-md-3' id='${pName}'><ul class='nav flex-column nav-pills'></ul></div><div class='col-md-9'><div class='tab-content' id='${pName}'></div></div>`
 		el.classList.add('row')
 		return el
 	}
@@ -33,7 +33,7 @@ class a4nbootstrap4Theme extends JSONEditor.defaults.themes.bootstrap4 {
 	 */
 	getInfoButton(text) {
 		const info = text.startsWith("#") ? (infoText[text] ? infoText[text] : { text }) : { text };
-		var button = super.getInfoButton(info.text);
+		const button = super.getInfoButton(info.text);
 		button.addEventListener('click', this.openHelp, false);
 		if (info.help_label) {
 			button.setAttribute('data-help-label', info.help_label);
@@ -47,16 +47,12 @@ class a4nbootstrap4Theme extends JSONEditor.defaults.themes.bootstrap4 {
 	 * view
 	 */
 	getTab(text, id) {
-		var element = super.getTab(text, id);
-		var myEditor = this.jsoneditor.getEditor(id);
+		const element = super.getTab(text, id);
 		if (/\.actions\.[0-9]+$/.test(id)) {
-			var actionType = myEditor.value.Basic.type;
-			var ite = document.createElement('i');
+			const ite = document.createElement('i');
 			ite.classList.add("fas")
 			element.insertBefore(ite, element.firstChild);
-			element.classList.add("action-" + actionType);
-			element.firstChild.classList.add(iconNames[actionType]);
-			myEditor.a4nActionType = actionType;
+			element.classList.add("action-command");
 		}
 		return element;
 	}
@@ -97,5 +93,31 @@ class a4nbootstrap4Theme extends JSONEditor.defaults.themes.bootstrap4 {
 		} else {
 			row.container.classList.remove('active');
 		}
+	}
+
+	markTabError(row) {
+		if (!row.tab) return
+		if (row.tab.classList.contains("action-command") || row.tab.classList.contains("action-menu")) {
+			row.tab.firstChild.nextSibling.classList.toggle('error', row.has_errors);
+			row.tab.classList.toggle('error', row.has_errors);
+		} else {
+			row.tab.firstChild.classList.toggle('error', row.has_errors);
+		}
+
+		if (typeof row.rowPane !== 'undefined') {
+			row.rowPane.classList.toggle('error', row.has_errors);
+		} else {
+			row.container.classList.toggle('error', row.has_errors);
+		}	
+	}
+
+	/*
+	 * BS 5 show error can called before the control group is assigned
+	 */
+	addInputError(input, text) {
+		if (!input.controlgroup) {
+			input.controlgroup = this.closest(input, '.form-group')
+		}
+		super.addInputError(input, text)
 	}
 }

@@ -127,3 +127,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 configurator/test.html
+**/SAMPLE.*
+**/*.old.*
+use-sample.sh
+local/
