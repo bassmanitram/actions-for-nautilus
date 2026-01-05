@@ -1,3 +1,10 @@
+actions-for-nautilus (2.0.0) stable; urgency=medium
+
+  * Major release: Version 2.0.0
+  * Bug fixes from pre-release testing
+
+ -- Martin Bartlett <martin.j.bartlett@gmail.com>  Mon, 05 Jan 2026 18:11:00 +0100
+
 actions-for-nautilus (2.0.0~pre2-1) stable; urgency=medium
   * Fixes to some placeholder interpolations
   * Fix to button reactivation bug
