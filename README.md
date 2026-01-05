@@ -252,6 +252,28 @@ connfiguration as it appears on disk, and as the Nautilus extension expects.
 delivered. This is for use by the configurator and should not be
 considered a canonical description of the extension configuration file).
 
+# Diagnostics
+Error messages are sent to the Nautilus `stdout` or `stderr` - including errors
+found in the configuration file (such as invalid JSON format).
+
+Additionally, the property `debug` can be set in the top level configuration object, with a
+value of `true` or `false` (the default). When set to `true` further debug
+information is printed to the Nautilus `stdout`.
+
+In order to _see_ that output you will need to start Nautilus in a special way
+from a terminal emulator (e.g. `gnome-terminal`):
+
+```
+# Stop Nautilus
+nautilus -q  
+# Restart with `stdout` and `stderr` being displayed at the terminal
+nautilus --no-desktop
+```
+
+Note that, in order to stop this special execution mode, you will need to either
+close the terminal emulator, or, from another emulator run the `nautilus -q`
+command.
+
 # Acknowledgments
 The main acknowledgement is, of course, to the original Nautilus Actions 
 extension, later renamed to [Filemanager Actions](https://gitlab.gnome.org/Archive/filemanager-actions) 
