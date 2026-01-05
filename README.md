@@ -4,9 +4,9 @@
 
 It appears to be functioning very well but it would be helpful to have people test it and feed back via issues.
 
-The version is in the [v2](https://github.com/bassmanitram/actions-for-nautilus/tree/v2) branch, the 
-[latest v2 pre-release](https://github.com/bassmanitram/actions-for-nautilus/releases/tag/v2.0.0.pre1-1) release, and the associated 
-[Debian package](https://github.com/bassmanitram/actions-for-nautilus/releases/download/v2.0.0.pre1-1/actions-for-nautilus_2.0.0.pre1-1_all.deb).
+The version is in the [v2](https://github.com/bassmanitram/actions-for-nautilus/tree/v2) branch, the
+[latest v2 pre-release](https://github.com/bassmanitram/actions-for-nautilus/releases/tag/v2.0.0.pre2-1) release, and the associated 
+[Debian package](https://github.com/bassmanitram/actions-for-nautilus/releases/download/v2.0.0.pre2-1/actions-for-nautilus_2.0.0.pre2-1_all.deb).
 
 All major feature updates are explained in the doc and are linkable from the configurator.
 
