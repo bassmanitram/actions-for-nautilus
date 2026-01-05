@@ -315,7 +315,8 @@ The biggest change is in how command line interpolation works. Version 2.0 intro
 
 ### New Features Available
 
-- **Graphical Configurator**: No more manual JSON editing required
+- **Graphical Configurator**: Improved UI with Copy/Cut/Paste support and Drag/Drop support
+- **MUCH better command line parsing**: It's complicated - read the help :)
 - **show-if-true Filter**: Use external commands to determine if an action should be shown
 - **Strict Matching**: Control how multiple filter criteria are combined
 - **Better Documentation**: In-app help with examples
