@@ -44,7 +44,7 @@ jobs:
           
       - name: Build Debian package
         run: |
-          make deb
+          fakeroot make deb
           
       - name: Verify package was created
         run: |
