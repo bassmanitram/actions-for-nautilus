@@ -1,16 +1,43 @@
-# ANNOUNCEMENT
+# Actions For Nautilus
 
-*Version 2 pre-release is here*
+**Version 2.0 is now released!** 🎉
 
-It appears to be functioning very well but it would be helpful to have people test it and feed back via issues.
+Version 2.0 brings major improvements to Actions For Nautilus:
 
-The version is in the [v2](https://github.com/bassmanitram/actions-for-nautilus/tree/v2) branch, the
-[latest v2 pre-release](https://github.com/bassmanitram/actions-for-nautilus/releases/tag/v2.0.0.pre2-1) release, and the associated 
-[Debian package](https://github.com/bassmanitram/actions-for-nautilus/releases/download/v2.0.0.pre2-1/actions-for-nautilus_2.0.0.pre2-1_all.deb).
+- **Graphical Configurator** - Improved Configurator with Copy/Cut/Paste and Drag/Drop support
+- **Improved Command Interpolation** - Better handling of filenames with special characters
+- **Enhanced Filtering** - New `show-if-true` option to use external commands for validation
+- **Strict Matching Mode** - Precise control over how filter rules are applied
+- **Better Shell Support** - More intuitive command line construction with proper escaping
+- **Comprehensive Documentation** - Improved in-app help system with detailed examples
 
-All major feature updates are explained in the doc and are linkable from the configurator.
+### Installation
 
-Thank you
+**Install via Debian package** (recommended):
+```bash
+# Download and install the latest release
+wget https://github.com/bassmanitram/actions-for-nautilus/releases/download/v2.0.0/actions-for-nautilus_2.0.0_all.deb
+sudo dpkg -i actions-for-nautilus_2.0.0_all.deb
+sudo apt-get install -f  # Install any missing dependencies
+```
+
+Then launch **Actions For Nautilus Configurator** from your applications menu to configure your actions!
+
+### Important Links
+
+- **[Download Latest Release](https://github.com/bassmanitram/actions-for-nautilus/releases/latest)** - Get the Debian package
+- **[Release Notes](https://github.com/bassmanitram/actions-for-nautilus/releases/tag/v2.0.0)** - Full v2.0 changelog
+- **[Migration Guide](#migrating-from-v1x-to-v20)** - For users upgrading from v1.x
+- **[Installation Guide](#installation)** - Detailed installation instructions
+- **[Wiki](https://github.com/bassmanitram/actions-for-nautilus/wiki)** - Tips, tricks, and configuration examples
+
+### Upgrading from v1.x
+
+**Important Security Update**: If you're using version 1.6.0 or earlier, please update immediately due to a security issue.
+
+**Breaking Changes**: Version 2.0 includes changes to the configuration format. Please read the [migration guide](#migrating-from-v1x-to-v20) before upgrading.
+
+---
 
 # IMPORTANT NOTE
 All users of releases 1.6.0 and before should update their installations to release 1.6.1 as soon as possible
@@ -274,6 +301,70 @@ Note that, in order to stop this special execution mode, you will need to either
 close the terminal emulator, or, from another emulator run the `nautilus -q`
 command.
 
+# Migrating from v1.x to v2.0
+
+Version 2.0 introduces significant improvements but includes breaking changes to the configuration format.
+
+## What's Changed
+
+### Configuration Format
+
+The biggest change is in how command line interpolation works. Version 2.0 introduces a new "improved" interpolation mode that properly handles special characters in filenames and provides more intuitive command construction.
+
+**Important**: Existing v1.x configurations will continue to work using "original" interpolation mode by default. However, to take advantage of the improved handling, you'll need to update your command actions.
+
+### New Features Available
+
+- **Graphical Configurator**: No more manual JSON editing required
+- **show-if-true Filter**: Use external commands to determine if an action should be shown
+- **Strict Matching**: Control how multiple filter criteria are combined
+- **Better Documentation**: In-app help with examples
+
+## Migration Steps
+
+### Option 1: Use the Configurator (Recommended)
+
+1. **Install v2.0** using the Debian package
+2. **Backup your config**: Your existing `~/.local/share/actions-for-nautilus/config.json` will work but consider backing it up
+3. **Launch the Configurator**: Find "Actions For Nautilus Configurator" in your applications
+4. **Review your actions**: The configurator will load your existing configuration
+5. **Optionally update to improved interpolation**: Edit command actions and change interpolation mode to "improved" where appropriate
+
+### Option 2: Manual Update
+
+If you've manually edited your configuration:
+
+1. **Backup your configuration**:
+   ```bash
+   cp ~/.local/share/actions-for-nautilus/config.json ~/.local/share/actions-for-nautilus/config.json.v1.backup
+   ```
+
+2. **Install v2.0**
+
+3. **Test your actions**: Your configuration should work as-is with "original" interpolation mode
+
+4. **Read the documentation**: Use the configurator's help system to understand new features
+
+### Understanding Interpolation Modes
+
+**Original Mode** (default for existing actions):
+- Maintains v1.x behavior
+- Requires manual escaping of spaces and quotes
+- Works with existing command lines
+
+**Improved Mode** (default for new actions):
+- Automatically handles special characters in filenames
+- More intuitive - write commands as you would at a shell prompt
+- Better escaping and quoting
+
+See the [Configuration reference](#configuration-reference) section for details on command line interpolation.
+
+### Getting Help
+
+- Check the [Wiki](https://github.com/bassmanitram/actions-for-nautilus/wiki) for migration examples
+- Open an [issue](https://github.com/bassmanitram/actions-for-nautilus/issues) if you encounter problems
+- Use the configurator's built-in help system for feature documentation
+
 # Acknowledgments
 The main acknowledgement is, of course, to the original Nautilus Actions 
 extension, later renamed to [Filemanager Actions](https://gitlab.gnome.org/Archive/filemanager-actions) 
@@ -307,7 +398,7 @@ The JSON Schema-based editor [JSON-Editor](https://github.com/json-editor/json-e
 The configurator is, in effect, an instance of that editor with a few tweaks to make it look and feel
 a bit more natural for this use case! As of version 2, I use [my own fork of the project](https://github.com/bassmanitram/json-editor) 
 because there are fixes and enhancements for which I have submitted PRs, but it takes a while to get these 
-actually merged into the main project. You are welsome to submit your own PRs to that project as you see fit.
+actually merged into the main project. You are welsome to submit your own PRs to my project as you see fit.
 
 The embedded JSON source editor is the [ACE source editor](https://ace.c9.io/) - another amazing project
 which was so easy to embed that one wonders why JSON-Editor doesn't use that for its own JSON source
