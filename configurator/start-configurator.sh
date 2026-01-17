@@ -1,14 +1,20 @@
 #!/bin/sh
 
 #
+# Get the directory where this script is located
+#
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+cd "$SCRIPT_DIR"
+
+#
 # Create inital config if necessary
 #
 mkdir -p $HOME/.local/share/actions-for-nautilus
 
-[ -f $HOME/.local/share/actions-for-nautilus/config.json ] || cp ./sample-config.json $HOME/.local/share/actions-for-nautilus/config.json
+[ -f $HOME/.local/share/actions-for-nautilus/config.json ] || cp "$SCRIPT_DIR/sample-config.json" $HOME/.local/share/actions-for-nautilus/config.json
 
-if [ -f $PWD/javascript/jquery.min.js ]; then
-	JQUERY=$PWD/javascript/jquery.min.js
+if [ -f "$SCRIPT_DIR/javascript/jquery.min.js" ]; then
+	JQUERY="$SCRIPT_DIR/javascript/jquery.min.js"
 else
 	JQUERY=/usr/share/javascript/jquery/jquery.min.js
 fi
@@ -29,13 +35,13 @@ RC=$?
 #
 # Find a port
 #
-PORT=$(python3 ./find-a-port.py)
+PORT=$(python3 "$SCRIPT_DIR/find-a-port.py")
 #echo "the port $PORT" # >> /tmp/a4n-start.log 
 
 #
 # Start the server and detatch
 #
-python3 ./actions-for-nautilus-configurator.py $PORT & # >> /tmp/a4n-start.log 2>&1 &
+python3 "$SCRIPT_DIR/actions-for-nautilus-configurator.py" $PORT & # >> /tmp/a4n-start.log 2>&1 &
 RC=$?
 #echo "server started $RC" # >> /tmp/a4n-start.log
 
