@@ -11,6 +11,8 @@ Version 2.0 brings major improvements to Actions For Nautilus:
 - **Better Shell Support** - More intuitive command line construction with proper escaping
 - **Comprehensive Documentation** - Improved in-app help system with detailed examples
 
+**AND** Check out the new [Actions for VSCode](https://github.com/bassmanitram/actions-for-vscode): similar functionality for VSCode!!!
+
 ### Installation
 
 **Install via Debian package** (recommended):
@@ -368,7 +370,7 @@ See the [Configuration reference](#configuration-reference) section for details 
 
 # Related Projects
 
-[Actions for VSCode](https://github.com/bassmanitram/actions-for-vscaode) provides similar functionality for VSCode.
+[Actions for VSCode](https://github.com/bassmanitram/actions-for-vscode) provides similar functionality for VSCode.
 
 # Acknowledgments
 The main acknowledgement is, of course, to the original Nautilus Actions 
