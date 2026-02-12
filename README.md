@@ -366,6 +366,10 @@ See the [Configuration reference](#configuration-reference) section for details 
 - Open an [issue](https://github.com/bassmanitram/actions-for-nautilus/issues) if you encounter problems
 - Use the configurator's built-in help system for feature documentation
 
+# Related Projects
+
+[Actions for VSCode](https://github.com/bassmanitram/actions-for-vscaode) provides similar functionality for VSCode.
+
 # Acknowledgments
 The main acknowledgement is, of course, to the original Nautilus Actions 
 extension, later renamed to [Filemanager Actions](https://gitlab.gnome.org/Archive/filemanager-actions) 
@@ -406,3 +410,4 @@ which was so easy to embed that one wonders why JSON-Editor doesn't use that for
 editing feature - I feel another PR coming on :).
 
 So, a BIG shout-out to those two projects!
+
