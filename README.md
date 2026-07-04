@@ -344,7 +344,7 @@ If you've manually edited your configuration:
 
 2. **Install v2.0**
 
-3. **Test your actions**: Your configuration should work as-is with "original" interpolation mode. You can force using the new interpolation by adding `"use_v1_interpolation": false` to your actions. In this case it's no use protecting `%` placeholders (example: old `\"%f\"` becomes `%f`). You still have to protect shell variables (`\"$out_filename\"` for example).
+3. **Test your actions**: Your configuration should work as-is with "original" interpolation mode. You can force using the new interpolation by adding `"use_v1_interpolation": false` to your actions. In this case you no longer need to protect `%` placeholders (example: old `\"%f\"` becomes `%f`). You still have to protect shell variables (`\"$out_filename\"` for example).
 
 4. **Read the documentation**: Use the configurator's help system to understand new features
 
