@@ -1,4 +1,4 @@
-VERSION=2.0.0
+VERSION=2.0.1
 
 # Installation location when 'make install' or 'make uninstall' is used
 LOCALLOC=~/.local/share

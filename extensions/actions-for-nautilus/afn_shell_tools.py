@@ -66,7 +66,10 @@ def resolve2(array, file_index, files, escape, cache) -> tuple[str, PluralCache]
         escape_re = ESCAPE_RES.get(token[0], RAW_ESCAPE_RE)
         if handle is Handle.PLURAL:
             for plural_index, _ in enumerate(files):
-                command_array += expand(token, file_index, plural_index, files, _improved_escape if escape else None, cache)
+                expanded = expand(token, file_index, plural_index, files, _improved_escape if escape else None, cache)
+                if escape and plural_index > 0:
+                    command_array.append(" ")
+                command_array += expanded
         elif handle is Handle.SINGULAR:
             command_array += expand(token, file_index, None, files, _improved_escape if escape else None, cache)
         else:

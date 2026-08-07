@@ -1,3 +1,8 @@
+# Release 2.0.1
+* Fix PLURAL placeholder expansion in improved interpolation mode - plural
+  placeholders (%F, %B, %D, %M, %U, %W, %X) now correctly produce
+  space-separated values in shell mode instead of concatenating them
+
 # Release 2.0.0
 * Updated JSON Editor, Bootstrap, JQuery, and Ace (and forked JSON Editor to 
   add fixes and enhancements of my own):

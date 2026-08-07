@@ -1,3 +1,9 @@
+actions-for-nautilus (2.0.1) stable; urgency=medium
+
+  * Fix PLURAL placeholder expansion in improved interpolation mode
+
+ -- Martin Bartlett <martin.j.bartlett@gmail.com>  Fri, 07 Aug 2026 18:22:07 +0200
+
 actions-for-nautilus (2.0.0) stable; urgency=medium
 
   * Major release: Version 2.0.0
@@ -114,11 +120,11 @@ actions-for-nautilus (1.0.2) stable; urgency=medium
 actions-for-nautilus (1.0.1) stable; urgency=medium
 
   * Fixed `python` references in the config startup script to be `python3`.
-  
+ 
  -- Martin Bartlett <martin.j.bartlett@gmail.com>  Fri, 27 Jul 2022 08:39:00 +0200
 
 actions-for-nautilus (1.0.0) stable; urgency=medium
 
   * initial release
-  
+ 
  -- Martin Bartlett <martin.j.bartlett@gmail.com>  Fri, 25 Jul 2022 17:11:00 +0200
