@@ -6,7 +6,7 @@ import os
 import traceback
 import subprocess
 from urllib.parse import urlparse
-from gi.repository import Nautilus
+from gi.repository import Gio, Nautilus
 from collections import deque
 
 # Set up logging
@@ -69,6 +69,22 @@ last_config_time = None
 _permission_cache = {}
 _cache_timestamp = 0
 
+def _check_permission(file, permission_flags):
+    """Check permissions without blocking Nautilus' main thread.
+
+    For non-native locations the path is a gvfsd-fuse one, and os.access()
+    on it can block for as long as the GVfs backend is busy. Use what Nautilus
+    already knows instead: readable, writable if can_write(), executable only
+    if a directory.
+    """
+    if file["native"]:
+        return _check_permission_lazy(file["filepath"], permission_flags)
+    if permission_flags & os.X_OK and file["filetype"] != Gio.FileType.DIRECTORY:
+        return False
+    if permission_flags & os.W_OK:
+        return file["can_write"]
+    return True
+
 def _check_permission_lazy(filepath, permission_flags):
     """Lazy permission checking with caching - only cache when actually needed"""
     global _permission_cache, _cache_timestamp
@@ -102,8 +118,9 @@ def create_menu_items(config, files, group, act_function):
         last_config_time = config.mtime
 
     try:
-        # For single files get any cached menu and return that
-        single_file_path = files[0].get_location().get_path() if len(files) == 1 else None
+        # For single native files get any cached menu and return that (stat()
+        # could block on non-native ones, see _check_permission())
+        single_file_path = files[0].get_location().get_path() if len(files) == 1 and files[0].get_location().is_native() else None
         mtime = None
         ctime = None
         if single_file_path is not None:
@@ -132,7 +149,9 @@ def create_menu_items(config, files, group, act_function):
                 "basename": os.path.basename(file.get_location().get_path()),
                 "filepath": file.get_location().get_path(),
                 "folder": os.path.dirname(file.get_location().get_path()),
-                "uri": urlparse(file.get_uri())
+                "uri": urlparse(file.get_uri()),
+                "native": file.get_location().is_native(),
+                "can_write": file.can_write()
             } if file.get_location().get_path() is not None else None, files)))
 
 
@@ -351,12 +370,12 @@ def _applicable_to_permissions(action, files):
     """Smart lazy permission checking - only makes filesystem calls when actually needed"""
     if action.permissions_not:
         return all(
-            _check_permission_lazy(file["filepath"], os.R_OK) and 
-            not _check_permission_lazy(file["filepath"], action.permissions)
+            _check_permission(file, os.R_OK) and 
+            not _check_permission(file, action.permissions)
             for file in files
         )
     else:
         return all(
-            _check_permission_lazy(file["filepath"], action.permissions)
+            _check_permission(file, action.permissions)
             for file in files
         )
